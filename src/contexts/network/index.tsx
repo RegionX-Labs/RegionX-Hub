@@ -1,5 +1,3 @@
-'use client'
-
 import { Network } from '@/types';
 import { useRouter } from 'next/router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
