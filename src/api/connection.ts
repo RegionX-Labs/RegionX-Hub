@@ -4,7 +4,7 @@ import { withPolkadotSdkCompat } from 'polkadot-api/polkadot-sdk-compat';
 import { getWsProvider } from 'polkadot-api/ws-provider/web';
 import { Chain, ChainId, chains } from './chains';
 import { Network } from '@/types';
-import { networkStartedFx } from '@/network';
+import { $network, networkStarted } from '@/network';
 
 // https://github.com/novasamatech/telenova-web-app/blob/9a6b5c2cf26426bf825d154343ac8530fdaa8406/app/models/network/network-model.ts
 
@@ -13,9 +13,7 @@ export type Connection = {
   status: 'connecting' | 'connected' | 'error' | 'disconnected' | 'closed';
 };
 
-export const initChains = createEvent();
-export const chainsInitialized = createEvent();
-export const networkStarted = createEvent<Network>(Network.NONE);
+export const initChains = createEvent<Network>();
 export const chainConnected = createEvent<ChainId>();
 export const chainDisconnected = createEvent<ChainId>();
 
@@ -29,8 +27,6 @@ const getChainsFx = createEffect((): Record<ChainId, Chain> => {
     Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
   );
 
-  console.log(_chains);
-
   return _chains;
 });
 
@@ -40,7 +36,6 @@ type CreateClientParams = {
   nodes: string[];
 };
 export const createPolkadotClientFx = createEffect((params: CreateClientParams): [PolkadotClient, Connection['status']] => {
-  console.log('creating client');
   const boundStatusChange = scopeBind(providerStatusChanged, { safe: true });
 
   // To support old Polkadot-SDK 1.1.0 <= x < 1.11.0
@@ -95,7 +90,12 @@ const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainI
 
 sample({
     clock: initChains,
-    target: getChainsFx,
+    target: [$network, getChainsFx],
+});
+
+sample({
+    clock: getChainsFx.doneData,
+    target: $chains,
 });
 
 sample({
@@ -113,7 +113,8 @@ sample({
 
 sample({
     clock: getChainsFx.done,
-    target: chainsInitialized
+    source: $network,
+    target: networkStarted,
 });
 
 sample({
@@ -131,14 +132,11 @@ sample({
 sample({
   clock: chainConnected,
   source: $chains,
-  fn: (chains, chainId) => {
-    console.log(chainId);
-    console.log(chains);
-    return {
+  fn: (chains, chainId) => ({
     chainId,
     name: chains[chainId].name,
     nodes: chains[chainId].nodes.map(node => node.url),
-  }},
+  }),
   target: createPolkadotClientFx,
 });
 

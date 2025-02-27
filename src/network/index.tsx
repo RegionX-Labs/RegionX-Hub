@@ -1,14 +1,18 @@
 import { ChainId, chains } from "@/api/chains";
-import { chainConnected, chainDisconnected, chainsInitialized, networkStarted } from "@/api/connection";
+import { chainConnected, chainDisconnected } from "@/api/connection";
 import { Network } from "@/types";
-import { createEffect, createStore, sample } from "effector";
+import { createEffect, createEvent, createStore, sample } from "effector";
 
-const $network = createStore<Network>(Network.POLKADOT);
+export const $network = createStore<Network>(Network.POLKADOT);
 
-export const networkStartedFx = createEffect((_network: Network): Network => {
-    const currentNetworkChains = getNetworkChainIds($network.getState());
-    const newNetworkChains = getNetworkChainIds(_network);
-    console.log(newNetworkChains);
+export const networkStarted = createEvent<Network>(Network.POLKADOT);
+
+export const networkStartedFx = createEffect<{
+  oldNetwork: Network;
+  newNetwork: Network;
+}, Network>((payload) => {
+    const currentNetworkChains = getNetworkChainIds(payload.oldNetwork);
+    const newNetworkChains = getNetworkChainIds(payload.newNetwork);
     currentNetworkChains.forEach(chainId => {
         chainDisconnected(chainId);
     });
@@ -16,7 +20,7 @@ export const networkStartedFx = createEffect((_network: Network): Network => {
         chainConnected(chainId);
     });
 
-    return _network;
+    return payload.newNetwork;
 });
 
 // Get all the relevant chain ids of a network.
@@ -38,7 +42,11 @@ const getNetworkChainIds = (network: Network): ChainId[] => {
 }
 
 sample({
-    clock: chainsInitialized,
+    clock: networkStarted,
     source: $network,
+    fn: (oldNetwork, newNetwork) => ({
+        oldNetwork,
+        newNetwork,
+    }),
     target: networkStartedFx,
 });
