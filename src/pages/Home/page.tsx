@@ -1,14 +1,17 @@
 import NetworkSelector from "@/components/NetworkSelector";
 import styles from "./home.module.scss";
-import { createPolkadotClientFx } from "@/api/connection";
+import { chainConnected, createPolkadotClientFx, initChains, networkStarted } from "@/api/connection";
 import { chains } from "@/api/chains";
 import { $connections } from "@/api/connection";
 import { useUnit } from "effector-react";
 import { useEffect } from "react";
+import { Network } from "@/types";
 
 export default function Home() {
   useEffect(() => {
-    createPolkadotClientFx(chains.polkadotCoretime);
+    // networkStarted(Network.POLKADOT);
+    initChains();
+    // chainConnected(chains.polkadotCoretime.chainId);
   }, []);
 
   const connections = useUnit($connections)

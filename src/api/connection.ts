@@ -2,7 +2,9 @@ import { createEffect, createEvent, createStore, sample, scopeBind } from 'effec
 import { createClient, type PolkadotClient } from 'polkadot-api';
 import { withPolkadotSdkCompat } from 'polkadot-api/polkadot-sdk-compat';
 import { getWsProvider } from 'polkadot-api/ws-provider/web';
-import { Chain, ChainId } from './chains';
+import { Chain, ChainId, chains } from './chains';
+import { Network } from '@/types';
+import { networkStartedFx } from '@/network';
 
 // https://github.com/novasamatech/telenova-web-app/blob/9a6b5c2cf26426bf825d154343ac8530fdaa8406/app/models/network/network-model.ts
 
@@ -11,6 +13,9 @@ export type Connection = {
   status: 'connecting' | 'connected' | 'error' | 'disconnected' | 'closed';
 };
 
+export const initChains = createEvent();
+export const chainsInitialized = createEvent();
+export const networkStarted = createEvent<Network>(Network.NONE);
 export const chainConnected = createEvent<ChainId>();
 export const chainDisconnected = createEvent<ChainId>();
 
@@ -19,12 +24,23 @@ const providerStatusChanged = createEvent<{ chainId: ChainId; status: Connection
 const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
 
+const getChainsFx = createEffect((): Record<ChainId, Chain> => {
+  const _chains: Record<ChainId, Chain> = Object.fromEntries(
+    Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
+  );
+
+  console.log(_chains);
+
+  return _chains;
+});
+
 type CreateClientParams = {
   name: string;
   chainId: ChainId;
   nodes: string[];
 };
 export const createPolkadotClientFx = createEffect((params: CreateClientParams): [PolkadotClient, Connection['status']] => {
+  console.log('creating client');
   const boundStatusChange = scopeBind(providerStatusChanged, { safe: true });
 
   // To support old Polkadot-SDK 1.1.0 <= x < 1.11.0
@@ -78,6 +94,55 @@ const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainI
 });
 
 sample({
+    clock: initChains,
+    target: getChainsFx,
+});
+
+sample({
+  clock: getChainsFx.doneData,
+  fn: chains => {
+    const connections: Record<ChainId, Connection> = {};
+
+    for (const chainId of Object.keys(chains)) {
+      connections[chainId as ChainId] = { status: 'disconnected' };
+    }
+    return connections;
+  },
+  target: $connections,
+});
+
+sample({
+    clock: getChainsFx.done,
+    target: chainsInitialized
+});
+
+sample({
+  clock: chainDisconnected,
+  source: $connections,
+  filter: (connections, chainId) => {
+    return connections[chainId].status !== 'disconnected';
+  },
+  fn: (connections, chainId) => {
+    return connections[chainId].client!;
+  },
+  target: disconnectFx,
+});
+
+sample({
+  clock: chainConnected,
+  source: $chains,
+  fn: (chains, chainId) => {
+    console.log(chainId);
+    console.log(chains);
+    return {
+    chainId,
+    name: chains[chainId].name,
+    nodes: chains[chainId].nodes.map(node => node.url),
+  }},
+  target: createPolkadotClientFx,
+});
+
+sample({
   clock: createPolkadotClientFx.done,
   source: $connections,
   fn: (connections, { result, params }) => ({
@@ -86,4 +151,3 @@ sample({
   }),
   target: $connections,
 });
-
