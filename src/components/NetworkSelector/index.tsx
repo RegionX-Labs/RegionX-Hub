@@ -1,4 +1,3 @@
-import { useNetwork } from "@/contexts/network";
 import { Network } from "@/types";
 import { useRouter } from "next/router";
 import {
@@ -7,10 +6,12 @@ import {
   Polkadot as PolkadotIcon,
   Westend as WestendIcon,
 } from '@/assets/networks/relay';
+import { useUnit } from "effector-react";
+import { $network, networkStarted } from "@/api/connection";
 
 const NetworkSelector = () => {
     const router = useRouter();
-    const { network } = useNetwork();
+    const network = useUnit($network); 
 
     const handleChange = (e: any) => {
         router.push(
