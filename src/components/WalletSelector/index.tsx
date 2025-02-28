@@ -1,4 +1,4 @@
-import { $walletExtensions, walletSelected } from "@/wallet";
+import { $loadedAccounts, $selectedAccount, $walletExtensions, accountSelected, walletSelected } from "@/wallet";
 import { useUnit } from "effector-react";
 import { ChangeEvent } from "react";
 

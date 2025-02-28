@@ -3,17 +3,21 @@ import {
   getInjectedExtensions,
   connectInjectedExtension,
   InjectedExtension,
+  InjectedPolkadotAccount,
 } from "polkadot-api/pjs-signer"
 
 // TODO: add tests
 
 export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
+export const accountSelected = createEvent<string>();
 
 type WalletExtension = {
     name: string;
 }
 export const $walletExtensions = createStore<WalletExtension[]>([]);
+export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
+export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
     const extensions: string[] = getInjectedExtensions();
@@ -21,12 +25,12 @@ const getExtensionsFx = createEffect((): WalletExtension[] => {
     return extensions.map(e => ({name: e}));
 });
 
-const walletSelectedFx = createEffect(async (extension: string) => {
+const walletSelectedFx = createEffect(async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     const selectedExtension: InjectedExtension = await connectInjectedExtension(
         extension,
     );
 
-    console.log(selectedExtension.getAccounts());
+    return selectedExtension.getAccounts();
 });
 
 sample({
@@ -44,14 +48,14 @@ sample({
     target: walletSelectedFx,
 });
 
-// export const $network = createStore<Network>(Network.POLKADOT);
+sample({
+    clock: walletSelectedFx.doneData,
+    target: $loadedAccounts,
+});
 
-// const getChainsFx = createEffect((_network: Network): Record<ChainId, Chain> => {
-//   const _chains: Record<ChainId, Chain> = Object.fromEntries(
-//     Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
-//   );
-
-//   return _chains;
-// });
-
-
+sample({
+    clock: accountSelected,
+    source: $loadedAccounts,
+    fn: (accounts, selectedAcc) => accounts.find(a => a.address === selectedAcc) || null,
+    target: $selectedAccount,
+});
