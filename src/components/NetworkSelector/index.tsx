@@ -22,7 +22,6 @@ const NetworkSelector = () => {
             undefined,
             { shallow: false }
         );
-        networkStarted(e.target.value);
     };
 
     const networks = [

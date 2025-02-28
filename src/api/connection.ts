@@ -2,9 +2,8 @@ import { createEffect, createEvent, createStore, sample, scopeBind } from 'effec
 import { createClient, type PolkadotClient } from 'polkadot-api';
 import { withPolkadotSdkCompat } from 'polkadot-api/polkadot-sdk-compat';
 import { getWsProvider } from 'polkadot-api/ws-provider/web';
-import { Chain, ChainId, chains } from './chains';
 import { Network } from '@/types';
-import { getNetworkChainIds } from '@/network';
+import { Chain, ChainId, chains, getNetworkChainIds } from '@/network';
 
 // https://github.com/novasamatech/telenova-web-app/blob/9a6b5c2cf26426bf825d154343ac8530fdaa8406/app/models/network/network-model.ts
 
@@ -85,7 +84,6 @@ export const createPolkadotClientFx = createEffect((params: CreateClientParams):
 
 export const initChainsFx = createEffect((network: Network) => {
     const newNetworkChains = getNetworkChainIds(network);
-    console.log(newNetworkChains);
     newNetworkChains.forEach(chainId => {
         chainConnected(chainId);
     });
@@ -132,7 +130,6 @@ sample({
     clock: initChains,
     source: $network,
     fn: (network: Network) => {
-        console.log("initChains triggered with network:", network);
         return network;
     },
     target: initChainsFx,

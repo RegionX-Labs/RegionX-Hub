@@ -1,4 +1,4 @@
-import { ChainId, chains } from "@/api/chains";
+import { ChainId, chains } from "@/network/chains";
 import { Network } from "@/types";
 
 // Get all the relevant chain ids of a network.
@@ -18,3 +18,5 @@ export const getNetworkChainIds = (network: Network): ChainId[] => {
             return [];
     }
 }
+
+export * from './chains';
