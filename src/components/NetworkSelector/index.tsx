@@ -7,7 +7,7 @@ import {
   Westend as WestendIcon,
 } from '@/assets/networks/relay';
 import { useUnit } from "effector-react";
-import { $network, networkStarted } from "@/network";
+import { $network, networkStarted } from "@/api/connection";
 
 const NetworkSelector = () => {
     const router = useRouter();
@@ -22,7 +22,7 @@ const NetworkSelector = () => {
             undefined,
             { shallow: false }
         );
-        // networkStarted(e.target.value);
+        networkStarted(e.target.value);
     };
 
     const networks = [

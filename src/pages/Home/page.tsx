@@ -1,13 +1,13 @@
 import NetworkSelector from "@/components/NetworkSelector";
 import styles from "./home.module.scss";
-import { initChains } from "@/api/connection";
+import { initChains, networkStarted } from "@/api/connection";
 import { useEffect } from "react";
 import { Network } from "@/types";
 
 export default function Home() {
   useEffect(() => {
     // networkStarted(Network.POLKADOT);
-    initChains(Network.KUSAMA);
+    networkStarted(Network.KUSAMA);
     // chainConnected(chains.polkadotCoretime.chainId);
   }, []);
 

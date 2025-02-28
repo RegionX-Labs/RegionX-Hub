@@ -4,7 +4,7 @@ import { withPolkadotSdkCompat } from 'polkadot-api/polkadot-sdk-compat';
 import { getWsProvider } from 'polkadot-api/ws-provider/web';
 import { Chain, ChainId, chains } from './chains';
 import { Network } from '@/types';
-import { $network, networkStarted } from '@/network';
+import { getNetworkChainIds } from '@/network';
 
 // https://github.com/novasamatech/telenova-web-app/blob/9a6b5c2cf26426bf825d154343ac8530fdaa8406/app/models/network/network-model.ts
 
@@ -13,7 +13,8 @@ export type Connection = {
   status: 'connecting' | 'connected' | 'error' | 'disconnected' | 'closed';
 };
 
-export const initChains = createEvent<Network>();
+export const networkStarted = createEvent<Network>();
+export const initChains = createEvent();
 export const chainConnected = createEvent<ChainId>();
 export const chainDisconnected = createEvent<ChainId>();
 
@@ -21,8 +22,9 @@ const providerStatusChanged = createEvent<{ chainId: ChainId; status: Connection
 
 const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
+export const $network = createStore<Network>(Network.POLKADOT);
 
-const getChainsFx = createEffect((): Record<ChainId, Chain> => {
+const getChainsFx = createEffect((_network: Network): Record<ChainId, Chain> => {
   const _chains: Record<ChainId, Chain> = Object.fromEntries(
     Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
   );
@@ -81,6 +83,16 @@ export const createPolkadotClientFx = createEffect((params: CreateClientParams):
   return [client, status];
 });
 
+export const initChainsFx = createEffect((network: Network) => {
+    const newNetworkChains = getNetworkChainIds(network);
+    console.log(newNetworkChains);
+    newNetworkChains.forEach(chainId => {
+        chainConnected(chainId);
+    });
+
+    return network;
+});
+
 const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainId> => {
   const chainSpecData = await client.getChainSpecData();
   client.destroy();
@@ -89,7 +101,7 @@ const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainI
 });
 
 sample({
-    clock: initChains,
+    clock: networkStarted,
     target: [$network, getChainsFx],
 });
 
@@ -112,9 +124,18 @@ sample({
 });
 
 sample({
-    clock: getChainsFx.done,
+  clock: getChainsFx.done,
+  target: initChains,
+})
+
+sample({
+    clock: initChains,
     source: $network,
-    target: networkStarted,
+    fn: (network: Network) => {
+        console.log("initChains triggered with network:", network);
+        return network;
+    },
+    target: initChainsFx,
 });
 
 sample({
