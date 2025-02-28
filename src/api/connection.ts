@@ -5,8 +5,6 @@ import { getWsProvider } from 'polkadot-api/ws-provider/web';
 import { Network } from '@/types';
 import { Chain, ChainId, chains, getNetworkChainIds } from '@/network';
 
-// https://github.com/novasamatech/telenova-web-app/blob/9a6b5c2cf26426bf825d154343ac8530fdaa8406/app/models/network/network-model.ts
-
 export type Connection = {
   client?: PolkadotClient;
   status: 'connecting' | 'connected' | 'error' | 'disconnected' | 'closed';
