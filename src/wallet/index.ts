@@ -44,6 +44,12 @@ sample({
 });
 
 sample({
+    clock: getExtensionsFx.doneData,
+    fn: (extensions) => extensions[0].name,
+    target: walletSelected,
+});
+
+sample({
     clock: walletSelected,
     target: walletSelectedFx,
 });
@@ -51,6 +57,12 @@ sample({
 sample({
     clock: walletSelectedFx.doneData,
     target: $loadedAccounts,
+});
+
+sample({
+    clock: walletSelectedFx.doneData,
+    fn: (accounts) => accounts[0],
+    target: $selectedAccount,
 });
 
 sample({
