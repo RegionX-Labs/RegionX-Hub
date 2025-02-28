@@ -7,13 +7,14 @@ import {
   Westend as WestendIcon,
 } from '@/assets/networks/relay';
 import { useUnit } from "effector-react";
-import { $network, networkStarted } from "@/api/connection";
+import { $network } from "@/api/connection";
+import { ChangeEvent } from "react";
 
 const NetworkSelector = () => {
     const router = useRouter();
     const network = useUnit($network); 
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         router.push(
             {
                 pathname: router.pathname,

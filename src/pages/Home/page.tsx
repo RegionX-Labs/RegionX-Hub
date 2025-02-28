@@ -4,6 +4,8 @@ import { networkStarted } from "@/api/connection";
 import { useEffect } from "react";
 import { Network } from "@/types";
 import { useRouter } from "next/router";
+import { getExtensions } from "@/wallet";
+import WalletSelector from "@/components/WalletSelector";
 
 export default function Home() {
   const router = useRouter();
@@ -32,6 +34,7 @@ export default function Home() {
       );
     }
     networkStarted(_network);
+    getExtensions();
   }, [network, router, router.isReady]);
 
   return (
@@ -39,6 +42,7 @@ export default function Home() {
       <h1 className={styles.title}>
         Coretime Hub V2
         <NetworkSelector />
+        <WalletSelector />
       </h1>
     </div>
   );
