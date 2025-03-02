@@ -49,7 +49,7 @@ export default function Home() {
       <WalletSelector />
       <AccountSelector />
       <Button color="redDark" onClick={() => console.log('works')}>
-        Test
+        Test Button
       </Button>
     </div>
   );
