@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { getExtensions } from "@/wallet";
 import WalletSelector from "@/components/WalletSelector";
 import AccountSelector from "@/components/AccountSelector";
+import { Button } from "@region-x/components";
 
 export default function Home() {
   const router = useRouter();
@@ -47,6 +48,9 @@ export default function Home() {
       <NetworkSelector />
       <WalletSelector />
       <AccountSelector />
+      <Button color="redDark" onClick={() => console.log('works')}>
+        Test Button
+      </Button>
     </div>
   );
 }
