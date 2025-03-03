@@ -31,7 +31,7 @@ const NetworkSelector = () => {
   const networks = [
     {
       value: Network.POLKADOT,
-      label: "",
+      label: "Polkadot",
       icon: (
         <img
           src={PolkadotIcon.src}
