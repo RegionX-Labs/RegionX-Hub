@@ -1,4 +1,3 @@
-import { $network } from "@/api/connection";
 import { ApiResponse, fetchGraphql } from "@/graphql";
 import { getNetworkCoretimeIndexer } from "@/network";
 import { Network } from "@/types";
@@ -52,6 +51,6 @@ const getBurnInfoFx = createEffect(async(network: Network): Promise<BurnData | n
 });
 
 sample({
-    clock: burnInfoRequested,
-    target: getBurnInfoFx
+  clock: burnInfoRequested,
+  target: getBurnInfoFx
 });
