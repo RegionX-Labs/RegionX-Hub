@@ -12,14 +12,19 @@ const AccountSelector = () => {
     }
   };
 
-  const options = accounts.map((account) => {
-    const formattedAddress = `${account.address.slice(
+  const formatAddress = (address: string): string => {
+    const formattedAddress = `${address.slice(
       0,
       4
-    )}...${account.address.slice(-6)}`;
+    )}...${address.slice(-6)}`;
+
+    return formattedAddress;
+  }
+
+  const options = accounts.map((account) => {
     return {
       value: account.address,
-      label: `${formattedAddress} (${account.name})`,
+      label: `${formatAddress(account.address)} (${account.name})`,
     };
   });
 
