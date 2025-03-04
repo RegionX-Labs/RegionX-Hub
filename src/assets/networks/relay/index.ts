@@ -1,10 +1,10 @@
-import { Network } from '@/types';
+import { Network } from "@/types";
 
-import Kusama from './kusama.png';
-import Paseo from './paseo.png';
-import Polkadot from './polkadot.png';
-import Rococo from './rococo.png';
-import Westend from './westend.png';
+import Kusama from "./kusama.png";
+import Paseo from "./paseo.png";
+import Polkadot from "./polkadot.png";
+import Rococo from "./rococo.png";
+import Westend from "./westend.png";
 
 const getRelayIcon = (network: Network) => {
   switch (network) {

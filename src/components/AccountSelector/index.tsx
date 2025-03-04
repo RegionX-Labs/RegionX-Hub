@@ -1,6 +1,7 @@
-import { $loadedAccounts, $selectedAccount, accountSelected } from "@/wallet";
+import { $loadedAccounts, accountSelected } from "@/wallet";
 import { useUnit } from "effector-react";
 import { Select } from "@region-x/components";
+import Identicon from "@polkadot/react-identicon";
 import styles from "./account.module.scss";
 
 const AccountSelector = () => {
@@ -13,23 +14,20 @@ const AccountSelector = () => {
   };
 
   const formatAddress = (address: string): string => {
-    const formattedAddress = `${address.slice(
-      0,
-      4
-    )}...${address.slice(-6)}`;
-
+    const formattedAddress = `${address.slice(0, 4)}...${address.slice(-6)}`;
     return formattedAddress;
-  }
+  };
 
   const options = accounts.map((account) => {
     return {
       value: account.address,
-      label: `${formatAddress(account.address)} (${account.name})`,
+      label: `${formatAddress(account.address)}`, //(${account.name})
+      icon: <Identicon value={account.address} size={32} theme="polkadot" />,
     };
   });
 
   return (
-    <div>
+    <div className={styles.selectWrapper}>
       <Select options={options} onChange={handleChange} />
     </div>
   );

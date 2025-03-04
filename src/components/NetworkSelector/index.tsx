@@ -42,21 +42,21 @@ const NetworkSelector = () => {
     },
     {
       value: Network.KUSAMA,
-      label: "",
+      label: "Kusama",
       icon: (
         <img src={KusamaIcon.src} alt="Kusama" className={styles.smallIcon} />
       ),
     },
     {
       value: Network.PASEO,
-      label: "",
+      label: "Paseo",
       icon: (
         <img src={PaseoIcon.src} alt="Paseo" className={styles.smallIcon} />
       ),
     },
     {
       value: Network.WESTEND,
-      label: "",
+      label: "Westend",
       icon: (
         <img src={WestendIcon.src} alt="Westend" className={styles.smallIcon} />
       ),

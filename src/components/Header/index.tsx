@@ -1,9 +1,15 @@
+import { useUnit } from "effector-react";
 import Image from "next/image";
 import styles from "./header.module.scss";
 import AccountSelector from "@/components/AccountSelector";
 import NetworkSelector from "@/components/NetworkSelector";
 
+import { Button } from "@region-x/components";
+import { $loadedAccounts, getExtensions } from "@/wallet";
+
 const Header = () => {
+  const accounts = useUnit($loadedAccounts);
+
   return (
     <nav className={styles.navbar}>
       <Image
@@ -23,13 +29,18 @@ const Header = () => {
         </ul>
       </div>
       <div className={styles.content}>
-        <div className={styles.accSelector}>
-          <AccountSelector />
-        </div>
-
-        <div className={styles.networkSelector}>
-          <NetworkSelector />
-        </div>
+        {accounts.length > 0 ? (
+          <>
+            <div className={styles.accSelector}>
+              <AccountSelector />
+            </div>
+            <div className={styles.networkSelector}>
+              <NetworkSelector />
+            </div>
+          </>
+        ) : (
+          <Button onClick={() => getExtensions()}>Connect Wallet</Button>
+        )}
       </div>
     </nav>
   );

@@ -22,17 +22,22 @@
   margin-right: 3%;
   width: 100%;
   border-radius: 5px;
+  gap: 20px;
 }
 
 .accSelector,
 .networkSelector {
+  height: 40px;
   display: flex;
   align-items: center;
-  margin-right: 25px;
 }
 
-.spacer {
-  width: 10px;
+.networkSelector {
+  width: 150px;
+}
+
+.accSelector {
+  width: 200px;
 }
 
 .logo {
