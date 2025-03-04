@@ -57,12 +57,28 @@ const getPurchaseHistoryFx = createEffect(async(payload: HistoryRequestPayload):
     const res: ApiResponse = await fetchPurchaseHistory(payload.network, payload.saleCycle);
     const { status, data } = res;
     if (status !== 200) return [];
-    console.log(data);
 
-    return [];
+    const history = (data.purchases.nodes as Array<any>).map(
+        ({ account, core, extrinsicId, height, price, purchaseType, timestamp }) =>
+          ({
+            address: account,
+            core,
+            extrinsicId: `${height}-${extrinsicId}`,
+            timestamp: new Date(Number(timestamp)),
+            price: parseInt(price),
+            type: purchaseType,
+          }) as PurchaseHistoryItem
+      )
+
+    return history;
 });
 
 sample({
   clock: purchaseHistoryRequested,
   target:getPurchaseHistoryFx 
+});
+
+sample({
+  clock: getPurchaseHistoryFx.doneData,
+  target: $purchaseHistory
 });

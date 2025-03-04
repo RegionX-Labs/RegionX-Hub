@@ -5,7 +5,7 @@ import { createEffect, createEvent, createStore, sample } from "effector";
 
 export const burnInfoRequested = createEvent<Network>();
 
-export const $totalBurn = createStore<bigint>(BigInt(0));
+export const $burnData = createStore<BurnData | null>(null);
 
 type BurnData = {
     totalBurn: string;
@@ -38,7 +38,6 @@ const getBurnInfoFx = createEffect(async(network: Network): Promise<BurnData | n
     const res: ApiResponse = await fetchBurnInfo(network);
     const { status, data } = res;
     if (status !== 200) return null;
-    console.log(data);
 
     const {stats, sales} = data;
     const totalBurn = stats.nodes[0]?.totalBurn || '0';
@@ -46,11 +45,15 @@ const getBurnInfoFx = createEffect(async(network: Network): Promise<BurnData | n
     const previousBurn = sales.nodes[1]?.burn || '0';
 
     const burnData = {totalBurn, currentBurn, previousBurn};
-    console.log(burnData);
     return burnData;
 });
 
 sample({
   clock: burnInfoRequested,
   target: getBurnInfoFx
+});
+
+sample({
+  clock: getBurnInfoFx.doneData,
+  target: $burnData
 });
