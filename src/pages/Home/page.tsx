@@ -8,6 +8,8 @@ import { getExtensions } from "@/wallet";
 import WalletSelector from "@/components/WalletSelector";
 import AccountSelector from "@/components/AccountSelector";
 import { Button } from "@region-x/components";
+import { burnInfoRequested } from "@/coretime/burnInfo";
+import { purchaseHistoryRequested } from "@/coretime/purchaseHistory";
 
 export default function Home() {
   const router = useRouter();
@@ -36,8 +38,9 @@ export default function Home() {
       );
     }
     networkStarted(_network);
-    // TODO: load accounts here from storage and pass to effector event.
     getExtensions();
+    burnInfoRequested(_network);
+    purchaseHistoryRequested({network: _network, saleCycle: 1});
   }, [network, router, router.isReady]);
 
   return (
