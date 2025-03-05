@@ -1,24 +1,36 @@
-import { $loadedAccounts, $selectedAccount, accountSelected } from "@/wallet";
+import { $loadedAccounts, accountSelected } from "@/wallet";
 import { useUnit } from "effector-react";
-import { ChangeEvent } from "react";
+import { Select } from "@region-x/components";
+import Identicon from "@polkadot/react-identicon";
+import styles from "./account.module.scss";
 
 const AccountSelector = () => {
-    const accounts = useUnit($loadedAccounts);
-    const selectedAccount = useUnit($selectedAccount);
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        accountSelected(e.target.value);
-    }
+  const accounts = useUnit($loadedAccounts);
 
-    return (
-        <div>
-            <select id="network-select" name="network" onChange={handleChange}>
-                {accounts.map(account => (
-                    <option key={account.address} value={account.address}>{account.name + " " + account.address}</option>
-                ))}
-            </select>
-            <p>Selected Account: {selectedAccount?.address}</p>
-        </div>
-    )
-}
+  const handleChange = (value: string | null) => {
+    if (value) {
+      accountSelected(value);
+    }
+  };
+
+  const formatAddress = (address: string): string => {
+    const formattedAddress = `${address.slice(0, 4)}...${address.slice(-6)}`;
+    return formattedAddress;
+  };
+
+  const options = accounts.map((account) => {
+    return {
+      value: account.address,
+      label: `${formatAddress(account.address)}`, //(${account.name})
+      icon: <Identicon value={account.address} size={32} theme="polkadot" />,
+    };
+  });
+
+  return (
+    <div className={styles.selectWrapper}>
+      <Select options={options} onChange={handleChange} />
+    </div>
+  );
+};
 
 export default AccountSelector;
