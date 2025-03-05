@@ -50,13 +50,21 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
       walletSelected(walletId);
       onClose();
     } else {
-      window.open(url, "_blank"); // Open wallet download page in new tab
+      window.open(url, "_blank");
+    }
+  };
+
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (
+      (event.target as HTMLDivElement).classList.contains(styles.modalOverlay)
+    ) {
+      onClose();
     }
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
+    <div className={styles.modalOverlay} onClick={handleOverlayClick}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2>Connect Wallet</h2>
         {WALLET_OPTIONS.map((wallet) => {
           const isAvailable = availableWallets.some(
