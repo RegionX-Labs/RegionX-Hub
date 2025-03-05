@@ -34,7 +34,7 @@ jobs:
 
       # Check Prettier
       - name: Check Prettier
-        run: npm run format
+        run: npm run prettier
 
       # Run tests
       - name: Run Tests
