@@ -1,14 +1,16 @@
+import { useState } from "react";
 import { useUnit } from "effector-react";
 import Image from "next/image";
 import styles from "./header.module.scss";
 import AccountSelector from "@/components/AccountSelector";
 import NetworkSelector from "@/components/NetworkSelector";
-
+import WalletModal from "../WalletModal/WalletModal";
 import { Button } from "@region-x/components";
-import { $loadedAccounts, getExtensions } from "@/wallet";
+import { $loadedAccounts } from "@/wallet";
 
 const Header = () => {
   const accounts = useUnit($loadedAccounts);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <nav className={styles.navbar}>
@@ -39,9 +41,11 @@ const Header = () => {
             </div>
           </>
         ) : (
-          <Button onClick={() => getExtensions()}>Connect Wallet</Button>
+          <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
         )}
       </div>
+
+      <WalletModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </nav>
   );
 };
