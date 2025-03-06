@@ -25,13 +25,13 @@ const Header = () => {
         </ul>
       </div>
       <div className={styles.content}>
+        <div className={styles.networkSelector}>
+          <NetworkSelector />
+        </div>
         {accounts.length > 0 ? (
           <>
             <div className={styles.accSelector}>
               <AccountSelector />
-            </div>
-            <div className={styles.networkSelector}>
-              <NetworkSelector />
             </div>
           </>
         ) : (
