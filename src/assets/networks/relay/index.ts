@@ -1,10 +1,10 @@
-import { Network } from "@/types";
+import { Network } from '@/types';
 
-import Kusama from "./kusama.png";
-import Paseo from "./paseo.png";
-import Polkadot from "./polkadot.png";
-import Rococo from "./rococo.png";
-import Westend from "./westend.png";
+import Kusama from './kusama.png';
+import Paseo from './paseo.png';
+import Polkadot from './polkadot.png';
+import Rococo from './rococo.png';
+import Westend from './westend.png';
 
 const getRelayIcon = (network: Network) => {
   switch (network) {
@@ -26,7 +26,7 @@ const getRelayIcon = (network: Network) => {
 // TODO: resize all images to 96x96
 
 export { getRelayIcon, Kusama, Paseo, Polkadot, Rococo, Westend };
-export { default as polkadotIcon } from "./polkadotjs.png";
-export { default as subwalletIcon } from "./subwallet.png";
-export { default as talismanIcon } from "./talisman.png";
-export { default as novaIcon } from "./nova.png";
+export { default as polkadotIcon } from './polkadotjs.png';
+export { default as subwalletIcon } from './subwallet.png';
+export { default as talismanIcon } from './talisman.png';
+export { default as novaIcon } from './nova.png';

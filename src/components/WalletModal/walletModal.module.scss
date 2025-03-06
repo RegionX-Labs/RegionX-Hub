@@ -1,5 +1,5 @@
-@use "../../styles/variables" as *;
-@use "../../styles/mixins" as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 .modalOverlay {
   position: fixed;
@@ -49,8 +49,6 @@
     }
 
     .walletIcon {
-      width: 24px;
-      height: 24px;
       margin-right: 12px;
     }
   }

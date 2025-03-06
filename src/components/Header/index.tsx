@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useUnit } from "effector-react";
-import Image from "next/image";
-import styles from "./header.module.scss";
-import AccountSelector from "@/components/AccountSelector";
-import NetworkSelector from "@/components/NetworkSelector";
-import WalletModal from "../WalletModal/WalletModal";
-import { Button } from "@region-x/components";
-import { $loadedAccounts } from "@/wallet";
+import { useState } from 'react';
+import { useUnit } from 'effector-react';
+import Image from 'next/image';
+import styles from './header.module.scss';
+import AccountSelector from '@/components/AccountSelector';
+import NetworkSelector from '@/components/NetworkSelector';
+import WalletModal from '../WalletModal/WalletModal';
+import { Button } from '@region-x/components';
+import { $loadedAccounts } from '@/wallet';
 
 const Header = () => {
   const accounts = useUnit($loadedAccounts);
@@ -14,13 +14,7 @@ const Header = () => {
 
   return (
     <nav className={styles.navbar}>
-      <Image
-        src="/logo.png"
-        alt="Logo"
-        className={styles.logo}
-        width={1463}
-        height={391}
-      />
+      <Image src='/logo.png' alt='Logo' className={styles.logo} width={1463} height={391} />
       <div className={styles.list}>
         <ul className={styles.navList}>
           <li className={styles.navItem}>Home</li>
@@ -31,13 +25,13 @@ const Header = () => {
         </ul>
       </div>
       <div className={styles.content}>
+        <div className={styles.networkSelector}>
+          <NetworkSelector />
+        </div>
         {accounts.length > 0 ? (
           <>
             <div className={styles.accSelector}>
               <AccountSelector />
-            </div>
-            <div className={styles.networkSelector}>
-              <NetworkSelector />
             </div>
           </>
         ) : (
