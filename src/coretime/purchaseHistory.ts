@@ -1,9 +1,9 @@
-import { ApiResponse, fetchGraphql } from "@/graphql";
-import { getNetworkCoretimeIndexer } from "@/network";
-import { Network } from "@/types";
-import { createEffect, createEvent, createStore, sample } from "effector";
+import { ApiResponse, fetchGraphql } from '@/graphql';
+import { getNetworkCoretimeIndexer } from '@/network';
+import { Network } from '@/types';
+import { createEffect, createEvent, createStore, sample } from 'effector';
 
-type HistoryRequestPayload = {network: Network, saleCycle: number}
+type HistoryRequestPayload = { network: Network; saleCycle: number };
 export const purchaseHistoryRequested = createEvent<HistoryRequestPayload>();
 
 export const $purchaseHistory = createStore<PurchaseHistory>([]);
@@ -11,7 +11,7 @@ export const $purchaseHistory = createStore<PurchaseHistory>([]);
 export enum PurchaseType {
   BULK = 'bulk',
   RENEWAL = 'renewal',
-};
+}
 
 export type PurchaseHistoryItem = {
   address: string;
@@ -25,8 +25,8 @@ export type PurchaseHistoryItem = {
 type PurchaseHistory = PurchaseHistoryItem[];
 
 export const fetchPurchaseHistory = async (
-  network: Network, 
-  saleCycle: number, 
+  network: Network,
+  saleCycle: number,
   orderBy = 'HEIGHT_DESC'
 ): Promise<ApiResponse> => {
   const query = `{
@@ -53,32 +53,34 @@ export const fetchPurchaseHistory = async (
   return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
-const getPurchaseHistoryFx = createEffect(async(payload: HistoryRequestPayload): Promise<PurchaseHistory> => {
+const getPurchaseHistoryFx = createEffect(
+  async (payload: HistoryRequestPayload): Promise<PurchaseHistory> => {
     const res: ApiResponse = await fetchPurchaseHistory(payload.network, payload.saleCycle);
     const { status, data } = res;
     if (status !== 200) return [];
 
     const history = (data.purchases.nodes as Array<any>).map(
-        ({ account, core, extrinsicId, height, price, purchaseType, timestamp }) =>
-          ({
-            address: account,
-            core,
-            extrinsicId: `${height}-${extrinsicId}`,
-            timestamp: new Date(Number(timestamp)),
-            price: parseInt(price),
-            type: purchaseType,
-          }) as PurchaseHistoryItem
-      )
+      ({ account, core, extrinsicId, height, price, purchaseType, timestamp }) =>
+        ({
+          address: account,
+          core,
+          extrinsicId: `${height}-${extrinsicId}`,
+          timestamp: new Date(Number(timestamp)),
+          price: parseInt(price),
+          type: purchaseType,
+        }) as PurchaseHistoryItem
+    );
 
     return history;
-});
+  }
+);
 
 sample({
   clock: purchaseHistoryRequested,
-  target:getPurchaseHistoryFx 
+  target: getPurchaseHistoryFx,
 });
 
 sample({
   clock: getPurchaseHistoryFx.doneData,
-  target: $purchaseHistory
+  target: $purchaseHistory,
 });

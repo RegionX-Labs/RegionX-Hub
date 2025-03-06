@@ -1,12 +1,6 @@
-import {
-  $loadedAccounts,
-  $selectedAccount,
-  $walletExtensions,
-  accountSelected,
-  walletSelected,
-} from "@/wallet";
-import { useUnit } from "effector-react";
-import { ChangeEvent } from "react";
+import { $walletExtensions, walletSelected } from '@/wallet';
+import { useUnit } from 'effector-react';
+import { ChangeEvent } from 'react';
 
 const WalletSelector = () => {
   const wallets = useUnit($walletExtensions);
@@ -16,7 +10,7 @@ const WalletSelector = () => {
 
   return (
     <div>
-      <select id="network-select" name="network" onChange={handleChange}>
+      <select id='network-select' name='network' onChange={handleChange}>
         {wallets.map((wallet) => (
           <option key={wallet.name} value={wallet.name}>
             {wallet.name}

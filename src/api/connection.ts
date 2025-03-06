@@ -23,7 +23,7 @@ const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
 export const $network = createStore<Network>(Network.POLKADOT);
 
-const getChainsFx = createEffect((_network: Network): Record<ChainId, Chain> => {
+const getChainsFx = createEffect((): Record<ChainId, Chain> => {
   const _chains: Record<ChainId, Chain> = Object.fromEntries(
     Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
   );
@@ -36,59 +36,61 @@ type CreateClientParams = {
   chainId: ChainId;
   nodes: string[];
 };
-export const createPolkadotClientFx = createEffect((params: CreateClientParams): [PolkadotClient, Connection['status']] => {
-  const boundStatusChange = scopeBind(providerStatusChanged, { safe: true });
+export const createPolkadotClientFx = createEffect(
+  (params: CreateClientParams): [PolkadotClient, Connection['status']] => {
+    const boundStatusChange = scopeBind(providerStatusChanged, { safe: true });
 
-  // To support old Polkadot-SDK 1.1.0 <= x < 1.11.0
-  // More => https://papi.how/requirements#polkadot-sdk-110--x--1110
-  let status: Connection['status'] = 'connecting';
-  const client = createClient(
-    withPolkadotSdkCompat(
-      getWsProvider({
-        endpoints: params.nodes,
-        timeout: 3500,
-        onStatusChanged: _status => {
-          switch (_status.type) {
-            // Connecting
-            case 0:
-              status = 'connecting';
-              console.info('⚫️ Connecting to ==> ', params.name);
-              boundStatusChange({ chainId: params.chainId, status });
-              break;
-            // Connected
-            case 1:
-              status = 'connected';
-              console.info('🟢 Provider connected ==> ', params.name);
-              boundStatusChange({ chainId: params.chainId, status });
-              break;
-            // Error
-            case 2:
-              status = 'error';
-              console.info('🔴 Provider error ==> ', params.name);
-              boundStatusChange({ chainId: params.chainId, status });
-              break;
-            // Close
-            case 3:
-              status = 'closed';
-              console.info('🟠 Provider closed ==> ', params.name);
-              boundStatusChange({ chainId: params.chainId, status });
-              break;
-          }
-        },
-      }),
-    ),
-  );
+    // To support old Polkadot-SDK 1.1.0 <= x < 1.11.0
+    // More => https://papi.how/requirements#polkadot-sdk-110--x--1110
+    let status: Connection['status'] = 'connecting';
+    const client = createClient(
+      withPolkadotSdkCompat(
+        getWsProvider({
+          endpoints: params.nodes,
+          timeout: 3500,
+          onStatusChanged: (_status) => {
+            switch (_status.type) {
+              // Connecting
+              case 0:
+                status = 'connecting';
+                console.info('⚫️ Connecting to ==> ', params.name);
+                boundStatusChange({ chainId: params.chainId, status });
+                break;
+              // Connected
+              case 1:
+                status = 'connected';
+                console.info('🟢 Provider connected ==> ', params.name);
+                boundStatusChange({ chainId: params.chainId, status });
+                break;
+              // Error
+              case 2:
+                status = 'error';
+                console.info('🔴 Provider error ==> ', params.name);
+                boundStatusChange({ chainId: params.chainId, status });
+                break;
+              // Close
+              case 3:
+                status = 'closed';
+                console.info('🟠 Provider closed ==> ', params.name);
+                boundStatusChange({ chainId: params.chainId, status });
+                break;
+            }
+          },
+        })
+      )
+    );
 
-  return [client, status];
-});
+    return [client, status];
+  }
+);
 
 export const initChainsFx = createEffect((network: Network) => {
-    const newNetworkChains = getNetworkChainIds(network);
-    newNetworkChains.forEach(chainId => {
-        chainConnected(chainId);
-    });
+  const newNetworkChains = getNetworkChainIds(network);
+  newNetworkChains.forEach((chainId) => {
+    chainConnected(chainId);
+  });
 
-    return network;
+  return network;
 });
 
 const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainId> => {
@@ -99,18 +101,18 @@ const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainI
 });
 
 sample({
-    clock: networkStarted,
-    target: [$network, getChainsFx],
-});
-
-sample({
-    clock: getChainsFx.doneData,
-    target: $chains,
+  clock: networkStarted,
+  target: [$network, getChainsFx],
 });
 
 sample({
   clock: getChainsFx.doneData,
-  fn: chains => {
+  target: $chains,
+});
+
+sample({
+  clock: getChainsFx.doneData,
+  fn: (chains) => {
     const connections: Record<ChainId, Connection> = {};
 
     for (const chainId of Object.keys(chains)) {
@@ -124,15 +126,15 @@ sample({
 sample({
   clock: getChainsFx.done,
   target: initChains,
-})
+});
 
 sample({
-    clock: initChains,
-    source: $network,
-    fn: (network: Network) => {
-        return network;
-    },
-    target: initChainsFx,
+  clock: initChains,
+  source: $network,
+  fn: (network: Network) => {
+    return network;
+  },
+  target: initChainsFx,
 });
 
 sample({
@@ -153,7 +155,7 @@ sample({
   fn: (chains, chainId) => ({
     chainId,
     name: chains[chainId].name,
-    nodes: chains[chainId].nodes.map(node => node.url),
+    nodes: chains[chainId].nodes.map((node) => node.url),
   }),
   target: createPolkadotClientFx,
 });
