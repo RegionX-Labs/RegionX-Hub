@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { useRouter } from "next/router";
-import styles from "./coretimeMenu.module.scss";
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/router';
+import styles from './coretimeMenu.module.scss';
 
 const CoretimeMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,11 +24,7 @@ const CoretimeMenu: React.FC = () => {
   };
 
   return (
-    <li
-      className={styles.navItem}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <li className={styles.navItem} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       Coretime
       {isOpen && (
         <ul
@@ -36,28 +32,16 @@ const CoretimeMenu: React.FC = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <li
-            className={styles.subMenuItem}
-            onClick={() => handleNavigation("my-regions")}
-          >
+          <li className={styles.subMenuItem} onClick={() => handleNavigation('my-regions')}>
             My Regions
           </li>
-          <li
-            className={styles.subMenuItem}
-            onClick={() => handleNavigation("renew")}
-          >
+          <li className={styles.subMenuItem} onClick={() => handleNavigation('renew')}>
             Renew
           </li>
-          <li
-            className={styles.subMenuItem}
-            onClick={() => handleNavigation("purchase")}
-          >
+          <li className={styles.subMenuItem} onClick={() => handleNavigation('purchase')}>
             Purchase
           </li>
-          <li
-            className={styles.subMenuItem}
-            onClick={() => handleNavigation("sale-history")}
-          >
+          <li className={styles.subMenuItem} onClick={() => handleNavigation('sale-history')}>
             Sale History
           </li>
         </ul>
