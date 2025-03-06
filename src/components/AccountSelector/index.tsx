@@ -1,8 +1,8 @@
-import { $loadedAccounts, accountSelected } from "@/wallet";
-import { useUnit } from "effector-react";
-import { Select } from "@region-x/components";
-import Identicon from "@polkadot/react-identicon";
-import styles from "./account.module.scss";
+import { $loadedAccounts, accountSelected } from '@/wallet';
+import { useUnit } from 'effector-react';
+import { Select } from '@region-x/components';
+import Identicon from '@polkadot/react-identicon';
+import styles from './account.module.scss';
 
 const AccountSelector = () => {
   const accounts = useUnit($loadedAccounts);
@@ -22,7 +22,7 @@ const AccountSelector = () => {
     return {
       value: account.address,
       label: `${formatAddress(account.address)}`, //(${account.name})
-      icon: <Identicon value={account.address} size={24} theme="polkadot" />,
+      icon: <Identicon value={account.address} size={24} theme='polkadot' />,
     };
   });
 

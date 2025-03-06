@@ -1,34 +1,30 @@
-import React from "react";
-import { useUnit } from "effector-react";
-import { $walletExtensions, walletSelected } from "@/wallet";
-import styles from "./walletModal.module.scss";
-import {
-  polkadotIcon,
-  subwalletIcon,
-  talismanIcon,
-  novaIcon,
-} from "@/assets/networks/relay";
+import React from 'react';
+import { useUnit } from 'effector-react';
+import { $walletExtensions, walletSelected } from '@/wallet';
+import Image from 'next/image';
+import styles from './walletModal.module.scss';
+import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/networks/relay';
 
 const WALLET_OPTIONS = [
   {
-    name: "Polkadot{.js}",
-    id: "polkadot-js",
+    name: 'Polkadot{.js}',
+    id: 'polkadot-js',
     icon: polkadotIcon,
-    url: "https://polkadot.js.org/extension/",
+    url: 'https://polkadot.js.org/extension/',
   },
   {
-    name: "Talisman",
-    id: "talisman",
+    name: 'Talisman',
+    id: 'talisman',
     icon: talismanIcon,
-    url: "https://www.talisman.xyz/",
+    url: 'https://www.talisman.xyz/',
   },
   {
-    name: "SubWallet",
-    id: "subwallet",
+    name: 'SubWallet',
+    id: 'subwallet',
     icon: subwalletIcon,
-    url: "https://subwallet.app/",
+    url: 'https://subwallet.app/',
   },
-  { name: "Nova", id: "nova", icon: novaIcon, url: "https://novawallet.io/" },
+  { name: 'Nova', id: 'nova', icon: novaIcon, url: 'https://novawallet.io/' },
 ];
 
 interface WalletModalProps {
@@ -41,23 +37,17 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleWalletClick = (
-    walletId: string,
-    isAvailable: boolean,
-    url: string
-  ) => {
+  const handleWalletClick = (walletId: string, isAvailable: boolean, url: string) => {
     if (isAvailable) {
       walletSelected(walletId);
       onClose();
     } else {
-      window.open(url, "_blank");
+      window.open(url, '_blank');
     }
   };
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (
-      (event.target as HTMLDivElement).classList.contains(styles.modalOverlay)
-    ) {
+    if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
       onClose();
     }
   };
@@ -67,22 +57,20 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2>Connect Wallet</h2>
         {WALLET_OPTIONS.map((wallet) => {
-          const isAvailable = availableWallets.some(
-            (w) => w.name === wallet.id
-          );
+          const isAvailable = availableWallets.some((w) => w.name === wallet.id);
 
           return (
             <button
               key={wallet.id}
-              className={`${styles.walletButton} ${!isAvailable ? styles.disabled : ""}`}
-              onClick={() =>
-                handleWalletClick(wallet.id, isAvailable, wallet.url)
-              }
+              className={`${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`}
+              onClick={() => handleWalletClick(wallet.id, isAvailable, wallet.url)}
             >
-              <img
+              <Image
                 src={wallet.icon.src}
                 alt={wallet.name}
                 className={styles.walletIcon}
+                width={24}
+                height={24}
               />
               {wallet.name}
             </button>

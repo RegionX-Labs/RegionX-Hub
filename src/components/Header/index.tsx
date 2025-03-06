@@ -21,13 +21,7 @@ const Header: React.FC = () => {
 
   return (
     <nav className={styles.navbar}>
-      <Image
-        src="/logo.png"
-        alt="Logo"
-        className={styles.logo}
-        width={1463}
-        height={391}
-      />
+      <Image src='/logo.png' alt='Logo' className={styles.logo} width={1463} height={391} />
       <div className={styles.list}>
         <ul className={styles.navList}>
           <li className={styles.navItem} onClick={() => handleNavigation("")}>
@@ -56,13 +50,13 @@ const Header: React.FC = () => {
       </div>
 
       <div className={styles.content}>
+        <div className={styles.networkSelector}>
+          <NetworkSelector />
+        </div>
         {accounts.length > 0 ? (
           <>
             <div className={styles.accSelector}>
               <AccountSelector />
-            </div>
-            <div className={styles.networkSelector}>
-              <NetworkSelector />
             </div>
           </>
         ) : (

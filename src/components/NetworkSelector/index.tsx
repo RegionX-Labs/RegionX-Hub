@@ -1,15 +1,16 @@
-import { Network } from "@/types";
-import { useRouter } from "next/router";
+import { Network } from '@/types';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 import {
   Kusama as KusamaIcon,
   Paseo as PaseoIcon,
   Polkadot as PolkadotIcon,
   Westend as WestendIcon,
-} from "@/assets/networks/relay";
-import { useUnit } from "effector-react";
-import { $network } from "@/api/connection";
-import { Select } from "@region-x/components";
-import styles from "./network.module.scss";
+} from '@/assets/networks/relay';
+import { useUnit } from 'effector-react';
+import { $network } from '@/api/connection';
+import { Select } from '@region-x/components';
+import styles from './network.module.scss';
 
 const NetworkSelector = () => {
   const router = useRouter();
@@ -31,34 +32,54 @@ const NetworkSelector = () => {
   const networks = [
     {
       value: Network.POLKADOT,
-      label: "Polkadot",
+      label: 'Polkadot',
       icon: (
-        <img
+        <Image
           src={PolkadotIcon.src}
-          alt="Polkadot"
+          alt='Polkadot'
           className={styles.smallIcon}
+          width={20}
+          height={20}
         />
       ),
     },
     {
       value: Network.KUSAMA,
-      label: "Kusama",
+      label: 'Kusama',
       icon: (
-        <img src={KusamaIcon.src} alt="Kusama" className={styles.smallIcon} />
+        <Image
+          src={KusamaIcon.src}
+          alt='Kusama'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
       ),
     },
     {
       value: Network.PASEO,
-      label: "Paseo",
+      label: 'Paseo',
       icon: (
-        <img src={PaseoIcon.src} alt="Paseo" className={styles.smallIcon} />
+        <Image
+          src={PaseoIcon.src}
+          alt='Paseo'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
       ),
     },
     {
       value: Network.WESTEND,
-      label: "Westend",
+      label: 'Westend',
       icon: (
-        <img src={WestendIcon.src} alt="Westend" className={styles.smallIcon} />
+        <Image
+          src={WestendIcon.src}
+          alt='Westend'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
       ),
     },
   ];
