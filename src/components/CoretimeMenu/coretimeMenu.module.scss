@@ -1,0 +1,55 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  border-radius: 5px;
+  &:hover {
+    background-color: $greenPrimary;
+    color: $white;
+  }
+}
+
+.subMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  min-width: 180px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px);
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.navItem:hover .subMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.subMenuItem {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+}
