@@ -41,9 +41,5 @@ export default function Home() {
     purchaseHistoryRequested({ network: _network, saleCycle: 1 });
   }, [network, router, router.isReady]);
 
-  return (
-    <div className={styles.page}>
-      <Header />
-    </div>
-  );
+  return <div className={styles.page}></div>;
 }

@@ -22,7 +22,11 @@ const AccountSelector = () => {
     return {
       value: account.address,
       label: `${formatAddress(account.address)}`, //(${account.name})
-      icon: <Identicon value={account.address} size={24} theme='polkadot' />,
+      icon: (
+        <div className={styles.icon}>
+          <Identicon value={account.address} size={24} theme='polkadot' />
+        </div>
+      ),
     };
   });
 
