@@ -13,7 +13,7 @@ type BurnData = {
   previousBurn: string;
 };
 
-export const fetchBurnInfo = async (network: Network): Promise<ApiResponse> => {
+const fetchBurnInfo = async (network: Network): Promise<ApiResponse> => {
   const query = `{
     stats {
       nodes {

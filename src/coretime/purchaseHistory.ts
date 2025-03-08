@@ -24,7 +24,7 @@ export type PurchaseHistoryItem = {
 
 type PurchaseHistory = PurchaseHistoryItem[];
 
-export const fetchPurchaseHistory = async (
+const fetchPurchaseHistory = async (
   network: Network,
   saleCycle: number,
   orderBy = 'HEIGHT_DESC'
