@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUnit } from 'effector-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -9,6 +9,7 @@ import WalletModal from '../WalletModal/WalletModal';
 import CoretimeMenu from '../CoretimeMenu/index';
 import { Button } from '@region-x/components';
 import { $loadedAccounts } from '@/wallet';
+import DownArrow from '../../../public/DownArrow.svg';
 
 const Header: React.FC = () => {
   const accounts = useUnit($loadedAccounts);
@@ -16,6 +17,12 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCoretimeMenuOpen, setIsCoretimeMenuOpen] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setIsMenuOpen(false);
+    }
+  }, [isModalOpen]);
 
   const handleNavigation = (path: string) => {
     router.push(path.startsWith('/') ? path : `/${path}`);
@@ -78,7 +85,8 @@ const Header: React.FC = () => {
             Home
           </li>
           <li className={styles.navItem} onClick={() => setIsCoretimeMenuOpen(!isCoretimeMenuOpen)}>
-            Coretime Menu
+            Coretime
+            <Image src={DownArrow} alt='Down Arrow' className={styles.downArrow} />
           </li>
           {isCoretimeMenuOpen && (
             <div className={styles.coretimeSubMenu}>
