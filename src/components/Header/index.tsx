@@ -13,16 +13,35 @@ import { $loadedAccounts } from '@/wallet';
 const Header: React.FC = () => {
   const accounts = useUnit($loadedAccounts);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCoretimeMenuOpen, setIsCoretimeMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
-    router.push(`/${path}`);
+    router.push(path.startsWith('/') ? path : `/${path}`);
+    setIsMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    setIsCoretimeMenuOpen(false);
   };
 
   return (
     <nav className={styles.navbar}>
-      <Image src='/logo.png' alt='Logo' className={styles.logo} width={1463} height={391} />
-      <div className={styles.list}>
+      <div className={styles.burgerIcon} onClick={toggleMenu}>
+        ☰
+      </div>
+
+      <Image
+        src='/logo.png'
+        alt='Logo'
+        className={`${styles.logo} ${isMenuOpen ? styles.logoShifted : ''}`}
+        width={1463}
+        height={391}
+      />
+
+      <div className={styles.desktopLinks}>
         <ul className={styles.navList}>
           <li className={styles.navItem} onClick={() => handleNavigation('')}>
             Home
@@ -40,21 +59,75 @@ const Header: React.FC = () => {
         </ul>
       </div>
 
-      <div className={styles.content}>
-        <div className={styles.networkSelector}>
+      <div className={styles.desktopContent}>
+        <div className={styles.networkSelector} style={{ width: '150px' }}>
           <NetworkSelector />
         </div>
         {accounts.length > 0 ? (
-          <>
-            <div className={styles.accSelector}>
-              <AccountSelector />
-            </div>
-          </>
+          <div className={styles.accSelector}>
+            <AccountSelector />
+          </div>
         ) : (
           <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
         )}
       </div>
 
+      <div className={`${styles.slideMenu} ${isMenuOpen ? styles.open : ''}`}>
+        <ul className={styles.navList}>
+          <li className={styles.navItem} onClick={() => handleNavigation('')}>
+            Home
+          </li>
+          <li className={styles.navItem} onClick={() => setIsCoretimeMenuOpen(!isCoretimeMenuOpen)}>
+            Coretime Menu
+          </li>
+          {isCoretimeMenuOpen && (
+            <div className={styles.coretimeSubMenu}>
+              <li
+                className={styles.navItem}
+                onClick={() => handleNavigation('coretime/my-regions')}
+              >
+                My Regions
+              </li>
+              <li className={styles.navItem} onClick={() => handleNavigation('coretime/renew')}>
+                Renew
+              </li>
+              <li className={styles.navItem} onClick={() => handleNavigation('coretime/purchase')}>
+                Purchase
+              </li>
+              <li
+                className={styles.navItem}
+                onClick={() => handleNavigation('coretime/sale-history')}
+              >
+                Sale History
+              </li>
+            </div>
+          )}
+          <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
+            Cross-Chain
+          </li>
+          <li className={styles.navItem} onClick={() => handleNavigation('parachain-dashboard')}>
+            Parachain Dashboard
+          </li>
+          <li className={styles.navItem} onClick={() => handleNavigation('secondary-market')}>
+            Secondary Market
+          </li>
+        </ul>
+
+        <div className={styles.mobileContent}>
+          <div className={styles.networkSelector} style={{ width: '150px' }}>
+            <NetworkSelector />
+          </div>
+          {accounts.length > 0 ? (
+            <div className={styles.accSelector}>
+              <AccountSelector />
+            </div>
+          ) : (
+            <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
+          )}
+        </div>
+      </div>
+
+      {isMenuOpen && <div className={styles.overlay} onClick={toggleMenu} />}
       <WalletModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </nav>
   );
