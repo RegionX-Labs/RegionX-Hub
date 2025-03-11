@@ -39,12 +39,7 @@ function App({ Component, pageProps }: AppProps) {
     }
     networkStarted(_network);
     getExtensions();
-    regionsRequested(_network); // TODO: remove, only here for testing.
   }, [network, router, router.isReady]);
-
-  useEffect(() => {
-    console.log(regions); // TODO: remove, only here for testing.
-  }, [regions]);
 
   return (
     <>
