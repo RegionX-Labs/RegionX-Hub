@@ -15,7 +15,66 @@
   align-items: center;
 }
 
-.content {
+.logo {
+  width: 140px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  transition: margin-left 0.3s ease;
+}
+
+.desktopLinks {
+  flex-grow: 1;
+  margin-left: 20px;
+
+  @media (max-width: 1281px) {
+    display: none;
+  }
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 5px;
+  text-align: left;
+
+  &:hover {
+    background-color: $greenPrimary;
+    color: $white;
+  }
+}
+
+.downArrow {
+  width: 12px;
+  height: 12px;
+  margin-left: 6px;
+  transition: transform 0.3s ease;
+}
+
+.coretimeWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.desktopContent {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -23,6 +82,10 @@
   width: 100%;
   border-radius: 5px;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .accSelector,
@@ -33,72 +96,132 @@
 }
 
 .networkSelector {
-  width: 150px;
+  width: 200px;
 }
 
 .accSelector {
   width: 200px;
 }
 
-.logo {
-  width: 140px;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  margin-left: 3%;
-}
-
-.list {
-  flex-grow: 1;
-  margin-left: 20px;
-}
-
-.navList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 20px;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-  font-size: 16px;
+.burgerIcon {
+  display: none;
+  font-size: 24px;
   cursor: pointer;
-  white-space: nowrap;
-  border-radius: 5px;
-  &:hover {
-    background-color: $greenPrimary;
-    color: $white;
+  margin-right: 20px;
+
+  @media (max-width: 1281px) {
+    display: block;
   }
 }
 
-.list {
-  flex-grow: 1;
+.slideMenu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100vh;
+  background-color: $white;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition:
+    left 0.4s ease,
+    opacity 0.4s ease;
+  z-index: 1001;
+  padding-top: 60px;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  &.open {
+    left: 0;
+    opacity: 1;
+  }
+
+  @media (min-width: 1281px) {
+    display: none;
+  }
+
+  .navList {
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    margin: 0;
+  }
+}
+
+.overlay.open {
+  opacity: 1;
+}
+
+.coretimeSubMenu {
   margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.navList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 20px;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
+.subMenuItem {
   padding: 10px 15px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  white-space: nowrap;
   border-radius: 5px;
+  background-color: rgba($greenPrimary, 0.1);
+
   &:hover {
-    background-color: $greenPrimary;
-    color: $white;
+    background-color: rgba($greenPrimary, 0.2);
+  }
+}
+
+.mobileContent {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  @media (min-width: 768px) and (max-width: 1281px) {
+    display: none;
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  @media (min-width: 1281px) {
+    display: none;
+  }
+}
+
+@media (max-width: 1440px) {
+  .navbar {
+    padding: 8px 16px;
+    height: 55px;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  .desktopLinks {
+    margin-left: 10px;
+  }
+
+  .navItem {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .desktopContent {
+    gap: 15px;
+  }
+
+  .accSelector,
+  .networkSelector {
+    width: 180px;
+    height: 35px;
+    margin-right: 10px;
   }
 }

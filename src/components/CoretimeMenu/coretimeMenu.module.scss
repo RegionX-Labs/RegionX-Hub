@@ -53,3 +53,16 @@
     background: #f0f0f0;
   }
 }
+
+.downArrow {
+  width: 12px;
+  height: 12px;
+  margin-left: 6px;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 1440px) {
+  .navItem {
+    font-size: 14px;
+  }
+}

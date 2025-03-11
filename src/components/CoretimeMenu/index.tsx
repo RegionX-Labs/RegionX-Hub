@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import styles from './coretimeMenu.module.scss';
+import DownArrow from '../../../public/DownArrow.svg';
 
 const CoretimeMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +14,7 @@ const CoretimeMenu: React.FC = () => {
     router.push(fullPath);
     setIsOpen(false);
   };
+
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setIsOpen(true);
@@ -26,6 +29,7 @@ const CoretimeMenu: React.FC = () => {
   return (
     <li className={styles.navItem} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       Coretime
+      <Image src={DownArrow} alt='Down Arrow' className={styles.downArrow} />{' '}
       {isOpen && (
         <ul
           className={styles.subMenu}
