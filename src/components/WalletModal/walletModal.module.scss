@@ -15,7 +15,7 @@
 
 .modalContent {
   background: $white;
-  padding: 30px;
+  padding: 20px;
   border-radius: 8px;
   text-align: center;
   width: 400px;
@@ -27,6 +27,12 @@
     margin-bottom: 30px;
     font-size: 22px;
     text-align: center;
+  }
+
+  .walletContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .walletButton {
@@ -44,29 +50,52 @@
     border-radius: 6px;
     transition: 0.3s;
     font-size: 16px;
+
     &:hover {
       background: #b0b0b0;
     }
 
     .walletIcon {
       margin-right: 12px;
+      transition: filter 0.3s ease;
     }
   }
 
-  .disabled {
-    color: #888;
-    background-color: #d3d3d3;
-    cursor: pointer;
+  .disabled .walletIcon {
+    filter: grayscale(100%);
+    opacity: 0.6;
   }
 
   .closeButton {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 0px;
+    right: 0px;
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
     color: $black;
+  }
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    width: 150px;
+    padding: 20px;
+  }
+
+  .walletButton {
+    justify-content: center;
+    width: 10px;
+  }
+
+  .walletIcon {
+    width: 24px;
+    height: 24px;
+    margin-right: 0;
+  }
+
+  .desktopOnly {
+    display: none;
   }
 }

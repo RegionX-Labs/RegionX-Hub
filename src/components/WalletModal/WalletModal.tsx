@@ -55,27 +55,29 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <h2>Connect Wallet</h2>
-        {WALLET_OPTIONS.map((wallet) => {
-          const isAvailable = availableWallets.some((w) => w.name === wallet.id);
+        <h2 className={styles.desktopOnly}>Connect Wallet</h2>
+        <div className={styles.walletContainer}>
+          {WALLET_OPTIONS.map((wallet) => {
+            const isAvailable = availableWallets.some((w) => w.name === wallet.id);
 
-          return (
-            <button
-              key={wallet.id}
-              className={`${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`}
-              onClick={() => handleWalletClick(wallet.id, isAvailable, wallet.url)}
-            >
-              <Image
-                src={wallet.icon.src}
-                alt={wallet.name}
-                className={styles.walletIcon}
-                width={24}
-                height={24}
-              />
-              {wallet.name}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={wallet.id}
+                className={`${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`}
+                onClick={() => handleWalletClick(wallet.id, isAvailable, wallet.url)}
+              >
+                <Image
+                  src={wallet.icon.src}
+                  alt={wallet.name}
+                  className={styles.walletIcon}
+                  width={24}
+                  height={24}
+                />
+                <span className={styles.desktopOnly}>{wallet.name}</span>
+              </button>
+            );
+          })}
+        </div>
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>
