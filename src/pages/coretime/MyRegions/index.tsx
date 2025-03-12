@@ -37,7 +37,8 @@ const MyRegionsPage = () => {
       <div className={styles.container}>
         {regions.length > 0 ? (
           regions.map((region) => (
-            <div className={styles['region-card']}>
+            <div className={styles['region-card']} key={region.id}>
+              {' '}
               <RegionCard
                 selected={selectedRegionId == region.id}
                 regionData={{
