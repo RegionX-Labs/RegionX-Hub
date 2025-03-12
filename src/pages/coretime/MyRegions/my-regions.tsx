@@ -2,12 +2,13 @@ import { $regions, regionsRequested } from '@/coretime/regions';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
 
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
 
   const countBits = (regionMask: string) => {
     let count = 0;
@@ -36,7 +37,13 @@ const MyRegionsPage = () => {
       <div className={styles.container}>
         {regions.length > 0 ? (
           regions.slice(0, 6).map((region) => (
-            <div className={styles['region-card']} key={region.core}>
+            <div
+              className={`${styles['region-card']} ${
+                selectedRegionId === region.core ? styles.selected : ''
+              }`}
+              key={region.core}
+              onClick={() => setSelectedRegionId(region.core)}
+            >
               <RegionCard
                 regionData={{
                   chainColor: 'greenDark',

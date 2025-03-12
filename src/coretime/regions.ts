@@ -8,6 +8,7 @@ export const regionsRequested = createEvent<Network>();
 export const $regions = createStore<Region[]>([]);
 
 type Region = {
+  id: string;
   begin: number;
   core: number;
   mask: string;
@@ -22,6 +23,7 @@ const fetchRegions = async (network: Network, after: string | null): Promise<Api
         after: ${after ? `"${after}"` : null}
     ) {
       nodes {
+        id
         begin
         core
         mask
@@ -42,7 +44,6 @@ const getRegionsFx = createEffect(async (network: Network): Promise<Region[]> =>
   const regions = data.regions.nodes;
 
   return regions.map((r: any) => {
-    // console.log(r as Region);
     return r as Region;
   });
 });
