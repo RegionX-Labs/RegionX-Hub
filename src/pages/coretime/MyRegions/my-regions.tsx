@@ -8,7 +8,7 @@ import styles from './my-regions.module.scss';
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
-  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
 
   const countBits = (regionMask: string) => {
     let count = 0;
@@ -36,15 +36,10 @@ const MyRegionsPage = () => {
     <>
       <div className={styles.container}>
         {regions.length > 0 ? (
-          regions.slice(0, 6).map((region) => (
-            <div
-              className={`${styles['region-card']} ${
-                selectedRegionId === region.core ? styles.selected : ''
-              }`}
-              key={region.core}
-              onClick={() => setSelectedRegionId(region.core)}
-            >
+          regions.map((region) => (
+            <div className={styles['region-card']}>
               <RegionCard
+                selected={selectedRegionId == region.id}
                 regionData={{
                   chainColor: 'greenDark',
                   chainLabel: 'Coretime Chain',
@@ -57,7 +52,7 @@ const MyRegionsPage = () => {
                   regionEnd: regions[0].end.toString(), // TODO: Human readable format
                   regionStart: regions[0].begin.toString(), // TODO: Human readable format
                   currentUsage: 0, // TODO
-                  onClick: () => {},
+                  onClick: () => setSelectedRegionId(region.id),
                 }}
                 task={`Unassigned`} // TODO
               />
