@@ -47,7 +47,7 @@ const MyRegionsPage = () => {
                   coreIndex: region.core,
                   consumed: 0,
                   // 57600 / 80 = 720
-                  coreOcupaccy: ((countBits(regions[0].mask) * 720) / 57600) * 100,
+                  coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
                   duration: '28 days', // TODO,
                   name: '', // TODO
                   regionEnd: regions[0].end.toString(), // TODO: Human readable format
