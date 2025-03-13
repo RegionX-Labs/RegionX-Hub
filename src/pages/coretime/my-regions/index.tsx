@@ -4,8 +4,6 @@ import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
-import { getNetworkChainIds } from '@/network';
-import { dot } from '@polkadot-api/descriptors';
 
 const MyRegionsPage = () => {
   const network = useUnit($network);
