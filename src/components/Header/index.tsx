@@ -93,7 +93,10 @@ const Header: React.FC = () => {
           </li>
           {isCoretimeMenuOpen && (
             <div className={styles.coretimeSubMenu}>
-              <li className={styles.navItem} onClick={() => handleNavigation('coretime/MyRegions')}>
+              <li
+                className={styles.navItem}
+                onClick={() => handleNavigation('coretime/my-regions')}
+              >
                 My Regions
               </li>
               <li className={styles.navItem} onClick={() => handleNavigation('coretime/renew')}>
