@@ -86,9 +86,12 @@ export const createPolkadotClientFx = createEffect(
 
 export const initChainsFx = createEffect((network: Network) => {
   const newNetworkChains = getNetworkChainIds(network);
-  newNetworkChains.forEach((chainId) => {
-    chainConnected(chainId);
-  });
+  if (!newNetworkChains) {
+    return Network.NONE;
+  }
+
+  chainConnected(newNetworkChains.coretimeChain);
+  chainConnected(newNetworkChains.relayChain);
 
   return network;
 });

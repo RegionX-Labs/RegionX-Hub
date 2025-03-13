@@ -1,21 +1,38 @@
 import { ChainId, chains } from '@/network/chains';
 import { Network } from '@/types';
 
+type NetworkChainIds = {
+  relayChain: ChainId,
+  coretimeChain: ChainId,
+}
+
 // Get all the relevant chain ids of a network.
 //
 // This will be the coretime chain, relay chain and the regionx chain.
-export const getNetworkChainIds = (network: Network): ChainId[] => {
+export const getNetworkChainIds = (network: Network): NetworkChainIds | null => {
   switch (network) {
     case Network.POLKADOT:
-      return [chains.polkadotCoretime.chainId];
+      return {
+        relayChain: chains.polkadot.chainId,
+        coretimeChain: chains.polkadotCoretime.chainId,
+      };
     case Network.KUSAMA:
-      return [chains.kusamaCoretime.chainId];
+      return {
+        relayChain: chains.kusama.chainId,
+        coretimeChain: chains.kusamaCoretime.chainId,
+      };
     case Network.PASEO:
-      return [chains.paseoCoretime.chainId];
+      return {
+        relayChain: chains.paseo.chainId,
+        coretimeChain: chains.paseoCoretime.chainId,
+      };
     case Network.WESTEND:
-      return [chains.westendCoretime.chainId];
+      return {
+        relayChain: chains.westend.chainId,
+        coretimeChain: chains.westendCoretime.chainId,
+      };
     default:
-      return [];
+      return null;
   }
 };
 
