@@ -36,7 +36,7 @@ const CoretimeMenu: React.FC = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <li className={styles.subMenuItem} onClick={() => handleNavigation('my-regions')}>
+          <li className={styles.subMenuItem} onClick={() => handleNavigation('MyRegions')}>
             My Regions
           </li>
           <li className={styles.subMenuItem} onClick={() => handleNavigation('renew')}>
