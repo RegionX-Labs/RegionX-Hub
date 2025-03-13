@@ -50,7 +50,7 @@ const MyRegionsPage = () => {
                   coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
                   duration: '28 days', // TODO,
                   name: '', // TODO
-                  regionEnd: regions[0].end.toString(), // TODO: Human readable format
+                  regionEnd: region.end.toString(), // TODO: Human readable format
                   regionStart: region.begin.toString(), // TODO: Human readable format
                   currentUsage: 0, // TODO
                   onClick: () => setSelectedRegionId(region.id),
