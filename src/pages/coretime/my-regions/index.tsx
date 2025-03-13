@@ -33,25 +33,11 @@ const MyRegionsPage = () => {
 
   useEffect(() => {
     console.log(connections);
-    timesliceToTimestamp(3287565);
   }, [regions, connections])
 
 
-  const timesliceToTimestamp = async (timeslice: number): Promise<string> => {
-    // Timeslice = 80 relay chain blocks.
-    const relayChainBlock = timeslice * 80;
-    const networkChainIds = getNetworkChainIds(network);
-
-    if(!networkChainIds) return `Timeslice #${timeslice}`;
-    const connection = connections[networkChainIds.relayChain];
-    if(!connection || !connection.client || connection.status !== "connected") return `Timeslice #${timeslice}`;
-
-    const client = connection.client;
-    // TODO: don't hardcode metadata.
-    const timestamp = await client.getTypedApi(dot).query.Timestamp.Now.getValue({at: relayChainBlock.toString()});
-
-    console.log(timestamp);
-    return "25342";
+  const timesliceToTimestamp = async (timeslice: number) => {
+    // TODO
   }
 
   return (
