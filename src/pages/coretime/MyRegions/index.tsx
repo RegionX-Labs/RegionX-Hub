@@ -51,7 +51,7 @@ const MyRegionsPage = () => {
                   duration: '28 days', // TODO,
                   name: '', // TODO
                   regionEnd: regions[0].end.toString(), // TODO: Human readable format
-                  regionStart: regions[0].begin.toString(), // TODO: Human readable format
+                  regionStart: region.begin.toString(), // TODO: Human readable format
                   currentUsage: 0, // TODO
                   onClick: () => setSelectedRegionId(region.id),
                 }}
