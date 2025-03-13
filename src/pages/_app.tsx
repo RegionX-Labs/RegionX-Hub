@@ -7,13 +7,13 @@ import { useRouter } from 'next/router';
 import { Network } from '@/types';
 import { networkStarted } from '@/api/connection';
 import { getExtensions } from '@/wallet';
-import { $regions, regionsRequested } from '@/coretime/regions';
-import { useUnit } from 'effector-react';
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const { network } = router.query;
-  const regions = useUnit($regions);
 
   useEffect(() => {
     let _network = Network.NONE;
@@ -42,10 +42,10 @@ function App({ Component, pageProps }: AppProps) {
   }, [network, router, router.isReady]);
 
   return (
-    <>
+    <div className={montserrat.className}>
       <Header />
       <Component {...pageProps} />
-    </>
+    </div>
   );
 }
 
