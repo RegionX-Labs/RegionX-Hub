@@ -11,7 +11,10 @@ const CoretimeMenu: React.FC = () => {
 
   const handleNavigation = (path: string) => {
     const fullPath = `/coretime/${path}`;
-    router.push(fullPath);
+    router.push({
+      pathname: fullPath,
+      query: router.query,
+    });
     setIsOpen(false);
   };
 

@@ -25,7 +25,10 @@ const Header: React.FC = () => {
   }, [isModalOpen]);
 
   const handleNavigation = (path: string) => {
-    router.push(path.startsWith('/') ? path : `/${path}`);
+    router.push({
+      pathname: path.startsWith("/") ? path : `/${path}`,
+      query: router.query,
+    });
     setIsMenuOpen(false);
   };
 
