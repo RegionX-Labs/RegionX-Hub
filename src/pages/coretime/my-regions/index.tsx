@@ -1,13 +1,16 @@
 import { $regions, regionsRequested } from '@/coretime/regions';
 import { useUnit } from 'effector-react';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
+import { getNetworkChainIds } from '@/network';
+import { dot } from '@polkadot-api/descriptors';
 
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
+  const connections = useUnit($connections);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
 
   const countBits = (regionMask: string) => {
@@ -29,13 +32,33 @@ const MyRegionsPage = () => {
   }, [network]);
 
   useEffect(() => {
-    console.log(regions);
-  }, [regions]);
+    console.log(connections);
+    timesliceToTimestamp(3287565);
+  }, [regions, connections])
+
+
+  const timesliceToTimestamp = async (timeslice: number): Promise<string> => {
+    // Timeslice = 80 relay chain blocks.
+    const relayChainBlock = timeslice * 80;
+    const networkChainIds = getNetworkChainIds(network);
+
+    if(!networkChainIds) return `Timeslice #${timeslice}`;
+    const connection = connections[networkChainIds.relayChain];
+    if(!connection || !connection.client || connection.status !== "connected") return `Timeslice #${timeslice}`;
+
+    const client = connection.client;
+    // TODO: don't hardcode metadata.
+    const timestamp = await client.getTypedApi(dot).query.Timestamp.Now.getValue({at: relayChainBlock.toString()});
+
+    console.log(timestamp);
+    return "25342";
+  }
 
   return (
     <>
       <div className={styles.container}>
         {regions.length > 0 ? (
+          // TODO: filter expired regions(They should be filtered in the graphql request).
           regions.map((region) => (
             <div className={styles['region-card']} key={region.id}>
               {' '}
@@ -50,8 +73,8 @@ const MyRegionsPage = () => {
                   coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
                   duration: '28 days', // TODO,
                   name: '', // TODO
-                  regionEnd: region.end.toString(), // TODO: Human readable format
-                  regionStart: region.begin.toString(), // TODO: Human readable format
+                  regionEnd: `Timeslice: #${region.end}`, // TODO: Human readable format
+                  regionStart:`Timeslice: #${region.begin}`, // TODO: Human readable format
                   currentUsage: 0, // TODO
                   onClick: () => setSelectedRegionId(region.id),
                 }}
