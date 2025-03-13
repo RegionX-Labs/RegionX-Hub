@@ -36,7 +36,7 @@ const MyRegionsPage = () => {
   }, [regions, connections])
 
 
-  const timesliceToTimestamp = async (timeslice: number) => {
+  const _timesliceToTimestamp = async (timeslice: number) => {
     // TODO
   }
 
