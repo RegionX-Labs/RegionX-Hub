@@ -13,22 +13,42 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Network } from '@/types';
 
+type ExtendedNetwork = Network | `${Network}_CORETIME`;
+
 const CrossChain = () => {
   const router = useRouter();
   const network = useUnit($network);
-  const [amount, setAmount] = useState('');
 
-  const handleChange = (value: Network | null) => {
-    if (value) {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, network: value },
-        },
-        undefined,
-        { shallow: false }
-      );
-    }
+  const [originChain, setOriginChain] = useState<ExtendedNetwork | null>(null);
+  const [destinationChain, setDestinationChain] = useState<ExtendedNetwork | null>(null);
+  const [amount, setAmount] = useState('');
+  const [beneficiary, setBeneficiary] = useState('');
+
+  const handleOriginChainChange = (value: ExtendedNetwork | null) => {
+    setOriginChain(value);
+  };
+
+  const handleDestinationChainChange = (value: ExtendedNetwork | null) => {
+    setDestinationChain(value);
+  };
+
+  const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBeneficiary(e.target.value);
+  };
+
+  const handleTransfer = () => {
+    console.log('Transfer initiated with:', {
+      originChain,
+      destinationChain,
+      amount,
+      beneficiary,
+    });
+  };
+
+  const handleSwapChains = () => {
+    const temp = originChain;
+    setOriginChain(destinationChain);
+    setDestinationChain(temp);
   };
 
   const networks = [
@@ -86,17 +106,25 @@ const CrossChain = () => {
     },
   ];
 
-  const filteredNetworks = networks.filter((n) => n.value === network);
+  const networksWithCoretime = networks.map((network) => ({
+    ...network,
+    value: `${network.value}_CORETIME` as ExtendedNetwork,
+    label: `${network.label} Coretime`,
+  }));
+
+  const allNetworks = [...networks, ...networksWithCoretime];
+
+  const filteredNetworks = allNetworks.filter((n) => (network ? n.value.includes(network) : true));
 
   return (
     <div className={styles.container}>
       <div className={styles.chainSelectionContainer}>
-        <label className={styles.sectionLabel}>Select Chains</label>
-
         <div className={styles.chainSelection}>
-          <Select
-            selectedValue={network}
-            onChange={handleChange}
+          <label className={styles.sectionLabel}>Origin chain:</label>
+
+          <Select<ExtendedNetwork>
+            selectedValue={originChain}
+            onChange={handleOriginChainChange}
             options={filteredNetworks.map((network) => ({
               value: network.value,
               label: network.label,
@@ -105,12 +133,16 @@ const CrossChain = () => {
           />
         </div>
 
-        <div className={styles.swapIcon}>⇅</div>
+        <div className={styles.swapIcon} onClick={handleSwapChains}>
+          ⇅
+        </div>
 
         <div className={styles.chainSelection}>
-          <Select
-            selectedValue={network}
-            onChange={handleChange}
+          <label className={styles.sectionLabel}>Destination chains</label>
+
+          <Select<ExtendedNetwork>
+            selectedValue={destinationChain}
+            onChange={handleDestinationChainChange}
             options={filteredNetworks.map((network) => ({
               value: network.value,
               label: network.label,
@@ -122,10 +154,14 @@ const CrossChain = () => {
 
       <div className={styles.transferSection}>
         <label>Transfer to</label>
-        <AddressInput />
+        <AddressInput
+          onChange={handleBeneficiaryChange}
+          value={beneficiary}
+          placeholder='Address of the recipient'
+        />
 
         <div className={styles.amountSection}>
-          <label>Transfer Amount:</label>?{' '}
+          <label>Transfer Amount:</label>
           <AmountInput
             currencyOptions={[{ value: network, label: network }]}
             onAmountChange={setAmount}
@@ -133,9 +169,10 @@ const CrossChain = () => {
           />
         </div>
       </div>
+
       <div className={styles.buttonContainer}>
-        <Button onClick={() => console.log('Navigate home')}>Home</Button>
-        <Button onClick={() => console.log('Transfer initiated')}>Transfer</Button>
+        <Button onClick={() => router.push('/')}>Home</Button>
+        <Button onClick={handleTransfer}>Transfer</Button>
       </div>
     </div>
   );

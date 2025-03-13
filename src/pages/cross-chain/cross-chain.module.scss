@@ -7,7 +7,6 @@
   margin-top: 100px;
 }
 
-/* Chain Selection Stacked Vertically */
 .chainSelectionContainer {
   background: #ffffff;
   padding: 1.5rem;
@@ -26,7 +25,7 @@
   font-size: 1rem;
   margin-bottom: 1rem;
   display: block;
-  text-align: center;
+  text-align: start;
 }
 
 .chainSelection {
@@ -49,7 +48,6 @@
   margin-bottom: 1rem;
 }
 
-/* Transfer & Amount Sections */
 .transferSection {
   background: #ffffff;
   padding: 1.5rem;
@@ -57,6 +55,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 800px;
+  gap: 10px;
   margin-bottom: 1rem;
 
   label {
@@ -66,6 +65,10 @@
   }
 }
 
+.amountSection {
+  margin-top: 1.5rem;
+}
+
 .buttonContainer {
   display: flex;
   justify-content: space-between;
@@ -73,6 +76,7 @@
   max-width: 800px;
   margin-top: 1rem;
   gap: 200px;
+
   button {
     flex: 1;
     padding: 0.8rem;
