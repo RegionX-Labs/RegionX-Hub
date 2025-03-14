@@ -2,9 +2,9 @@ import { ChainId, chains } from '@/network/chains';
 import { Network } from '@/types';
 
 type NetworkChainIds = {
-  relayChain: ChainId,
-  coretimeChain: ChainId,
-}
+  relayChain: ChainId;
+  coretimeChain: ChainId;
+};
 
 // Get all the relevant chain ids of a network.
 //

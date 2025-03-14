@@ -6,29 +6,32 @@ import {
   Paseo as PaseoIcon,
   Polkadot as PolkadotIcon,
   Westend as WestendIcon,
+  KusamaCoretime,
+  PaseoCoretime,
+  PolkadotCoretime,
+  RococoCoretime,
+  WestendCoretime,
 } from '@/assets/networks/relay';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { ChainId, chains } from '@/network/chains';
 import { Network } from '@/types';
 
-type ExtendedNetwork = Network | `${Network}_CORETIME`;
-
 const CrossChain = () => {
-  const router = useRouter();
   const network = useUnit($network);
 
-  const [originChain, setOriginChain] = useState<ExtendedNetwork | null>(null);
-  const [destinationChain, setDestinationChain] = useState<ExtendedNetwork | null>(null);
+  const [originChain, setOriginChain] = useState<ChainId | null>(null);
+  const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
   const [amount, setAmount] = useState('');
   const [beneficiary, setBeneficiary] = useState('');
 
-  const handleOriginChainChange = (value: ExtendedNetwork | null) => {
+  const handleOriginChainChange = (value: ChainId | null) => {
     setOriginChain(value);
   };
 
-  const handleDestinationChainChange = (value: ExtendedNetwork | null) => {
+  const handleDestinationChainChange = (value: ChainId | null) => {
     setDestinationChain(value);
   };
 
@@ -53,7 +56,7 @@ const CrossChain = () => {
 
   const networks = [
     {
-      value: Network.POLKADOT,
+      value: chains.polkadot.chainId,
       label: 'Polkadot',
       icon: (
         <Image
@@ -66,7 +69,7 @@ const CrossChain = () => {
       ),
     },
     {
-      value: Network.KUSAMA,
+      value: chains.kusama.chainId,
       label: 'Kusama',
       icon: (
         <Image
@@ -79,7 +82,7 @@ const CrossChain = () => {
       ),
     },
     {
-      value: Network.PASEO,
+      value: chains.paseo.chainId,
       label: 'Paseo',
       icon: (
         <Image
@@ -92,7 +95,7 @@ const CrossChain = () => {
       ),
     },
     {
-      value: Network.WESTEND,
+      value: chains.westend.chainId,
       label: 'Westend',
       icon: (
         <Image
@@ -104,17 +107,67 @@ const CrossChain = () => {
         />
       ),
     },
+    {
+      value: chains.polkadotCoretime.chainId,
+      label: 'Polkadot Coretime',
+      icon: (
+        <Image
+          src={PolkadotCoretime.src}
+          alt='Polkadot Coretime'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
+      ),
+    },
+    {
+      value: chains.kusamaCoretime.chainId,
+      label: 'Kusama Coretime',
+      icon: (
+        <Image
+          src={KusamaCoretime.src}
+          alt='Kusama Coretime'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
+      ),
+    },
+    {
+      value: chains.paseoCoretime.chainId,
+      label: 'Paseo Coretime',
+      icon: (
+        <Image
+          src={PaseoCoretime.src}
+          alt='Paseo Coretime'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
+      ),
+    },
+    {
+      value: chains.westendCoretime.chainId,
+      label: 'Westend Coretime',
+      icon: (
+        <Image
+          src={WestendCoretime.src}
+          alt='Westend Coretime'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
+      ),
+    },
   ];
 
-  const networksWithCoretime = networks.map((network) => ({
-    ...network,
-    value: `${network.value}_CORETIME` as ExtendedNetwork,
-    label: `${network.label} Coretime`,
-  }));
-
-  const allNetworks = [...networks, ...networksWithCoretime];
-
-  const filteredNetworks = allNetworks.filter((n) => (network ? n.value.includes(network) : true));
+  const filteredNetworks = networks.filter((n) => {
+    if (!network) return true;
+    return (
+      n.value === chains[network as keyof typeof chains]?.chainId ||
+      n.value === chains[`${network}Coretime` as keyof typeof chains]?.chainId
+    );
+  });
 
   return (
     <div className={styles.container}>
@@ -122,7 +175,7 @@ const CrossChain = () => {
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Origin chain:</label>
 
-          <Select<ExtendedNetwork>
+          <Select<ChainId>
             selectedValue={originChain}
             onChange={handleOriginChainChange}
             options={filteredNetworks.map((network) => ({
@@ -138,9 +191,9 @@ const CrossChain = () => {
         </div>
 
         <div className={styles.chainSelection}>
-          <label className={styles.sectionLabel}>Destination chains</label>
+          <label className={styles.sectionLabel}>Destination chain:</label>
 
-          <Select<ExtendedNetwork>
+          <Select<ChainId>
             selectedValue={destinationChain}
             onChange={handleDestinationChainChange}
             options={filteredNetworks.map((network) => ({
@@ -171,7 +224,7 @@ const CrossChain = () => {
       </div>
 
       <div className={styles.buttonContainer}>
-        <Button onClick={() => router.push('/')}>Home</Button>
+        {/* <Button onClick={() => router.push('/')}>Home</Button> */}
         <Button onClick={handleTransfer}>Transfer</Button>
       </div>
     </div>
