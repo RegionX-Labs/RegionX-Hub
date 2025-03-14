@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './cross-chain.module.scss';
 import { Select, AmountInput, AddressInput, Button } from '@region-x/components';
 import {
@@ -25,6 +25,17 @@ const CrossChain = () => {
   const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
   const [amount, setAmount] = useState('');
   const [beneficiary, setBeneficiary] = useState('');
+
+  const currencyMapping: Record<ChainId, { symbol: string; icon: any }> = {
+    [chains.polkadot.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
+    [chains.kusama.chainId]: { symbol: 'KSM', icon: KusamaIcon },
+    [chains.paseo.chainId]: { symbol: 'PAS', icon: PaseoIcon },
+    [chains.westend.chainId]: { symbol: 'WND', icon: WestendIcon },
+    [chains.polkadotCoretime.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
+    [chains.kusamaCoretime.chainId]: { symbol: 'KSM', icon: KusamaIcon },
+    [chains.paseoCoretime.chainId]: { symbol: 'PAS', icon: PaseoIcon },
+    [chains.westendCoretime.chainId]: { symbol: 'WND', icon: WestendIcon },
+  };
 
   const handleOriginChainChange = (value: ChainId | null) => {
     setOriginChain(value);
@@ -173,6 +184,21 @@ const CrossChain = () => {
     );
   });
 
+  useEffect(() => {
+    if (filteredNetworks.length > 0) {
+      const isOriginChainValid = filteredNetworks.some((n) => n.value === originChain);
+      const isDestinationChainValid = filteredNetworks.some((n) => n.value === destinationChain);
+
+      if (!isOriginChainValid) {
+        setOriginChain(filteredNetworks[0].value);
+      }
+
+      if (!isDestinationChainValid) {
+        setDestinationChain(filteredNetworks[0].value);
+      }
+    }
+  }, [network]);
+
   const isValidAddress = (chainAddress: string, ss58Prefix = 42) => {
     if (isHex(chainAddress)) return false;
     try {
@@ -183,7 +209,7 @@ const CrossChain = () => {
     }
   };
 
-  const selectedNetworkIcon = networks.find((n) => n.value === originChain)?.icon;
+  const selectedCurrency = originChain ? currencyMapping[originChain] : null;
 
   return (
     <div className={styles.container}>
@@ -233,13 +259,25 @@ const CrossChain = () => {
         <div className={styles.amountSection}>
           <label>Transfer Amount:</label>
           <AmountInput
-            currencyOptions={[
-              {
-                value: network,
-                label: network,
-                icon: selectedNetworkIcon,
-              },
-            ]}
+            currencyOptions={
+              selectedCurrency
+                ? [
+                    {
+                      value: selectedCurrency.symbol,
+                      label: selectedCurrency.symbol,
+                      icon: (
+                        <Image
+                          src={selectedCurrency.icon.src}
+                          alt={selectedCurrency.symbol}
+                          className={styles.smallIcon}
+                          width={20}
+                          height={20}
+                        />
+                      ),
+                    },
+                  ]
+                : []
+            }
             onAmountChange={setAmount}
             placeholder='Enter amount'
           />
