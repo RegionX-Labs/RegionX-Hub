@@ -8,6 +8,7 @@ import { Network } from '@/types';
 import { networkStarted } from '@/api/connection';
 import { getExtensions } from '@/wallet';
 import { Montserrat } from "next/font/google";
+import { saleInfoRequested } from '@/coretime/saleInfo';
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ function App({ Component, pageProps }: AppProps) {
     }
     networkStarted(_network);
     getExtensions();
+    saleInfoRequested(_network);
   }, [network, router, router.isReady]);
 
   return (

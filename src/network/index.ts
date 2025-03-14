@@ -1,9 +1,15 @@
 import { ChainId, chains } from '@/network/chains';
 import { Network } from '@/types';
+import { dot, dot_coretime, ksm, ksm_coretime, pas, pas_coretime, wnd, wnd_coretime } from "@polkadot-api/descriptors"
 
 type NetworkChainIds = {
   relayChain: ChainId,
   coretimeChain: ChainId,
+}
+
+type NetworkMetadata = {
+  relayChain: any,
+  coretimeChain: any,
 }
 
 // Get all the relevant chain ids of a network.
@@ -51,5 +57,32 @@ export const getNetworkCoretimeIndexer = (network: Network): string => {
       return '';
   }
 };
+
+export const getNetworkMetadata = (network: Network): NetworkMetadata | null => {
+  switch (network) {
+    case Network.POLKADOT:
+      return {
+        relayChain: dot,
+        coretimeChain: dot_coretime,
+      };
+    case Network.KUSAMA:
+      return {
+        relayChain: ksm,
+        coretimeChain: ksm_coretime,
+      };
+    case Network.PASEO:
+      return {
+        relayChain: pas,
+        coretimeChain: pas_coretime,
+      }
+    case Network.WESTEND:
+      return {
+        relayChain: wnd,
+        coretimeChain: wnd_coretime,
+      }
+    default:
+      return null;
+  }
+}
 
 export * from './chains';
