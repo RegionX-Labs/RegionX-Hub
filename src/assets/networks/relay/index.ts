@@ -8,7 +8,6 @@ import Westend from './westend.png';
 import KusamaCoretime from './kusamaCoretime.png';
 import PaseoCoretime from './paseoCoretime.png';
 import PolkadotCoretime from './polkadotCoretime.png';
-import RococoCoretime from './rococoCoretime.png';
 import WestendCoretime from './westendCoretime.png';
 
 const getRelayIcon = (network: Network) => {
@@ -38,4 +37,4 @@ export { default as novaIcon } from './nova.png';
 
 //Coretime
 
-export { KusamaCoretime, PaseoCoretime, PolkadotCoretime, RococoCoretime, WestendCoretime };
+export { KusamaCoretime, PaseoCoretime, PolkadotCoretime, WestendCoretime };

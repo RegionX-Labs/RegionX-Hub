@@ -9,15 +9,14 @@ import {
   KusamaCoretime,
   PaseoCoretime,
   PolkadotCoretime,
-  RococoCoretime,
   WestendCoretime,
 } from '@/assets/networks/relay';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { ChainId, chains } from '@/network/chains';
-import { Network } from '@/types';
+import { isHex } from '@polkadot/util';
+import { validateAddress } from '@polkadot/util-crypto';
 
 const CrossChain = () => {
   const network = useUnit($network);
@@ -35,8 +34,13 @@ const CrossChain = () => {
     setDestinationChain(value);
   };
 
+  const [beneficiaryError, setBeneficiaryError] = useState<string | null>(null);
+
   const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBeneficiary(e.target.value);
+    const value = e.target.value;
+    setBeneficiary(value);
+
+    setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
   const handleTransfer = () => {
@@ -169,6 +173,18 @@ const CrossChain = () => {
     );
   });
 
+  const isValidAddress = (chainAddress: string, ss58Prefix = 42) => {
+    if (isHex(chainAddress)) return false;
+    try {
+      validateAddress(chainAddress, true, ss58Prefix);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const selectedNetworkIcon = networks.find((n) => n.value === originChain)?.icon;
+
   return (
     <div className={styles.container}>
       <div className={styles.chainSelectionContainer}>
@@ -212,11 +228,18 @@ const CrossChain = () => {
           value={beneficiary}
           placeholder='Address of the recipient'
         />
+        {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
 
         <div className={styles.amountSection}>
           <label>Transfer Amount:</label>
           <AmountInput
-            currencyOptions={[{ value: network, label: network }]}
+            currencyOptions={[
+              {
+                value: network,
+                label: network,
+                icon: selectedNetworkIcon,
+              },
+            ]}
             onAmountChange={setAmount}
             placeholder='Enter amount'
           />
@@ -224,7 +247,6 @@ const CrossChain = () => {
       </div>
 
       <div className={styles.buttonContainer}>
-        {/* <Button onClick={() => router.push('/')}>Home</Button> */}
         <Button onClick={handleTransfer}>Transfer</Button>
       </div>
     </div>
