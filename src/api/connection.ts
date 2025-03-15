@@ -172,3 +172,15 @@ sample({
   }),
   target: $connections,
 });
+
+sample({
+  clock: providerStatusChanged,
+  source: $connections,
+  fn: (connections, { chainId, status }) => {
+    return {
+      ...connections,
+      [chainId]: { ...connections[chainId], status },
+    };
+  },
+  target: $connections,
+});

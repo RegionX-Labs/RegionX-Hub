@@ -10,15 +10,16 @@ export const saleInfoRequested = createEvent<Network>();
 export const $saleInfo = createStore<SaleInfo | null>(null);
 
 type SaleInfo = {
-    saleStart: string;
-    endPrice: string;
-    regionBegin: number;
-    regionEnd: number;
-    idealCoresSold: number;
-    coresOffered: number; 
-    firstCore: number;
-    selloutPrice: string;
-    coresSold: number;
+    sale_start: number;
+    leadin_length: number;
+    end_price: bigint;
+    region_begin: number;
+    region_end: number;
+    ideal_cores_sold: number;
+    cores_offered: number;
+    first_core: number;
+    sellout_price: bigint | undefined;
+    cores_sold: number;
 };
 
 const fetchSaleInfo = async (connections: Record<ChainId, Connection>, network: Network): Promise<SaleInfo | null> => {
@@ -26,15 +27,14 @@ const fetchSaleInfo = async (connections: Record<ChainId, Connection>, network: 
   console.log("====> Fetching sale info <====");
 
   if(!networkChainIds) return null;
-  const connection = connections[networkChainIds.relayChain];
-  console.log(connection);
+  const connection = connections[networkChainIds.coretimeChain];
   if(!connection || !connection.client || connection.status !== "connected") return null;
 
   const client = connection.client;
-  const saleInfo = await client.getTypedApi(dot_coretime).query.Broker.SaleInfo.getValue();
+  const saleInfo: SaleInfo | undefined = await client.getTypedApi(dot_coretime).query.Broker.SaleInfo.getValue();
   console.log(saleInfo);
  
-  return null;
+  return saleInfo || null;
 };
 
 type SaleInfoFxInput = {
