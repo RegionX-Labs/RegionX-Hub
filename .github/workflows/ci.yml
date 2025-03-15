@@ -38,4 +38,6 @@ jobs:
 
       # Run build
       - name: Build
-        run: npm run build
+        run: |
+          npx papi
+          npm run build
