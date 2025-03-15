@@ -1,16 +1,15 @@
-import { $connections, Connection } from '@/api/connection';
-import { ApiResponse, fetchGraphql } from '@/graphql';
-import {
-  ChainId,
-  getNetworkChainIds,
-  getNetworkCoretimeIndexer,
-  getNetworkMetadata,
-} from '@/network';
+import { Connection } from '@/api/connection';
+import { ChainId, getNetworkChainIds } from '@/network';
 import { Network } from '@/types';
 import { dot_coretime } from '@polkadot-api/descriptors';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-export const saleInfoRequested = createEvent<Network>();
+type SaleInfoRequestPayload = {
+  connections: Record<ChainId, Connection>;
+  network: Network;
+};
+
+export const saleInfoRequested = createEvent<SaleInfoRequestPayload>();
 
 export const $saleInfo = createStore<SaleInfo | null>(null);
 
@@ -47,20 +46,15 @@ const fetchSaleInfo = async (
   return saleInfo || null;
 };
 
-type SaleInfoFxInput = {
-  connections: Record<ChainId, Connection>;
-  network: Network;
-};
-
-const getSaleInfoFx = createEffect(async (payload: SaleInfoFxInput): Promise<SaleInfo | null> => {
-  const saleInfo = await fetchSaleInfo(payload.connections, payload.network);
-  return saleInfo;
-});
+const getSaleInfoFx = createEffect(
+  async (payload: SaleInfoRequestPayload): Promise<SaleInfo | null> => {
+    const saleInfo = await fetchSaleInfo(payload.connections, payload.network);
+    return saleInfo;
+  }
+);
 
 sample({
   clock: saleInfoRequested,
-  source: $connections,
-  fn: (connections, network): SaleInfoFxInput => ({ connections, network }),
   target: getSaleInfoFx,
 });
 

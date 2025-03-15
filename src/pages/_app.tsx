@@ -47,7 +47,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [network, router, router.isReady]);
 
   useEffect(() => {
-    saleInfoRequested(_network);
+    saleInfoRequested({ network: _network, connections });
   }, [_network, connections]);
 
   return (
