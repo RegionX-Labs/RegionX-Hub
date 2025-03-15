@@ -31,12 +31,11 @@ const MyRegionsPage = () => {
 
   useEffect(() => {
     console.log(connections);
-  }, [regions, connections])
-
+  }, [regions, connections]);
 
   const _timesliceToTimestamp = async (timeslice: number) => {
     // TODO
-  }
+  };
 
   return (
     <>
@@ -58,7 +57,7 @@ const MyRegionsPage = () => {
                   duration: '28 days', // TODO,
                   name: '', // TODO
                   regionEnd: `Timeslice: #${region.end}`, // TODO: Human readable format
-                  regionStart:`Timeslice: #${region.begin}`, // TODO: Human readable format
+                  regionStart: `Timeslice: #${region.begin}`, // TODO: Human readable format
                   currentUsage: 0, // TODO
                   onClick: () => setSelectedRegionId(region.id),
                 }}
