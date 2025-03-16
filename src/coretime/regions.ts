@@ -3,7 +3,11 @@ import { getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-export const regionsRequested = createEvent<Network>();
+type RegionsRequestPayload = {
+  afterTimeslice: number;
+  network: Network;
+};
+export const regionsRequested = createEvent<RegionsRequestPayload>();
 
 export const $regions = createStore<Region[]>([]);
 
@@ -36,8 +40,8 @@ const fetchRegions = async (network: Network, after: string | null): Promise<Api
   return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
-const getRegionsFx = createEffect(async (network: Network): Promise<Region[]> => {
-  const res: ApiResponse = await fetchRegions(network, null);
+const getRegionsFx = createEffect(async (payload: RegionsRequestPayload): Promise<Region[]> => {
+  const res: ApiResponse = await fetchRegions(payload.network, null);
   const { status, data } = res;
   if (status !== 200) return [];
 

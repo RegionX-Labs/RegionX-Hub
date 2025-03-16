@@ -5,20 +5,15 @@ import Header from '@/components/Header';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
-import { $connections, $network, networkStarted } from '@/api/connection';
+import { networkStarted } from '@/api/connection';
 import { getExtensions } from '@/wallet';
 import { Montserrat } from 'next/font/google';
-import { saleInfoRequested } from '@/coretime/saleInfo';
-import { useUnit } from 'effector-react';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const { network } = router.query;
-
-  const connections = useUnit($connections);
-  const _network = useUnit($network);
 
   useEffect(() => {
     let _network = Network.NONE;
@@ -45,10 +40,6 @@ function App({ Component, pageProps }: AppProps) {
     networkStarted(_network);
     getExtensions();
   }, [network, router, router.isReady]);
-
-  useEffect(() => {
-    saleInfoRequested({ network: _network, connections });
-  }, [_network, connections]);
 
   return (
     <div className={montserrat.className}>
