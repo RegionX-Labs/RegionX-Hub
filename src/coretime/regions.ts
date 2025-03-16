@@ -3,7 +3,11 @@ import { getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-export const regionsRequested = createEvent<Network>();
+type RegionsRequestPayload = {
+  afterTimeslice: number;
+  network: Network;
+};
+export const regionsRequested = createEvent<RegionsRequestPayload>();
 
 export const $regions = createStore<Region[]>([]);
 
@@ -17,11 +21,9 @@ type Region = {
   paid: string;
 };
 
-const fetchRegions = async (network: Network, after: string | null): Promise<ApiResponse> => {
+const fetchRegions = async (network: Network, afterTimeslice: number): Promise<ApiResponse> => {
   const query = `{
-    regions(
-        after: ${after ? `"${after}"` : null}
-    ) {
+    regions(filter: { begin: { greaterThanOrEqualTo: ${afterTimeslice} } }) {
       nodes {
         id
         begin
@@ -36,8 +38,8 @@ const fetchRegions = async (network: Network, after: string | null): Promise<Api
   return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
-const getRegionsFx = createEffect(async (network: Network): Promise<Region[]> => {
-  const res: ApiResponse = await fetchRegions(network, null);
+const getRegionsFx = createEffect(async (payload: RegionsRequestPayload): Promise<Region[]> => {
+  const res: ApiResponse = await fetchRegions(payload.network, payload.afterTimeslice);
   const { status, data } = res;
   if (status !== 200) return [];
 
