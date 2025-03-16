@@ -22,9 +22,7 @@ type SaleInfo = {
   // TODO: missing some of the fields.
 };
 
-const fetchSaleInfo = async (
-  network: Network
-): Promise<ApiResponse> => {
+const fetchSaleInfo = async (network: Network): Promise<ApiResponse> => {
   console.log('====> Fetching sale info <====');
   const query = `{
     sales(orderBy: SALE_CYCLE_DESC, first: 1) {
@@ -44,16 +42,14 @@ const fetchSaleInfo = async (
   return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
-const getSaleInfoFx = createEffect(
-  async (network: Network): Promise<SaleInfo | null> => {
-    const res = await fetchSaleInfo(network);
-    const { status, data } = res;
-    if (status !== 200) return null;
+const getSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | null> => {
+  const res = await fetchSaleInfo(network);
+  const { status, data } = res;
+  if (status !== 200) return null;
 
-    const saleInfo: SaleInfo = data.sales.nodes[0];
-    return saleInfo;
-  }
-);
+  const saleInfo: SaleInfo = data.sales.nodes[0];
+  return saleInfo;
+});
 
 sample({
   clock: saleInfoRequested,
