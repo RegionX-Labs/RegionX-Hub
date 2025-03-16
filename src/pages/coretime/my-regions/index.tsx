@@ -30,14 +30,13 @@ const MyRegionsPage = () => {
 
   useEffect(() => {
     if(!saleInfo) return;
-    const regionDuration = saleInfo.region_end - saleInfo.region_begin;
-    const afterTimeslice = saleInfo.region_begin - regionDuration; 
-    // Getting sale info from indexer instead to quicker?
+    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+    const afterTimeslice = saleInfo.regionBegin - regionDuration; 
     regionsRequested({ network, afterTimeslice });
   }, [saleInfo]);
 
   useEffect(() => {
-    saleInfoRequested({ network, connections });
+    saleInfoRequested(network);
   }, [network, connections]);
 
   const _timesliceToTimestamp = async (timeslice: number) => {

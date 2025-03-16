@@ -1,54 +1,56 @@
 import { Connection } from '@/api/connection';
-import { ChainId, getNetworkChainIds } from '@/network';
+import { ApiResponse, fetchGraphql } from '@/graphql';
+import { ChainId, getNetworkChainIds, getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
 import { dot_coretime } from '@polkadot-api/descriptors';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-type SaleInfoRequestPayload = {
-  connections: Record<ChainId, Connection>;
-  network: Network;
-};
-
-export const saleInfoRequested = createEvent<SaleInfoRequestPayload>();
+export const saleInfoRequested = createEvent<Network>();
 
 export const $saleInfo = createStore<SaleInfo | null>(null);
 
 type SaleInfo = {
-  sale_start: number;
-  leadin_length: number;
-  end_price: bigint;
-  region_begin: number;
-  region_end: number;
-  ideal_cores_sold: number;
-  cores_offered: number;
-  first_core: number;
-  sellout_price: bigint | undefined;
-  cores_sold: number;
+  saleCycle: number;
+  saleStart: number;
+  leadinLength: number;
+  endPrice: string;
+  regionBegin: number;
+  regionEnd: number;
+  idealCoresSold: number;
+  coresOffered: number;
+  startPrice: string;
+  // TODO: missing some of the fields.
 };
 
 const fetchSaleInfo = async (
-  connections: Record<ChainId, Connection>,
   network: Network
-): Promise<SaleInfo | null> => {
-  const networkChainIds = getNetworkChainIds(network);
+): Promise<ApiResponse> => {
   console.log('====> Fetching sale info <====');
-
-  if (!networkChainIds) return null;
-  const connection = connections[networkChainIds.coretimeChain];
-  if (!connection || !connection.client || connection.status !== 'connected') return null;
-
-  const client = connection.client;
-  const saleInfo: SaleInfo | undefined = await client
-    .getTypedApi(dot_coretime)
-    .query.Broker.SaleInfo.getValue();
-  console.log(saleInfo);
-
-  return saleInfo || null;
+  const query = `{
+    sales(orderBy: SALE_CYCLE_DESC, first: 1) {
+      nodes {
+        saleCycle
+        startPrice
+        endPrice
+        regionEnd
+        regionBegin
+        saleStart
+        leadinLength
+        idealCoresSold
+        coresOffered
+      }
+    }
+  }`;
+  return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
 const getSaleInfoFx = createEffect(
-  async (payload: SaleInfoRequestPayload): Promise<SaleInfo | null> => {
-    const saleInfo = await fetchSaleInfo(payload.connections, payload.network);
+  async (network: Network): Promise<SaleInfo | null> => {
+    const res = await fetchSaleInfo(network);
+    const { status, data } = res;
+    if (status !== 200) return null;
+
+    const saleInfo: SaleInfo = data.sales.nodes[0];
     return saleInfo;
   }
 );

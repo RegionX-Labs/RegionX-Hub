@@ -21,11 +21,9 @@ type Region = {
   paid: string;
 };
 
-const fetchRegions = async (network: Network, after: string | null): Promise<ApiResponse> => {
+const fetchRegions = async (network: Network, afterTimeslice: number): Promise<ApiResponse> => {
   const query = `{
-    regions(
-        after: ${after ? `"${after}"` : null}
-    ) {
+    regions(filter: { begin: { greaterThanOrEqualTo: ${afterTimeslice} } }) {
       nodes {
         id
         begin
@@ -41,7 +39,7 @@ const fetchRegions = async (network: Network, after: string | null): Promise<Api
 };
 
 const getRegionsFx = createEffect(async (payload: RegionsRequestPayload): Promise<Region[]> => {
-  const res: ApiResponse = await fetchRegions(payload.network, null);
+  const res: ApiResponse = await fetchRegions(payload.network, payload.afterTimeslice);
   const { status, data } = res;
   if (status !== 200) return [];
 
