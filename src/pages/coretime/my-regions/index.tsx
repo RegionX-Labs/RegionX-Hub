@@ -1,15 +1,17 @@
 import { $regions, regionsRequested } from '@/coretime/regions';
 import { useUnit } from 'effector-react';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
 import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
   const saleInfo = useUnit($saleInfo);
+  const connections = useUnit($connections);
 
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
 
@@ -39,8 +41,32 @@ const MyRegionsPage = () => {
   }, [network]);
 
   const _timesliceToTimestamp = async (timeslice: number) => {
-    // TODO
+    // Timeslice = 80 relay chain blocks.
+    const relayChainBlock = timeslice * 80;
+    const networkChainIds = getNetworkChainIds(network);
+
+    if(!networkChainIds) return `Timeslice #${timeslice}`;
+    const connection = connections[networkChainIds.relayChain];
+    if(!connection || !connection.client || connection.status !== "connected") return `Timeslice #${timeslice}`;
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if(!metadata) return;
+    const typedClient = client.getTypedApi(metadata.relayChain);
+    console.log(typedClient);
+    // TODO: don't hardcode metadata.
+    const timestamp = await (client.getTypedApi(metadata.relayChain).query.Timestamp.Now as any).getValue({at: relayChainBlock.toString()});
+    console.log(timestamp);
   };
+
+  useEffect(() => {
+    if(regions.length > 0) {
+      _timesliceToTimestamp(regions[0].begin);
+    }
+    // regions.map(region => {
+    //   _timesliceToTimestamp(region.begin); 
+    // });
+  }, [regions]);
 
   return (
     <>
