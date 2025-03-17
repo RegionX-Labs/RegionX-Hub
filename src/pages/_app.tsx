@@ -7,9 +7,9 @@ import { useRouter } from 'next/router';
 import { Network } from '@/types';
 import { networkStarted } from '@/api/connection';
 import { getExtensions } from '@/wallet';
-import { Montserrat } from "next/font/google";
+import { Montserrat } from 'next/font/google';
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ['latin'] });
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

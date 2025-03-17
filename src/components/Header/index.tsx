@@ -26,7 +26,7 @@ const Header: React.FC = () => {
 
   const handleNavigation = (path: string) => {
     router.push({
-      pathname: path.startsWith("/") ? path : `/${path}`,
+      pathname: path.startsWith('/') ? path : `/${path}`,
       query: router.query,
     });
     setIsMenuOpen(false);
@@ -93,7 +93,10 @@ const Header: React.FC = () => {
           </li>
           {isCoretimeMenuOpen && (
             <div className={styles.coretimeSubMenu}>
-              <li className={styles.navItem} onClick={() => handleNavigation('coretime/my-regions')}>
+              <li
+                className={styles.navItem}
+                onClick={() => handleNavigation('coretime/my-regions')}
+              >
                 My Regions
               </li>
               <li className={styles.navItem} onClick={() => handleNavigation('coretime/renew')}>

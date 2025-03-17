@@ -1,14 +1,16 @@
 import { $regions, regionsRequested } from '@/coretime/regions';
 import { useUnit } from 'effector-react';
-import { $connections, $network } from '@/api/connection';
+import { $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
+import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
 
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
-  const connections = useUnit($connections);
+  const saleInfo = useUnit($saleInfo);
+
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
 
   const countBits = (regionMask: string) => {
@@ -26,17 +28,19 @@ const MyRegionsPage = () => {
   };
 
   useEffect(() => {
-    regionsRequested(network);
-  }, [network]);
+    if (!saleInfo) return;
+    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+    const afterTimeslice = saleInfo.regionBegin - regionDuration;
+    regionsRequested({ network, afterTimeslice });
+  }, [network, saleInfo]);
 
   useEffect(() => {
-    console.log(connections);
-  }, [regions, connections])
-
+    saleInfoRequested(network);
+  }, [network]);
 
   const _timesliceToTimestamp = async (timeslice: number) => {
     // TODO
-  }
+  };
 
   return (
     <>
@@ -58,7 +62,7 @@ const MyRegionsPage = () => {
                   duration: '28 days', // TODO,
                   name: '', // TODO
                   regionEnd: `Timeslice: #${region.end}`, // TODO: Human readable format
-                  regionStart:`Timeslice: #${region.begin}`, // TODO: Human readable format
+                  regionStart: `Timeslice: #${region.begin}`, // TODO: Human readable format
                   currentUsage: 0, // TODO
                   onClick: () => setSelectedRegionId(region.id),
                 }}
