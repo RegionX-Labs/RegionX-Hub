@@ -1,0 +1,45 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.dashboard_table {
+  margin-top: 30px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: $white;
+  border-radius: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-right: 15%;
+}
+
+.customButton {
+  background-color: $yellowDark;
+  color: $white;
+  border: none;
+  border-radius: 5px;
+  padding: 15px 20px;
+  margin-left: 10px;
+  margin-top: 100px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: Montserrat;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: darken($yellowDark, 5%);
+    transform: scale(1.05);
+  }
+
+  &.secondary {
+    background-color: $greenPrimary;
+    &:hover {
+      background-color: darken($greenPrimary, 5%);
+      transform: scale(1.05);
+    }
+  }
+}
