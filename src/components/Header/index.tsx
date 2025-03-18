@@ -49,6 +49,7 @@ const Header: React.FC = () => {
         className={`${styles.logo} ${isMenuOpen ? styles.logoShifted : ''}`}
         width={1463}
         height={391}
+        onClick={() => handleNavigation('/')}
       />
 
       <div className={styles.desktopLinks}>

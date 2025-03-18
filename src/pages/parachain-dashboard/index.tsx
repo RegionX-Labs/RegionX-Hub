@@ -11,7 +11,6 @@ const ParachainDashboard = () => {
       Id: { cellType: 'text', data: '1000' },
       State: { cellType: 'text', data: 'Active' },
       Expiry: { cellType: 'text', data: '2025-06-01' },
-      Action: { cellType: 'text', data: 'Renew' },
       Watchlist: { cellType: 'text', data: 'Yes' },
     },
     {
@@ -19,7 +18,6 @@ const ParachainDashboard = () => {
       Id: { cellType: 'text', data: '1001' },
       State: { cellType: 'text', data: 'Active' },
       Expiry: { cellType: 'text', data: '2025-09-12' },
-      Action: { cellType: 'text', data: 'Renew' },
       Watchlist: { cellType: 'text', data: 'No' },
     },
     {
@@ -27,7 +25,6 @@ const ParachainDashboard = () => {
       Id: { cellType: 'text', data: '1002' },
       State: { cellType: 'text', data: 'Inactive' },
       Expiry: { cellType: 'text', data: '2024-12-30' },
-      Action: { cellType: 'text', data: 'Reactivate' },
       Watchlist: { cellType: 'text', data: 'Yes' },
     },
     {
@@ -35,7 +32,6 @@ const ParachainDashboard = () => {
       Id: { cellType: 'text', data: '1003' },
       State: { cellType: 'text', data: 'Active' },
       Expiry: { cellType: 'text', data: '2026-03-15' },
-      Action: { cellType: 'text', data: 'Extend' },
       Watchlist: { cellType: 'text', data: 'No' },
     },
     {
@@ -43,7 +39,6 @@ const ParachainDashboard = () => {
       Id: { cellType: 'text', data: '10004' },
       State: { cellType: 'text', data: 'Active' },
       Expiry: { cellType: 'text', data: '2025-11-10' },
-      Action: { cellType: 'text', data: 'Renew' },
       Watchlist: { cellType: 'text', data: 'Yes' },
     },
   ];
