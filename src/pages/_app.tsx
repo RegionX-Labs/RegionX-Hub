@@ -1,5 +1,5 @@
 import '../styles/global.scss';
-import '@region-x/components/dist/components.css';
+import '@region-x/components/dist/style.css';
 import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
 import { useEffect } from 'react';

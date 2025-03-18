@@ -52,11 +52,11 @@ const MyRegionsPage = () => {
     const client = connection.client;
     const metadata = getNetworkMetadata(network);
     if(!metadata) return;
-    const typedClient = client.getTypedApi(metadata.relayChain);
-    console.log(typedClient);
-    // TODO: don't hardcode metadata.
-    const timestamp = await (client.getTypedApi(metadata.relayChain).query.Timestamp.Now as any).getValue({at: relayChainBlock.toString()});
-    console.log(timestamp);
+
+    const timestamp = await (client.getTypedApi(metadata.relayChain) as any).query.Timestamp.Now.getValue();
+    // All relay chains have block time of 6 seconds.
+    const estimatedTimestamp = timestamp - BigInt(relayChainBlock * 6); 
+    console.log(estimatedTimestamp);
   };
 
   useEffect(() => {
