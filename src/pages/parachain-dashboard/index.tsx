@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './dashboard.module.scss';
 import { TableComponent, LabelCard } from '@region-x/components';
 import { FaStar } from 'react-icons/fa';
@@ -9,15 +9,23 @@ const ParachainDashboard = () => {
     '1001': false,
     '1002': false,
     '1003': false,
-    '10004': false,
+    '1004': false,
   });
 
   const toggleWatchlist = (id: string) => {
-    setWatchlistStatus((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setWatchlistStatus((prev) => {
+      const updatedStatus = { ...prev, [id]: !prev[id] };
+      localStorage.setItem('watchlistStatus', JSON.stringify(updatedStatus));
+      return updatedStatus;
+    });
   };
+
+  useEffect(() => {
+    const savedWatchlist = localStorage.getItem('watchlistStatus');
+    if (savedWatchlist) {
+      setWatchlistStatus(JSON.parse(savedWatchlist));
+    }
+  }, []);
 
   const tableData: Record<
     string,
@@ -97,7 +105,7 @@ const ParachainDashboard = () => {
     },
     {
       Name: { cellType: 'text', data: 'Phala' },
-      Id: { cellType: 'text', data: '10004' },
+      Id: { cellType: 'text', data: '1004' },
       State: {
         cellType: 'jsx',
         data: <LabelCard label='Active' />,
@@ -108,7 +116,7 @@ const ParachainDashboard = () => {
         data: (
           <FaStar
             className={`${styles.starIcon} ${watchlistStatus['10004'] ? styles.starActive : ''}`}
-            onClick={() => toggleWatchlist('10004')}
+            onClick={() => toggleWatchlist('1004')}
           />
         ),
       },
