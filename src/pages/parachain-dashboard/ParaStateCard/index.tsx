@@ -1,4 +1,4 @@
-import { Tooltip } from '@mui/material';
+import { Tooltip } from 'react-tooltip';
 import { LabelCard } from '@region-x/components';
 
 import { ParaState } from '../paras';
@@ -55,8 +55,11 @@ export const ParaStateCard = ({ state }: { state: ParaState }) => {
   const { tooltip, background, title } = properties[state];
 
   return (
-    <Tooltip title={tooltip} arrow>
-      <LabelCard label={title} color={background as any} />
-    </Tooltip>
+    <>
+      <div data-tooltip-id={`tooltip-${state}`} data-tooltip-content={tooltip}>
+        <LabelCard label={title} color={background as any} />
+      </div>
+      <Tooltip id={`tooltip-${state}`} place='top' />
+    </>
   );
 };

@@ -4,22 +4,36 @@ import { TableComponent } from '@region-x/components';
 import { FaStar } from 'react-icons/fa';
 import { ParaStateCard } from './ParaStateCard/index';
 import { ParaState } from './paras';
+import { useUnit } from 'effector-react';
+import { Network } from '@/types';
+import { $network } from '@/api/connection';
+
+type TableData = {
+  cellType: 'text' | 'link' | 'address' | 'jsx';
+  data: string | React.ReactElement;
+  link?: string;
+  searchKey?: string;
+};
 
 const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
+  const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
+  const network = useUnit($network);
 
   const toggleWatchlist = (id: number) => {
+    const watchlistKey = `watchlist_${network}`;
     setWatchlist((prev) => {
       const updatedWatchlist = prev.includes(id)
         ? prev.filter((item) => item !== id)
         : [...prev, id];
-      localStorage.setItem('watchlist', JSON.stringify(updatedWatchlist));
+      localStorage.setItem(watchlistKey, JSON.stringify(updatedWatchlist));
       return updatedWatchlist;
     });
   };
 
   useEffect(() => {
-    const savedWatchlist = localStorage.getItem('watchlist');
+    const watchlistKey = `watchlist_${network}`;
+    const savedWatchlist = localStorage.getItem(watchlistKey);
     if (savedWatchlist) {
       try {
         const parsedWatchlist = JSON.parse(savedWatchlist);
@@ -29,109 +43,82 @@ const ParachainDashboard = () => {
       } catch (error) {
         console.error('Failed to parse watchlist from localStorage:', error);
       }
+    } else {
+      setWatchlist([]);
     }
-  }, []);
+  }, [network]);
 
-  const tableData: Record<
-    string,
-    { cellType: 'text' | 'link' | 'address' | 'jsx'; data: string | React.ReactElement }
-  >[] = [
+  const allData = [
     {
-      Name: { cellType: 'text', data: 'Acala' },
-      Id: { cellType: 'text', data: '1000' },
-      State: {
-        cellType: 'jsx',
-        data: <ParaStateCard state={ParaState.ACTIVE_PARA} />,
-      },
-      Expiry: { cellType: 'text', data: '2025-06-01' },
-      Watchlist: {
-        cellType: 'jsx',
-        data: (
-          <FaStar
-            className={`${styles.starIcon} ${watchlist.includes(1000) ? styles.starActive : ''}`}
-            onClick={() => toggleWatchlist(1000)}
-          />
-        ),
-      },
+      id: 1000,
+      name: 'Acala',
+      state: ParaState.ACTIVE_PARA,
+      expiry: '2025-06-01',
+      network: Network.POLKADOT,
     },
     {
-      Name: { cellType: 'text', data: 'Moonbeam' },
-      Id: { cellType: 'text', data: '1001' },
-      State: {
-        cellType: 'jsx',
-        data: <ParaStateCard state={ParaState.RESERVED} />,
-      },
-      Expiry: { cellType: 'text', data: '2025-09-12' },
-      Watchlist: {
-        cellType: 'jsx',
-        data: (
-          <FaStar
-            className={`${styles.starIcon} ${watchlist.includes(1001) ? styles.starActive : ''}`}
-            onClick={() => toggleWatchlist(1001)}
-          />
-        ),
-      },
+      id: 1000,
+      name: 'Karura',
+      state: ParaState.ACTIVE_PARA,
+      expiry: '2025-06-01',
+      network: Network.KUSAMA,
     },
     {
-      Name: { cellType: 'text', data: 'Parallel' },
-      Id: { cellType: 'text', data: '1002' },
-      State: {
-        cellType: 'jsx',
-        data: <ParaStateCard state={ParaState.IDLE_PARA} />,
-      },
-      Expiry: { cellType: 'text', data: '2024-12-30' },
-      Watchlist: {
-        cellType: 'jsx',
-        data: (
-          <FaStar
-            className={`${styles.starIcon} ${watchlist.includes(1002) ? styles.starActive : ''}`}
-            onClick={() => toggleWatchlist(1002)}
-          />
-        ),
-      },
+      id: 1001,
+      name: 'Moonbeam',
+      state: ParaState.RESERVED,
+      expiry: '2025-09-12',
+      network: Network.POLKADOT,
     },
     {
-      Name: { cellType: 'text', data: 'Astar' },
-      Id: { cellType: 'text', data: '1003' },
-      State: {
-        cellType: 'jsx',
-        data: <ParaStateCard state={ParaState.ACTIVE_PARA} />,
-      },
-      Expiry: { cellType: 'text', data: '2026-03-15' },
-      Watchlist: {
-        cellType: 'jsx',
-        data: (
-          <FaStar
-            className={`${styles.starIcon} ${watchlist.includes(1003) ? styles.starActive : ''}`}
-            onClick={() => toggleWatchlist(1003)}
-          />
-        ),
-      },
+      id: 1001,
+      name: 'Moonriver',
+      state: ParaState.RESERVED,
+      expiry: '2025-09-12',
+      network: Network.KUSAMA,
     },
     {
-      Name: { cellType: 'text', data: 'Phala' },
-      Id: { cellType: 'text', data: '1004' },
-      State: {
-        cellType: 'jsx',
-        data: <ParaStateCard state={ParaState.ACTIVE_PARA} />,
-      },
-      Expiry: { cellType: 'text', data: '2025-11-10' },
-      Watchlist: {
-        cellType: 'jsx',
-        data: (
-          <FaStar
-            className={`${styles.starIcon} ${watchlist.includes(1004) ? styles.starActive : ''}`}
-            onClick={() => toggleWatchlist(1004)}
-          />
-        ),
-      },
+      id: 1002,
+      name: 'Parallel',
+      state: ParaState.IDLE_PARA,
+      expiry: '2024-12-30',
+      network: Network.POLKADOT,
+    },
+    {
+      id: 1002,
+      name: 'Heiko',
+      state: ParaState.IDLE_PARA,
+      expiry: '2024-12-30',
+      network: Network.KUSAMA,
     },
   ];
+
+  const filteredData = showWatchlist
+    ? allData.filter((item) => watchlist.includes(item.id) && item.network === network)
+    : allData.filter((item) => item.network === network);
+
+  const tableData: Record<string, TableData>[] = filteredData.map((item) => ({
+    Name: { cellType: 'text' as const, data: item.name },
+    Id: { cellType: 'text' as const, data: item.id.toString() },
+    State: { cellType: 'jsx' as const, data: <ParaStateCard state={item.state} /> },
+    Expiry: { cellType: 'text' as const, data: item.expiry },
+    Watchlist: {
+      cellType: 'jsx' as const,
+      data: (
+        <FaStar
+          className={`${styles.starIcon} ${watchlist.includes(item.id) ? styles.starActive : ''}`}
+          onClick={() => toggleWatchlist(item.id)}
+        />
+      ),
+    },
+  }));
 
   return (
     <>
       <div className={styles.buttonContainer}>
-        <button className={styles.customButton}>Watchlist Only</button>
+        <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
+          {showWatchlist ? 'Show All' : 'Watchlist'}
+        </button>
         <button className={`${styles.customButton} ${styles.secondary}`}>Reserve New Para</button>
       </div>
       <div className={styles.dashboard_table}>
