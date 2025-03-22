@@ -68,7 +68,7 @@ const MyRegionsPage = () => {
 
   const _timesliceToTimestamp = async (timeslice: number): Promise<bigint | null> => {
     // Timeslice = 80 relay chain blocks.
-    const relayChainBlock = timeslice * 80;
+    const associatedRelayChainBlock = timeslice * 80;
     const networkChainIds = getNetworkChainIds(network);
 
     if (!networkChainIds) return null;
@@ -82,12 +82,14 @@ const MyRegionsPage = () => {
     const currentBlockNumber = await (
       client.getTypedApi(metadata.relayChain) as any
     ).query.System.Number.getValue();
-    console.log(currentBlockNumber);
+
     const timestamp = await (
       client.getTypedApi(metadata.relayChain) as any
     ).query.Timestamp.Now.getValue();
+
     // All relay chains have block time of 6 seconds.
-    const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - relayChainBlock) * 6000);
+    const estimatedTimestamp =
+      timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
     return estimatedTimestamp;
   };
 
