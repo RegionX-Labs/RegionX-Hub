@@ -32,7 +32,7 @@ const AccountSelector = () => {
 
   return (
     <div className={styles.selectWrapper}>
-      <Select options={options} onChange={handleChange} />
+      <Select options={options} onChange={handleChange} placeholder='Select an account' />
     </div>
   );
 };
