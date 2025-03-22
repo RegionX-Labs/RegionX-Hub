@@ -6,6 +6,29 @@ import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
 import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { humanizer } from 'humanize-duration';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+
+type RegionDateInfo = {
+  beginDate: string;
+  endDate: string;
+};
+
+TimeAgo.addLocale(en);
+
+export const getRelativeTime = (timestamp: number | Date): string => {
+  const timeAgo = new TimeAgo('en-US');
+  return timeAgo.format(timestamp, {
+    steps: [
+      { formatAs: 'second' },
+      { formatAs: 'minute', minTime: 60 },
+      { formatAs: 'hour', minTime: 60 * 60 },
+      { formatAs: 'day', minTime: 24 * 60 * 60 },
+    ],
+    labels: 'long',
+  });
+};
 
 const MyRegionsPage = () => {
   const network = useUnit($network);
@@ -13,7 +36,10 @@ const MyRegionsPage = () => {
   const saleInfo = useUnit($saleInfo);
   const connections = useUnit($connections);
 
+  const formatDuration = humanizer({ units: ['w', 'd', 'h'], round: true });
+
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [regionDateInfos, setRegionDateInfos] = useState<Record<string, RegionDateInfo>>();
 
   const countBits = (regionMask: string) => {
     let count = 0;
@@ -40,32 +66,48 @@ const MyRegionsPage = () => {
     saleInfoRequested(network);
   }, [network]);
 
-  const _timesliceToTimestamp = async (timeslice: number) => {
+  const _timesliceToTimestamp = async (timeslice: number): Promise<bigint | null> => {
     // Timeslice = 80 relay chain blocks.
     const relayChainBlock = timeslice * 80;
     const networkChainIds = getNetworkChainIds(network);
 
-    if(!networkChainIds) return `Timeslice #${timeslice}`;
+    if (!networkChainIds) return null;
     const connection = connections[networkChainIds.relayChain];
-    if(!connection || !connection.client || connection.status !== "connected") return `Timeslice #${timeslice}`;
+    if (!connection || !connection.client || connection.status !== 'connected') return null;
 
     const client = connection.client;
     const metadata = getNetworkMetadata(network);
-    if(!metadata) return;
+    if (!metadata) return null;
 
-    const timestamp = await (client.getTypedApi(metadata.relayChain) as any).query.Timestamp.Now.getValue();
+    const currentBlockNumber = await (
+      client.getTypedApi(metadata.relayChain) as any
+    ).query.System.Number.getValue();
+    console.log(currentBlockNumber);
+    const timestamp = await (
+      client.getTypedApi(metadata.relayChain) as any
+    ).query.Timestamp.Now.getValue();
     // All relay chains have block time of 6 seconds.
-    const estimatedTimestamp = timestamp - BigInt(relayChainBlock * 6); 
-    console.log(estimatedTimestamp);
+    const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - relayChainBlock) * 6000);
+    return estimatedTimestamp;
   };
 
   useEffect(() => {
-    if(regions.length > 0) {
-      _timesliceToTimestamp(regions[0].begin);
-    }
-    // regions.map(region => {
-    //   _timesliceToTimestamp(region.begin); 
-    // });
+    regions.map(async (region) => {
+      const beginTimestamp = await _timesliceToTimestamp(region.begin);
+      const endTimestamp = await _timesliceToTimestamp(region.end);
+      if (beginTimestamp && endTimestamp) {
+        const beginDate = getRelativeTime(Number(beginTimestamp.toString()));
+        const endDate = getRelativeTime(Number(endTimestamp.toString()));
+
+        setRegionDateInfos((prev) => ({
+          ...prev,
+          [region.id]: {
+            beginDate,
+            endDate,
+          },
+        }));
+      }
+    });
   }, [regions]);
 
   return (
@@ -87,8 +129,12 @@ const MyRegionsPage = () => {
                   coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
                   duration: '28 days', // TODO,
                   name: '', // TODO
-                  regionEnd: `Timeslice: #${region.end}`, // TODO: Human readable format
-                  regionStart: `Timeslice: #${region.begin}`, // TODO: Human readable format
+                  regionEnd: regionDateInfos?.[region.id]?.endDate
+                    ? `End: ${regionDateInfos[region.id].endDate}`
+                    : `End: Timeslice #${region.end}`,
+                  regionStart: regionDateInfos?.[region.id]?.beginDate
+                    ? `Begin: ${regionDateInfos[region.id].beginDate}`
+                    : `Begin: Timeslice #${region.begin}`,
                   currentUsage: 0, // TODO
                   onClick: () => setSelectedRegionId(region.id),
                 }}
