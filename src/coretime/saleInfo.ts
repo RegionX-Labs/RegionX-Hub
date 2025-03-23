@@ -1,8 +1,6 @@
-import { Connection } from '@/api/connection';
 import { ApiResponse, fetchGraphql } from '@/graphql';
-import { ChainId, getNetworkChainIds, getNetworkCoretimeIndexer } from '@/network';
+import { getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
-import { dot_coretime } from '@polkadot-api/descriptors';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
 export const saleInfoRequested = createEvent<Network>();

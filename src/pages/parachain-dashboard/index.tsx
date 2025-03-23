@@ -4,8 +4,9 @@ import { TableComponent } from '@region-x/components';
 import { FaStar } from 'react-icons/fa';
 import { useUnit } from 'effector-react';
 import { Network } from '@/types';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import { ParaState, ParaStateCard } from '@/components/ParaStateCard';
+import { parachainsRequested } from '@/parachains';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -18,6 +19,7 @@ const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
   const network = useUnit($network);
+  const connections = useUnit($connections);
 
   const toggleWatchlist = (id: number) => {
     const watchlistKey = `watchlist_${network}`;
@@ -46,6 +48,10 @@ const ParachainDashboard = () => {
       setWatchlist([]);
     }
   }, [network]);
+
+  useEffect(() => {
+    parachainsRequested(network);
+  }, [network, connections]);
 
   const allData = [
     {
