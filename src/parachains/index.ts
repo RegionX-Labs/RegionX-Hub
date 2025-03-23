@@ -18,16 +18,52 @@ export const parachainsRequested = createEvent<Network>();
 export const $parachains = createStore<Parachain[]>([]);
 
 const fetchActiveParas = async (client: PolkadotClient, metadata: any): Promise<number[]> => {
-
   const workload = await (client.getTypedApi(metadata) as any).query.Broker.Workload.getEntries();
-  console.log(workload);
+  const activeParas: number[] = [];
+  for (const { value } of workload) {
+    const assignments = value
+      .filter((v: any) => v.assignment.type === 'Task')
+      .map((v: any) => v.assignment.value);
 
-  return [];
+    activeParas.push(...assignments);
+  }
+
+  return activeParas;
+};
+
+const fetchWorkplanParas = async (client: PolkadotClient, metadata: any): Promise<number[]> => {
+  const workplan = await (client.getTypedApi(metadata) as any).query.Broker.Workplan.getEntries();
+  const workplanParas: number[] = [];
+
+  for (const { value } of workplan) {
+    const assignments = value
+      .filter((v: any) => v.assignment.type === 'Task')
+      .map((v: any) => v.assignment.value);
+
+    workplanParas.push(...assignments);
+  }
+
+  return workplanParas;
+};
+
+const fetchSystemParas = async (client: PolkadotClient, metadata: any): Promise<number[]> => {
+  const reservations = (await (client.getTypedApi(metadata) as any).query.Broker.Reservations.getValue());
+
+  const systemParas: number[] = [];
+  for (const value of reservations) {
+    const assignments = value
+      .filter((v: any) => v.assignment.type === 'Task')
+      .map((v: any) => v.assignment.value);
+
+    systemParas.push(...assignments);
+  }
+
+  return systemParas;
 };
 
 type GetParachainsPayload = {
-    connections: Record<ChainId, Connection>,
-    network: Network,
+  connections: Record<ChainId, Connection>;
+  network: Network;
 };
 
 const getParachainsFx = createEffect(
@@ -42,7 +78,9 @@ const getParachainsFx = createEffect(
     const metadata = getNetworkMetadata(payload.network);
     if (!metadata) return [];
 
-    fetchActiveParas(client, metadata.coretimeChain);
+    const activeParas = await fetchActiveParas(client, metadata.coretimeChain);
+    const workplanParas = await fetchWorkplanParas(client, metadata.coretimeChain);
+    const systemParas = await fetchSystemParas(client, metadata.coretimeChain);
 
     return [];
   }
