@@ -116,7 +116,6 @@ const MyRegionsPage = () => {
     <>
       <div className={styles.container}>
         {regions.length > 0 ? (
-          // TODO: filter expired regions(They should be filtered in the graphql request).
           regions.map((region) => (
             <div className={styles['region-card']} key={region.id}>
               {' '}
