@@ -8,7 +8,7 @@ import { PolkadotClient } from 'polkadot-api';
 type Parachain = {
   id: number;
   name: string;
-  state: ParaState.ACTIVE_PARA;
+  state: ParaState;
   expiry: string;
   network: Network;
 };
@@ -47,7 +47,9 @@ const fetchWorkplanParas = async (client: PolkadotClient, metadata: any): Promis
 };
 
 const fetchSystemParas = async (client: PolkadotClient, metadata: any): Promise<number[]> => {
-  const reservations = (await (client.getTypedApi(metadata) as any).query.Broker.Reservations.getValue());
+  const reservations = await (
+    client.getTypedApi(metadata) as any
+  ).query.Broker.Reservations.getValue();
 
   const systemParas: number[] = [];
   for (const value of reservations) {
@@ -82,7 +84,23 @@ const getParachainsFx = createEffect(
     const workplanParas = await fetchWorkplanParas(client, metadata.coretimeChain);
     const systemParas = await fetchSystemParas(client, metadata.coretimeChain);
 
-    return [];
+    const parachains: Parachain[] = Array.from(
+      new Set([...activeParas, ...workplanParas, ...systemParas])
+    )
+      .sort((_p1, _p2) => _p1 - _p2)
+      .map((p) => ({
+        id: p,
+        expiry: '',
+        name: `Para ${p}`,
+        network: payload.network,
+        state: systemParas.find((_p) => _p === p)
+          ? ParaState.SYSTEM
+          : activeParas.find((_p) => _p === p)
+            ? ParaState.ACTIVE_PARA
+            : ParaState.IN_WORKPLAN,
+      }));
+
+    return parachains;
   }
 );
 
