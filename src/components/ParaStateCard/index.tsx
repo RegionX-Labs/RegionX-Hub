@@ -1,7 +1,17 @@
 import { Tooltip } from 'react-tooltip';
 import { LabelCard } from '@region-x/components';
 
-import { ParaState } from '../paras';
+export enum ParaState {
+  RESERVED,
+  ONBOARDING,
+  ONDEMAND_PARACHAIN,
+  IDLE_PARA,
+  ACTIVE_PARA,
+  ACTIVE_RENEWABLE_PARA,
+  IN_WORKPLAN,
+  LEASE_HOLDING,
+  SYSTEM,
+}
 
 export const ParaStateCard = ({ state }: { state: ParaState }) => {
   const properties = {

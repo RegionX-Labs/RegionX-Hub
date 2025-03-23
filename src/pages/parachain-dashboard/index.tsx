@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styles from './dashboard.module.scss';
 import { TableComponent } from '@region-x/components';
 import { FaStar } from 'react-icons/fa';
-import { ParaStateCard } from './ParaStateCard/index';
-import { ParaState } from './paras';
 import { useUnit } from 'effector-react';
 import { Network } from '@/types';
 import { $network } from '@/api/connection';
+import { ParaState, ParaStateCard } from '@/components/ParaStateCard';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
