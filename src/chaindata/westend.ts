@@ -9,7 +9,7 @@ import {
   nodesKhalaSVG,
   nodesKylinPNG,
   nodesMoonshadowPNG,
-} from '@/assets/parachain-logos';
+} from '../../public/parachain-logos';
 
 import { ChainDetails } from './types';
 

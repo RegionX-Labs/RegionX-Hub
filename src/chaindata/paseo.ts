@@ -23,7 +23,7 @@ import {
   nodesNodleSVG,
   nodesRexSVG,
   nodesZeitgeistPNG,
-} from '@/assets/parachain-logos';
+} from '../../public/parachain-logos';
 
 import { ChainDetails } from './types';
 

@@ -61,7 +61,7 @@ import {
   nodesXodePNG,
   nodesYerbanetworkPNG,
   nodesZeroSVG,
-} from '@/assets/parachain-logos';
+} from '../../public/parachain-logos';
 
 import { ChainDetails } from './types';
 const prodParasKusama: ChainDetails[] = [
