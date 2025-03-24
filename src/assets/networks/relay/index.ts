@@ -5,10 +5,10 @@ import Paseo from './paseo.png';
 import Polkadot from './polkadot.png';
 import Rococo from './rococo.png';
 import Westend from './westend.png';
-import KusamaCoretime from './kusamaCoretime.png';
-import PaseoCoretime from './paseoCoretime.png';
-import PolkadotCoretime from './polkadotCoretime.png';
-import WestendCoretime from './westendCoretime.png';
+import KusamaCoretime from '../coretime/kusamaCoretime.png';
+import PaseoCoretime from '../coretime/paseoCoretime.png';
+import PolkadotCoretime from '../coretime/polkadotCoretime.png';
+import WestendCoretime from '../coretime/westendCoretime.png';
 
 const getRelayIcon = (network: Network) => {
   switch (network) {
@@ -30,10 +30,10 @@ const getRelayIcon = (network: Network) => {
 // TODO: resize all images to 96x96
 
 export { getRelayIcon, Kusama, Paseo, Polkadot, Rococo, Westend };
-export { default as polkadotIcon } from './polkadotjs.png';
-export { default as subwalletIcon } from './subwallet.png';
-export { default as talismanIcon } from './talisman.png';
-export { default as novaIcon } from './nova.png';
+export { default as polkadotIcon } from '../wallet/polkadotjs.png';
+export { default as subwalletIcon } from '../wallet/subwallet.png';
+export { default as talismanIcon } from '../wallet/talisman.png';
+export { default as novaIcon } from '../wallet/nova.png';
 
 //Coretime
 

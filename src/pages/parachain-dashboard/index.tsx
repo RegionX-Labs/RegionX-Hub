@@ -6,6 +6,7 @@ import { useUnit } from 'effector-react';
 import { Network } from '@/types';
 import { $network } from '@/api/connection';
 import { ParaState, ParaStateCard } from '@/components/ParaStateCard';
+import DashboardModal from './dashboard-modal/index';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -18,6 +19,7 @@ const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
   const network = useUnit($network);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Manage modal state
 
   const toggleWatchlist = (id: number) => {
     const watchlistKey = `watchlist_${network}`;
@@ -118,13 +120,21 @@ const ParachainDashboard = () => {
         <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
           {showWatchlist ? 'Show All' : 'Watchlist'}
         </button>
-        <button className={`${styles.customButton} ${styles.secondary}`}>Reserve New Para</button>
+        <button
+          className={`${styles.customButton} ${styles.secondary}`}
+          onClick={() => setIsModalOpen(true)}
+        >
+          Reserve New Para
+        </button>
       </div>
+
       <div className={styles.dashboard_table}>
         <div className={styles.tableWrapper}>
           <TableComponent data={tableData} pageSize={5} />
         </div>
       </div>
+
+      <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 };
