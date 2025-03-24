@@ -7,7 +7,6 @@ import { PolkadotClient } from 'polkadot-api';
 
 type Parachain = {
   id: number;
-  name: string;
   state: ParaState;
   expiry: string;
   network: Network;
@@ -91,7 +90,6 @@ const getParachainsFx = createEffect(
       .map((p) => ({
         id: p,
         expiry: '',
-        name: `Para ${p}`,
         network: payload.network,
         state: systemParas.find((_p) => _p === p)
           ? ParaState.SYSTEM

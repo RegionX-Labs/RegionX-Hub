@@ -6,6 +6,7 @@ import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { ParaStateCard } from '@/components/ParaStateCard';
 import { $parachains, parachainsRequested } from '@/parachains';
+import { chainData } from '@/chaindata';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -59,8 +60,33 @@ const ParachainDashboard = () => {
     : parachains.filter((item) => item.network === network);
 
   const tableData: Record<string, TableData>[] = filteredData.map((item) => ({
-    Name: { cellType: 'text' as const, data: item.name },
     Id: { cellType: 'text' as const, data: item.id.toString() },
+    Name: {
+      cellType: 'jsx' as const,
+      data: (
+        <div className={styles.parachainNameContainer}>
+          {chainData[network][item.id]?.logo ? (
+            <img
+              src={chainData[network][item.id].logo}
+              alt=''
+              width={32}
+              height={32}
+              style={{ borderRadius: '100%' }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: '100%',
+                backgroundColor: '#8899A8',
+              }}
+            />
+          )}
+          <p>{chainData[network][item.id]?.name}</p>
+        </div>
+      ),
+    },
     State: { cellType: 'jsx' as const, data: <ParaStateCard state={item.state} /> },
     Expiry: { cellType: 'text' as const, data: item.expiry },
     Watchlist: {
