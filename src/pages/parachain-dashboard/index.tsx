@@ -3,6 +3,7 @@ import styles from './dashboard.module.scss';
 import { TableComponent } from '@region-x/components';
 import { FaStar } from 'react-icons/fa';
 import { useUnit } from 'effector-react';
+import DashboardModal from '../../components/DashboardModal';
 import { $connections, $network } from '@/api/connection';
 import { ParaStateCard } from '@/components/ParaStateCard';
 import { $parachains, parachainsRequested } from '@/parachains';
@@ -20,6 +21,7 @@ const ParachainDashboard = () => {
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
 
   const network = useUnit($network);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
 
@@ -105,13 +107,21 @@ const ParachainDashboard = () => {
         <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
           {showWatchlist ? 'Show All' : 'Watchlist'}
         </button>
-        <button className={`${styles.customButton} ${styles.secondary}`}>Reserve New Para</button>
+        <button
+          className={`${styles.customButton} ${styles.secondary}`}
+          onClick={() => setIsModalOpen(true)}
+        >
+          Reserve New Para
+        </button>
       </div>
+
       <div className={styles.dashboard_table}>
         <div className={styles.tableWrapper}>
           <TableComponent data={tableData} pageSize={8} />
         </div>
       </div>
+
+      <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 };
