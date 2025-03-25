@@ -29,6 +29,12 @@ const fetchActiveParas = async (client: PolkadotClient, metadata: any): Promise<
   return activeParas;
 };
 
+const fetchLeaseHoldingParas = async (client: PolkadotClient, metadata: any): Promise<number[]> => {
+  const leases = await (client.getTypedApi(metadata) as any).query.Broker.Leases.getValue();
+  const paraIds = (leases as Array<{ until: number; task: number }>).map((lease) => lease.task);
+  return paraIds;
+};
+
 const fetchWorkplanParas = async (client: PolkadotClient, metadata: any): Promise<number[]> => {
   const workplan = await (client.getTypedApi(metadata) as any).query.Broker.Workplan.getEntries();
   const workplanParas: number[] = [];
@@ -79,11 +85,12 @@ const getParachainsFx = createEffect(
     if (!metadata) return [];
 
     const activeParas = await fetchActiveParas(client, metadata.coretimeChain);
+    const leaseHoldingParas = await fetchLeaseHoldingParas(client, metadata.coretimeChain);
     const workplanParas = await fetchWorkplanParas(client, metadata.coretimeChain);
     const systemParas = await fetchSystemParas(client, metadata.coretimeChain);
 
     const parachains: Parachain[] = Array.from(
-      new Set([...activeParas, ...workplanParas, ...systemParas])
+      new Set([...activeParas, ...leaseHoldingParas, ...workplanParas, ...systemParas])
     )
       .sort((_p1, _p2) => _p1 - _p2)
       .map((p) => ({
@@ -91,9 +98,11 @@ const getParachainsFx = createEffect(
         network: payload.network,
         state: systemParas.find((_p) => _p === p)
           ? ParaState.SYSTEM
-          : activeParas.find((_p) => _p === p)
-            ? ParaState.ACTIVE_PARA
-            : ParaState.IN_WORKPLAN,
+          : leaseHoldingParas.find((_p) => _p === p)
+            ? ParaState.LEASE_HOLDING
+            : activeParas.find((_p) => _p === p)
+              ? ParaState.ACTIVE_PARA
+              : ParaState.IN_WORKPLAN,
       }));
 
     return parachains;
