@@ -4,9 +4,6 @@ import styles from './renew.module.scss';
 const RenewPage = () => {
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Renew a parachain</h1>
-      <h2 className={styles.subtitle}>Select a parachain to renew</h2>
-
       <div className={styles.form}>
         <div className={styles.selectWrapper}>
           <Select
