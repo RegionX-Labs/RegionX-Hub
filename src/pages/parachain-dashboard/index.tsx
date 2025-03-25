@@ -88,7 +88,6 @@ const ParachainDashboard = () => {
       ),
     },
     State: { cellType: 'jsx' as const, data: <ParaStateCard state={item.state} /> },
-    Expiry: { cellType: 'text' as const, data: item.expiry },
     Watchlist: {
       cellType: 'jsx' as const,
       data: (
