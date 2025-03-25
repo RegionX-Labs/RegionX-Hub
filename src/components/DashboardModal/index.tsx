@@ -5,6 +5,7 @@ import { useUnit } from 'effector-react';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
 import { Network } from '@/types';
+import { toUnitFormatted } from '../../utils/index';
 
 interface DashboardModalProps {
   isOpen: boolean;
@@ -66,7 +67,7 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
 
         const paraDeposit = await (client.getTypedApi(metadata.relayChain) as any).query.Registrar
           .ParaDeposit;
-        setReservationCost(paraDeposit.toString());
+        setReservationCost(toUnitFormatted(network, paraDeposit));
       } catch (err) {
         console.error('Failed to fetch para ID data:', err);
         setError('Failed to load reservation data');

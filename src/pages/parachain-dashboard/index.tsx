@@ -6,7 +6,7 @@ import { useUnit } from 'effector-react';
 import { Network } from '@/types';
 import { $network } from '@/api/connection';
 import { ParaState, ParaStateCard } from '@/components/ParaStateCard';
-import DashboardModal from './dashboard-modal/index';
+import DashboardModal from '../../components/DashboardModal';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -19,7 +19,7 @@ const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
   const network = useUnit($network);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Manage modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleWatchlist = (id: number) => {
     const watchlistKey = `watchlist_${network}`;
