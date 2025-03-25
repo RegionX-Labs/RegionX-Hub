@@ -3,7 +3,7 @@ import { useUnit } from 'effector-react';
 import { $walletExtensions, walletSelected } from '@/wallet';
 import Image from 'next/image';
 import styles from './walletModal.module.scss';
-import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/networks/relay';
+import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
 
 const WALLET_OPTIONS = [
   {

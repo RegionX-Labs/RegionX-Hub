@@ -10,7 +10,7 @@ import {
   PaseoCoretime,
   PolkadotCoretime,
   WestendCoretime,
-} from '@/assets/networks/relay';
+} from '@/assets/networks';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import Image from 'next/image';
