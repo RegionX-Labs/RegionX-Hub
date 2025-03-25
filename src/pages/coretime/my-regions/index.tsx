@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
 import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { humanizer } from 'humanize-duration';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 
@@ -35,8 +34,6 @@ const MyRegionsPage = () => {
   const regions = useUnit($regions);
   const saleInfo = useUnit($saleInfo);
   const connections = useUnit($connections);
-
-  const formatDuration = humanizer({ units: ['w', 'd', 'h'], round: true });
 
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [regionDateInfos, setRegionDateInfos] = useState<Record<string, RegionDateInfo>>();
