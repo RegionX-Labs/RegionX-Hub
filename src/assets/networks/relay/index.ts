@@ -30,10 +30,10 @@ const getRelayIcon = (network: Network) => {
 // TODO: resize all images to 96x96
 
 export { getRelayIcon, Kusama, Paseo, Polkadot, Rococo, Westend };
-export { default as polkadotIcon } from '../wallet/polkadotjs.png';
-export { default as subwalletIcon } from '../wallet/subwallet.png';
-export { default as talismanIcon } from '../wallet/talisman.png';
-export { default as novaIcon } from '../wallet/nova.png';
+export { default as polkadotIcon } from '../wallets/polkadotjs.png';
+export { default as subwalletIcon } from '../wallets/subwallet.png';
+export { default as talismanIcon } from '../wallets/talisman.png';
+export { default as novaIcon } from '../wallets/nova.png';
 
 //Coretime
 

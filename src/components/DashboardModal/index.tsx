@@ -21,21 +21,6 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
   const network = useUnit($network);
   const connections = useUnit($connections);
 
-  const getTokenSymbol = (): string => {
-    switch (network) {
-      case Network.POLKADOT:
-        return 'DOT';
-      case Network.KUSAMA:
-        return 'KSM';
-      case Network.PASEO:
-        return 'PAS';
-      case Network.WESTEND:
-        return 'WND';
-      default:
-        return 'TOKEN';
-    }
-  };
-
   useEffect(() => {
     if (!isOpen) return;
 
@@ -65,8 +50,9 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
         ).query.Registrar.NextFreeParaId.getValue();
         setNextParaId(Number(nextId));
 
-        const paraDeposit = await (client.getTypedApi(metadata.relayChain) as any).query.Registrar
-          .ParaDeposit;
+        const paraDeposit = await (
+          client.getTypedApi(metadata.relayChain) as any
+        ).constants.Registrar.ParaDeposit();
         setReservationCost(toUnitFormatted(network, paraDeposit));
       } catch (err) {
         console.error('Failed to fetch para ID data:', err);
@@ -109,7 +95,7 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className={styles.infoBox}>
               <span>Reservation cost:</span>
-              <strong>{reservationCost ? `${reservationCost} ${getTokenSymbol()}` : 'N/A'}</strong>
+              <strong>{reservationCost ? `${reservationCost} ` : 'N/A'}</strong>
             </div>
           </div>
         )}
