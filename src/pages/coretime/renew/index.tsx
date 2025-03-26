@@ -6,11 +6,17 @@ import { $connections, $network } from '@/api/connection';
 import styles from './renew.module.scss';
 
 interface Renewal {
-  core: number;
+  core?: number;
+  paraId?: number;
   when: number;
+  assignmentValue?: number;
   completion: {
+    type: 'Complete';
     Complete: Array<{
       mask: string;
+      assignment?: {
+        value: number;
+      };
     }>;
   };
 }
@@ -37,26 +43,34 @@ const RenewPage = () => {
 
         const connection = connections[networkChainIds.coretimeChain];
         if (!connection || !connection.client || connection.status !== 'connected') {
-          throw new Error('Connection not available');
+          return;
         }
 
         const client = connection.client;
         const metadata = getNetworkMetadata(network);
         if (!metadata) {
-          throw new Error('Network metadata not found');
+          return;
         }
 
-        const potentialRenewals = await (
+        const potentialRenewalsRaw = await (
           client.getTypedApi(metadata.coretimeChain) as any
-        ).Broker.PotentialRenewals.getEntries();
+        ).query.Broker.PotentialRenewals.getEntries();
 
-        const filteredRenewals = potentialRenewals.filter((renewal: any) => {
-          return renewal.completion.Complete.some(
-            (complete: any) => complete.mask === '0xffffffffffffffffffff'
-          );
+        console.log('Raw Potential Renewals:', potentialRenewalsRaw);
+
+        const parsedRenewals = potentialRenewalsRaw.map((entry: any) => {
+          const core = entry.keyArgs?.[0]?.core;
+          const assignmentValue = entry.value?.completion?.value?.[0]?.assignment?.value;
+
+          return {
+            core,
+            assignmentValue,
+          } as Renewal;
         });
 
-        setRenewals(filteredRenewals);
+        console.log('Parsed Renewals:', parsedRenewals);
+
+        setRenewals(parsedRenewals);
       } catch (err) {
         console.error('Failed to fetch renewals:', err);
         setError('Failed to load renewal data');
@@ -77,10 +91,12 @@ const RenewPage = () => {
 
   const options = [
     { value: 'none', label: 'No need to renew in the current sale' },
-    ...renewals.map((renewal) => ({
-      value: renewal.core.toString(),
-      label: `Core ${renewal.core} | ${renewal.when} Weeks`,
-    })),
+    ...renewals
+      .filter((renewal) => renewal.core !== undefined)
+      .map((renewal) => ({
+        value: `${renewal.core}-${renewal.assignmentValue ?? 'N/A'}`,
+        label: `Core ${renewal.core} | #${renewal.assignmentValue ?? 'N/A'}`,
+      })),
   ];
 
   return (
@@ -98,7 +114,9 @@ const RenewPage = () => {
         {selectedRenewal && selectedRenewal !== 'none' && (
           <div className={styles.details}>
             {renewals
-              .filter((renewal) => renewal.core.toString() === selectedRenewal)
+              .filter(
+                (renewal) => renewal.core !== undefined && String(renewal.core) === selectedRenewal
+              )
               .map((renewal) => (
                 <div key={renewal.core} className={styles.detailRow}>
                   <span>Core number:</span>
