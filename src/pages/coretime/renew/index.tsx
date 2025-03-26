@@ -3,22 +3,14 @@ import { useState, useEffect } from 'react';
 import { useUnit } from 'effector-react';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
+import { toUnitFormatted } from '../../../utils/index';
 import styles from './renew.module.scss';
 
 interface Renewal {
   core?: number;
-  paraId?: number;
   when: number;
   assignmentValue?: number;
-  completion: {
-    type: 'Complete';
-    Complete: Array<{
-      mask: string;
-      assignment?: {
-        value: number;
-      };
-    }>;
-  };
+  price?: bigint;
 }
 
 const RenewPage = () => {
@@ -56,19 +48,21 @@ const RenewPage = () => {
           client.getTypedApi(metadata.coretimeChain) as any
         ).query.Broker.PotentialRenewals.getEntries();
 
-        console.log('Raw Potential Renewals:', potentialRenewalsRaw);
-
         const parsedRenewals = potentialRenewalsRaw.map((entry: any) => {
           const core = entry.keyArgs?.[0]?.core;
-          const assignmentValue = entry.value?.completion?.value?.[0]?.assignment?.value;
+          const when = entry.keyArgs?.[0]?.when;
+
+          const completionValue = entry.value?.completion?.value?.[0];
+          const assignmentValue = completionValue?.assignment?.value;
+          const price = entry.value?.price;
 
           return {
             core,
+            when,
             assignmentValue,
+            price,
           } as Renewal;
         });
-
-        console.log('Parsed Renewals:', parsedRenewals);
 
         setRenewals(parsedRenewals);
       } catch (err) {
@@ -111,20 +105,33 @@ const RenewPage = () => {
           />
         </div>
 
-        {selectedRenewal && selectedRenewal !== 'none' && (
-          <div className={styles.details}>
-            {renewals
-              .filter(
-                (renewal) => renewal.core !== undefined && String(renewal.core) === selectedRenewal
-              )
-              .map((renewal) => (
-                <div key={renewal.core} className={styles.detailRow}>
+        {selectedRenewal &&
+          selectedRenewal !== 'none' &&
+          (() => {
+            const selectedCore = selectedRenewal.split('-')[0];
+            const renewal = renewals.find((r) => String(r.core) === selectedCore);
+
+            if (!renewal) return null;
+
+            return (
+              <div className={styles.details}>
+                <div className={styles.detailRow}>
                   <span>Core number:</span>
                   <span>{renewal.core}</span>
                 </div>
-              ))}
-          </div>
-        )}
+                <div className={styles.detailRow}>
+                  <span>Expiry in (block):</span>
+                  <span>{renewal.when ?? 'N/A'}</span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span>Renewal price:</span>
+                  <span>
+                    {renewal.price !== undefined ? toUnitFormatted(network, renewal.price) : 'N/A'}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
 
         <div className={styles.buttonRow}>
           <div className={styles.buttonWrapper}>
