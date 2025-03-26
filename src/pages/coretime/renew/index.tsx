@@ -1,137 +1,116 @@
 import { Select, Button } from '@region-x/components';
-import styles from './renew.module.scss';
-import { useEffect, useState } from 'react';
-import { $network } from '@/api/connection';
+import { useState, useEffect } from 'react';
 import { useUnit } from 'effector-react';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { $connections, $network } from '@/api/connection';
+import styles from './renew.module.scss';
 
-interface Completion {
-  Complete: {
-    mask: string;
-    assignment: {
-      Task: number;
-    };
-  }[];
-}
-
-interface PotentialRenewal {
+interface Renewal {
   core: number;
   when: number;
-  price: bigint;
-  completion: Completion;
+  completion: {
+    Complete: Array<{
+      mask: string;
+    }>;
+  };
 }
 
-declare const Broker: {
-  PotentialRenewals: {
-    getEntries: () => Promise<PotentialRenewal[]>;
-  };
-};
-
 const RenewPage = () => {
-  const network = useUnit($network);
-  const [potentialRenewals, setPotentialRenewals] = useState<PotentialRenewal[]>([]);
-  const [selectedRenewal, setSelectedRenewal] = useState<PotentialRenewal | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [renewals, setRenewals] = useState<Renewal[]>([]);
+  const [selectedRenewal, setSelectedRenewal] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const network = useUnit($network);
+  const connections = useUnit($connections);
+
   useEffect(() => {
-    const fetchPotentialRenewals = async () => {
+    const fetchRenewals = async () => {
       try {
-        setLoading(true);
-        const renewals = await Broker.PotentialRenewals.getEntries();
+        setIsLoading(true);
+        setError(null);
 
-        const filteredRenewals = renewals.filter((renewal: PotentialRenewal) =>
-          renewal.completion.Complete.some(
-            (complete: { mask: string }) => complete.mask === '0xffffffffffffffffffff'
-          )
-        );
-
-        setPotentialRenewals(filteredRenewals);
-
-        if (filteredRenewals.length === 1) {
-          setSelectedRenewal(filteredRenewals[0]);
+        const networkChainIds = getNetworkChainIds(network);
+        if (!networkChainIds) {
+          throw new Error('Network chain IDs not found');
         }
+
+        const connection = connections[networkChainIds.coretimeChain];
+        if (!connection || !connection.client || connection.status !== 'connected') {
+          throw new Error('Connection not available');
+        }
+
+        const client = connection.client;
+        const metadata = getNetworkMetadata(network);
+        if (!metadata) {
+          throw new Error('Network metadata not found');
+        }
+
+        const potentialRenewals = await (
+          client.getTypedApi(metadata.coretimeChain) as any
+        ).Broker.PotentialRenewals.getEntries();
+
+        const filteredRenewals = potentialRenewals.filter((renewal: any) => {
+          return renewal.completion.Complete.some(
+            (complete: any) => complete.mask === '0xffffffffffffffffffff'
+          );
+        });
+
+        setRenewals(filteredRenewals);
       } catch (err) {
-        console.error('Error fetching potential renewals:', err);
-        setError('Failed to fetch potential renewals');
+        console.error('Failed to fetch renewals:', err);
+        setError('Failed to load renewal data');
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
-    fetchPotentialRenewals();
-  }, [network]);
+    fetchRenewals();
+  }, [network, connections]);
 
-  const handleRenewalSelect = (value: string | null) => {
-    if (value === null) {
-      setSelectedRenewal(null);
-    } else {
-      const selected = potentialRenewals.find(
-        (renewal) => renewal.completion.Complete[0].assignment.Task.toString() === value
-      );
-      setSelectedRenewal(selected || null);
-    }
+  const handleSelectChange = (value: string | null) => {
+    setSelectedRenewal(value ?? '');
   };
 
-  const formatPrice = (price: bigint) => {
-    const dotAmount = Number(price) / 10_000_000_000;
-    return dotAmount.toFixed(3) + ' DOT';
-  };
+  if (isLoading) return <div className={styles.loading}>Loading...</div>;
+  if (error) return <div className={styles.error}>Error: {error}</div>;
 
-  const formatExpiry = (when: number) => {
-    return `Timeslice #${when}`;
-  };
-
-  if (loading) {
-    return <div className={styles.container}>Loading potential renewals...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.container}>{error}</div>;
-  }
+  const options = [
+    { value: 'none', label: 'No need to renew in the current sale' },
+    ...renewals.map((renewal) => ({
+      value: renewal.core.toString(),
+      label: `Core ${renewal.core} | ${renewal.when} Weeks`,
+    })),
+  ];
 
   return (
     <div className={styles.container}>
       <div className={styles.form}>
         <div className={styles.selectWrapper}>
-          <Select
-            options={[
-              ...potentialRenewals.map((renewal) => ({
-                value: renewal.completion.Complete[0].assignment.Task.toString(),
-                label: `Task #${renewal.completion.Complete[0].assignment.Task} | Core ${renewal.core}`,
-              })),
-              { value: null, label: 'No need to renew in the current sale' },
-            ]}
-            onChange={handleRenewalSelect}
-            selectedValue={
-              selectedRenewal?.completion.Complete[0].assignment.Task.toString() || null
-            }
+          <Select<string>
+            options={options}
+            selectedValue={selectedRenewal}
+            onChange={handleSelectChange}
+            placeholder='Select a core to renew'
           />
         </div>
 
-        {selectedRenewal ? (
+        {selectedRenewal && selectedRenewal !== 'none' && (
           <div className={styles.details}>
-            <div className={styles.detailRow}>
-              <span>Core number:</span>
-              <span>{selectedRenewal.core}</span>
-            </div>
-            <div className={styles.detailRow}>
-              <span>Expiry in:</span>
-              <span>{formatExpiry(selectedRenewal.when)}</span>
-            </div>
-            <div className={styles.detailRow}>
-              <span>Renewal price:</span>
-              <span>{formatPrice(selectedRenewal.price)}</span>
-            </div>
-          </div>
-        ) : (
-          <div className={styles.details}>
-            <p>No renewal selected or needed.</p>
+            {renewals
+              .filter((renewal) => renewal.core.toString() === selectedRenewal)
+              .map((renewal) => (
+                <div key={renewal.core} className={styles.detailRow}>
+                  <span>Core number:</span>
+                  <span>{renewal.core}</span>
+                </div>
+              ))}
           </div>
         )}
 
         <div className={styles.buttonRow}>
           <div className={styles.buttonWrapper}>
-            <Button disabled={!selectedRenewal}>Renew</Button>
+            <Button disabled={!selectedRenewal || selectedRenewal === 'none'}>Renew</Button>
           </div>
           <div className={styles.coretimeText}>
             Polkadot Coretime: <span className={styles.amount}>0 DOT</span>
