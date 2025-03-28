@@ -5,6 +5,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
 import { toUnitFormatted } from '../../../utils/index';
 import { timesliceToTimestamp } from '@/utils';
+import { chainData } from '@/chaindata';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import styles from './renew.module.scss';
@@ -152,13 +153,24 @@ const RenewPage = () => {
 
   const options = renewals
     .filter((renewal) => renewal.core !== undefined)
-    .map((renewal) => ({
-      value: `${renewal.core}-${renewal.assignmentValue ?? 'N/A'}`,
-      label: `Core ${renewal.core} | #${renewal.assignmentValue ?? 'N/A'}`,
-    }));
+    .map((renewal) => {
+      const paraId = renewal.assignmentValue;
+      const parachainInfo = paraId !== undefined ? chainData[network]?.[paraId] : null;
+      const parachainName = parachainInfo?.name || (paraId ? `` : 'N/A');
+
+      return {
+        value: `${renewal.core}-${paraId ?? 'N/A'}`,
+        label: `Core ${renewal.core} | ${parachainName} #${paraId ?? 'N/A'}`,
+        icon: parachainInfo?.logo ? (
+          <img src={parachainInfo.logo} alt={parachainInfo.name} className={styles.optionLogo} />
+        ) : undefined,
+      };
+    });
 
   const selectedCore = selectedRenewal.split('-')[0];
   const renewal = renewals.find((r) => String(r.core) === selectedCore);
+  const paraId = renewal?.assignmentValue;
+  const parachainInfo = paraId !== undefined ? chainData[network]?.[paraId] : null;
 
   return (
     <div className={styles.container}>
@@ -179,6 +191,7 @@ const RenewPage = () => {
             <span>Core number:</span>
             <span>{renewal?.core ?? 'N/A'}</span>
           </div>
+
           <div className={styles.detailRow}>
             <span>Time remaining:</span>
             <span>
