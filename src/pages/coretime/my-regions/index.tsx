@@ -1,173 +1,99 @@
-import { $regions, regionsRequested } from '@/coretime/regions';
-import { useUnit } from 'effector-react';
-import { $connections, $network } from '@/api/connection';
-import { RegionCard } from '@region-x/components';
-import { useEffect, useState } from 'react';
-import styles from './my-regions.module.scss';
-import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
+// src/utils/index.ts
+import { Network } from '@/types';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
 
-type RegionDateInfo = {
-  beginDate: string;
-  endDate: string;
+const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
+  const factor = Math.pow(10, decimalDigits);
+  return Math.floor(value * factor) / factor;
 };
 
-TimeAgo.addLocale(en);
+export const formatWithDecimals = (amount: string, decimals: number): string => {
+  if (amount == '0') return `0`;
+  const amountNumber = Number(amount) / 10 ** decimals;
+  if (amountNumber > 1) {
+    return toFixedWithoutRounding(amountNumber, 2).toString();
+  }
 
-export const getRelativeTime = (timestamp: number | Date): string => {
-  const timeAgo = new TimeAgo('en-US');
-  return timeAgo.format(timestamp, {
-    steps: [
-      { formatAs: 'second' },
-      { formatAs: 'minute', minTime: 60 },
-      { formatAs: 'hour', minTime: 60 * 60 },
-      { formatAs: 'day', minTime: 24 * 60 * 60 },
-    ],
-    labels: 'long',
-  });
+  let amountString = amountNumber.toFixed(decimals);
+
+  // Find the position of the first non-zero digit
+  const firstNonZeroPos = amountString.search(/[1-9]/);
+
+  // Extract the part to keep and limit it to 3 characters after the first non-zero digit
+  if (firstNonZeroPos !== -1) {
+    amountString = amountString.slice(0, firstNonZeroPos + 3);
+  }
+
+  return amountString;
 };
 
-const MyRegionsPage = () => {
-  const network = useUnit($network);
-  const regions = useUnit($regions);
-  const saleInfo = useUnit($saleInfo);
-  const connections = useUnit($connections);
-
-  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
-  const [regionDateInfos, setRegionDateInfos] = useState<Record<string, RegionDateInfo>>();
-
-  const countBits = (regionMask: string) => {
-    let count = 0;
-    // Convert hex to bits and count ones.
-    for (let i = 2; i < regionMask.length; ++i) {
-      let v = parseInt(regionMask.slice(i, i + 1), 16);
-      while (v > 0) {
-        if (v & 1) ++count;
-        v >>= 1;
-      }
-    }
-
-    return count;
-  };
-
-  useEffect(() => {
-    if (!saleInfo) return;
-    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
-    const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
-  }, [network, saleInfo]);
-
-  useEffect(() => {
-    saleInfoRequested(network);
-  }, [network]);
-
-  const _timesliceToTimestamp = async (timeslice: number): Promise<bigint | null> => {
-    // Timeslice = 80 relay chain blocks.
-    const associatedRelayChainBlock = timeslice * 80;
-    const networkChainIds = getNetworkChainIds(network);
-
-    if (!networkChainIds) return null;
-    const connection = connections[networkChainIds.relayChain];
-    if (!connection || !connection.client || connection.status !== 'connected') return null;
-
-    const client = connection.client;
-    const metadata = getNetworkMetadata(network);
-    if (!metadata) return null;
-
-    const currentBlockNumber = await (
-      client.getTypedApi(metadata.relayChain) as any
-    ).query.System.Number.getValue();
-
-    const timestamp = await (
-      client.getTypedApi(metadata.relayChain) as any
-    ).query.Timestamp.Now.getValue();
-
-    // All relay chains have block time of 6 seconds.
-    const estimatedTimestamp =
-      timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
-    return estimatedTimestamp;
-  };
-
-  useEffect(() => {
-    regions.map(async (region) => {
-      const beginTimestamp = await _timesliceToTimestamp(region.begin);
-      const endTimestamp = await _timesliceToTimestamp(region.end);
-      if (beginTimestamp && endTimestamp) {
-        const beginDate = getRelativeTime(Number(beginTimestamp.toString()));
-        const endDate = getRelativeTime(Number(endTimestamp.toString()));
-
-        setRegionDateInfos((prev) => ({
-          ...prev,
-          [region.id]: {
-            beginDate,
-            endDate,
-          },
-        }));
-      }
-    });
-  }, [regions]);
-
-  return (
-    <>
-      <div className={styles.container}>
-        {regions.length > 0 ? (
-          regions.map((region) => (
-            <div className={styles['region-card']} key={region.id}>
-              {' '}
-              <RegionCard
-                selected={selectedRegionId == region.id}
-                regionData={{
-                  chainColor: 'greenDark',
-                  chainLabel: 'Coretime Chain',
-                  coreIndex: region.core,
-                  consumed: 0,
-                  // 57600 / 80 = 720
-                  coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
-                  duration: '28 days', // TODO,
-                  name: '', // TODO
-                  regionEnd: regionDateInfos?.[region.id]?.endDate
-                    ? `End: ${regionDateInfos[region.id].endDate}`
-                    : `End: Timeslice #${region.end}`,
-                  regionStart: regionDateInfos?.[region.id]?.beginDate
-                    ? `Begin: ${regionDateInfos[region.id].beginDate}`
-                    : `Begin: Timeslice #${region.begin}`,
-                  currentUsage: 0, // TODO
-                  onClick: () => setSelectedRegionId(region.id),
-                }}
-                task={`Unassigned`} // TODO
-              />
-            </div>
-          ))
-        ) : (
-          <p>No regions available.</p>
-        )}
-      </div>
-      <div>
-        {' '}
-        <nav className={styles.menu}>
-          <ul>
-            <li>
-              <a href='#partition'>Partition</a>
-            </li>
-            <li>
-              <a href='#interface'>Interface</a>
-            </li>
-            <li>
-              <a href='#transfer'>Transfer</a>
-            </li>
-            <li>
-              <a href='#assign'>Assign</a>
-            </li>
-            <li>
-              <a href='#sell'>Sell</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </>
-  );
+export const getTokenSymbol = (network: Network): string => {
+  switch (network) {
+    case Network.POLKADOT:
+      return 'DOT';
+    case Network.KUSAMA:
+      return 'KSM';
+    case Network.PASEO:
+      return 'PAS';
+    case Network.WESTEND:
+      return 'WND';
+    default:
+      return 'TOKEN';
+  }
 };
 
-export default MyRegionsPage;
+export const toUnitFormatted = (network: Network, amount: bigint): string => {
+  let decimals;
+  switch (network) {
+    case Network.POLKADOT:
+      decimals = 10;
+      break;
+    case Network.KUSAMA:
+      decimals = 12;
+      break;
+    case Network.PASEO:
+      decimals = 10;
+      break;
+    case Network.WESTEND:
+      decimals = 12;
+      break;
+    default:
+      decimals = 10;
+      break;
+  }
+
+  const formatted = formatWithDecimals(amount.toString(), decimals);
+  return `${formatted} ${getTokenSymbol(network)}`;
+};
+
+// timesliceToTimestamp function added here
+export const timesliceToTimestamp = async (
+  timeslice: number,
+  network: Network,
+  connections: any
+): Promise<bigint | null> => {
+  // Timeslice = 80 relay chain blocks.
+  const associatedRelayChainBlock = timeslice * 80;
+  const networkChainIds = getNetworkChainIds(network);
+
+  if (!networkChainIds) return null;
+  const connection = connections[networkChainIds.relayChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const client = connection.client;
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+
+  const currentBlockNumber = await (
+    client.getTypedApi(metadata.relayChain) as any
+  ).query.System.Number.getValue();
+
+  const timestamp = await (
+    client.getTypedApi(metadata.relayChain) as any
+  ).query.Timestamp.Now.getValue();
+
+  // All relay chains have block time of 6 seconds.
+  const estimatedTimestamp =
+    timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
+  return estimatedTimestamp;
+};
