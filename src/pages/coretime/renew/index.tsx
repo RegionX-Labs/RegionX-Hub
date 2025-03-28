@@ -16,7 +16,14 @@ interface Renewal {
   assignmentValue?: number;
   price?: bigint;
 }
-
+interface RenewalOption {
+  value: string;
+  label: string;
+  parachainName: string;
+  paraId: number;
+  hasName: boolean;
+  icon?: React.ReactNode;
+}
 TimeAgo.addLocale(en);
 
 export const getRelativeTime = (timestamp: number | Date): string => {
@@ -92,7 +99,10 @@ const RenewPage = () => {
           client.getTypedApi(metadata.coretimeChain) as any
         ).query.Broker.PotentialRenewals.getEntries();
 
-        const parsedRenewals = potentialRenewalsRaw.map((entry: any) => {
+        const activeRenewals: Renewal[] = [];
+        const timeRemainingMap: Record<number, string> = {};
+
+        for (const entry of potentialRenewalsRaw) {
           const core = entry.keyArgs?.[0]?.core;
           const when = entry.keyArgs?.[0]?.when;
 
@@ -100,39 +110,60 @@ const RenewPage = () => {
           const assignmentValue = completionValue?.assignment?.value;
           const price = entry.value?.price;
 
-          return {
+          if (core === undefined) continue;
+
+          const timestamp = await timesliceToTimestamp(when, network, connections);
+          if (!timestamp) continue;
+
+          const now = Date.now();
+          const remainingMs = Number(timestamp) - now;
+
+          if (remainingMs <= 0) continue;
+
+          activeRenewals.push({
             core,
             when,
             assignmentValue,
             price,
-          } as Renewal;
-        });
+          });
 
-        setRenewals(parsedRenewals);
-
-        const timeRemainingMap: Record<number, string> = {};
-        for (const renewal of parsedRenewals) {
-          if (renewal.core !== undefined) {
-            const timestamp = await timesliceToTimestamp(renewal.when, network, connections);
-            if (timestamp) {
-              const now = Date.now();
-              const remainingMs = Number(timestamp) - now;
-              timeRemainingMap[renewal.core] =
-                remainingMs > 0 ? formatDuration(BigInt(remainingMs)) : 'expired';
-            } else {
-              timeRemainingMap[renewal.core] = 'unknown';
-            }
-          }
+          timeRemainingMap[core] = formatDuration(BigInt(remainingMs));
         }
+
+        setRenewals(activeRenewals);
         setTimeRemaining(timeRemainingMap);
 
-        if (parsedRenewals.length > 0 && parsedRenewals[0].core !== undefined) {
-          setSelectedRenewal(
-            `${parsedRenewals[0].core}-${parsedRenewals[0].assignmentValue ?? 'N/A'}`
-          );
-        } else {
-          setSelectedRenewal('');
-        }
+        const sortedOptions = activeRenewals
+          .map((renewal): RenewalOption => {
+            const paraId = renewal.assignmentValue;
+            const parachainInfo = paraId !== undefined ? chainData[network]?.[paraId] : null;
+            const parachainName = parachainInfo?.name || (paraId ? `` : 'N/A');
+            const hasName = !!parachainInfo?.name;
+
+            return {
+              value: `${renewal.core}-${paraId ?? 'N/A'}`,
+              label: `Core ${renewal.core} | ${parachainName} #${paraId ?? 'N/A'}`,
+              icon: parachainInfo?.logo ? (
+                <img
+                  src={parachainInfo.logo}
+                  alt={parachainInfo.name}
+                  className={styles.optionLogo}
+                />
+              ) : undefined,
+              parachainName: parachainName.toLowerCase(),
+              paraId: paraId ?? 0,
+              hasName,
+            };
+          })
+          .sort((a: RenewalOption, b: RenewalOption) => {
+            if (a.hasName && !b.hasName) return -1;
+            if (!a.hasName && b.hasName) return 1;
+            const nameCompare = a.parachainName.localeCompare(b.parachainName);
+            if (nameCompare !== 0) return nameCompare;
+            return a.paraId - b.paraId;
+          });
+
+        setSelectedRenewal(sortedOptions[0]?.value || '');
       } catch (err) {
         console.error('Failed to fetch renewals:', err);
         setError('Failed to load renewal data');
@@ -157,6 +188,7 @@ const RenewPage = () => {
       const paraId = renewal.assignmentValue;
       const parachainInfo = paraId !== undefined ? chainData[network]?.[paraId] : null;
       const parachainName = parachainInfo?.name || (paraId ? `` : 'N/A');
+      const hasName = !!parachainInfo?.name;
 
       return {
         value: `${renewal.core}-${paraId ?? 'N/A'}`,
@@ -164,7 +196,19 @@ const RenewPage = () => {
         icon: parachainInfo?.logo ? (
           <img src={parachainInfo.logo} alt={parachainInfo.name} className={styles.optionLogo} />
         ) : undefined,
+        parachainName: parachainName.toLowerCase(),
+        paraId: paraId ?? 0,
+        hasName,
       };
+    })
+    .sort((a, b) => {
+      if (a.hasName && !b.hasName) return -1;
+      if (!a.hasName && b.hasName) return 1;
+
+      const nameCompare = a.parachainName.localeCompare(b.parachainName);
+      if (nameCompare !== 0) return nameCompare;
+
+      return a.paraId - b.paraId;
     });
 
   const selectedCore = selectedRenewal.split('-')[0];
