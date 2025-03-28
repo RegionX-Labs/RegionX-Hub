@@ -175,6 +175,7 @@ const RenewPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.form}>
+        <p>Select a parachain to renew</p>
         <div className={styles.selectWrapper}>
           {options.length > 0 && (
             <Select<string>
