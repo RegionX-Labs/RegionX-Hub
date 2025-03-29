@@ -5,9 +5,9 @@ import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
 import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import { timesliceToTimestamp } from '@/utils';
 
 type RegionDateInfo = {
   beginDate: string;
@@ -63,37 +63,10 @@ const MyRegionsPage = () => {
     saleInfoRequested(network);
   }, [network]);
 
-  const _timesliceToTimestamp = async (timeslice: number): Promise<bigint | null> => {
-    // Timeslice = 80 relay chain blocks.
-    const associatedRelayChainBlock = timeslice * 80;
-    const networkChainIds = getNetworkChainIds(network);
-
-    if (!networkChainIds) return null;
-    const connection = connections[networkChainIds.relayChain];
-    if (!connection || !connection.client || connection.status !== 'connected') return null;
-
-    const client = connection.client;
-    const metadata = getNetworkMetadata(network);
-    if (!metadata) return null;
-
-    const currentBlockNumber = await (
-      client.getTypedApi(metadata.relayChain) as any
-    ).query.System.Number.getValue();
-
-    const timestamp = await (
-      client.getTypedApi(metadata.relayChain) as any
-    ).query.Timestamp.Now.getValue();
-
-    // All relay chains have block time of 6 seconds.
-    const estimatedTimestamp =
-      timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
-    return estimatedTimestamp;
-  };
-
   useEffect(() => {
     regions.map(async (region) => {
-      const beginTimestamp = await _timesliceToTimestamp(region.begin);
-      const endTimestamp = await _timesliceToTimestamp(region.end);
+      const beginTimestamp = await timesliceToTimestamp(region.begin, network, connections);
+      const endTimestamp = await timesliceToTimestamp(region.end, network, connections);
       if (beginTimestamp && endTimestamp) {
         const beginDate = getRelativeTime(Number(beginTimestamp.toString()));
         const endDate = getRelativeTime(Number(endTimestamp.toString()));
@@ -107,7 +80,7 @@ const MyRegionsPage = () => {
         }));
       }
     });
-  }, [regions]);
+  }, [regions, network, connections]);
 
   return (
     <>
