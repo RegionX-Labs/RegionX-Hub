@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styles from './sale-history.module.scss';
 import { TableComponent } from '@region-x/components';
-import SaleHistoryModal from '../../../components/SaleHistoryModal';
+import SaleHistoryModal from '../../../components/SakeHistoryModal';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
