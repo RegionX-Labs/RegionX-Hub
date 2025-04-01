@@ -119,10 +119,16 @@ const modalTableData: Record<string, TableData>[] = [
 
 const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({ open, onClose, saleId }) => {
   if (!open) return null;
+  const handleOverlayClick = () => {
+    onClose();
+  };
 
+  const handleModalClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
+    <div className={styles.overlay} onClick={handleOverlayClick}>
+      <div className={styles.modal} onClick={handleModalClick}>
         <div className={styles.header}>
           <h2 className={styles.title}>Coretime Sale#{saleId}</h2>
           <button onClick={onClose} className={styles.closeButton}>
