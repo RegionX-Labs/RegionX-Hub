@@ -3,7 +3,7 @@ import { getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
-export const saleInfoRequested = createEvent<Network>();
+export const latestSaleRequested = createEvent<Network>();
 
 export const $saleInfo = createStore<SaleInfo | null>(null);
 
@@ -48,7 +48,7 @@ const getSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | 
 });
 
 sample({
-  clock: saleInfoRequested,
+  clock: latestSaleRequested,
   target: getSaleInfoFx,
 });
 
