@@ -65,20 +65,20 @@ const fetchAllSalesFx = createEffect(async (network: Network): Promise<SaleInfo[
   const res = await fetchGraphql(
     getNetworkCoretimeIndexer(network),
     `{
-      sales {
-        nodes {
-          saleCycle
-          startPrice
-          endPrice
-          regionEnd
-          regionBegin
-          saleStart
-          leadinLength
-          idealCoresSold
-          coresOffered
-        }
+       sales(orderBy: SALE_CYCLE_DESC) {
+      nodes {
+        saleCycle
+        startPrice
+        endPrice
+        regionEnd
+        regionBegin
+        saleStart
+        leadinLength
+        idealCoresSold
+        coresOffered
       }
-    }`
+    }
+  }`
   );
 
   const { status, data } = res;
