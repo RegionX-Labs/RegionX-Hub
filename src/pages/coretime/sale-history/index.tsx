@@ -166,14 +166,22 @@ const SaleHistoryPage = () => {
         <TableComponent data={tableData} pageSize={8} />
       </div>
 
-      {modalOpen && selectedSaleId !== null && (
-        <SaleHistoryModal
-          open={modalOpen}
-          saleId={selectedSaleId}
-          purchases={modalPurchases}
-          onClose={() => setModalOpen(false)}
-        />
-      )}
+      {modalOpen &&
+        selectedSaleId !== null &&
+        (() => {
+          const sale = saleInfo.find((s) => s.saleCycle === selectedSaleId);
+          if (!sale) return null;
+
+          return (
+            <SaleHistoryModal
+              open={modalOpen}
+              saleId={selectedSaleId}
+              sale={sale}
+              purchases={modalPurchases}
+              onClose={() => setModalOpen(false)}
+            />
+          );
+        })()}
     </div>
   );
 };
