@@ -22,7 +22,13 @@ type TableData = {
 const formatDate = (timestamp: Date | bigint | null): string => {
   if (!timestamp) return '-';
   const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
-  return date.toLocaleString();
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 };
 
 const SaleHistoryPage = () => {
