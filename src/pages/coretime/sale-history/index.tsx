@@ -4,8 +4,13 @@ import styles from './sale-history.module.scss';
 import { TableComponent } from '@region-x/components';
 import SaleHistoryModal from '../../../components/SaleHistoryModal';
 import { $saleHistory, saleHistoryRequested, type SaleInfo as Sale } from '@/coretime/saleInfo';
+import {
+  $purchaseHistory,
+  purchaseHistoryRequested,
+  PurchaseHistoryItem,
+} from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
-import { timesliceToTimestamp, blockToTimestamp } from '@/utils';
+import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -14,20 +19,22 @@ type TableData = {
   searchKey?: string;
 };
 
-const formatDate = (timestamp: bigint | null): string => {
+const formatDate = (timestamp: Date | bigint | null): string => {
   if (!timestamp) return '-';
-  const date = new Date(Number(timestamp));
+  const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
   return date.toLocaleString();
 };
 
 const SaleHistoryPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSaleId, setSelectedSaleId] = useState<number | null>(null);
+  const [modalPurchases, setModalPurchases] = useState<Array<Record<string, TableData>>>([]);
   const [tableData, setTableData] = useState<Array<Record<string, TableData>>>([]);
 
   const network = useUnit($network);
   const saleInfo = useUnit($saleHistory);
   const connections = useUnit($connections);
+  const purchaseHistory = useUnit($purchaseHistory);
 
   useEffect(() => {
     if (network) {
@@ -93,17 +100,62 @@ const SaleHistoryPage = () => {
     processData();
   }, [saleInfo, network, connections]);
 
-  const handleSaleClick = useCallback((e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('/sales/')) {
-      e.preventDefault();
-      const saleId = target.getAttribute('href')?.split('/sales/')[1];
-      if (saleId) {
-        setSelectedSaleId(parseInt(saleId, 10));
-        setModalOpen(true);
+  const handleSaleClick = useCallback(
+    (e: React.MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('/sales/')) {
+        e.preventDefault();
+        const saleId = target.getAttribute('href')?.split('/sales/')[1];
+        if (saleId && network) {
+          const id = parseInt(saleId, 10);
+          setSelectedSaleId(id);
+          setModalOpen(true);
+          purchaseHistoryRequested({ network, saleCycle: id });
+        }
       }
-    }
-  }, []);
+    },
+    [network]
+  );
+
+  useEffect(() => {
+    if (!network) return;
+
+    const formatted = purchaseHistory.map((purchase: PurchaseHistoryItem) => ({
+      ExtrinsicID: {
+        cellType: 'link' as const,
+        data: purchase.extrinsicId,
+        link: '#',
+        searchKey: purchase.extrinsicId,
+      },
+      Account: {
+        cellType: 'address' as const,
+        data: purchase.address,
+        searchKey: purchase.address,
+      },
+      Core: {
+        cellType: 'text' as const,
+        data: String(purchase.core),
+        searchKey: String(purchase.core),
+      },
+      Price: {
+        cellType: 'text' as const,
+        data: toUnitFormatted(network, BigInt(purchase.price)),
+        searchKey: String(purchase.price),
+      },
+      SalesType: {
+        cellType: 'text' as const,
+        data: purchase.type,
+        searchKey: purchase.type,
+      },
+      Timestamp: {
+        cellType: 'text' as const,
+        data: formatDate(purchase.timestamp),
+        searchKey: formatDate(purchase.timestamp),
+      },
+    }));
+
+    setModalPurchases(formatted);
+  }, [purchaseHistory, network]);
 
   return (
     <div className={styles.sale_history_table}>
@@ -118,6 +170,7 @@ const SaleHistoryPage = () => {
         <SaleHistoryModal
           open={modalOpen}
           saleId={selectedSaleId}
+          purchases={modalPurchases}
           onClose={() => setModalOpen(false)}
         />
       )}
