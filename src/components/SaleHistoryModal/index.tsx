@@ -67,9 +67,6 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
       <div className={styles.modal} onClick={handleModalClick}>
         <div className={styles.header}>
           <h2 className={styles.title}>Coretime Sale #{saleId}</h2>
-          <button onClick={onClose} className={styles.closeButton}>
-            ×
-          </button>
         </div>
         <div className={styles.details}>
           <div className={styles.detailItem}>
