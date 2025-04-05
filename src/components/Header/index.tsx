@@ -6,7 +6,8 @@ import styles from './header.module.scss';
 import AccountSelector from '@/components/AccountSelector';
 import NetworkSelector from '@/components/NetworkSelector';
 import WalletModal from '../WalletModal/WalletModal';
-import CoretimeMenu from '../CoretimeMenu/index';
+import CoretimeMenu from '../CoretimeMenu';
+import RpcSettingsModal from '@/components/RpcSettingsModal';
 import { Button } from '@region-x/components';
 import { $loadedAccounts } from '@/wallet';
 import DownArrow from '../../../public/DownArrow.svg';
@@ -14,6 +15,7 @@ import DownArrow from '../../../public/DownArrow.svg';
 const Header: React.FC = () => {
   const accounts = useUnit($loadedAccounts);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCoretimeMenuOpen, setIsCoretimeMenuOpen] = useState(false);
   const router = useRouter();
@@ -81,6 +83,17 @@ const Header: React.FC = () => {
         ) : (
           <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
         )}
+        <Button
+          onClick={() => {
+            setIsRpcModalOpen(true);
+            setIsMenuOpen(false);
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            RPC
+            <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
+          </div>
+        </Button>
       </div>
 
       <div className={`${styles.slideMenu} ${isMenuOpen ? styles.open : ''}`}>
@@ -136,11 +149,29 @@ const Header: React.FC = () => {
           ) : (
             <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
           )}
+          <Button
+            onClick={() => {
+              setIsRpcModalOpen(true);
+              setIsMenuOpen(false);
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              RPC
+              <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
+            </div>
+          </Button>
         </div>
       </div>
 
       {isMenuOpen && <div className={styles.overlay} onClick={toggleMenu} />}
       <WalletModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <RpcSettingsModal
+        isOpen={isRpcModalOpen}
+        onClose={() => setIsRpcModalOpen(false)}
+        onRpcChange={(url) => {
+          console.log('RPC changed to:', url);
+        }}
+      />
     </nav>
   );
 };
