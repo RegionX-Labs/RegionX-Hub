@@ -1,0 +1,28 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.sale_history_table {
+  margin-top: 130px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: $white;
+  border-radius: 10px;
+  overflow-x: auto;
+  padding: 25px;
+}
+
+.tableWrapper {
+  min-width: 600px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subheading {
+  font-size: 14px;
+  color: #667085;
+  margin-bottom: 16px;
+}

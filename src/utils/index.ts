@@ -66,7 +66,6 @@ export const toUnitFormatted = (network: Network, amount: bigint): string => {
   return `${formatted} ${getTokenSymbol(network)}`;
 };
 
-// timesliceToTimestamp function added here
 export const timesliceToTimestamp = async (
   timeslice: number,
   network: Network,
@@ -95,5 +94,32 @@ export const timesliceToTimestamp = async (
   // All relay chains have block time of 6 seconds.
   const estimatedTimestamp =
     timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
+  return estimatedTimestamp;
+};
+
+export const blockToTimestamp = async (
+  blockNumber: number,
+  network: Network,
+  connections: any
+): Promise<bigint | null> => {
+  const networkChainIds = getNetworkChainIds(network);
+  if (!networkChainIds) return null;
+  const connection = connections[networkChainIds.relayChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const client = connection.client;
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+
+  const currentBlockNumber = await (
+    client.getTypedApi(metadata.relayChain) as any
+  ).query.System.Number.getValue();
+
+  const timestamp = await (
+    client.getTypedApi(metadata.relayChain) as any
+  ).query.Timestamp.Now.getValue();
+
+  // All relay chains have block time of 6 seconds.
+  const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;
 };

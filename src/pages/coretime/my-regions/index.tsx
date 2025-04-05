@@ -4,7 +4,7 @@ import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
-import { $saleInfo, saleInfoRequested } from '@/coretime/saleInfo';
+import { $saleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { timesliceToTimestamp } from '@/utils';
@@ -60,7 +60,7 @@ const MyRegionsPage = () => {
   }, [network, saleInfo]);
 
   useEffect(() => {
-    saleInfoRequested(network);
+    latestSaleRequested(network);
   }, [network]);
 
   useEffect(() => {
