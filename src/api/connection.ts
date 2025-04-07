@@ -23,6 +23,12 @@ const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
 export const $network = createStore<Network>(Network.POLKADOT);
 
+type RPCs= {
+  relayRpc: string | null,
+  coretimeRpc: string | null,
+}
+export const $selectedRPCs = createStore<RPCs>({coretimeRpc: null, relayRpc: null});
+
 const getChainsFx = createEffect((): Record<ChainId, Chain> => {
   const _chains: Record<ChainId, Chain> = Object.fromEntries(
     Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
@@ -46,14 +52,14 @@ export const createPolkadotClientFx = createEffect(
     const client = createClient(
       withPolkadotSdkCompat(
         getWsProvider({
-          endpoints: params.nodes,
+          endpoints: [params.nodes[0]],
           timeout: 3500,
           onStatusChanged: (_status) => {
             switch (_status.type) {
               // Connecting
               case 0:
                 status = 'connecting';
-                console.info('⚫️ Connecting to ==> ', params.name);
+                console.info('⚫️ Connecting to ==> ', params.name + ' ' + params.nodes[0]);
                 boundStatusChange({ chainId: params.chainId, status });
                 break;
               // Connected

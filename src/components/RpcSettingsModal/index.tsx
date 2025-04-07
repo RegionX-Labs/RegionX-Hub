@@ -159,7 +159,6 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
         </div>
 
         <div className={styles.footer}>
-          <Button onClick={onClose}>Cancel</Button>
           <Button onClick={handleSave}>Save</Button>
         </div>
       </div>
