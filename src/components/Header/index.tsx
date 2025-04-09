@@ -41,61 +41,66 @@ const Header: React.FC = () => {
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.burgerIcon} onClick={toggleMenu}>
-        ☰
-      </div>
-
-      <Image
-        src='/logo.png'
-        alt='Logo'
-        className={`${styles.logo} ${isMenuOpen ? styles.logoShifted : ''}`}
-        width={1463}
-        height={391}
-        onClick={() => handleNavigation('/')}
-      />
-
-      <div className={styles.desktopLinks}>
-        <ul className={styles.navList}>
-          <li className={styles.navItem} onClick={() => handleNavigation('')}>
-            Home
-          </li>
-          <CoretimeMenu />
-          <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
-            Cross-Chain
-          </li>
-          <li className={styles.navItem} onClick={() => handleNavigation('parachain-dashboard')}>
-            Parachain Dashboard
-          </li>
-          <li className={styles.navItem} onClick={() => handleNavigation('secondary-market')}>
-            Secondary Market
-          </li>
-        </ul>
-      </div>
-
-      <div className={styles.desktopContent}>
-        <div className={styles.networkSelector} style={{ width: '150px' }}>
-          <NetworkSelector />
+      <div className={styles.navbarInner}>
+        <div className={styles.burgerIcon} onClick={toggleMenu}>
+          ☰
         </div>
-        {accounts.length > 0 ? (
-          <div className={styles.accSelector}>
-            <AccountSelector />
+
+        <div className={styles.leftSection}>
+          <Image
+            src='/WhiteLogo.png'
+            alt='Logo'
+            className={styles.logo}
+            width={1829}
+            height={782}
+            onClick={() => handleNavigation('/')}
+          />
+        </div>
+
+        <div className={styles.desktopLinks}>
+          <ul className={styles.navList}>
+            <li className={styles.navItem} onClick={() => handleNavigation('')}>
+              Home
+            </li>
+            <CoretimeMenu />
+            <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
+              Cross-Chain
+            </li>
+            <li className={styles.navItem} onClick={() => handleNavigation('parachain-dashboard')}>
+              Parachain Dashboard
+            </li>
+            <li className={styles.navItem} onClick={() => handleNavigation('secondary-market')}>
+              Secondary Market
+            </li>
+          </ul>
+        </div>
+
+        <div className={styles.desktopContent}>
+          <div className={styles.networkSelector} style={{ width: '150px' }}>
+            <NetworkSelector />
           </div>
-        ) : (
-          <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
-        )}
-        <Button
-          onClick={() => {
-            setIsRpcModalOpen(true);
-            setIsMenuOpen(false);
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            RPC
-            <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
-          </div>
-        </Button>
+          {accounts.length > 0 ? (
+            <div className={styles.accSelector}>
+              <AccountSelector />
+            </div>
+          ) : (
+            <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
+          )}
+          <Button
+            onClick={() => {
+              setIsRpcModalOpen(true);
+              setIsMenuOpen(false);
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              RPC
+              <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
+            </div>
+          </Button>
+        </div>
       </div>
 
+      {/* Mobile Menu, Modals, and Overlays (no changes) */}
       <div className={`${styles.slideMenu} ${isMenuOpen ? styles.open : ''}`}>
         <ul className={styles.navList}>
           <li className={styles.navItem} onClick={() => handleNavigation('')}>

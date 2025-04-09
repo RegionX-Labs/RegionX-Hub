@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.8",
     "@polkadot-api/descriptors": "file:.papi/descriptors",
-    "@region-x/components": "^0.1.34",
+    "@region-x/components": "^0.1.37",
     "effector": "^23.3.0",
     "effector-react": "^23.3.0",
     "humanize-duration": "^3.32.1",
