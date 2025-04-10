@@ -59,7 +59,7 @@
   display: flex;
   gap: 20px;
   color: $white;
-  font-size: 12px;
+  font-size: 14px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -190,7 +190,7 @@
 
 .subMenuItem {
   padding: 10px 15px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
   background-color: rgba($greenPrimary, 0.1);
@@ -239,7 +239,7 @@
   }
 
   .navItem {
-    font-size: 12px;
+    font-size: 14px;
     padding: 8px 12px;
   }
 
