@@ -9,8 +9,8 @@ import {
 } from '@/assets/networks/relay';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
-import { Select } from '@region-x/components';
 import styles from './network.module.scss';
+import Select from '../elements/Select';
 
 const NetworkSelector = () => {
   const router = useRouter();

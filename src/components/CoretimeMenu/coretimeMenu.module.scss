@@ -20,9 +20,8 @@
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
-  border-radius: 5px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: $darkBackground2;
+  border-radius: 10px;
   list-style: none;
   padding: 8px 10px;
   margin: 0;
@@ -46,12 +45,12 @@
   padding: 12px 10px;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: #ffffff;
   transition: background 0.2s ease-in-out;
   border-radius: 5px;
 
   &:hover {
-    background: #f0f0f0;
+    background: $darkBackground1;
   }
 }
 
