@@ -37,6 +37,21 @@
   transition: margin-left 0.3s ease;
   cursor: pointer;
 }
+.leftSection {
+  display: flex;
+  align-items: center;
+}
+
+.burgerAndLogo {
+  display: flex;
+  align-items: center;
+
+  @media (min-width: 1281px) {
+    .burgerIcon {
+      display: none;
+    }
+  }
+}
 
 .desktopLinks {
   position: absolute;
@@ -126,7 +141,7 @@
   display: none;
   font-size: 24px;
   cursor: pointer;
-  margin-right: 20px;
+  margin-right: 0px;
 
   @media (max-width: 1281px) {
     display: block;

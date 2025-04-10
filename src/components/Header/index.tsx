@@ -42,19 +42,20 @@ const Header: React.FC = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarInner}>
-        <div className={styles.burgerIcon} onClick={toggleMenu}>
-          ☰
-        </div>
-
         <div className={styles.leftSection}>
-          <Image
-            src='/WhiteLogo.png'
-            alt='Logo'
-            className={styles.logo}
-            width={1829}
-            height={782}
-            onClick={() => handleNavigation('/')}
-          />
+          <div className={styles.burgerAndLogo}>
+            <div className={styles.burgerIcon} onClick={toggleMenu}>
+              ☰
+            </div>
+            <Image
+              src='/WhiteLogo.png'
+              alt='Logo'
+              className={styles.logo}
+              width={1829}
+              height={782}
+              onClick={() => handleNavigation('/')}
+            />
+          </div>
         </div>
 
         <div className={styles.desktopLinks}>
@@ -100,7 +101,6 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu, Modals, and Overlays (no changes) */}
       <div className={`${styles.slideMenu} ${isMenuOpen ? styles.open : ''}`}>
         <ul className={styles.navList}>
           <li className={styles.navItem} onClick={() => handleNavigation('')}>
