@@ -3,8 +3,8 @@ import styles from './CoreComparison.module.scss';
 export default function CoreComparison() {
   return (
     <div className={styles.coreComparisonCard}>
-      <p className={styles.title}>Renewal vs New Core</p>
-      <h2 className={styles.value}>65.740</h2>
+      <p className={styles.title}>Renewal vs New Core price difference</p>
+      <h2 className={styles.value}>+65.740</h2>
       <p className={styles.subtext}>
         Is <span className={styles.positive}>+30%</span> more convinient the renewal
       </p>

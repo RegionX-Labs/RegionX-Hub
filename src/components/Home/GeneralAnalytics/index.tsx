@@ -17,10 +17,10 @@ export default function GeneralAnalytics() {
       </div>
 
       <div className={styles.metricBox}>
-        <p className={styles.metricLabel}>Total Coretime Sold</p>
+        <p className={styles.metricLabel}>Total Cores Sold</p>
         <h3 className={styles.coretimeValue}>124,420</h3>
         <p className={styles.gain}>
-          You gained <span className={styles.gainAmount}>+$420.00</span> this week
+          Revenue compared to last month <span className={styles.gainAmount}>+$420.00</span>
         </p>
         <div className={styles.splitCards}>
           <div className={styles.splitCard}>
@@ -40,10 +40,10 @@ export default function GeneralAnalytics() {
         </div>
       </div>
       <div className={styles.metricBox}>
-        <p className={styles.metricLabel}>Total Coretime Sold</p>
+        <p className={styles.metricLabel}>Total Cores Sold</p>
         <h3 className={styles.coretimeValue}>124,420</h3>
         <p className={styles.gain}>
-          You gained <span className={styles.gainAmount}>+$420.00</span> this week
+          Revenue compared to last month <span className={styles.gainAmount}>+$420.00</span>
         </p>
         <div className={styles.splitCards}>
           <div className={styles.splitCard}>
@@ -63,10 +63,10 @@ export default function GeneralAnalytics() {
         </div>
       </div>
       <div className={styles.metricBox}>
-        <p className={styles.metricLabel}>Total Coretime Sold</p>
+        <p className={styles.metricLabel}>Total Cores Sold</p>
         <h3 className={styles.coretimeValue}>124,420</h3>
         <p className={styles.gain}>
-          You gained <span className={styles.gainAmount}>+$420.00</span> this week
+          Revenue compared to last month <span className={styles.gainAmount}>+$420.00</span>
         </p>
         <div className={styles.splitCards}>
           <div className={styles.splitCard}>

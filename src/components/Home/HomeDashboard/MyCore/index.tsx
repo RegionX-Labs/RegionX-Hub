@@ -14,7 +14,7 @@ export default function MyCore() {
 
   return (
     <div className={styles.myCoreCard}>
-      <p className={styles.title}>My Core</p>
+      <p className={styles.title}>My Cores</p>
 
       <div className={styles.selectBox}>
         <Select
