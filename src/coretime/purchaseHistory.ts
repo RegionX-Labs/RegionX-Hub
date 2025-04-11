@@ -77,7 +77,6 @@ const getPurchaseHistoryFx = createEffect(
   }
 );
 
-// Split and route result into stores
 sample({
   clock: purchaseHistoryRequested,
   target: getPurchaseHistoryFx,

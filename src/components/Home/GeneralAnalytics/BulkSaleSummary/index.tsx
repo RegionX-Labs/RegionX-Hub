@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useUnit } from 'effector-react';
-import styles from './TotalCores.module.scss';
+import styles from './BulkSaleSummary.module.scss';
 
 import { $network } from '@/api/connection';
 import { latestSaleRequested, $latestSaleInfo } from '@/coretime/saleInfo';
@@ -12,7 +12,7 @@ import {
 } from '@/coretime/purchaseHistory';
 import { toUnitFormatted } from '@/utils';
 
-export default function GeneralAnalytics() {
+export default function BulkSaleSummary() {
   const [network, saleInfo, purchaseHistory, totalPurchases] = useUnit([
     $network,
     $latestSaleInfo,

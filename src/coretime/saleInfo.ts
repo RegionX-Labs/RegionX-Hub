@@ -17,6 +17,7 @@ export type SaleInfo = {
   idealCoresSold: number;
   coresOffered: number;
   startPrice: string;
+  totalCount: number;
 };
 
 const fetchLatestSaleInfo = async (network: Network): Promise<ApiResponse> => {

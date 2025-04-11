@@ -1,5 +1,5 @@
 import styles from './GeneralAnalytics.module.scss';
-import TotalCores from './TotalCores';
+import BulkSaleSummary from './BulkSaleSummary/index';
 
 export default function GeneralAnalytics() {
   return (
@@ -16,7 +16,7 @@ export default function GeneralAnalytics() {
           <li className={styles.tab}>Market</li>
         </ul>
       </div>
-      <TotalCores />
+      <BulkSaleSummary />
     </div>
   );
 }
