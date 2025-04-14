@@ -4,7 +4,7 @@ import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '@region-x/components';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
-import { $saleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { timesliceToTimestamp } from '@/utils';
@@ -32,7 +32,7 @@ export const getRelativeTime = (timestamp: number | Date): string => {
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
-  const saleInfo = useUnit($saleInfo);
+  const saleInfo = useUnit($latestSaleInfo);
   const connections = useUnit($connections);
 
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);

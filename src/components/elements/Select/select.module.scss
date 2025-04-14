@@ -18,7 +18,12 @@
       height: 20px;
     }
   }
-
+  @media (max-width: 1725px) {
+    .accSelector,
+    .desktopContent {
+      width: 100px;
+    }
+  }
   .selectBox {
     padding: 10px;
     border: 1px solid $darkBackground1;

@@ -5,7 +5,7 @@ import { createEffect, createEvent, createStore, sample } from 'effector';
 
 export const latestSaleRequested = createEvent<Network>();
 
-export const $saleInfo = createStore<SaleInfo | null>(null);
+export const $latestSaleInfo = createStore<SaleInfo | null>(null);
 
 export type SaleInfo = {
   saleCycle: number;
@@ -17,6 +17,26 @@ export type SaleInfo = {
   idealCoresSold: number;
   coresOffered: number;
   startPrice: string;
+  coresSold: number;
+};
+
+export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
+  const query = `{
+    purchases(
+      filter: { saleCycle: { equalTo: ${saleCycle} } }
+      orderBy: HEIGHT_DESC
+    ) {
+      nodes {
+        price
+        purchaseType
+      }
+    }
+  }`;
+
+  const res = await fetchGraphql(getNetworkCoretimeIndexer(network), query);
+  if (res.status !== 200) return null;
+
+  return res.data.purchases.nodes;
 };
 
 const fetchLatestSaleInfo = async (network: Network): Promise<ApiResponse> => {
@@ -38,7 +58,7 @@ const fetchLatestSaleInfo = async (network: Network): Promise<ApiResponse> => {
   return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
-const getSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | null> => {
+const getLatestSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | null> => {
   const res = await fetchLatestSaleInfo(network);
   const { status, data } = res;
   if (status !== 200) return null;
@@ -49,12 +69,12 @@ const getSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | 
 
 sample({
   clock: latestSaleRequested,
-  target: getSaleInfoFx,
+  target: getLatestSaleInfoFx,
 });
 
 sample({
-  clock: getSaleInfoFx.doneData,
-  target: $saleInfo,
+  clock: getLatestSaleInfoFx.doneData,
+  target: $latestSaleInfo,
 });
 
 export const saleHistoryRequested = createEvent<Network>();
