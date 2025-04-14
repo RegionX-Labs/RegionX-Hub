@@ -25,6 +25,7 @@ export type PurchaseHistoryItem = {
 export type PurchaseHistoryResult = {
   items: PurchaseHistoryItem[];
   totalCount: number;
+  saleCycle: number;
 };
 
 const fetchPurchaseHistory = async (
@@ -56,7 +57,7 @@ const getPurchaseHistoryFx = createEffect(
   async (payload: { network: Network; saleCycle: number }): Promise<PurchaseHistoryResult> => {
     const res: ApiResponse = await fetchPurchaseHistory(payload.network, payload.saleCycle);
     const { status, data } = res;
-    if (status !== 200) return { items: [], totalCount: 0 };
+    if (status !== 200) return { items: [], totalCount: 0, saleCycle: payload.saleCycle };
 
     const items = (data.purchases.nodes as Array<any>).map(
       ({ account, core, extrinsicId, height, price, purchaseType, timestamp }) =>
@@ -73,6 +74,7 @@ const getPurchaseHistoryFx = createEffect(
     return {
       items,
       totalCount: data.purchases.totalCount,
+      saleCycle: payload.saleCycle,
     };
   }
 );
@@ -84,7 +86,9 @@ sample({
 
 sample({
   clock: getPurchaseHistoryFx.doneData,
-  fn: ({ items }) => items,
+  source: purchaseHistoryRequested,
+  filter: (params, result) => result.saleCycle === params.saleCycle,
+  fn: (_, result) => result.items,
   target: $purchaseHistory,
 });
 

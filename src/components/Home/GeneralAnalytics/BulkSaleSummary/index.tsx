@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './BulkSaleSummary.module.scss';
 
@@ -6,24 +6,25 @@ import { $network } from '@/api/connection';
 import { latestSaleRequested, $latestSaleInfo } from '@/coretime/saleInfo';
 import {
   $purchaseHistory,
-  $totalPurchases,
   purchaseHistoryRequested,
   PurchaseType,
 } from '@/coretime/purchaseHistory';
 import { toUnitFormatted } from '@/utils';
+import { fetchGraphql } from '@/graphql';
+import { getNetworkCoretimeIndexer } from '@/network';
 
 export default function BulkSaleSummary() {
-  const [network, saleInfo, purchaseHistory, totalPurchases] = useUnit([
+  const [network, saleInfo, purchaseHistory] = useUnit([
     $network,
     $latestSaleInfo,
     $purchaseHistory,
-    $totalPurchases,
   ]);
 
+  const [previousBulkRevenue, setPreviousBulkRevenue] = useState<number | null>(null);
+  const [previousRenewalRevenue, setPreviousRenewalRevenue] = useState<number | null>(null);
+
   useEffect(() => {
-    if (network) {
-      latestSaleRequested(network);
-    }
+    if (network) latestSaleRequested(network);
   }, [network]);
 
   useEffect(() => {
@@ -32,35 +33,95 @@ export default function BulkSaleSummary() {
     }
   }, [network, saleInfo]);
 
+  useEffect(() => {
+    const fetchPrevious = async () => {
+      if (!network || !saleInfo) return;
+
+      const query = `{
+        purchases(
+          filter: {saleCycle: {equalTo: ${saleInfo.saleCycle - 1}}}
+          orderBy: HEIGHT_DESC
+        ) {
+          nodes {
+            price
+            purchaseType
+          }
+        }
+      }`;
+
+      const res = await fetchGraphql(getNetworkCoretimeIndexer(network), query);
+      if (res.status !== 200) return;
+
+      const nodes = res.data.purchases.nodes;
+
+      const bulkOnly = nodes.filter((item: any) => item.purchaseType === PurchaseType.BULK);
+      const renewalOnly = nodes.filter((item: any) => item.purchaseType === PurchaseType.RENEWAL);
+
+      const bulkSum = bulkOnly.reduce((acc: number, item: any) => acc + parseInt(item.price), 0);
+      const renewalSum = renewalOnly.reduce(
+        (acc: number, item: any) => acc + parseInt(item.price),
+        0
+      );
+
+      setPreviousBulkRevenue(bulkSum);
+      setPreviousRenewalRevenue(renewalSum);
+    };
+
+    fetchPrevious();
+  }, [network, saleInfo]);
+
   const bulkRevenue = purchaseHistory
     .filter((item) => item.type === PurchaseType.BULK)
     .reduce((sum, item) => sum + item.price, 0);
 
-  const Renewals = purchaseHistory
+  const renewals = purchaseHistory
     .filter((item) => item.type === PurchaseType.RENEWAL)
     .reduce((sum, item) => sum + item.price, 0);
+
+  const gainRaw = previousBulkRevenue !== null ? bulkRevenue - previousBulkRevenue : 0;
+  const gainSign = gainRaw >= 0 ? '+' : '-';
+  const gainAmount = toUnitFormatted(network, BigInt(Math.abs(gainRaw)));
+
+  const bulkChangePercent =
+    previousBulkRevenue && previousBulkRevenue !== 0
+      ? ((bulkRevenue - previousBulkRevenue) / previousBulkRevenue) * 100
+      : 0;
+
+  const renewalChangePercent =
+    previousRenewalRevenue && previousRenewalRevenue !== 0
+      ? ((renewals - previousRenewalRevenue) / previousRenewalRevenue) * 100
+      : 0;
+
+  const formatPercent = (percent: number) => `${percent >= 0 ? '+' : ''}${percent.toFixed(1)}%`;
 
   return (
     <div className={styles.analyticsCard}>
       <div className={styles.metricBox}>
         <p className={styles.metricLabel}>Total Sales</p>
-        <h3 className={styles.coretimeValue}>{totalPurchases.toLocaleString()}</h3>
+        <h3 className={styles.coretimeValue}>{purchaseHistory.length.toLocaleString()}</h3>
         <p className={styles.gain}>
-          Compared to last month <span className={styles.gainAmount}>+420</span>
+          Compared to last month{' '}
+          <span className={styles.gainAmount}>
+            {previousBulkRevenue === null ? 'Loading...' : `${gainSign}${gainAmount}`}
+          </span>
         </p>
         <div className={styles.splitCards}>
           <div className={styles.splitCard}>
             <p className={styles.splitLabel}>Spent on Bulk sale</p>
             <div className={styles.splitDetails}>
               <span>{toUnitFormatted(network, BigInt(bulkRevenue))}</span>
-              <span className={styles.positive}>+3.4%</span>
+              <span className={bulkChangePercent >= 0 ? styles.positive : styles.negative}>
+                {formatPercent(bulkChangePercent)}
+              </span>
             </div>
           </div>
           <div className={styles.splitCard}>
             <p className={styles.splitLabel}>Spent on Renewals</p>
             <div className={styles.splitDetails}>
-              <span>{toUnitFormatted(network, BigInt(Renewals))}</span>
-              <span className={styles.negative}>-0.1%</span>
+              <span>{toUnitFormatted(network, BigInt(renewals))}</span>
+              <span className={renewalChangePercent >= 0 ? styles.positive : styles.negative}>
+                {formatPercent(renewalChangePercent)}
+              </span>
             </div>
           </div>
         </div>
