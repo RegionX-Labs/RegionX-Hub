@@ -3,15 +3,13 @@ import { useUnit } from 'effector-react';
 import styles from './BulkSaleSummary.module.scss';
 
 import { $network } from '@/api/connection';
-import { latestSaleRequested, $latestSaleInfo } from '@/coretime/saleInfo';
+import { latestSaleRequested, $latestSaleInfo, fetchSaleInfoAt } from '@/coretime/saleInfo';
 import {
   $purchaseHistory,
   purchaseHistoryRequested,
   PurchaseType,
 } from '@/coretime/purchaseHistory';
 import { toUnitFormatted } from '@/utils';
-import { fetchGraphql } from '@/graphql';
-import { getNetworkCoretimeIndexer } from '@/network';
 
 export default function BulkSaleSummary() {
   const [network, saleInfo, purchaseHistory] = useUnit([
@@ -34,25 +32,11 @@ export default function BulkSaleSummary() {
   }, [network, saleInfo]);
 
   useEffect(() => {
-    const fetchPrevious = async () => {
+    const fetchPreviousCycleRevenue = async () => {
       if (!network || !saleInfo) return;
 
-      const query = `{
-        purchases(
-          filter: {saleCycle: {equalTo: ${saleInfo.saleCycle - 1}}}
-          orderBy: HEIGHT_DESC
-        ) {
-          nodes {
-            price
-            purchaseType
-          }
-        }
-      }`;
-
-      const res = await fetchGraphql(getNetworkCoretimeIndexer(network), query);
-      if (res.status !== 200) return;
-
-      const nodes = res.data.purchases.nodes;
+      const nodes = await fetchSaleInfoAt(network, saleInfo.saleCycle - 1);
+      if (!nodes) return;
 
       const bulkOnly = nodes.filter((item: any) => item.purchaseType === PurchaseType.BULK);
       const renewalOnly = nodes.filter((item: any) => item.purchaseType === PurchaseType.RENEWAL);
@@ -67,7 +51,7 @@ export default function BulkSaleSummary() {
       setPreviousRenewalRevenue(renewalSum);
     };
 
-    fetchPrevious();
+    fetchPreviousCycleRevenue();
   }, [network, saleInfo]);
 
   const bulkRevenue = purchaseHistory

@@ -20,6 +20,25 @@ export type SaleInfo = {
   coresSold: number;
 };
 
+export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
+  const query = `{
+    purchases(
+      filter: { saleCycle: { equalTo: ${saleCycle} } }
+      orderBy: HEIGHT_DESC
+    ) {
+      nodes {
+        price
+        purchaseType
+      }
+    }
+  }`;
+
+  const res = await fetchGraphql(getNetworkCoretimeIndexer(network), query);
+  if (res.status !== 200) return null;
+
+  return res.data.purchases.nodes;
+};
+
 const fetchLatestSaleInfo = async (network: Network): Promise<ApiResponse> => {
   const query = `{
     sales(orderBy: SALE_CYCLE_DESC, first: 1) {
