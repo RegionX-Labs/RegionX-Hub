@@ -23,8 +23,8 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
-  margin-right: 40px;
   position: relative;
 }
 
@@ -52,26 +52,34 @@
     }
   }
 }
-
 .desktopLinks {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
   background-color: $darkBackground2;
   border-radius: 10px;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   z-index: 1;
-
-  @media (max-width: 1281px) {
+  max-width: 700px;
+  margin-right: 120px;
+  width: 100%;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  @media (max-width: 1340px) {
     display: none;
   }
 }
 
 .navList {
-  list-style: none;
-  padding: 4;
-  margin: 0;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0 auto;
+  list-style: none;
+  max-width: 100%;
   gap: 20px;
   color: $white;
   font-size: 14px;
@@ -91,7 +99,6 @@
   border-radius: 5px;
   text-align: left;
   color: $white;
-
   &:hover {
     background-color: $greenPrimary;
     color: $darkBackground2;
@@ -115,11 +122,30 @@
   align-items: center;
   justify-content: flex-end;
   border-radius: 5px;
-  gap: 20px;
+  gap: 10px;
 
   @media (max-width: 768px) {
     display: none;
   }
+}
+
+.rpcButton {
+  display: flex;
+  align-items: center;
+  margin-right: 50px;
+}
+
+.connectButton {
+  height: 25px;
+  padding: 0 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: $darkBackground2;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .accSelector,
@@ -175,6 +201,8 @@
 
   .navList {
     flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
     gap: 10px;
     padding: 20px;
     margin: 0;
@@ -184,6 +212,7 @@
   .navItem {
     background-color: transparent;
     color: $white;
+    width: 100%;
 
     &:hover {
       background-color: $greenPrimary;
@@ -196,11 +225,19 @@
   opacity: 1;
 }
 
-.coretimeSubMenu {
-  margin-left: 20px;
+.coretimeSubMenuDesktop {
+  position: absolute;
+  margin-right: 300px;
+  top: 90%;
+  background-color: $darkBackground2;
+  padding: 10px 0;
+  border-radius: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  min-width: 220px;
+  margin-top: 5px;
 }
 
 .subMenuItem {
@@ -215,6 +252,27 @@
     background-color: rgba($greenPrimary, 0.2);
   }
 }
+.coretimeSubMenu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  gap: 10px;
+  width: 100%;
+
+  .navItem {
+    background-color: transparent;
+    color: $white;
+
+    &:hover {
+      background-color: $greenPrimary;
+      color: $darkBackground2;
+    }
+  }
+
+  @media (min-width: 1281px) {
+    display: none;
+  }
+}
 
 .mobileContent {
   padding: 20px;
@@ -224,7 +282,6 @@
   box-sizing: border-box;
   background-color: $darkBackground1;
   color: $black;
-
   @media (min-width: 768px) and (max-width: 1281px) {
     display: none;
   }
@@ -243,7 +300,7 @@
   }
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1540px) {
   .navbar {
     padding: 8px 16px;
     height: 55px;
@@ -265,7 +322,29 @@
   .accSelector,
   .networkSelector {
     width: 180px;
-    height: 35px;
+    height: 25px;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 1460px) {
+  .logo {
+    width: 120px;
+  }
+
+  .navItem {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .desktopContent {
+    gap: 5px;
+  }
+
+  .accSelector,
+  .networkSelector {
+    width: 180px;
+    height: 25px;
     margin-right: 10px;
   }
 }

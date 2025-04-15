@@ -6,7 +6,6 @@ import styles from './header.module.scss';
 import AccountSelector from '@/components/AccountSelector';
 import NetworkSelector from '@/components/NetworkSelector';
 import WalletModal from '../WalletModal/WalletModal';
-import CoretimeMenu from '../CoretimeMenu';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
 import { Button } from '@region-x/components';
 import { $loadedAccounts } from '@/wallet';
@@ -32,6 +31,7 @@ const Header: React.FC = () => {
       query: router.query,
     });
     setIsMenuOpen(false);
+    setIsCoretimeMenuOpen(false);
   };
 
   const toggleMenu = () => {
@@ -63,7 +63,41 @@ const Header: React.FC = () => {
             <li className={styles.navItem} onClick={() => handleNavigation('')}>
               Home
             </li>
-            <CoretimeMenu />
+
+            <li
+              className={styles.navItem}
+              onClick={() => setIsCoretimeMenuOpen(!isCoretimeMenuOpen)}
+            >
+              Coretime
+              <Image src={DownArrow} alt='Down Arrow' className={styles.downArrow} />
+            </li>
+
+            {isCoretimeMenuOpen && (
+              <ul className={styles.coretimeSubMenuDesktop}>
+                <li
+                  className={styles.navItem}
+                  onClick={() => handleNavigation('coretime/my-regions')}
+                >
+                  My Regions
+                </li>
+                <li className={styles.navItem} onClick={() => handleNavigation('coretime/renew')}>
+                  Renew
+                </li>
+                <li
+                  className={styles.navItem}
+                  onClick={() => handleNavigation('coretime/purchase')}
+                >
+                  Purchase
+                </li>
+                <li
+                  className={styles.navItem}
+                  onClick={() => handleNavigation('coretime/sale-history')}
+                >
+                  Sale History
+                </li>
+              </ul>
+            )}
+
             <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
               Cross-Chain
             </li>
@@ -75,26 +109,29 @@ const Header: React.FC = () => {
             </li>
           </ul>
         </div>
+      </div>
 
-        <div className={styles.desktopContent}>
-          <div className={styles.networkSelector} style={{ width: '150px' }}>
-            <NetworkSelector />
+      <div className={styles.desktopContent}>
+        <div className={styles.networkSelector} style={{ width: '150px' }}>
+          <NetworkSelector />
+        </div>
+        {accounts.length > 0 ? (
+          <div className={styles.accSelector}>
+            <AccountSelector />
           </div>
-          {accounts.length > 0 ? (
-            <div className={styles.accSelector}>
-              <AccountSelector />
-            </div>
-          ) : (
+        ) : (
+          <div className={styles.connectButton}>
             <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
-          )}
+          </div>
+        )}
+        <div className={styles.rpcButton}>
           <Button
             onClick={() => {
               setIsRpcModalOpen(true);
               setIsMenuOpen(false);
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              RPC
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '25px' }}>
               <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
             </div>
           </Button>
@@ -173,9 +210,7 @@ const Header: React.FC = () => {
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
-        onRpcChange={(url) => {
-          console.log('RPC changed to:', url);
-        }}
+        onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
     </nav>
   );
