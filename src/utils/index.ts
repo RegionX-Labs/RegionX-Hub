@@ -1,6 +1,6 @@
-// src/utils/index.ts
 import { Network } from '@/types';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { SaleInfo } from '@/coretime/saleInfo';
 
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
@@ -71,10 +71,8 @@ export const timesliceToTimestamp = async (
   network: Network,
   connections: any
 ): Promise<bigint | null> => {
-  // Timeslice = 80 relay chain blocks.
   const associatedRelayChainBlock = timeslice * 80;
   const networkChainIds = getNetworkChainIds(network);
-
   if (!networkChainIds) return null;
   const connection = connections[networkChainIds.relayChain];
   if (!connection || !connection.client || connection.status !== 'connected') return null;
@@ -91,7 +89,6 @@ export const timesliceToTimestamp = async (
     client.getTypedApi(metadata.relayChain) as any
   ).query.Timestamp.Now.getValue();
 
-  // All relay chains have block time of 6 seconds.
   const estimatedTimestamp =
     timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
   return estimatedTimestamp;
@@ -119,7 +116,31 @@ export const blockToTimestamp = async (
     client.getTypedApi(metadata.relayChain) as any
   ).query.Timestamp.Now.getValue();
 
-  // All relay chains have block time of 6 seconds.
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;
+};
+
+// Utility for Dutch auction decay (leadin price drop factor)
+export const leadinFactorAt = (when: number) => {
+  if (when <= 0.5) {
+    return 100 - when * 180;
+  } else {
+    return 19 - when * 18;
+  }
+};
+
+// The price of a core at a specific block number
+export const getCorePriceAt = (now: number, saleInfo: SaleInfo): number => {
+  /* NOTE: the runtime api is not implemented for Kusama.
+  const salePrice = await coretimeApi.rpc.state.call('BrokerApi_sale_price', '');
+  const price = coretimeApi.createType('Option<u128>', salePrice);
+  */
+
+  const { saleStart, leadinLength, price: endPrice } = saleInfo;
+
+  const num = Math.min(now - saleStart, leadinLength);
+  const through = num / leadinLength;
+
+  const price = leadinFactorAt(through) * endPrice;
+  return Number(price.toFixed());
 };

@@ -18,6 +18,7 @@ export type SaleInfo = {
   coresOffered: number;
   startPrice: string;
   coresSold: number;
+  price: number;
 };
 
 export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
