@@ -44,9 +44,7 @@ const options: ApexOptions = {
       },
     },
     zoom: {
-      enabled: true,
-      type: 'x',
-      autoScaleYaxis: true,
+      enabled: false,
     },
   },
   stroke: {
