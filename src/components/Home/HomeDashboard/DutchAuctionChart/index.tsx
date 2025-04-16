@@ -33,15 +33,8 @@ const options: ApexOptions = {
     type: 'line',
     height: 300,
     background: 'transparent',
-
     toolbar: {
       show: false,
-      tools: {
-        zoom: true,
-        zoomin: true,
-        zoomout: true,
-        reset: true,
-      },
     },
     zoom: {
       enabled: false,
@@ -83,52 +76,21 @@ const options: ApexOptions = {
     xaxis: [
       {
         x: 0,
-        borderColor: '#FFD700',
-        label: {
-          text: 'Starting Price',
-          position: 'bottom',
-          orientation: 'horizontal',
-          offsetX: 8,
-          offsetY: 10,
-          style: {
-            color: '#FFD700',
-            background: 'transparent',
-            fontSize: '12px',
-          },
-        },
+        x2: 2,
+        fillColor: 'rgba(0, 255, 163, 0.05)',
+        opacity: 0.3,
+      },
+      {
+        x: 2,
+        x2: 3,
+        fillColor: 'rgba(0, 17, 255, 0.05)',
+        opacity: 0.3,
       },
       {
         x: 3,
-        borderColor: '#00FFA3',
-        label: {
-          text: 'Current Price',
-          position: 'bottom',
-          orientation: 'horizontal',
-          offsetX: 8,
-          offsetY: 10,
-          style: {
-            color: '#00FFA3',
-            background: 'transparent',
-            fontSize: '12px',
-          },
-        },
-      },
-      {
-        x: 5,
-        strokeDashArray: 4,
-        borderColor: '#00FFA3',
-        label: {
-          text: 'Projected ending price',
-          position: 'bottom',
-          orientation: 'horizontal',
-          offsetX: 8,
-          offsetY: 10,
-          style: {
-            color: '#888',
-            background: 'transparent',
-            fontSize: '12px',
-          },
-        },
+        x2: 5,
+        fillColor: 'rgba(136, 136, 136, 0.05)',
+        opacity: 0.3,
       },
     ],
   },
@@ -146,6 +108,11 @@ const options: ApexOptions = {
 export default function DutchAuctionChart() {
   return (
     <div className={styles.chartCard}>
+      <div className={styles.backgroundLabels}>
+        <span className={styles.interlude}>Interlude</span>
+        <span className={styles.leadin}>Leadin</span>
+        <span className={styles.fixed}>Fixed Price</span>
+      </div>
       <div className={styles.title}>Dutch Auction Chart</div>
       <ReactApexChart options={options} series={series} type='line' height={300} />
     </div>
