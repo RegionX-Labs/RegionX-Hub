@@ -15,7 +15,14 @@ const series = [
       { x: 1, y: 70 },
       { x: 2, y: 70 },
       { x: 3, y: 65 },
-      { x: 4, y: 50 },
+      { x: 4, y: null },
+      { x: 5, y: 49 },
+    ],
+  },
+  {
+    name: 'Projection Guide',
+    data: [
+      { x: 3, y: 65 },
       { x: 5, y: 49 },
     ],
   },
@@ -26,25 +33,29 @@ const options: ApexOptions = {
     type: 'line',
     height: 300,
     background: 'transparent',
+
     toolbar: {
       show: false,
       tools: {
         zoom: true,
+        zoomin: true,
+        zoomout: true,
+        reset: true,
       },
     },
     zoom: {
-      enabled: false,
+      enabled: true,
       type: 'x',
       autoScaleYaxis: true,
     },
   },
   stroke: {
-    width: 2,
+    width: [2, 2],
     curve: 'smooth',
+    dashArray: [0, 7],
   },
   markers: {
     size: 0,
-    colors: ['#00FFA3'],
     strokeWidth: 0,
   },
   xaxis: {
@@ -123,13 +134,15 @@ const options: ApexOptions = {
       },
     ],
   },
-
   tooltip: {
     theme: 'dark',
     shared: false,
     intersect: false,
   },
-  colors: ['#00FFA3'],
+  legend: {
+    show: false,
+  },
+  colors: ['#00FFA3', '#888'],
 };
 
 export default function DutchAuctionChart() {
