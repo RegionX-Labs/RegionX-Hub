@@ -1,4 +1,6 @@
 @use '@/styles/variables' as *;
+@use '@/styles/_mixins' as *;
+
 @use 'sass:color';
 
 .coreComparisonCard {
@@ -9,6 +11,8 @@
   width: 380px;
   display: flex;
   flex-direction: column;
+  @include Inter;
+
   margin-top: 100px;
   gap: 10px;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
