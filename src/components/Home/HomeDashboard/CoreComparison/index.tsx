@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, latestSaleRequested, fetchSellout } from '@/coretime/saleInfo';
 import { $network, $connections } from '@/api/connection';
-import {
-  $purchaseHistory,
-  purchaseHistoryRequested,
-  PurchaseType,
-} from '@/coretime/purchaseHistory';
+import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CoreComparison.module.scss';
 
@@ -39,7 +35,6 @@ export default function CoreComparison() {
         setCorePrice(currentPrice);
 
         const sellout = await fetchSellout(network, connections);
-
         if (sellout !== null) {
           setRenewalPrice(Number(sellout));
         }
@@ -49,15 +44,20 @@ export default function CoreComparison() {
 
   const isReady = renewalPrice !== null && corePrice !== null;
   const priceDiff = isReady ? corePrice! - renewalPrice! : null;
-  const priceDiffFormatted = priceDiff?.toLocaleString(undefined, { maximumFractionDigits: 2 });
-  const diffPercent = isReady ? ((priceDiff! / corePrice!) * 100).toFixed(0) : null;
+  const priceDiffFormatted = isReady ? toUnitFormatted(network, BigInt(priceDiff!)) : '';
+  const diffPercent = isReady ? ((priceDiff! / renewalPrice!) * 100).toFixed(0) : null;
 
   return (
     <div className={styles.coreComparisonCard}>
       <p className={styles.title}>Renewal vs New Core price difference</p>
-      <h2 className={styles.value}>{isReady ? `+${priceDiffFormatted}` : ''}</h2>
+      <h2 className={styles.value}>{priceDiffFormatted}</h2>
       <p className={styles.subtext}>
-        Is <span className={styles.positive}>+{diffPercent}%</span> more convenient the renewal
+        It is{' '}
+        <span className={priceDiff! >= 0 ? styles.positive : styles.negative}>
+          {priceDiff! >= 0 ? '' : ''}
+          {Math.abs(Number(diffPercent))}%
+        </span>{' '}
+        {priceDiff! >= 0 ? 'cheaper' : 'more expensive'} to renew
       </p>
 
       <div className={styles.row}>
