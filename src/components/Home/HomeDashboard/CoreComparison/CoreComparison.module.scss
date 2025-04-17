@@ -44,6 +44,15 @@
     font-weight: 500;
   }
 }
+.positive {
+  color: $greenPrimary;
+  font-weight: 500;
+}
+
+.negative {
+  color: $redDark;
+  font-weight: 500;
+}
 
 .row {
   background-color: $darkBackground3;

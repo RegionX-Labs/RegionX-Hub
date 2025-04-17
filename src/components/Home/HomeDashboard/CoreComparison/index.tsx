@@ -44,16 +44,21 @@ export default function CoreComparison() {
 
   const isReady = renewalPrice !== null && corePrice !== null;
   const priceDiff = isReady ? corePrice! - renewalPrice! : null;
-  const priceDiffFormatted = isReady ? toUnitFormatted(network, BigInt(priceDiff!)) : '';
+  const priceDiffFormatted = isReady ? toUnitFormatted(network, BigInt(Math.abs(priceDiff!))) : '';
   const diffPercent = isReady ? ((priceDiff! / renewalPrice!) * 100).toFixed(0) : null;
 
   return (
     <div className={styles.coreComparisonCard}>
       <p className={styles.title}>Renewal vs New Core price difference</p>
-      <h2 className={styles.value}>{priceDiffFormatted}</h2>
+      <h2 className={styles.value}>
+        <span className={priceDiff! >= 0 ? styles.positive : styles.negative}>
+          {priceDiff! >= 0 ? '+' : '−'}
+        </span>
+        {priceDiffFormatted}
+      </h2>
       <p className={styles.subtext}>
         It is{' '}
-        <span className={priceDiff! >= 0 ? styles.positive : styles.negative}>
+        <span className={styles.priceDiff}>
           {priceDiff! >= 0 ? '' : ''}
           {Math.abs(Number(diffPercent))}%
         </span>{' '}
