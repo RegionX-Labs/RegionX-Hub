@@ -37,10 +37,8 @@ export default function CoreComparison() {
         });
 
         setCorePrice(currentPrice);
-        console.log('Current price calculated:', currentPrice);
 
         const sellout = await fetchSellout(network, connections);
-        console.log('Sellout fetched:', sellout);
 
         if (sellout !== null) {
           setRenewalPrice(Number(sellout));
@@ -57,7 +55,7 @@ export default function CoreComparison() {
   return (
     <div className={styles.coreComparisonCard}>
       <p className={styles.title}>Renewal vs New Core price difference</p>
-      <h2 className={styles.value}>{isReady ? `+${priceDiffFormatted}` : 'Loading...'}</h2>
+      <h2 className={styles.value}>{isReady ? `+${priceDiffFormatted}` : ''}</h2>
       <p className={styles.subtext}>
         Is <span className={styles.positive}>+{diffPercent}%</span> more convenient the renewal
       </p>
@@ -65,14 +63,14 @@ export default function CoreComparison() {
       <div className={styles.row}>
         <span className={styles.label}>Renewal cost</span>
         <span className={styles.amount}>
-          {isReady ? toUnitFormatted(network, BigInt(renewalPrice!)) : 'Loading...'}
+          {isReady ? toUnitFormatted(network, BigInt(renewalPrice!)) : ''}
         </span>
       </div>
 
       <div className={styles.row}>
         <span className={styles.label}>Buy New</span>
         <span className={styles.amount}>
-          {isReady ? toUnitFormatted(network, BigInt(corePrice!)) : 'Loading...'}
+          {isReady ? toUnitFormatted(network, BigInt(corePrice!)) : ''}
         </span>
       </div>
     </div>

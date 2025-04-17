@@ -131,7 +131,6 @@ export const fetchSellout = async (network: Network, connections: any): Promise<
   const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
 
   const saleInfo = await api.query.Broker.SaleInfo.getValue();
-  console.log(saleInfo);
 
   return saleInfo?.sellout_price ?? null;
 };
