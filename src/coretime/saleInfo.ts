@@ -2,6 +2,7 @@ import { ApiResponse, fetchGraphql } from '@/graphql';
 import { getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
+import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 
 export const latestSaleRequested = createEvent<Network>();
 
@@ -116,3 +117,23 @@ sample({
   clock: fetchAllSalesFx.doneData,
   target: $saleHistory,
 });
+
+export const fetchSellout = async (network: Network, connections: any): Promise<bigint | null> => {
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return null;
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+
+  const latestSaleCycle = await api.query.broker.latestSaleCycle();
+  const saleInfo = await api.query.broker.saleInfo(latestSaleCycle);
+
+  console.log('Raw broker.saleInfo:', saleInfo?.toHuman?.() ?? saleInfo?.toString());
+
+  return saleInfo?.selloutPrice?.toBigInt?.() ?? null;
+};

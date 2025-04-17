@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
-import { $network } from '@/api/connection';
+import { $latestSaleInfo, latestSaleRequested, fetchSellout } from '@/coretime/saleInfo';
+import { $network, $connections } from '@/api/connection';
 import {
   $purchaseHistory,
   purchaseHistoryRequested,
   PurchaseType,
 } from '@/coretime/purchaseHistory';
-import { getCorePriceAt } from '@/utils/index';
-import { toUnitFormatted } from '@/utils';
+import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CoreComparison.module.scss';
 
 export default function CoreComparison() {
-  const [network, saleInfo, purchaseHistory] = useUnit([
+  const [network, saleInfo, purchaseHistory, connections] = useUnit([
     $network,
     $latestSaleInfo,
     $purchaseHistory,
+    $connections,
   ]);
 
   const [renewalPrice, setRenewalPrice] = useState<number | null>(null);
@@ -30,26 +30,26 @@ export default function CoreComparison() {
       purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
 
       (async () => {
-        const now = saleInfo.saleStart + saleInfo.leadinLength; // simulate end of leadin
+        const now = saleInfo.saleStart + saleInfo.leadinLength;
         const currentPrice = getCorePriceAt(now, {
           ...saleInfo,
           price: Number(saleInfo.endPrice),
         });
 
         setCorePrice(currentPrice);
+        console.log('Current price calculated:', currentPrice);
+
+        const sellout = await fetchSellout(network, connections);
+        console.log('Sellout fetched:', sellout);
+
+        if (sellout !== null) {
+          setRenewalPrice(Number(sellout));
+        }
       })();
     }
   }, [network, saleInfo]);
 
-  useEffect(() => {
-    const renewal = purchaseHistory.find((p) => p.type === PurchaseType.RENEWAL);
-    if (renewal) {
-      setRenewalPrice(renewal.price);
-    }
-  }, [purchaseHistory]);
-
   const isReady = renewalPrice !== null && corePrice !== null;
-
   const priceDiff = isReady ? corePrice! - renewalPrice! : null;
   const priceDiffFormatted = priceDiff?.toLocaleString(undefined, { maximumFractionDigits: 2 });
   const diffPercent = isReady ? ((priceDiff! / corePrice!) * 100).toFixed(0) : null;
