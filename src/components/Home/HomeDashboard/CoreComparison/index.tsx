@@ -50,12 +50,11 @@ export default function CoreComparison() {
   return (
     <div className={styles.coreComparisonCard}>
       <p className={styles.title}>Renewal vs New Core price difference</p>
-      <h2 className={styles.value}>
-        <span className={priceDiff! >= 0 ? styles.positive : styles.negative}>
-          {priceDiff! >= 0 ? '+' : '−'}
-        </span>
+      <h2 className={`${styles.value} ${priceDiff! >= 0 ? styles.positive : styles.negative}`}>
+        {priceDiff! >= 0 ? '+' : '−'}
         {priceDiffFormatted}
       </h2>
+
       <p className={styles.subtext}>
         It is{' '}
         <span className={styles.priceDiff}>
