@@ -47,7 +47,7 @@ export default function CoreComparison() {
         }
       })();
     }
-  }, [network, saleInfo]);
+  }, [network, saleInfo, connections]);
 
   const isReady = renewalPrice !== null && corePrice !== null;
   const priceDiff = isReady ? corePrice! - renewalPrice! : null;

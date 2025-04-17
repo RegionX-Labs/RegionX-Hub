@@ -130,10 +130,8 @@ export const fetchSellout = async (network: Network, connections: any): Promise<
 
   const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
 
-  const latestSaleCycle = await api.query.broker.latestSaleCycle();
-  const saleInfo = await api.query.broker.saleInfo(latestSaleCycle);
+  const saleInfo = await api.query.Broker.SaleInfo.getValue();
+  console.log(saleInfo);
 
-  console.log('Raw broker.saleInfo:', saleInfo?.toHuman?.() ?? saleInfo?.toString());
-
-  return saleInfo?.selloutPrice?.toBigInt?.() ?? null;
+  return saleInfo?.sellout_price ?? null;
 };
