@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $latestSaleInfo, latestSaleRequested, fetchSellout } from '@/coretime/saleInfo';
+import { $latestSaleInfo, latestSaleRequested, fetchSelloutPrice } from '@/coretime/saleInfo';
 import { $network, $connections } from '@/api/connection';
 import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
@@ -27,14 +27,12 @@ export default function CoreComparison() {
 
       (async () => {
         const now = saleInfo.saleStart + saleInfo.leadinLength;
-        const currentPrice = getCorePriceAt(now, {
-          ...saleInfo,
-          price: Number(saleInfo.endPrice),
-        });
+        const endPrice = Number(saleInfo.endPrice);
+        const currentPrice = getCorePriceAt(now, { ...saleInfo, price: endPrice } as any);
 
         setCorePrice(currentPrice);
 
-        const sellout = await fetchSellout(network, connections);
+        const sellout = await fetchSelloutPrice(network, connections);
         if (sellout !== null) {
           setRenewalPrice(Number(sellout));
         }
@@ -56,11 +54,7 @@ export default function CoreComparison() {
       </h2>
 
       <p className={styles.subtext}>
-        It is{' '}
-        <span className={styles.priceDiff}>
-          {priceDiff! >= 0 ? '' : ''}
-          {Math.abs(Number(diffPercent))}%
-        </span>{' '}
+        It is <span className={styles.priceDiff}>{Math.abs(Number(diffPercent))}%</span>{' '}
         {priceDiff! >= 0 ? 'cheaper' : 'more expensive'} to renew
       </p>
 

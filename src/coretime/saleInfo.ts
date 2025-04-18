@@ -19,7 +19,6 @@ export type SaleInfo = {
   coresOffered: number;
   startPrice: string;
   coresSold: number;
-  price: number;
 };
 
 export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
@@ -118,7 +117,10 @@ sample({
   target: $saleHistory,
 });
 
-export const fetchSellout = async (network: Network, connections: any): Promise<bigint | null> => {
+export const fetchSelloutPrice = async (
+  network: Network,
+  connections: any
+): Promise<bigint | null> => {
   const chainIds = getNetworkChainIds(network);
   if (!chainIds) return null;
 
