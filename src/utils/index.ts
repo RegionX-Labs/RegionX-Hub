@@ -136,11 +136,10 @@ export const getCorePriceAt = (now: number, saleInfo: SaleInfo): number => {
   const price = coretimeApi.createType('Option<u128>', salePrice);
   */
 
-  const { saleStart, leadinLength, price: endPrice } = saleInfo;
-
+  const { saleStart, leadinLength, endPrice } = saleInfo;
   const num = Math.min(now - saleStart, leadinLength);
   const through = num / leadinLength;
 
-  const price = leadinFactorAt(through) * endPrice;
+  const price = leadinFactorAt(through) * Number(endPrice);
   return Number(price.toFixed());
 };
