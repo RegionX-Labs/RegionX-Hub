@@ -15,7 +15,7 @@ type Completion = {
 
 type RenewalKey = {
     core: number,
-    begin: number,
+    when: number,
 };
 
 type RenewalRecord = {
@@ -45,7 +45,7 @@ const fetchPotentialRenewals = async (
   const potentialRenewals = await api.query.Broker.PotentialRenewals.getEntries();
   let map = new Map();
   for (const entry of potentialRenewals) {
-    map.set(entry.keyArgs, entry.value);
+    map.set(entry.keyArgs[0], entry.value);
   }
 
   return map;

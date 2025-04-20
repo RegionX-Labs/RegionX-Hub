@@ -1,31 +1,22 @@
 import { $connections, $network } from '@/api/connection';
 import styles from './MyCore.module.scss';
 import Select from '@/components/elements/Select';
-import { $regions, regionsRequested } from '@/coretime/regions';
 import { SelectOption } from '@/types/type';
 import { useUnit } from 'effector-react';
 import { useEffect, useState } from 'react';
-import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $potentialRenewals, potentialRenewalsRequested } from '@/coretime/renewals';
 
 export default function MyCore() {
   const network = useUnit($network);
-  const regions = useUnit($regions);
   const connections = useUnit($connections);
   const potentialRenewals = useUnit($potentialRenewals);
-  const saleInfo = useUnit($latestSaleInfo);
 
-  const options: SelectOption<string>[] = regions.map((region) => ({
-    label: `${region.core}`,
-    value: region.id,
+  console.log(Array.from(potentialRenewals.entries()));
+
+  const options: SelectOption<string>[] = Array.from(potentialRenewals.entries()).map((renewal) => ({
+    label: `${renewal[0].core}-${renewal[0].when}`,
+    value: `${renewal[0].core}-${renewal[0].when}`,
   }));
-
-  useEffect(() => {
-    if (!saleInfo) return;
-    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
-    const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
-  }, [network, saleInfo]);
 
   useEffect(() => {
     potentialRenewalsRequested({network, connections})
