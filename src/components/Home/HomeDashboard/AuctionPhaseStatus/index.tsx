@@ -65,7 +65,7 @@ export default function AuctionPhaseStatus() {
           <div className={styles.value}>30 Minutes</div>
         </div>
         <div className={styles.progressWrapper}>
-          <Chart options={options} series={series} type="radialBar" height={200} />
+          <Chart options={options} series={series} type='radialBar' height={200} />
         </div>
       </div>
     </div>
