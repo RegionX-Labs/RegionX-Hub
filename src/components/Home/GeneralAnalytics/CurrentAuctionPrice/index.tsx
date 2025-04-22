@@ -1,29 +1,51 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './CurrentAuctionPrice.module.scss';
 
-import { $network } from '@/api/connection';
+import { $network, $connections } from '@/api/connection';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
+import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 
-export default function CurrentAuctionPrice() {
-  const [network, saleInfo] = useUnit([$network, $latestSaleInfo]);
-  const [price, setPrice] = useState<string>('...');
+const CurrentCorePrice: React.FC = () => {
+  const network = useUnit($network);
+  const connections = useUnit($connections);
+  const saleInfo = useUnit($latestSaleInfo);
+
+  const [price, setPrice] = useState<string>('');
 
   useEffect(() => {
-    if (network) latestSaleRequested(network);
+    if (network) {
+      latestSaleRequested(network);
+    }
   }, [network]);
 
   useEffect(() => {
-    if (network && saleInfo) {
-      const now = Math.floor(Date.now() / 1000);
-      const rawPrice = getCorePriceAt(now, saleInfo);
-      const priceBigInt = BigInt(Math.round(rawPrice));
-      const formatted = toUnitFormatted(network, priceBigInt);
-      console.log('Coretime Price:', formatted);
-      setPrice(formatted);
-    }
-  }, [network, saleInfo]);
+    const fetchPrice = async () => {
+      if (!network || !connections || !saleInfo) return;
+
+      const chainIds = getNetworkChainIds(network);
+      const metadata = getNetworkMetadata(network);
+      if (!chainIds || !metadata) return;
+
+      const connection = connections[chainIds.coretimeChain];
+      if (!connection || !connection.client || connection.status !== 'connected') return;
+
+      try {
+        const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+        const blockNumber: number = await api.query.System.Number.getValue();
+
+        const rawPrice = getCorePriceAt(blockNumber, saleInfo);
+        const formatted = toUnitFormatted(network, BigInt(rawPrice));
+        setPrice(formatted);
+      } catch (err) {
+        console.error('Failed to fetch core price:', err);
+        setPrice('Error');
+      }
+    };
+
+    fetchPrice();
+  }, [network, connections, saleInfo]);
 
   return (
     <div className={styles.container}>
@@ -39,4 +61,6 @@ export default function CurrentAuctionPrice() {
       <div className={styles.timer}>2 HOURS : 14 MINUTES</div>
     </div>
   );
-}
+};
+
+export default CurrentCorePrice;
