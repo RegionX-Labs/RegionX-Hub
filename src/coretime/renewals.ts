@@ -13,14 +13,14 @@ type Completion = {
     }>
 } | { Partial: string };
 
-type RenewalKey = {
+export type RenewalKey = {
     core: number,
     when: number,
 };
 
-type RenewalRecord = {
+export type RenewalRecord = {
     completion: Completion,
-    price: bigint,
+    price: string,
 };
 
 type PotentialRenewalsMap = Map<RenewalKey, RenewalRecord>;
@@ -40,12 +40,11 @@ const fetchPotentialRenewals = async (
   if (!metadata) return new Map();
 
   const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
-  console.log('hey');
 
   const potentialRenewals = await api.query.Broker.PotentialRenewals.getEntries();
   let map = new Map();
   for (const entry of potentialRenewals) {
-    map.set(entry.keyArgs[0], entry.value);
+    map.set(entry.keyArgs[0], {...entry.value, price: entry.value.price.toString()});
   }
 
   return map;

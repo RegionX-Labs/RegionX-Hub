@@ -1,6 +1,7 @@
 import React from 'react';
 
 export interface SelectOption<T> {
+  key: string;
   value: T;
   label: string;
   icon?: React.ReactElement;
