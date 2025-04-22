@@ -4,8 +4,9 @@ import styles from './CurrentAuctionPrice.module.scss';
 
 import { $network, $connections } from '@/api/connection';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
-import { getCorePriceAt, toUnitFormatted } from '@/utils';
+import { getCorePriceAt, toUnitFormatted, timesliceToTimestamp } from '@/utils';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
+import { getRelativeTime } from '@/pages/coretime/my-regions/index';
 
 const CurrentCorePrice: React.FC = () => {
   const network = useUnit($network);
@@ -13,11 +14,10 @@ const CurrentCorePrice: React.FC = () => {
   const saleInfo = useUnit($latestSaleInfo);
 
   const [price, setPrice] = useState<string>('');
+  const [relativeTime, setRelativeTime] = useState<string>('');
 
   useEffect(() => {
-    if (network) {
-      latestSaleRequested(network);
-    }
+    if (network) latestSaleRequested(network);
   }, [network]);
 
   useEffect(() => {
@@ -47,6 +47,20 @@ const CurrentCorePrice: React.FC = () => {
     fetchPrice();
   }, [network, connections, saleInfo]);
 
+  useEffect(() => {
+    const fetchRelativeTime = async () => {
+      if (!saleInfo || !network || !connections) return;
+      const timestamp = await timesliceToTimestamp(saleInfo.regionBegin, network, connections);
+      if (timestamp) {
+        const relative = getRelativeTime(Number(timestamp.toString()));
+
+        setRelativeTime(relative);
+      }
+    };
+
+    fetchRelativeTime();
+  }, [saleInfo, network, connections]);
+
   return (
     <div className={styles.container}>
       <span className={styles.label}>CURRENT AUCTION PRICE</span>
@@ -58,7 +72,7 @@ const CurrentCorePrice: React.FC = () => {
 
       <div className={styles.price}>{price}</div>
       <div className={styles.unit}>/coretime</div>
-      <div className={styles.timer}>2 HOURS : 14 MINUTES</div>
+      <div className={styles.timer}>Bulk ends {relativeTime}</div>
     </div>
   );
 };
