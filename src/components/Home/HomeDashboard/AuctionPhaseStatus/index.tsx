@@ -1,3 +1,4 @@
+// Keep this entire block — it's the SVG-based version
 import styles from './AuctionPhaseStatus.module.scss';
 
 export default function AuctionPhaseStatus() {
@@ -49,7 +50,6 @@ export default function AuctionPhaseStatus() {
   const dots = [];
 
   const startAngle = (0 - TOTAL_ANGLE) / 2;
-
   const angleIncrement = TOTAL_ANGLE / (DOT_COUNT - 1);
 
   for (let i = 0; i < DOT_COUNT; i++) {
@@ -57,7 +57,6 @@ export default function AuctionPhaseStatus() {
     const rad = (Math.PI / 195) * angle;
     const x = CENTER + innerRadius * Math.cos(rad);
     const y = CENTER + innerRadius * Math.sin(rad);
-
     dots.push(<circle key={`dot-${i}`} cx={x} cy={y} r={dotRadius} fill='#6b7280' />);
   }
 
@@ -71,7 +70,6 @@ export default function AuctionPhaseStatus() {
           <div className={styles.label}>Next Phase in</div>
           <div className={styles.value}>30 Minutes</div>
         </div>
-
         <div className={styles.progressWrapper}>
           <svg width='200' height='200' viewBox='0 0 200 200'>
             {dots}

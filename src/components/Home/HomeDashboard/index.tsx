@@ -9,8 +9,8 @@ export default function HomeDashboard() {
     <div className={styles.dashboard}>
       <MyCore />
       <CoreComparison />
-      <DutchAuctionChart />
       <AuctionPhaseStatus />
+      <DutchAuctionChart />
     </div>
   );
 }
