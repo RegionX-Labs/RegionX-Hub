@@ -1,18 +1,19 @@
 @use '@/styles/variables' as *;
 @use '@/styles/_mixins' as *;
+@use 'sass:color';
 
 .auctionPhaseCard {
   background: $darkBackground2;
   border-radius: 15px;
   padding: 30px;
   color: $white;
-  margin-top: 100px;
   width: 380px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   @include Inter;
+  margin-top: 100px;
+  gap: 20px;
 }
 
 .header {
@@ -25,12 +26,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row;
 }
 
 .info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  margin-right: 20px;
 }
 
 .label {
@@ -39,15 +42,18 @@
 }
 
 .value {
+  white-space: nowrap;
   font-size: 1.2rem;
   font-weight: 600;
   color: $white;
 }
 
 .progressWrapper {
-  position: relative;
-  width: 140px;
-  height: 140px;
+  width: 240px;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   svg {
     width: 100%;
