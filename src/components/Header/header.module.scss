@@ -23,7 +23,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1300px;
   margin: 0 auto;
   position: relative;
 }
@@ -35,6 +35,7 @@
   align-items: center;
   justify-content: start;
   transition: margin-left 0.3s ease;
+  margin-right: 10px;
   cursor: pointer;
 }
 .leftSection {
@@ -61,11 +62,15 @@
   border-radius: 10px;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   z-index: 1;
+
   max-width: 700px;
-  margin-right: 120px;
+  margin-left: auto;
+  margin-right: 140px;
   width: 100%;
+
   overflow: hidden;
   transition: all 0.3s ease;
+
   @media (max-width: 1301px) {
     display: none;
   }
@@ -73,7 +78,6 @@
 
 .navList {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 0;
@@ -135,21 +139,47 @@
   margin-right: 50px;
 }
 
-.connectButton {
-  height: 25px;
-  padding: 0 12px;
-  font-size: 14px;
+.settingsButton {
+  width: 45px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 5px;
-  color: $darkBackground2;
+  border-radius: 50%;
+  background-color: $greenPrimary;
   cursor: pointer;
-  white-space: nowrap;
+  padding: 0;
+  border: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    transition: ease-in;
+  }
+}
+
+.connectButton {
+  color: white;
+  font-size: 16px;
+  width: 105px;
+  height: 45px;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  background-color: $greenPrimary;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s ease;
+  &:hover {
+    border-color: #00ff80;
+  }
 }
 
 .accSelector,
 .networkSelector {
+  margin-right: 10px;
   height: 40px;
   display: flex;
   align-items: center;
@@ -166,6 +196,7 @@
 .burgerIcon {
   display: none;
   font-size: 24px;
+  color: white;
   cursor: pointer;
   margin-right: 0px;
 

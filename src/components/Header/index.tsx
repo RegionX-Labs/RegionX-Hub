@@ -41,23 +41,21 @@ const Header: React.FC = () => {
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.navbarInner}>
-        <div className={styles.leftSection}>
-          <div className={styles.burgerAndLogo}>
-            <div className={styles.burgerIcon} onClick={toggleMenu}>
-              ☰
-            </div>
-            <Image
-              src='/WhiteLogo.png'
-              alt='Logo'
-              className={styles.logo}
-              width={1829}
-              height={782}
-              onClick={() => handleNavigation('/')}
-            />
-          </div>
+      <div className={styles.burgerAndLogo}>
+        <div className={styles.burgerIcon} onClick={toggleMenu}>
+          ☰
         </div>
-
+        <Image
+          src='/WhiteLogo.png'
+          alt='Logo'
+          className={styles.logo}
+          width={1829}
+          height={782}
+          onClick={() => handleNavigation('/')}
+        />
+      </div>
+      <div className={styles.navbarInner}>
+        <div className={styles.leftSection}></div>
         <div className={styles.desktopLinks}>
           <ul className={styles.navList}>
             <li className={styles.navItem} onClick={() => handleNavigation('')}>
@@ -120,12 +118,15 @@ const Header: React.FC = () => {
             <AccountSelector />
           </div>
         ) : (
-          <div className={styles.connectButton}>
-            <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
+          <div>
+            <button className={styles.connectButton} onClick={() => setIsModalOpen(true)}>
+              Connect
+            </button>
           </div>
         )}
         <div className={styles.rpcButton}>
-          <Button
+          <button
+            className={styles.settingsButton}
             onClick={() => {
               setIsRpcModalOpen(true);
               setIsMenuOpen(false);
@@ -134,7 +135,7 @@ const Header: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '25px' }}>
               <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
             </div>
-          </Button>
+          </button>
         </div>
       </div>
 
