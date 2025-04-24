@@ -3,12 +3,12 @@ import LabelCard from '../../LabelCard/LabelCard';
 import styles from './RegionCardHeader.module.scss';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
-import { Pencil } from 'lucide-react';
+import { Pencil, MoreVertical } from 'lucide-react';
 
 interface RegionCardHeaderProps {
-  name: string; //Card Name
-  regionStart: string; //start date
-  regionEnd: string; //end date
+  name: string;
+  regionStart: string;
+  regionEnd: string;
   coreIndex: number;
   duration: string;
   onNameChange?: (newName: string) => void;
@@ -27,6 +27,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(name);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     setEditedName(name);
@@ -39,15 +40,19 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
     }
   };
 
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
+
   return (
     <>
-      <div className={styles['regionCardHeaderWrapper']}>
+      <div className={styles.regionCardHeaderWrapper}>
         <Identicon value={ss58Address} size={80} className={styles.identicon} />
         <div className={styles['regionCardHeaderWrapper-data']}>
-          <div className={styles['nameEditWrapper']}>
+          <div className={styles.nameEditWrapper}>
             {isEditing ? (
               <input
-                className={styles['editInput']}
+                className={styles.editInput}
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 onBlur={handleSave}
@@ -56,13 +61,26 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             ) : (
               <h5>{name}</h5>
             )}
-            <Pencil size={16} className={styles['editIcon']} onClick={() => setIsEditing(true)} />
+            <Pencil size={16} className={styles.editIcon} onClick={() => setIsEditing(true)} />
           </div>
           <p>
             {regionStart} | {regionEnd}
           </p>
         </div>
+        <div className={styles.dropdownWrapper}>
+          <MoreVertical className={styles.dropdownIcon} onClick={toggleDropdown} />
+          {showDropdown && (
+            <div className={styles.dropdownMenu}>
+              <div>Partition</div>
+              <div>Interface</div>
+              <div>Transfer</div>
+              <div>Assign</div>
+              <div>Sell</div>
+            </div>
+          )}
+        </div>
       </div>
+
       <div className={styles['regionCardHeaderWrapper-labels']}>
         <div className={styles.labelWithIcon}>
           <img src='/barcode.png' alt='core index' />

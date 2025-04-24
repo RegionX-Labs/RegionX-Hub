@@ -126,7 +126,7 @@ const MyRegionsPage = () => {
           <p>No regions available.</p>
         )}
       </div>
-      <div>
+      {/* <div>
         {' '}
         <nav className={styles.menu}>
           <ul>
@@ -147,7 +147,7 @@ const MyRegionsPage = () => {
             </li>
           </ul>
         </nav>
-      </div>
+      </div> */}
     </>
   );
 };
