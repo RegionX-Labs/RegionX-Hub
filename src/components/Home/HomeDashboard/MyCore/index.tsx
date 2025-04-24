@@ -31,8 +31,20 @@ export default function MyCore() {
     const timestamp = await timesliceToTimestamp(timeslice, network, connections);
     if(!timestamp) return setSelectedDeadline('-');
 
-   setSelectedDeadline(timestamp.toString());
+   setSelectedDeadline(formatDate(timestamp));
   }
+
+  const formatDate = (timestamp: Date | bigint | null): string => {
+    if (!timestamp) return '-';
+    const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
+    return date.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   return (
     <div className={styles.myCoreCard}>
