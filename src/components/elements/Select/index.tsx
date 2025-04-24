@@ -45,7 +45,9 @@ const Select = <T,>({
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedOption = options.find((option) => JSON.stringify(option.value) === JSON.stringify(selected));
+  const selectedOption = options.find(
+    (option) => JSON.stringify(option.value) === JSON.stringify(selected)
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

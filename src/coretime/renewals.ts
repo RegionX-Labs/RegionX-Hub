@@ -1,26 +1,28 @@
-import { getNetworkChainIds, getNetworkMetadata } from "@/network";
-import { Network } from "@/types";
-import { createEffect, createEvent, createStore, sample } from "effector";
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { Network } from '@/types';
+import { createEffect, createEvent, createStore, sample } from 'effector';
 
 export const potentialRenewalsRequested = createEvent<{ network: Network; connections: any }>();
 
-type Assignment = {Task: number} | string;
+type Assignment = { Task: number } | string;
 
-type Completion = {
-    Complete: Array<{
-        mask: string,
-        assignment: Assignment
-    }>
-} | { Partial: string };
+type Completion =
+  | {
+      Complete: Array<{
+        mask: string;
+        assignment: Assignment;
+      }>;
+    }
+  | { Partial: string };
 
 export type RenewalKey = {
-    core: number,
-    when: number,
+  core: number;
+  when: number;
 };
 
 export type RenewalRecord = {
-    completion: Completion,
-    price: string,
+  completion: Completion;
+  price: string;
 };
 
 type PotentialRenewalsMap = Map<RenewalKey, RenewalRecord>;
@@ -42,9 +44,9 @@ const fetchPotentialRenewals = async (
   const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
 
   const potentialRenewals = await api.query.Broker.PotentialRenewals.getEntries();
-  let map = new Map();
+  const map = new Map();
   for (const entry of potentialRenewals) {
-    map.set(entry.keyArgs[0], {...entry.value, price: entry.value.price.toString()});
+    map.set(entry.keyArgs[0], { ...entry.value, price: entry.value.price.toString() });
   }
 
   return map;

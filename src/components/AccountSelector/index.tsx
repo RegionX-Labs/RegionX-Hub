@@ -20,6 +20,7 @@ const AccountSelector = () => {
 
   const options = accounts.map((account) => {
     return {
+      key: `${formatAddress(account.address)}`,
       value: account.address,
       label: `${formatAddress(account.address)}`, //(${account.name})
       icon: (
