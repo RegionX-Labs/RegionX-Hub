@@ -3,7 +3,7 @@ import LabelCard from '../../LabelCard/LabelCard';
 import styles from './RegionCardHeader.module.scss';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
-import { Pencil, MoreVertical } from 'lucide-react';
+import { Pencil, MoreVertical, MoreHorizontal } from 'lucide-react';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -68,7 +68,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           </p>
         </div>
         <div className={styles.dropdownWrapper}>
-          <MoreVertical className={styles.dropdownIcon} onClick={toggleDropdown} />
+          <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
             <div className={styles.dropdownMenu}>
               <div>Partition</div>
