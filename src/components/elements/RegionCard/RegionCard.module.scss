@@ -4,10 +4,17 @@
 .regionCardWrapper {
   width: 100%;
   max-width: 450px;
-  background-color: $white;
+  background-color: $darkBackground1;
   border-radius: 10px;
-  border: 1px solid $borderGray;
+  border: 1px solid $darkBackground1;
   padding: 10px 20px;
+  transition: background-color 0.2s ease;
+  color: white;
+
+  &.selected {
+    background-color: $darkBackground4;
+  }
+
   &-labels {
     display: flex;
     flex-direction: row;
@@ -15,6 +22,7 @@
     justify-content: flex-start;
     gap: 10px;
   }
+
   .buttonWrapper {
     width: 100%;
     justify-content: center;

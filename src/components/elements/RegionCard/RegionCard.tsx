@@ -39,9 +39,8 @@ const RegionCard: React.FC<RegionCardProps> = ({
 
   return (
     <div
-      className={styles['regionCardWrapper']}
+      className={`${styles.regionCardWrapper} ${selected ? styles.selected : ''}`}
       onClick={regionData.onClick}
-      style={{ backgroundColor: selected ? `var(--lightGray)` : 'white' }}
     >
       <RegionCardHeader
         name={regionName}
