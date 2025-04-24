@@ -11,6 +11,7 @@ import {
 } from '@/coretime/purchaseHistory';
 import { toUnitFormatted } from '@/utils';
 import RevenueBox from '../RevenueBox/index';
+import CurrentAuctionPrice from '../CurrentAuctionPrice';
 
 export default function BulkSaleSummary() {
   const [network, saleInfo, purchaseHistory] = useUnit([
@@ -90,24 +91,7 @@ export default function BulkSaleSummary() {
         bulkChangePercent={bulkChangePercent}
         renewalChangePercent={renewalChangePercent}
       />
-      <RevenueBox
-        network={network}
-        purchaseHistory={purchaseHistory}
-        previousBulkRevenue={previousBulkRevenue}
-        bulkRevenue={bulkRevenue}
-        renewals={renewals}
-        bulkChangePercent={bulkChangePercent}
-        renewalChangePercent={renewalChangePercent}
-      />
-      <RevenueBox
-        network={network}
-        purchaseHistory={purchaseHistory}
-        previousBulkRevenue={previousBulkRevenue}
-        bulkRevenue={bulkRevenue}
-        renewals={renewals}
-        bulkChangePercent={bulkChangePercent}
-        renewalChangePercent={renewalChangePercent}
-      />
+      <CurrentAuctionPrice />
     </div>
   );
 }
