@@ -45,7 +45,9 @@ const Select = <T,>({
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedOption = options.find((option) => option.value === selected);
+  const selectedOption = options.find(
+    (option) => JSON.stringify(option.value) === JSON.stringify(selected)
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -95,7 +97,7 @@ const Select = <T,>({
           <ul className={styles['selectDropdown-optionList']}>
             {filteredOptions.map((option) => (
               <li
-                key={option.label}
+                key={option.key}
                 onClick={() => handleOptionClick(option.value)}
                 className={`${styles['selectDropdown-optionList-optionItem']} ${option.value === selected ? styles['selected'] : ''}`}
               >

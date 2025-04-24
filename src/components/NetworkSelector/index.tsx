@@ -31,6 +31,7 @@ const NetworkSelector = () => {
 
   const networks = [
     {
+      key: 'Polkadot',
       value: Network.POLKADOT,
       label: 'Polkadot',
       icon: (
@@ -44,6 +45,7 @@ const NetworkSelector = () => {
       ),
     },
     {
+      key: 'Kusama',
       value: Network.KUSAMA,
       label: 'Kusama',
       icon: (
@@ -57,6 +59,7 @@ const NetworkSelector = () => {
       ),
     },
     {
+      key: 'Paseo',
       value: Network.PASEO,
       label: 'Paseo',
       icon: (
@@ -70,6 +73,7 @@ const NetworkSelector = () => {
       ),
     },
     {
+      key: 'Westend',
       value: Network.WESTEND,
       label: 'Westend',
       icon: (
@@ -88,11 +92,7 @@ const NetworkSelector = () => {
     <Select
       selectedValue={network}
       onChange={handleChange}
-      options={networks.map((network) => ({
-        value: network.value,
-        label: network.label,
-        icon: network.icon,
-      }))}
+      options={networks}
     />
   );
 };

@@ -1,37 +1,83 @@
+import { $connections, $network } from '@/api/connection';
 import styles from './MyCore.module.scss';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
-import { useState } from 'react';
-
-const coreOptions: SelectOption<string>[] = [
-  { label: 'ID 2425.3521', value: '2425.3521' },
-  { label: 'ID 1421.0012', value: '1421.0012' },
-  { label: 'ID 9876.5432', value: '9876.5432' },
-];
+import { useUnit } from 'effector-react';
+import { useEffect, useState } from 'react';
+import {
+  $potentialRenewals,
+  potentialRenewalsRequested,
+  RenewalKey,
+  RenewalRecord,
+} from '@/coretime/renewals';
+import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 
 export default function MyCore() {
-  const [selected, setSelected] = useState<string | null>(coreOptions[0].value);
+  const network = useUnit($network);
+  const connections = useUnit($connections);
+  const potentialRenewals = useUnit($potentialRenewals);
+
+  const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
+  const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
+
+  const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
+    potentialRenewals.entries()
+  ).map((renewal) => ({
+    key: `${renewal[0].core}-${renewal[0].when}`,
+    label: `${renewal[0].core}`,
+    value: renewal,
+  }));
+
+  useEffect(() => {
+    potentialRenewalsRequested({ network, connections });
+  }, [network, connections]);
+
+  const getDateFromTimeslice = async (timeslice: number | null) => {
+    setSelectedDeadline('-');
+    if (!timeslice) return;
+    const timestamp = await timesliceToTimestamp(timeslice, network, connections);
+    if (!timestamp) return setSelectedDeadline('-');
+
+    setSelectedDeadline(formatDate(timestamp));
+  };
+
+  const formatDate = (timestamp: Date | bigint | null): string => {
+    if (!timestamp) return '-';
+    const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
+    return date.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   return (
     <div className={styles.myCoreCard}>
-      <p className={styles.title}>My Cores</p>
+      <p className={styles.title}>My Coress</p>
 
       <div className={styles.selectBox}>
         <Select
-          options={coreOptions}
+          options={options}
           selectedValue={selected}
-          onChange={(val) => setSelected(val)}
+          onChange={(val) => {
+            setSelected(val);
+            getDateFromTimeslice(val ? val[0].when : null);
+          }}
         />
       </div>
 
       <div className={styles.details}>
         <div className={styles.detailBlock}>
           <p className={styles.label}>Renewal Price</p>
-          <p className={styles.value}>ID {selected}</p>
+          <p className={styles.value}>
+            {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
+          </p>
         </div>
         <div className={styles.detailBlock}>
           <p className={styles.label}>Renewal deadline</p>
-          <p className={styles.value}>April 9, 2025</p>
+          <p className={styles.value}>{selectedDeadline}</p>
         </div>
       </div>
 
