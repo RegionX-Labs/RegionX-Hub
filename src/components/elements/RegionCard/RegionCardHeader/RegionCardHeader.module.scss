@@ -9,8 +9,9 @@
   justify-content: start;
   align-items: center;
 
-  img {
-    width: 70px;
+  .identicon {
+    width: 80px;
+    height: 80px;
   }
 
   &-data {
@@ -43,7 +44,7 @@
 
   &-labels {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: start;
     align-items: flex-start;
     gap: 10px;
@@ -54,7 +55,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
   h5 {
     margin: 0;
   }
@@ -72,17 +72,35 @@
   .editInput {
     font-size: 1rem;
     padding: 0.35rem 0.6rem;
-    border: 1px solid $gray3;
+    border: 0.5px solid $gray3;
+    background-color: $darkBackground4;
+    max-width: 120px;
     border-radius: 6px;
     outline: none;
     transition:
       border-color 0.2s ease,
       box-shadow 0.2s ease;
-    color: $dark;
+    color: white;
 
     &:focus {
       border-color: $greenPrimary;
-      box-shadow: 0 0 0 2px $greenPrimary;
+      box-shadow: 0 0 0 1px $greenPrimary;
     }
+  }
+}
+.labelWithIcon {
+  display: flex;
+  align-items: center;
+  padding: 4px 0px;
+  border-radius: 8px;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $white;
+  @include Montserrat;
+  img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
   }
 }

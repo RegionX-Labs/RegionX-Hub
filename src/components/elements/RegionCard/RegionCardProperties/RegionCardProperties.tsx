@@ -20,27 +20,32 @@ const RegionCardProperties: React.FC<RegionCardPropertiesProps> = ({
   return (
     <>
       <span className={styles['disancer']}></span>
-      <p className={styles['RegionCardProperties-headline']}>Task: {task}</p>
       <div className={styles['RegionCardProperties-slider']}>
-        <Slider initialValue={coreOcupaccy} max={100} min={0} disabled />
-        <p>
-          <b>{coreOcupaccy}%</b> Core ocupaccy
-        </p>
-      </div>
-      <div className={styles['RegionCardProperties-slider']}>
-        <Slider initialValue={consumed} max={100} min={0} disabled />
-        <p>
-          <b>{consumed}%</b> Consumed
-        </p>
-      </div>
-      {!typeMarketplace ? (
-        <div className={styles['RegionCardProperties-slider']}>
-          <Slider initialValue={currentUsage} max={100} min={0} disabled />
-          <p>
-            <b>{currentUsage}%</b> Current usage
-          </p>
+        <div className={styles['RegionCardProperties-labelRow']}>
+          <span>Core occupancy</span>
+          <b>{coreOcupaccy}%</b>
         </div>
-      ) : null}
+        <Slider initialValue={coreOcupaccy} max={100} min={0} disabled />
+      </div>
+
+      <div className={styles['RegionCardProperties-slider']}>
+        <div className={styles['RegionCardProperties-labelRow']}>
+          <span>Consumed</span>
+          <b>{consumed}%</b>
+        </div>
+        <Slider initialValue={consumed} max={100} min={0} disabled />
+      </div>
+
+      {!typeMarketplace && (
+        <div className={styles['RegionCardProperties-slider']}>
+          <div className={styles['RegionCardProperties-labelRow']}>
+            <span>Current usage</span>
+            <b>{currentUsage}%</b>
+          </div>
+          <Slider initialValue={currentUsage} max={100} min={0} disabled />
+        </div>
+      )}
+
       <span className={styles['disancer']}></span>
     </>
   );

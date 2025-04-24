@@ -42,7 +42,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   return (
     <>
       <div className={styles['regionCardHeaderWrapper']}>
-        <Identicon value={ss58Address} size={80} />
+        <Identicon value={ss58Address} size={80} className={styles.identicon} />
         <div className={styles['regionCardHeaderWrapper-data']}>
           <div className={styles['nameEditWrapper']}>
             {isEditing ? (
@@ -64,13 +64,14 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         </div>
       </div>
       <div className={styles['regionCardHeaderWrapper-labels']}>
-        <LabelCard
-          textColor='dark'
-          variant='primary'
-          color='gray5'
-          label={`Core Index: ${coreIndex}`}
-        />
-        <LabelCard variant='primary' color='greenPrimary' label={duration} />
+        <div className={styles.labelWithIcon}>
+          <img src='/barcode.png' alt='core index' />
+          <span>Core Index: {coreIndex}</span>
+        </div>
+        <div className={styles.labelWithIcon}>
+          <img src='/timer.png' alt='duration' />
+          <span>{duration}</span>
+        </div>
       </div>
     </>
   );
