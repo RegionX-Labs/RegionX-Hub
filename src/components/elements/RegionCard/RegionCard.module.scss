@@ -1,0 +1,23 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.regionCardWrapper {
+  width: 100%;
+  max-width: 450px;
+  background-color: $white;
+  border-radius: 10px;
+  border: 1px solid $borderGray;
+  padding: 10px 20px;
+  &-labels {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .buttonWrapper {
+    width: 100%;
+    justify-content: center;
+    color: $dark5;
+  }
+}

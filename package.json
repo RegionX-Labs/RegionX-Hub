@@ -20,6 +20,7 @@
     "effector-react": "^23.3.0",
     "humanize-duration": "^3.32.1",
     "javascript-time-ago": "^2.5.11",
+    "lucide-react": "^0.503.0",
     "next": "15.1.7",
     "polkadot-api": "^1.9.1",
     "react": "^18.3.1",
