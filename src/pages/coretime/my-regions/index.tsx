@@ -1,7 +1,7 @@
 import { $regions, regionsRequested } from '@/coretime/regions';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { RegionCard } from '@region-x/components';
+import { RegionCard } from '../../../components/elements/RegionCard';
 import { useEffect, useState } from 'react';
 import styles from './my-regions.module.scss';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
