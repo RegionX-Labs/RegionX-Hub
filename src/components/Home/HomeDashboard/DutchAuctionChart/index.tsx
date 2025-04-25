@@ -11,19 +11,12 @@ const series = [
   {
     name: 'Price',
     data: [
-      { x: 0, y: 100 },
-      { x: 1, y: 70 },
-      { x: 2, y: 70 },
-      { x: 3, y: 65 },
-      { x: 4, y: null },
-      { x: 5, y: 49 },
-    ],
-  },
-  {
-    name: 'Projection Guide',
-    data: [
-      { x: 3, y: 65 },
-      { x: 5, y: 49 },
+      { x: 0, y: 9.22 },
+      { x: 1, y: 9.22 },
+      { x: 1, y: 9.22 },
+      { x: 2, y: 0.928 },
+      { x: 3, y: 0.0928 },
+      { x: 4, y: 0.0928 },
     ],
   },
 ];
@@ -42,7 +35,7 @@ const options: ApexOptions = {
   },
   stroke: {
     width: [2, 2],
-    curve: 'smooth',
+    curve: 'straight',
     dashArray: [0, 7],
   },
   markers: {
@@ -54,12 +47,12 @@ const options: ApexOptions = {
     axisTicks: { show: false },
     axisBorder: { show: false },
     min: 0,
-    max: 5,
+    max: 4,
   },
   yaxis: {
-    tickAmount: 4,
+    tickAmount: 8,
     min: 0,
-    max: 100,
+    max: 10,
     labels: {
       style: { colors: '#888' },
       formatter: (val: number) => `${val} DOT`,
@@ -76,19 +69,19 @@ const options: ApexOptions = {
     xaxis: [
       {
         x: 0,
-        x2: 2,
+        x2: 1,
         fillColor: 'rgba(0, 255, 163, 0.05)',
         opacity: 0.3,
       },
       {
-        x: 2,
+        x: 1,
         x2: 3,
         fillColor: 'rgba(0, 17, 255, 0.05)',
         opacity: 0.3,
       },
       {
         x: 3,
-        x2: 5,
+        x2: 4,
         fillColor: 'rgba(136, 136, 136, 0.05)',
         opacity: 0.3,
       },
