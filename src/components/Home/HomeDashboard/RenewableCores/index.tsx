@@ -25,11 +25,11 @@ export default function RenewableCores() {
     potentialRenewals.entries()
   )
     .map((renewal) => ({
-      key: `${renewal[0].core}-${renewal[0].when}`,
+      key: `${renewal[0].when}-${renewal[0].core}`,
       label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
       value: renewal,
     }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+    .sort((a, b) => b.key.localeCompare(a.key));
 
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
