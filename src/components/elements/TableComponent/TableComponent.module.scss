@@ -1,0 +1,88 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: $darkBackground1;
+  color: white;
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  @include Montserrat;
+  font-size: 16px;
+  line-height: 24px;
+
+  .tableHeader-cell {
+    position: relative;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px;
+    min-width: 40px;
+    box-sizing: border-box;
+    text-align: left;
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    &.primaryGreenCell {
+      flex: 1;
+      min-width: 100px;
+      color: $greenPrimary;
+    }
+
+    &.IdenticonCell {
+      flex: 2;
+      min-width: 200px;
+      color: $greenPrimary;
+    }
+
+    input[type='text'] {
+      width: 90%;
+      padding: 5px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      color: $dark;
+      padding: 10px 10px 10px 30px;
+    }
+
+    .searchIcon {
+      position: absolute;
+      left: 20px;
+      top: 58%;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+    }
+  }
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .noResultsMessage {
+    width: 100%;
+    @include Montserrat;
+    font-size: 20px;
+    line-height: 28px;
+    color: $dark;
+    padding: 30px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}

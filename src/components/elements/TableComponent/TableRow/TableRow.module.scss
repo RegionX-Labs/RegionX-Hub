@@ -1,0 +1,23 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.tableRow {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  background-color: $darkBackground1;
+  border-bottom: 1px solid $darkBackground2;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: darken($darkBackground1, 2%);
+  }
+
+  &-cell {
+    display: flex;
+    flex: 1;
+    padding: 12px;
+    box-sizing: border-box;
+    text-align: left;
+  }
+}

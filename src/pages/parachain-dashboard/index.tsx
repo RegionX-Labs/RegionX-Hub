@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './dashboard.module.scss';
-import { TableComponent } from '@region-x/components';
+import { TableComponent } from '../../components/elements/TableComponent';
 import { FaStar } from 'react-icons/fa';
 import { useUnit } from 'effector-react';
 import DashboardModal from '../../components/DashboardModal';
@@ -93,10 +93,12 @@ const ParachainDashboard = () => {
     Watchlist: {
       cellType: 'jsx' as const,
       data: (
-        <FaStar
-          className={`${styles.starIcon} ${watchlist.includes(item.id) ? styles.starActive : ''}`}
-          onClick={() => toggleWatchlist(item.id)}
-        />
+        <div className={styles.starIconContainer}>
+          <FaStar
+            className={`${styles.starIcon} ${watchlist.includes(item.id) ? styles.starActive : ''}`}
+            onClick={() => toggleWatchlist(item.id)}
+          />
+        </div>
       ),
     },
   }));
