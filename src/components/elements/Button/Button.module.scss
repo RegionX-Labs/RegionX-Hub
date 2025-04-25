@@ -1,0 +1,97 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.buttonWrapper {
+  background-color: var(--button-color);
+  overflow: hidden;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: $white;
+  @include Montserrat;
+  font-size: 14px;
+  line-height: 25px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transform: scale(1);
+
+  &-icon-right {
+    margin-left: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-error {
+    color: red;
+  }
+
+  &-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+/* Reset anchor styles */
+a.buttonWrapper {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/**
+  Loading Animation
+  * @author jh3y - jheytompkins.com
+*/
+
+$size: 4px;
+$no-of-el: 5;
+$delay: 0.25s;
+$color: #ffffff;
+$duration: $no-of-el * ($delay * 1.5);
+$radius: -200%;
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg) translateY($radius);
+  }
+  60%,
+  100% {
+    transform: rotate(360deg) translateY($radius);
+  }
+}
+
+.loading {
+  height: $size;
+  position: relative;
+  width: $size;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  div {
+    animation: loading $duration infinite backwards;
+    background-color: $color;
+    border-radius: 100%;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+
+    @for $el from 1 through $no-of-el {
+      &:nth-child(#{$el}) {
+        animation-delay: #{$el * 0.15s};
+        background-color: rgba($color, 1 - calc((calc($el / 2) * 20) / 100));
+      }
+    }
+  }
+}

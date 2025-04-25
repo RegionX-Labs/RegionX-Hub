@@ -1,0 +1,32 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.regionCardWrapper {
+  width: 100%;
+  max-width: 450px;
+  background-color: $darkBackground1;
+  border-radius: 10px;
+  border: 1px solid $darkBackground1;
+  padding: 10px 20px;
+  transition: background-color 0.2s ease;
+  color: white;
+
+  &.selected {
+    background-color: $darkBackground4;
+  }
+
+  &-labels {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .buttonWrapper {
+    width: 100%;
+    justify-content: center;
+    color: $dark5;
+  }
+}

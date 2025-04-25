@@ -1,0 +1,50 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.LabelCardWrapper {
+  width: fit-content;
+  color: $white;
+  padding: 5px 15px;
+  @include Montserrat;
+  font-size: 14px;
+  line-height: 20px;
+  background-color: var(--label-color);
+  border-radius: 6px;
+  &.dark {
+    color: $dark;
+  }
+  &.light {
+    color: $white;
+  }
+  &.transparent {
+    border: 1px solid var(--label-color);
+    color: var(--label-color);
+    &.yellowDark {
+      background-color: $yellowLight3;
+    }
+    &.greenDark {
+      background-color: $greenLight6;
+    }
+    &.orangeDark {
+      background-color: $orangeLight4;
+    }
+    &.pinkDark {
+      background-color: $pinkLight4;
+    }
+    &.cyan {
+      background-color: $cyanLight3;
+    }
+    &.redDark {
+      background-color: $redLight4;
+    }
+    &.purpleDark {
+      background-color: $purpleLight4;
+    }
+    &.blueDark {
+      background-color: $blueLight5;
+    }
+  }
+  &.pill {
+    border-radius: 30px;
+  }
+}
