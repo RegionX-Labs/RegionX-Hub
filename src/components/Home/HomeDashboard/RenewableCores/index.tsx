@@ -21,16 +21,15 @@ export default function RenewableCores() {
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
 
-  Array.from(potentialRenewals.entries()).forEach((entry) =>
-    console.log((entry[1].completion as any).value[0].assignment.value)
-  );
   const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
     potentialRenewals.entries()
-  ).map((renewal) => ({
-    key: `${renewal[0].core}-${renewal[0].when}`,
-    label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
-    value: renewal,
-  }));
+  )
+    .map((renewal) => ({
+      key: `${renewal[0].core}-${renewal[0].when}`,
+      label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
+      value: renewal,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
