@@ -126,28 +126,6 @@ const MyRegionsPage = () => {
           <p>No regions available.</p>
         )}
       </div>
-      {/* <div>
-        {' '}
-        <nav className={styles.menu}>
-          <ul>
-            <li>
-              <a href='#partition'>Partition</a>
-            </li>
-            <li>
-              <a href='#interface'>Interface</a>
-            </li>
-            <li>
-              <a href='#transfer'>Transfer</a>
-            </li>
-            <li>
-              <a href='#assign'>Assign</a>
-            </li>
-            <li>
-              <a href='#sell'>Sell</a>
-            </li>
-          </ul>
-        </nav>
-      </div> */}
     </>
   );
 };
