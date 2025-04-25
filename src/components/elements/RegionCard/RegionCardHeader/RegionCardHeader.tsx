@@ -3,7 +3,8 @@ import LabelCard from '../../LabelCard/LabelCard';
 import styles from './RegionCardHeader.module.scss';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
-import { Pencil, MoreVertical, MoreHorizontal } from 'lucide-react';
+import { Pencil, MoreHorizontal } from 'lucide-react';
+import { useRef } from 'react';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -40,6 +41,21 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
     }
   };
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
@@ -67,7 +83,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             {regionStart} | {regionEnd}
           </p>
         </div>
-        <div className={styles.dropdownWrapper}>
+        <div className={styles.dropdownWrapper} ref={dropdownRef}>
           <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
             <div className={styles.dropdownMenu}>
