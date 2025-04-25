@@ -21,9 +21,9 @@ export default function RenewableCores() {
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
 
-  Array.from(
-    potentialRenewals.entries()
-  ).forEach(entry => console.log((entry[1].completion as any).value[0].assignment.value));
+  Array.from(potentialRenewals.entries()).forEach((entry) =>
+    console.log((entry[1].completion as any).value[0].assignment.value)
+  );
   const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
     potentialRenewals.entries()
   ).map((renewal) => ({

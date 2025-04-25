@@ -88,13 +88,7 @@ const NetworkSelector = () => {
     },
   ];
 
-  return (
-    <Select
-      selectedValue={network}
-      onChange={handleChange}
-      options={networks}
-    />
-  );
+  return <Select selectedValue={network} onChange={handleChange} options={networks} />;
 };
 
 export default NetworkSelector;
