@@ -1,5 +1,5 @@
 import { $connections, $network } from '@/api/connection';
-import styles from './MyCore.module.scss';
+import styles from './RenewableCores.module.scss';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
 import { useUnit } from 'effector-react';
@@ -11,8 +11,9 @@ import {
   RenewalRecord,
 } from '@/coretime/renewals';
 import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
+import { chainData } from '@/chaindata';
 
-export default function MyCore() {
+export default function RenewableCores() {
   const network = useUnit($network);
   const connections = useUnit($connections);
   const potentialRenewals = useUnit($potentialRenewals);
@@ -20,11 +21,14 @@ export default function MyCore() {
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
 
+  Array.from(
+    potentialRenewals.entries()
+  ).forEach(entry => console.log((entry[1].completion as any).value[0].assignment.value));
   const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
     potentialRenewals.entries()
   ).map((renewal) => ({
     key: `${renewal[0].core}-${renewal[0].when}`,
-    label: `${renewal[0].core}`,
+    label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
     value: renewal,
   }));
 
@@ -54,8 +58,8 @@ export default function MyCore() {
   };
 
   return (
-    <div className={styles.myCoreCard}>
-      <p className={styles.title}>My Coress</p>
+    <div className={styles.renewableCoresCard}>
+      <p className={styles.title}>Renewable Cores</p>
 
       <div className={styles.selectBox}>
         <Select
