@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Pagination.module.scss';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TablePaginationProps {
   page: number;
@@ -16,27 +17,47 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   dataLength,
   onPageChange,
 }) => {
-  const handlePageChange = (change: -1 | 1) => {
-    if (page + change < 1 || page + change > Math.ceil(dataLength / pageSize)) {
-      return;
-    }
+  const totalPages = Math.ceil(dataLength / pageSize);
+  const [currentWindowStart, setCurrentWindowStart] = useState(1); // track window start
 
-    const newPage = page + change;
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
     setPage(newPage);
     onPageChange(newPage);
   };
 
+  const handleWindowShift = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      setCurrentWindowStart((prev) => Math.max(1, prev - 4));
+    } else {
+      setCurrentWindowStart((prev) => Math.min(prev + 4, Math.max(1, totalPages - 3)));
+    }
+  };
+
+  const pages = Array.from(
+    { length: Math.min(4, totalPages - currentWindowStart + 1) },
+    (_, i) => currentWindowStart + i
+  );
+
   return (
     <div className={styles['pagination-container']}>
-      <p>
-        Page {page} of {Math.ceil(dataLength / pageSize)}
-      </p>
-      <p className={styles['page-navigator']} onClick={() => handlePageChange(-1)}>
-        Prev
-      </p>
-      <p className={styles['page-navigator']} onClick={() => handlePageChange(1)}>
-        Next
-      </p>
+      <button onClick={() => handleWindowShift('prev')} className={styles.pageButton}>
+        <ChevronLeft size={16} />
+      </button>
+
+      {pages.map((p) => (
+        <button
+          key={p}
+          onClick={() => handlePageChange(p)}
+          className={`${styles.pageButton} ${p === page ? styles.active : ''}`}
+        >
+          {p}
+        </button>
+      ))}
+
+      <button onClick={() => handleWindowShift('next')} className={styles.pageButton}>
+        <ChevronRight size={16} />
+      </button>
     </div>
   );
 };

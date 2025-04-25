@@ -1,32 +1,36 @@
+@use 'sass:color';
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
 .pagination-container {
   display: flex;
   justify-content: center;
-  gap: 6px;
+  gap: 10px;
   padding: 20px;
+}
 
-  p {
-    margin: 0;
+.pageButton {
+  background-color: $darkBackground2;
+  color: $gray6;
+  border: none;
+  padding: 8px 12px;
+  min-width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: color.adjust($greenPrimary, $lightness: -5%);
   }
+}
 
-  .page-navigator {
-    background-color: $darkBackground2;
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: $gray3;
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      background-color: lighten($darkBackground2, 5%);
-    }
-  }
-
-  .active-page {
-    background-color: $greenPrimary;
-    color: $white;
-    font-weight: 600;
-  }
+.active {
+  background-color: $greenPrimary;
+  color: $white;
+  font-weight: bold;
 }

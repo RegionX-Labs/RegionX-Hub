@@ -65,11 +65,11 @@ const TableComponent: React.FC<TableProps> = ({ data, pageSize }) => {
             key={index}
             className={`${styles['tableHeader-cell']} ${data[0][key]?.cellType ? styles[data[0][key]?.cellType] : ''}`}
           >
-            <p>{key}</p>
             <input
               type='text'
               value={searchTerms[key]}
               onChange={(e) => handleSearchChange(e, key)}
+              placeholder={key}
             />
             <Image src={SearchIcon} alt='Down Arrow' className={styles.searchIcon} />{' '}
           </div>

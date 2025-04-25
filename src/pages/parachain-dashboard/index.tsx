@@ -105,25 +105,28 @@ const ParachainDashboard = () => {
 
   return (
     <>
-      <div className={styles.buttonContainer}>
-        <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
-          {showWatchlist ? 'Show All' : 'Watchlist'}
-        </button>
-        <button
-          className={`${styles.customButton} ${styles.secondary}`}
-          onClick={() => setIsModalOpen(true)}
-        >
-          Reserve New Para
-        </button>
-      </div>
-
-      <div className={styles.dashboard_table}>
-        <div className={styles.tableWrapper}>
-          <TableComponent data={tableData} pageSize={8} />
+      <div className={styles.parachain_dashboard_table}>
+        <div className={styles.buttonContainer}>
+          <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
+            {showWatchlist ? 'Show All' : 'Watchlist'}
+          </button>
+          <button
+            className={`${styles.customButton} ${styles.secondary}`}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Reserve New Para
+          </button>
         </div>
-      </div>
+        <h2 className={styles.heading}>Parachain Dashboard</h2>
 
-      <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <div className={styles.dashboard_table}>
+          <div className={styles.tableWrapper}>
+            <TableComponent data={tableData} pageSize={8} />
+          </div>
+        </div>
+
+        <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      </div>
     </>
   );
 };

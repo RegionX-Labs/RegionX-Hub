@@ -2,14 +2,30 @@
 @use '../../styles/mixins' as *;
 @use 'sass:color';
 
+.parachain_dashboard_table {
+  margin-top: 130px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: $darkBackground1;
+  border-radius: 20px;
+  overflow-x: auto;
+}
+
 .dashboard_table {
   margin-top: 30px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
   background-color: transparent;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow-x: auto;
+
+  @media (max-width: 475px) {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .tableWrapper {
@@ -18,13 +34,22 @@
   padding: 0;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  min-width: 600px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  margin-left: 5%;
+  margin-top: -10px;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
-  margin-right: 15%;
+  margin-top: -70px;
+  margin-right: 5%;
 
   @media (max-width: 475px) {
     margin-right: 5%;
