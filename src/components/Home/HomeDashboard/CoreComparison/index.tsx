@@ -7,7 +7,7 @@ import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CoreComparison.module.scss';
 
 export default function CoreComparison() {
-  const [network, saleInfo, purchaseHistory, connections] = useUnit([
+  const [network, saleInfo, connections] = useUnit([
     $network,
     $latestSaleInfo,
     $purchaseHistory,
@@ -18,8 +18,8 @@ export default function CoreComparison() {
   const [corePrice, setCorePrice] = useState<number | null>(null);
 
   useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network]);
+    if (network) latestSaleRequested([network, connections]);
+  }, [network, connections]);
 
   useEffect(() => {
     if (network && saleInfo) {
