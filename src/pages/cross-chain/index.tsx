@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './cross-chain.module.scss';
-import { Select, AmountInput, AddressInput, Button } from '@region-x/components';
+import Select from '../../components/elements/Select';
+import AmountInput from '../../components/elements/AmountInput/AmountInput';
+import AddressInput from '../../components/elements/AdressInput/AddressInput';
+import Button from '../../components/elements/Button/Button';
+
 import {
   Kusama as KusamaIcon,
   Paseo as PaseoIcon,
@@ -25,6 +29,7 @@ const CrossChain = () => {
   const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
   const [amount, setAmount] = useState('');
   const [beneficiary, setBeneficiary] = useState('');
+  const [beneficiaryError, setBeneficiaryError] = useState<string | null>(null);
 
   const currencyMapping: Record<ChainId, { symbol: string; icon: any }> = {
     [chains.polkadot.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
@@ -45,12 +50,9 @@ const CrossChain = () => {
     setDestinationChain(value);
   };
 
-  const [beneficiaryError, setBeneficiaryError] = useState<string | null>(null);
-
   const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setBeneficiary(value);
-
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
@@ -64,9 +66,8 @@ const CrossChain = () => {
   };
 
   const handleSwapChains = () => {
-    const temp = originChain;
     setOriginChain(destinationChain);
-    setDestinationChain(temp);
+    setDestinationChain(originChain);
   };
 
   const networks = [
@@ -221,6 +222,7 @@ const CrossChain = () => {
             selectedValue={originChain}
             onChange={handleOriginChainChange}
             options={filteredNetworks.map((network) => ({
+              key: String(network.value),
               value: network.value,
               label: network.label,
               icon: network.icon,
@@ -239,6 +241,7 @@ const CrossChain = () => {
             selectedValue={destinationChain}
             onChange={handleDestinationChainChange}
             options={filteredNetworks.map((network) => ({
+              key: String(network.value),
               value: network.value,
               label: network.label,
               icon: network.icon,
@@ -263,6 +266,7 @@ const CrossChain = () => {
               selectedCurrency
                 ? [
                     {
+                      key: selectedCurrency.symbol,
                       value: selectedCurrency.symbol,
                       label: selectedCurrency.symbol,
                       icon: (

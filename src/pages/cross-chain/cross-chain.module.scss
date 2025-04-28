@@ -1,3 +1,7 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -5,10 +9,11 @@
   padding: 3rem;
   min-height: 100vh;
   margin-top: 100px;
+  color: white;
 }
 
 .chainSelectionContainer {
-  background: #ffffff;
+  background: $darkBackground1;
   padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -53,7 +58,7 @@
 }
 
 .transferSection {
-  background: #ffffff;
+  background: $darkBackground1;
   padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
