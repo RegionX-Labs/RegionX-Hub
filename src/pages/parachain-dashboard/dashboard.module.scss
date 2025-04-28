@@ -2,12 +2,23 @@
 @use '../../styles/mixins' as *;
 @use 'sass:color';
 
-.dashboard_table {
-  margin-top: 30px;
+.parachain_dashboard_table {
+  margin-top: 130px;
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: $white;
+  background-color: $black;
+  @include Inter;
+  border-radius: 20px;
+  overflow-x: auto;
+}
+
+.dashboard_table {
+  margin-top: 30px;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: transparent;
   border-radius: 10px;
   overflow-x: auto;
 
@@ -19,14 +30,28 @@
 }
 
 .tableWrapper {
+  border-radius: 12px;
+
+  background-color: $black;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   min-width: 600px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  margin-left: 3%;
+  margin-top: -35px;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
-  margin-right: 15%;
+  margin-top: -70px;
+  margin-right: 3%;
 
   @media (max-width: 475px) {
     margin-right: 5%;
@@ -35,10 +60,10 @@
 }
 
 .customButton {
-  background-color: $yellowDark;
-  color: $white;
-  border: none;
-  border-radius: 5px;
+  background-color: $black;
+  color: $greenPrimary;
+  border: 1px solid $greenPrimary;
+  border-radius: 10px;
   padding: 15px 20px;
   margin-left: 10px;
   margin-top: 100px;
@@ -46,17 +71,17 @@
   font-size: 14px;
   font-family: Montserrat;
   transition: all 0.3s ease;
+  @include Inter;
 
   &:hover {
-    background-color: color.adjust($yellowDark, $lightness: -5%);
-    transform: scale(1.05);
+    background-color: color.adjust($black, $lightness: -1%);
   }
 
   &.secondary {
     background-color: $greenPrimary;
+    color: white;
     &:hover {
       background-color: color.adjust($greenPrimary, $lightness: -5%);
-      transform: scale(1.05);
     }
   }
 
@@ -73,7 +98,7 @@
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
   width: 20px;
   height: 20px;
 
@@ -84,6 +109,13 @@
   &.starActive {
     color: $greenPrimary;
   }
+}
+
+.starIconContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+  width: 100%;
 }
 
 .parachainNameContainer {
