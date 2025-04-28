@@ -7,7 +7,7 @@
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: $darkBackground1;
+  background-color: $black;
   @include Inter;
   border-radius: 20px;
   overflow-x: auto;
@@ -32,7 +32,7 @@
 .tableWrapper {
   border-radius: 12px;
 
-  background-color: $darkBackground2;
+  background-color: $black;
   padding: 0;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -60,7 +60,7 @@
 }
 
 .customButton {
-  background-color: $darkBackground2;
+  background-color: $black;
   color: $greenPrimary;
   border: 1px solid $greenPrimary;
   border-radius: 10px;
@@ -74,7 +74,7 @@
   @include Inter;
 
   &:hover {
-    background-color: color.adjust($darkBackground2, $lightness: -1%);
+    background-color: color.adjust($black, $lightness: -1%);
   }
 
   &.secondary {
