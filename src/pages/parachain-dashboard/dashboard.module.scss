@@ -8,6 +8,7 @@
   margin-left: auto;
   margin-right: auto;
   background-color: $darkBackground1;
+  @include Inter;
   border-radius: 20px;
   overflow-x: auto;
 }
@@ -59,10 +60,10 @@
 }
 
 .customButton {
-  background-color: $yellowDark;
-  color: $white;
-  border: none;
-  border-radius: 5px;
+  background-color: $darkBackground2;
+  color: $greenPrimary;
+  border: 1px solid $greenPrimary;
+  border-radius: 10px;
   padding: 15px 20px;
   margin-left: 10px;
   margin-top: 100px;
@@ -70,17 +71,17 @@
   font-size: 14px;
   font-family: Montserrat;
   transition: all 0.3s ease;
+  @include Inter;
 
   &:hover {
-    background-color: color.adjust($yellowDark, $lightness: -5%);
-    transform: scale(1.05);
+    background-color: color.adjust($darkBackground2, $lightness: -1%);
   }
 
   &.secondary {
     background-color: $greenPrimary;
+    color: white;
     &:hover {
       background-color: color.adjust($greenPrimary, $lightness: -5%);
-      transform: scale(1.05);
     }
   }
 
