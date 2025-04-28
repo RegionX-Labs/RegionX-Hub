@@ -8,6 +8,7 @@ import { $connections, $network } from '@/api/connection';
 import { ParaStateCard } from '@/components/ParaStateCard';
 import { $parachains, parachainsRequested } from '@/parachains';
 import { chainData } from '@/chaindata';
+import { ParaState } from '../../components/ParaStateCard';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -62,7 +63,10 @@ const ParachainDashboard = () => {
     : parachains.filter((item) => item.network === network);
 
   const tableData: Record<string, TableData>[] = filteredData.map((item) => ({
-    Id: { cellType: 'text', data: item.id.toString() },
+    Id: {
+      cellType: 'text',
+      data: item.id.toString(),
+    },
     Name: {
       cellType: 'jsx',
       data: (
@@ -88,8 +92,13 @@ const ParachainDashboard = () => {
           <p>{chainData[network][item.id]?.name}</p>
         </div>
       ),
+      searchKey: chainData[network][item.id]?.name || '',
     },
-    State: { cellType: 'jsx', data: <ParaStateCard state={item.state} /> },
+    State: {
+      cellType: 'jsx',
+      data: <ParaStateCard state={item.state} />,
+      searchKey: ParaState[item.state],
+    },
     Watchlist: {
       cellType: 'jsx',
       data: (
