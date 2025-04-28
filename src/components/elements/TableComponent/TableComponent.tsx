@@ -9,7 +9,6 @@ import Image from 'next/image';
 const TableComponent: React.FC<TableProps> = ({ data, pageSize }) => {
   const [filteredData, setFilteredData] = useState(data);
   const [displayedData, setDisplayedData] = useState(filteredData.slice(0, pageSize));
-
   const [page, setPage] = useState(1);
 
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>(
@@ -65,13 +64,18 @@ const TableComponent: React.FC<TableProps> = ({ data, pageSize }) => {
             key={index}
             className={`${styles['tableHeader-cell']} ${data[0][key]?.cellType ? styles[data[0][key]?.cellType] : ''}`}
           >
-            <input
-              type='text'
-              value={searchTerms[key]}
-              onChange={(e) => handleSearchChange(e, key)}
-              placeholder={key}
-            />
-            <Image src={SearchIcon} alt='Down Arrow' className={styles.searchIcon} />{' '}
+            {/* Only hide input if key is Watchlist */}
+            {key !== 'Watchlist' && (
+              <>
+                <input
+                  type='text'
+                  value={searchTerms[key]}
+                  onChange={(e) => handleSearchChange(e, key)}
+                  placeholder={key}
+                />
+                <Image src={SearchIcon} alt='Search Icon' className={styles.searchIcon} />
+              </>
+            )}
           </div>
         ))}
       </div>

@@ -62,9 +62,9 @@ const ParachainDashboard = () => {
     : parachains.filter((item) => item.network === network);
 
   const tableData: Record<string, TableData>[] = filteredData.map((item) => ({
-    Id: { cellType: 'text' as const, data: item.id.toString() },
+    Id: { cellType: 'text', data: item.id.toString() },
     Name: {
-      cellType: 'jsx' as const,
+      cellType: 'jsx',
       data: (
         <div className={styles.parachainNameContainer}>
           {chainData[network][item.id]?.logo ? (
@@ -89,9 +89,9 @@ const ParachainDashboard = () => {
         </div>
       ),
     },
-    State: { cellType: 'jsx' as const, data: <ParaStateCard state={item.state} /> },
+    State: { cellType: 'jsx', data: <ParaStateCard state={item.state} /> },
     Watchlist: {
-      cellType: 'jsx' as const,
+      cellType: 'jsx',
       data: (
         <div className={styles.starIconContainer}>
           <FaStar
@@ -117,6 +117,7 @@ const ParachainDashboard = () => {
             Reserve New Para
           </button>
         </div>
+
         <h2 className={styles.heading}>Parachain Dashboard</h2>
 
         <div className={styles.dashboard_table}>

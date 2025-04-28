@@ -14,7 +14,7 @@
 
 .dashboard_table {
   margin-top: 30px;
-  width: 90%;
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
   background-color: transparent;
@@ -30,6 +30,7 @@
 
 .tableWrapper {
   border-radius: 12px;
+
   background-color: $darkBackground2;
   padding: 0;
   overflow: hidden;
@@ -41,15 +42,15 @@
   font-size: 20px;
   font-weight: 600;
   color: white;
-  margin-left: 5%;
-  margin-top: -10px;
+  margin-left: 3%;
+  margin-top: -35px;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: flex-end;
   margin-top: -70px;
-  margin-right: 5%;
+  margin-right: 3%;
 
   @media (max-width: 475px) {
     margin-right: 5%;

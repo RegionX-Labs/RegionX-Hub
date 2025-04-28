@@ -5,20 +5,37 @@
 .tableRow {
   display: flex;
   align-items: center;
-  padding: 12px 0;
-  background-color: $darkBackground1;
-  border-bottom: 1px solid $darkBackground2;
+  padding: 5px 6px;
+  background-color: $darkBackground2;
+  border-radius: 14px;
+  margin-bottom: 10px;
+
   transition: background 0.2s;
+
   &:hover {
-    background-color: color.adjust($darkBackground1, $lightness: -2%);
+    background-color: color.adjust($darkBackground2, $lightness: 1%);
   }
 
   &-cell {
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 14px;
+    border-radius: 12px;
     flex: 1;
-    padding: 12px;
+    min-height: 50px;
     box-sizing: border-box;
+    overflow: hidden;
 
     text-align: left;
+    font-size: 14px;
+    color: $white;
+  }
+
+  &-cell:first-child {
+    margin-left: 0;
+  }
+  &-cell:last-child {
+    margin-right: 0;
   }
 }

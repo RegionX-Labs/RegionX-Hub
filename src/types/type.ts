@@ -48,4 +48,5 @@ export type TableData = {
 export interface TableProps {
   data: Array<Record<string, TableData>>;
   pageSize: number;
+  disableSearch?: boolean;
 }
