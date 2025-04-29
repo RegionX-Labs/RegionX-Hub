@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Select } from '@region-x/components';
+import Select from '../../components/elements/Select';
+import Button from '../../components/elements/Button/Button';
 import { chains } from '@/network/chains';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
@@ -119,6 +120,7 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
               selectedValue={selectedRelayRpc}
               onChange={(val) => setSelectedRelayRpc(val as string)}
               options={relayRpcs.map((node) => ({
+                key: node.url,
                 value: node.url,
                 label: node.url,
               }))}
@@ -141,6 +143,7 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
               selectedValue={selectedCoretimeRpc}
               onChange={(val) => setSelectedCoretimeRpc(val as string)}
               options={coretimeRpcs.map((node) => ({
+                key: node.url,
                 value: node.url,
                 label: node.url,
               }))}

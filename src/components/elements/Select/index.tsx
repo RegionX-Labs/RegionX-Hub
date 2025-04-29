@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './select.module.scss';
-import Input from '../Select/AdressInput/AddressInput';
+import Input from '../AdressInput/AddressInput';
 import DownArrow from '../../../../public/DownArrow.svg';
 import { SelectOption } from '../../../types/type';
 import Image from 'next/image';
