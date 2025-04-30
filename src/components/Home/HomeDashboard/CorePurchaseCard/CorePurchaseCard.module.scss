@@ -24,7 +24,7 @@
 .value {
   font-size: 2.5rem;
   font-weight: 700;
-  margin: -4px 0 0;
+  margin: -25px 0 0;
   color: $white;
 }
 
@@ -38,6 +38,9 @@
   font-weight: 500;
   font-size: 0.95rem;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  margin-top: auto;
+
+  gap: 12px;
 }
 
 .label,
@@ -54,7 +57,6 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s;
-
   &:hover {
     background-color: color.scale($greenPrimary, $lightness: -10%);
   }

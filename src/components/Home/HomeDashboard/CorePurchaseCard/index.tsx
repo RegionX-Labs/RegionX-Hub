@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { $network } from '@/api/connection';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
-import styles from './CoreRemaining.module.scss'; // using same styles
+import styles from './CorePurchaseCard.module.scss';
 
-export default function CoreRemaining() {
-  const [network, saleInfo] = useUnit([$network, $latestSaleInfo]);
+export default function CorePurchaseCard() {
+  const [network, saleInfo, purchaseHistory] = useUnit([
+    $network,
+    $latestSaleInfo,
+    $purchaseHistory,
+  ]);
+
   const [corePrice, setCorePrice] = useState<number | null>(null);
 
   useEffect(() => {
@@ -15,20 +21,37 @@ export default function CoreRemaining() {
 
   useEffect(() => {
     if (network && saleInfo) {
+      purchaseHistoryRequested({
+        network,
+        saleCycle: saleInfo.saleCycle,
+      });
+    }
+  }, [network, saleInfo]);
+
+  useEffect(() => {
+    if (network && saleInfo) {
       const now = saleInfo.saleStart + saleInfo.leadinLength;
       const price = getCorePriceAt(now, saleInfo);
       setCorePrice(price);
     }
-    console.log('coresOffered:', saleInfo?.coresOffered);
-    console.log('coresSold:', saleInfo?.coresSold);
   }, [network, saleInfo]);
+
+  const coresSold = new Set(purchaseHistory.map((p) => p.core)).size;
+
+  const coresOffered = saleInfo?.coresOffered ?? 0;
+  const coresRemaining = coresOffered - coresSold;
+
+  console.log('coresOffered:', coresOffered);
+  console.log('coresSold (computed):', coresSold);
+  console.log(
+    'purchaseHistory.map(p => p.core):',
+    purchaseHistory.map((p) => p.core)
+  );
 
   return (
     <div className={styles.coreRemainingCard}>
       <p className={styles.title}>Core Remaining</p>
-      <h2 className={styles.value}>
-        {saleInfo ? Number(saleInfo.coresOffered ?? 0) - Number(saleInfo.coresSold ?? 0) : '—'}
-      </h2>
+      <h2 className={styles.value}>{saleInfo ? coresRemaining : '—'}</h2>
 
       <div className={styles.row}>
         <span className={styles.label}>Current price</span>
