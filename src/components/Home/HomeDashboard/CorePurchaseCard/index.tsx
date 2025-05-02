@@ -25,13 +25,12 @@ export default function CorePurchaseCard() {
         network,
         saleCycle: saleInfo.saleCycle,
       });
-      latestSaleRequested(network);
 
       const now = saleInfo.saleStart + saleInfo.leadinLength;
       const price = getCorePriceAt(now, saleInfo);
       setCorePrice(price);
     }
-  }, [network, saleInfo]);
+  }, [saleInfo]);
 
   const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
@@ -55,4 +54,3 @@ export default function CorePurchaseCard() {
     </div>
   );
 }
-
