@@ -25,32 +25,23 @@ export default function CorePurchaseCard() {
         network,
         saleCycle: saleInfo.saleCycle,
       });
-    }
-  }, [network, saleInfo]);
+      latestSaleRequested(network);
 
-  useEffect(() => {
-    if (network && saleInfo) {
       const now = saleInfo.saleStart + saleInfo.leadinLength;
       const price = getCorePriceAt(now, saleInfo);
       setCorePrice(price);
     }
   }, [network, saleInfo]);
 
-  const coresSold = new Set(purchaseHistory.map((p) => p.core)).size;
-
+  const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
 
-  console.log('coresOffered:', coresOffered);
-  console.log('coresSold (computed):', coresSold);
-  console.log(
-    'purchaseHistory.map(p => p.core):',
-    purchaseHistory.map((p) => p.core)
-  );
-
   return (
     <div className={styles.coreRemainingCard}>
-      <p className={styles.title}>Core Remaining</p>
+      <p className={styles.title}>Core Offered</p>
+      <h2 className={styles.value}>{saleInfo ? coresOffered : '—'}</h2>
+      <p className={styles.title}>Cores Remaining</p>
       <h2 className={styles.value}>{saleInfo ? coresRemaining : '—'}</h2>
 
       <div className={styles.row}>
