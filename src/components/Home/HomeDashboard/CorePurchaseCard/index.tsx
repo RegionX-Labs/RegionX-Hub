@@ -47,7 +47,7 @@ export default function CorePurchaseCard() {
         setCorePrice(price);
       })();
     }
-  }, [saleInfo, network, connections]);
+  }, [saleInfo?.network, connections]);
 
   const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;

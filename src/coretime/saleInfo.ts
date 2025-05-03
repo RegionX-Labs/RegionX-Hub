@@ -9,6 +9,7 @@ export const latestSaleRequested = createEvent<Network>();
 export const $latestSaleInfo = createStore<SaleInfo | null>(null);
 
 export type SaleInfo = {
+  network: Network;
   saleCycle: number;
   saleStart: number;
   leadinLength: number;
@@ -64,7 +65,7 @@ const getLatestSaleInfoFx = createEffect(async (network: Network): Promise<SaleI
   const { status, data } = res;
   if (status !== 200) return null;
 
-  const saleInfo: SaleInfo = data.sales.nodes[0];
+  const saleInfo: SaleInfo = {...data.sales.nodes[0], network};
   return saleInfo;
 });
 
