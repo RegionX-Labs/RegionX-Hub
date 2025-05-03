@@ -27,10 +27,15 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   };
 
   const handleWindowShift = (direction: 'prev' | 'next') => {
-    if (direction === 'prev') {
-      setCurrentWindowStart((prev) => Math.max(1, prev - 4));
-    } else {
-      setCurrentWindowStart((prev) => Math.min(prev + 4, Math.max(1, totalPages - 3)));
+    const newPage = direction === 'prev' ? page - 1 : page + 1;
+    if (newPage < 1 || newPage > totalPages) return;
+
+    handlePageChange(newPage);
+
+    if (newPage < currentWindowStart) {
+      setCurrentWindowStart(newPage);
+    } else if (newPage >= currentWindowStart + 4) {
+      setCurrentWindowStart(newPage - 3);
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { TableComponent } from '@region-x/components';
+import { TableComponent } from '../elements/TableComponent';
 import styles from './sale-history-modal.module.scss';
 import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
 import { $network, $connections } from '@/api/connection';
