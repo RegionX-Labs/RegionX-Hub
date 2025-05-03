@@ -14,7 +14,7 @@ export default function CoreComparison() {
   const [corePrice, setCorePrice] = useState<number | null>(null);
 
   useEffect(() => {
-    if (network) latestSaleRequested([network, connections]);
+    if (network) latestSaleRequested(network);
   }, [network, connections]);
 
   useEffect(() => {

@@ -4,9 +4,10 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import styles from './DutchAuctionChart.module.scss';
-import { $latestSaleInfo, SalePhase } from '@/coretime/saleInfo';
+import { $latestSaleInfo, fetchSelloutPrice, SalePhase } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
+import { getTokenSymbol, toUnit } from '@/utils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -15,48 +16,47 @@ export default function DutchAuctionChart() {
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
 
-  const [renewalPrice, setRenewalPrice] = useState<number>(0);
+  const [renewalPrice, setRenewalPrice] = useState<bigint>(BigInt(0));
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const sellout = await fetchSelloutPrice(network, connections);
-  //     if (sellout !== null) {
-  //       setRenewalPrice(Number(sellout));
-  //     }
-  //   })
-  // }, [network, connections]);
-  
-  console.log(saleInfo);
+  useEffect(() => {
+    (async () => {
+      const sellout = await fetchSelloutPrice(network, connections);
+      console.log(sellout);
+      if (sellout !== null) {
+        setRenewalPrice(BigInt(sellout));
+      }
+    })()
+  }, [network, connections]);
 
   const data = [
     {
       timestamp: 0,
-      value: renewalPrice,
+      value: toUnit(network, renewalPrice),
       phase: SalePhase.Interlude,
     },
     {
       timestamp: 1,
-      value: renewalPrice,
+      value: toUnit(network, renewalPrice),
       phase: SalePhase.Interlude,
     },
       {
       timestamp: 2,
-      value: renewalPrice,
+      value: toUnit(network, renewalPrice),
       phase: SalePhase.Leadin,
     },
     {
       timestamp: 3,
-      value: Number(saleInfo?.endPrice),
+      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.Leadin,
     },
     {
       timestamp: 4,
-      value: Number(saleInfo?.endPrice),
+      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.FixedPrice,
     },
     {
       timestamp: 5,
-      value: Number(saleInfo?.endPrice),
+      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.FixedPrice,
     },
   ];
@@ -104,12 +104,12 @@ export default function DutchAuctionChart() {
       categories: data.map(v => v.timestamp)
     },
     yaxis: {
-      tickAmount: 8,
+      tickAmount: 4,
       min: 0,
-      max: 10,
+      // max: toUnit(network, BigInt(saleInfo?.endPrice || '0')) * 2,
       labels: {
         style: { colors: '#888' },
-        formatter: (val: number) => `${val} DOT`,
+        formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,
       },
     },
     grid: {

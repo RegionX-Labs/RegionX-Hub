@@ -7,11 +7,11 @@ const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   return Math.floor(value * factor) / factor;
 };
 
-export const formatWithDecimals = (amount: string, decimals: number): string => {
-  if (amount == '0') return `0`;
+export const formatWithDecimals = (amount: string, decimals: number): number => {
+  if (amount == '0') return 0;
   const amountNumber = Number(amount) / 10 ** decimals;
   if (amountNumber > 1) {
-    return toFixedWithoutRounding(amountNumber, 2).toString();
+    return toFixedWithoutRounding(amountNumber, 2);
   }
 
   let amountString = amountNumber.toFixed(decimals);
@@ -24,7 +24,7 @@ export const formatWithDecimals = (amount: string, decimals: number): string => 
     amountString = amountString.slice(0, firstNonZeroPos + 3);
   }
 
-  return amountString;
+  return Number(amountString);
 };
 
 export const getTokenSymbol = (network: Network): string => {
@@ -42,25 +42,28 @@ export const getTokenSymbol = (network: Network): string => {
   }
 };
 
-export const toUnitFormatted = (network: Network, amount: bigint): string => {
-  let decimals;
+const getNetworkDecimals = (network: Network): number => {
   switch (network) {
     case Network.POLKADOT:
-      decimals = 10;
-      break;
+      return 10;
     case Network.KUSAMA:
-      decimals = 12;
-      break;
+      return 12;
     case Network.PASEO:
-      decimals = 10;
-      break;
+      return 10;
     case Network.WESTEND:
-      decimals = 12;
-      break;
+      return 12;
     default:
-      decimals = 10;
-      break;
+      return 10;
   }
+}
+
+export const toUnit =  (network: Network, amount: bigint): number => {
+  const decimals = getNetworkDecimals(network);
+  return formatWithDecimals(amount.toString(), decimals);
+}
+
+export const toUnitFormatted = (network: Network, amount: bigint): string => {
+  const decimals = getNetworkDecimals(network);
 
   const formatted = formatWithDecimals(amount.toString(), decimals);
   return `${formatted} ${getTokenSymbol(network)}`;

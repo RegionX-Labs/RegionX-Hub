@@ -4,15 +4,15 @@ import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 
-export const latestSaleRequested = createEvent<[Network, any]>();
-
-export const $latestSaleInfo = createStore<SaleInfo | null>(null);
-
 export enum SalePhase {
   Interlude,
   Leadin,
   FixedPrice,
 };
+
+export const latestSaleRequested = createEvent<Network>();
+
+export const $latestSaleInfo = createStore<SaleInfo | null>(null);
 
 export type SaleInfo = {
   network: Network;
@@ -26,8 +26,6 @@ export type SaleInfo = {
   coresOffered: number;
   startPrice: string;
   coresSold: number;
-  firstCore: number
-  selloutPrice: number;
 };
 
 export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
@@ -49,50 +47,32 @@ export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
   return res.data.purchases.nodes;
 };
 
-const fetchLatestSaleCycle = async (network: Network): Promise<number | null> => {
-  const res = await fetchGraphql(
-    getNetworkCoretimeIndexer(network),
-    `{
-      sales(orderBy: SALE_CYCLE_DESC, first: 1) {
-        nodes {
-          saleCycle
-        }
+const fetchLatestSaleInfo = async (network: Network): Promise<ApiResponse> => {
+  const query = `{
+    sales(orderBy: SALE_CYCLE_DESC, first: 1) {
+      nodes {
+        saleCycle
+        startPrice
+        endPrice
+        regionEnd
+        regionBegin
+        saleStart
+        leadinLength
+        idealCoresSold
+        coresOffered
       }
-    }`
-  );
-
-  const { status, data } = res;
-  if (status !== 200) return null;
-  return data.sales.nodes[0].saleCycle;
-}
-
-const fetchLatestSaleInfo = async (
-  network: Network,
-  connections: any
-): Promise<SaleInfo | null> => {
-  const chainIds = getNetworkChainIds(network);
-  if (!chainIds) return null;
-
-  const connection = connections[chainIds.coretimeChain];
-  if (!connection || !connection.client || connection.status !== 'connected') return null;
-
-  const metadata = getNetworkMetadata(network);
-  if (!metadata) return null;
-
-  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
-
-  const saleInfo = await api.query.Broker.SaleInfo.getValue();
-  // The sale cycle is not inlcuded on chain so we have to fetch it from the indexer.
-  const saleCycle = await fetchLatestSaleCycle(network);
-  console.log(saleCycle);
-
-  return { ...saleInfo, saleCycle };
+    }
+  }`;
+  return fetchGraphql(getNetworkCoretimeIndexer(network), query);
 };
 
-const getLatestSaleInfoFx = createEffect(async (payload: [Network, any]): Promise<SaleInfo | null> => {
-  const res = await fetchLatestSaleInfo(payload[0], payload[1]);
+const getLatestSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | null> => {
+  const res = await fetchLatestSaleInfo(network);
+  const { status, data } = res;
+  if (status !== 200) return null;
 
-  return { ...res, network };
+  const saleInfo: SaleInfo = { ...data.sales.nodes[0], network };
+  return saleInfo;
 });
 
 sample({
@@ -143,3 +123,23 @@ sample({
   clock: fetchAllSalesFx.doneData,
   target: $saleHistory,
 });
+
+export const fetchSelloutPrice = async (
+  network: Network,
+  connections: any
+): Promise<bigint | null> => {
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return null;
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+
+  const saleInfo = await api.query.Broker.SaleInfo.getValue();
+
+  return saleInfo?.sellout_price ?? null;
+};
