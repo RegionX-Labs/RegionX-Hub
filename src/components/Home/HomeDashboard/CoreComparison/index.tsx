@@ -8,11 +8,7 @@ import styles from './CoreComparison.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 export default function CoreComparison() {
-  const [network, saleInfo, connections] = useUnit([
-    $network,
-    $latestSaleInfo,
-    $connections,
-  ]);
+  const [network, saleInfo, connections] = useUnit([$network, $latestSaleInfo, $connections]);
 
   const [renewalPrice, setRenewalPrice] = useState<number | null>(null);
   const [corePrice, setCorePrice] = useState<number | null>(null);
@@ -40,7 +36,10 @@ export default function CoreComparison() {
         ).query.System.Number.getValue();
 
         const endPrice = Number(saleInfo.endPrice);
-        const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo, price: endPrice } as any);
+        const currentPrice = getCorePriceAt(currentBlockNumber, {
+          ...saleInfo,
+          price: endPrice,
+        } as any);
 
         setCorePrice(currentPrice);
 

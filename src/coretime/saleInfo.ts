@@ -65,7 +65,7 @@ const getLatestSaleInfoFx = createEffect(async (network: Network): Promise<SaleI
   const { status, data } = res;
   if (status !== 200) return null;
 
-  const saleInfo: SaleInfo = {...data.sales.nodes[0], network};
+  const saleInfo: SaleInfo = { ...data.sales.nodes[0], network };
   return saleInfo;
 });
 

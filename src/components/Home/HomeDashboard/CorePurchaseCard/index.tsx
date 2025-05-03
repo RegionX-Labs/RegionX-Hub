@@ -24,7 +24,7 @@ export default function CorePurchaseCard() {
 
   useEffect(() => {
     if (network && saleInfo) {
-      (async() => {
+      (async () => {
         const networkChainIds = getNetworkChainIds(network);
         if (!networkChainIds) return null;
         const connection = connections[networkChainIds.coretimeChain];
@@ -61,7 +61,9 @@ export default function CorePurchaseCard() {
       <h2 className={styles.value}>{saleInfo ? coresRemaining : '—'}</h2>
 
       <div className={styles.row}>
-        <span className={styles.label}>{currentHeight < (saleInfo?.saleStart ?? 0) ? 'Start price' : 'Current price'}</span>
+        <span className={styles.label}>
+          {currentHeight < (saleInfo?.saleStart ?? 0) ? 'Start price' : 'Current price'}
+        </span>
         <span className={styles.amount}>
           {corePrice !== null && network ? toUnitFormatted(network, BigInt(corePrice)) : '—'}
         </span>

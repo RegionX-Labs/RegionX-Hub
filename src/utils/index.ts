@@ -130,14 +130,14 @@ export const leadinFactorAt = (when: number) => {
 };
 
 // The price of a core at a specific block number
-export const getCorePriceAt = (now: number, saleInfo: SaleInfo): number => {
+export const getCorePriceAt = (_now: number, saleInfo: SaleInfo): number => {
   /* NOTE: the runtime api is not implemented for Kusama.
   const salePrice = await coretimeApi.rpc.state.call('BrokerApi_sale_price', '');
   const price = coretimeApi.createType('Option<u128>', salePrice);
   */
 
   const { saleStart, leadinLength, endPrice } = saleInfo;
-  var now = now < saleStart ? saleStart : now;
+  const now = _now < saleStart ? saleStart : _now;
 
   const num = Math.min(now - saleStart, leadinLength);
   const through = num / leadinLength;
