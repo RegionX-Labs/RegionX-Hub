@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './sale-history.module.scss';
-import { TableComponent } from '@region-x/components';
+import { TableComponent } from '../../../components/elements/TableComponent';
 import SaleHistoryModal from '../../../components/SaleHistoryModal';
 import { $saleHistory, saleHistoryRequested, type SaleInfo as Sale } from '@/coretime/saleInfo';
 import {

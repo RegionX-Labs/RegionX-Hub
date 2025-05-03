@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './dashboard.module.scss';
-import { TableComponent } from '@region-x/components';
+import { TableComponent } from '../../components/elements/TableComponent';
 import { FaStar } from 'react-icons/fa';
 import { useUnit } from 'effector-react';
 import DashboardModal from '../../components/DashboardModal';
@@ -8,6 +8,7 @@ import { $connections, $network } from '@/api/connection';
 import { ParaStateCard } from '@/components/ParaStateCard';
 import { $parachains, parachainsRequested } from '@/parachains';
 import { chainData } from '@/chaindata';
+import { ParaState } from '../../components/ParaStateCard';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -62,9 +63,12 @@ const ParachainDashboard = () => {
     : parachains.filter((item) => item.network === network);
 
   const tableData: Record<string, TableData>[] = filteredData.map((item) => ({
-    Id: { cellType: 'text' as const, data: item.id.toString() },
+    Id: {
+      cellType: 'text',
+      data: item.id.toString(),
+    },
     Name: {
-      cellType: 'jsx' as const,
+      cellType: 'jsx',
       data: (
         <div className={styles.parachainNameContainer}>
           {chainData[network][item.id]?.logo ? (
@@ -88,40 +92,51 @@ const ParachainDashboard = () => {
           <p>{chainData[network][item.id]?.name}</p>
         </div>
       ),
+      searchKey: chainData[network][item.id]?.name || '',
     },
-    State: { cellType: 'jsx' as const, data: <ParaStateCard state={item.state} /> },
+    State: {
+      cellType: 'jsx',
+      data: <ParaStateCard state={item.state} />,
+      searchKey: ParaState[item.state],
+    },
     Watchlist: {
-      cellType: 'jsx' as const,
+      cellType: 'jsx',
       data: (
-        <FaStar
-          className={`${styles.starIcon} ${watchlist.includes(item.id) ? styles.starActive : ''}`}
-          onClick={() => toggleWatchlist(item.id)}
-        />
+        <div className={styles.starIconContainer}>
+          <FaStar
+            className={`${styles.starIcon} ${watchlist.includes(item.id) ? styles.starActive : ''}`}
+            onClick={() => toggleWatchlist(item.id)}
+          />
+        </div>
       ),
     },
   }));
 
   return (
     <>
-      <div className={styles.buttonContainer}>
-        <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
-          {showWatchlist ? 'Show All' : 'Watchlist'}
-        </button>
-        <button
-          className={`${styles.customButton} ${styles.secondary}`}
-          onClick={() => setIsModalOpen(true)}
-        >
-          Reserve New Para
-        </button>
-      </div>
-
-      <div className={styles.dashboard_table}>
-        <div className={styles.tableWrapper}>
-          <TableComponent data={tableData} pageSize={8} />
+      <div className={styles.parachain_dashboard_table}>
+        <div className={styles.buttonContainer}>
+          <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
+            {showWatchlist ? 'Show All' : 'Watchlist'}
+          </button>
+          <button
+            className={`${styles.customButton} ${styles.secondary}`}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Reserve New Para
+          </button>
         </div>
-      </div>
 
-      <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <h2 className={styles.heading}>Parachain Dashboard</h2>
+
+        <div className={styles.dashboard_table}>
+          <div className={styles.tableWrapper}>
+            <TableComponent data={tableData} pageSize={8} />
+          </div>
+        </div>
+
+        <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      </div>
     </>
   );
 };

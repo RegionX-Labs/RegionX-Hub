@@ -1,0 +1,63 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.coreRemainingCard {
+  background-color: $darkBackground2;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border-radius: 15px;
+  padding: 24px;
+  color: $white;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  @include Inter;
+}
+
+.title {
+  font-size: 0.875rem;
+  color: $gray6;
+}
+
+.value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: -25px 0 0;
+  color: $white;
+}
+
+.row {
+  background-color: $darkBackground3;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  margin-top: auto;
+
+  gap: 12px;
+}
+
+.label,
+.amount {
+  color: $white;
+}
+
+.buyButton {
+  background-color: $greenPrimary;
+  color: $white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: color.scale($greenPrimary, $lightness: -10%);
+  }
+}

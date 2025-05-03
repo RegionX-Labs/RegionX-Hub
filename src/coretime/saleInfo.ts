@@ -15,6 +15,7 @@ export enum SalePhase {
 };
 
 export type SaleInfo = {
+  network: Network;
   saleCycle: number;
   saleStart: number;
   leadinLength: number;
@@ -91,7 +92,7 @@ const fetchLatestSaleInfo = async (
 const getLatestSaleInfoFx = createEffect(async (payload: [Network, any]): Promise<SaleInfo | null> => {
   const res = await fetchLatestSaleInfo(payload[0], payload[1]);
 
-  return res;
+  return { ...res, network };
 });
 
 sample({

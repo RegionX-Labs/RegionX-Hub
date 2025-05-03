@@ -9,6 +9,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
+  color: white;
   align-items: center;
   z-index: 999;
   padding-top: 40px;
@@ -17,7 +18,7 @@
 .modal {
   width: 80%;
   max-width: 500px;
-  background-color: $white;
+  background-color: $darkBackground2;
   border-radius: 10px;
   padding: 25px;
   max-height: 70vh;
@@ -60,10 +61,14 @@
 .input {
   padding: 10px 12px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 2px solid $darkBackground1;
   font-size: 14px;
-  background-color: white;
-  color: #333;
+  background-color: $darkBackground1;
+  color: $white;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .footer {

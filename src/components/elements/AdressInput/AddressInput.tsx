@@ -1,23 +1,24 @@
-// src/components/Input/Input.tsx
 import React, { useState, useEffect } from 'react';
 import styles from './adressinput.module.scss';
 import Identicon from '@polkadot/react-identicon';
+import { validateAddress } from '@polkadot/util-crypto';
+import { isHex } from '@polkadot/util';
 
 interface InputProps {
   label?: string;
   value?: string;
   placeholder?: string;
-  disabled?: boolean; // Disabled state
-  error?: boolean; // Error state for styling
-  leftIcon?: React.ReactNode; // Left icon for the input
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Change handler
-  onFocus?: () => void; // Focus handler
-  onBlur?: () => void; // Blur handler
+  disabled?: boolean;
+  error?: boolean;
+  leftIcon?: React.ReactNode;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const AddressInput: React.FC<InputProps> = ({
   label,
-  value: controlledValue, // renamed value to controlledValue
+  value: controlledValue,
   placeholder,
   disabled = false,
   error = false,
@@ -26,17 +27,22 @@ const AddressInput: React.FC<InputProps> = ({
   onFocus,
   onBlur,
 }) => {
-  const [value, setValue] = useState(controlledValue || ''); // Local state for input value
+  const [value, setValue] = useState(controlledValue || '');
   const [isFocused, setIsFocused] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
-    setValue(controlledValue || ''); // Sync local value with controlledValue prop if it changes
+    setValue(controlledValue || '');
   }, [controlledValue]);
 
+  useEffect(() => {
+    setIsValid(checkValidAddress(value));
+  }, [value]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value); // Update local state
+    setValue(e.target.value);
     if (onChange) {
-      onChange(e); // Call parent onChange if provided
+      onChange(e);
     }
   };
 
@@ -51,6 +57,17 @@ const AddressInput: React.FC<InputProps> = ({
     setIsFocused(false);
     if (onBlur) {
       onBlur();
+    }
+  };
+
+  const checkValidAddress = (input: string) => {
+    if (!input) return false;
+    if (isHex(input)) return false;
+    try {
+      validateAddress(input);
+      return true;
+    } catch {
+      return false;
     }
   };
 
@@ -78,8 +95,7 @@ const AddressInput: React.FC<InputProps> = ({
           </span>
         )}
 
-        {/* Conditionally render Identicon only when there is a value */}
-        {value && (
+        {isValid && (
           <Identicon className={styles['inputWrapper-identicon']} value={value} size={30} />
         )}
 

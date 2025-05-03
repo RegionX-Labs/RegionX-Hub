@@ -1,0 +1,13 @@
+.addressCellIcons {
+  display: flex;
+  width: 20px;
+  position: relative;
+  padding-left: 10px;
+  .identicon {
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+  }
+}

@@ -2,17 +2,13 @@ import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, latestSaleRequested, fetchSelloutPrice } from '@/coretime/saleInfo';
 import { $network, $connections } from '@/api/connection';
-import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
+import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CoreComparison.module.scss';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 export default function CoreComparison() {
-  const [network, saleInfo, connections] = useUnit([
-    $network,
-    $latestSaleInfo,
-    $purchaseHistory,
-    $connections,
-  ]);
+  const [network, saleInfo, connections] = useUnit([$network, $latestSaleInfo, $connections]);
 
   const [renewalPrice, setRenewalPrice] = useState<number | null>(null);
   const [corePrice, setCorePrice] = useState<number | null>(null);
@@ -26,9 +22,24 @@ export default function CoreComparison() {
       purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
 
       (async () => {
-        const now = saleInfo.saleStart + saleInfo.leadinLength;
+        const networkChainIds = getNetworkChainIds(network);
+        if (!networkChainIds) return null;
+        const connection = connections[networkChainIds.coretimeChain];
+        if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+        const client = connection.client;
+        const metadata = getNetworkMetadata(network);
+        if (!metadata) return null;
+
+        const currentBlockNumber = await (
+          client.getTypedApi(metadata.coretimeChain) as any
+        ).query.System.Number.getValue();
+
         const endPrice = Number(saleInfo.endPrice);
-        const currentPrice = getCorePriceAt(now, { ...saleInfo, price: endPrice } as any);
+        const currentPrice = getCorePriceAt(currentBlockNumber, {
+          ...saleInfo,
+          price: endPrice,
+        } as any);
 
         setCorePrice(currentPrice);
 
@@ -38,7 +49,7 @@ export default function CoreComparison() {
         }
       })();
     }
-  }, [network, saleInfo, connections]);
+  }, [network, saleInfo]);
 
   const isReady = renewalPrice !== null && corePrice !== null;
   const priceDiff = isReady ? corePrice! - renewalPrice! : null;

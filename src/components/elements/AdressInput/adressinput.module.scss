@@ -1,9 +1,10 @@
-@use '../../../../styles/variables' as *;
-@use '../../../../styles/mixins' as *;
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
 
 .componentWrapper {
   display: flex;
   flex-direction: column;
+
   .inputWrapper {
     position: relative;
     @include Montserrat;
@@ -11,8 +12,8 @@
     line-height: 24px;
     display: inline-flex;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background-color: $darkBackground2;
+    border-radius: 10px;
     transition: border-color 0.3s ease;
 
     &.-disabled {
@@ -21,7 +22,7 @@
     }
 
     &:focus-within {
-      border-color: $black;
+      border-color: $white;
     }
 
     &-icon-left {
@@ -33,17 +34,15 @@
       transform: translateY(-50%);
       color: $gray3;
       &-focused {
-        opacity: 1;
+        opacity: 0;
       }
     }
 
     &-identicon {
-      opacity: 0.5;
       display: flex;
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      align-items: center;
+      margin-left: 10px;
+      margin-right: -10px;
     }
 
     &-label {
@@ -71,6 +70,7 @@
       outline: none;
       font-size: 16px;
       background-color: transparent;
+      color: white;
 
       &-disabled {
         background-color: #f0f0f0;
