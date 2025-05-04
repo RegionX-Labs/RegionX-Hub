@@ -13,8 +13,8 @@ export enum SalePhase {
 };
 
 type Endpoints = {
-  start: BigInt;
-  end: BigInt;
+  start: number;
+  end: number;
 };
 
 type PhaseEndpoints = {
@@ -116,11 +116,11 @@ const getSalePhaseEndpointsFx = createEffect(async(payload: GetPhaseEndpointsPay
   if (network === Network.WESTEND) {
     const connection = connections[chainIds.relayChain];
     if (!connection) return null;
-    saleStartTimestamp = await blockToTimestamp(saleInfo.saleStart, network, connection) || BigInt(0);
+    saleStartTimestamp = Number(await blockToTimestamp(saleInfo.saleStart, network, connection)) || 0;
   } else {
     const connection = connections[chainIds.coretimeChain];
     if (!connection) return null;
-    saleStartTimestamp = await blockToTimestamp(saleInfo.saleStart, network, connection) || BigInt(0);
+    saleStartTimestamp = Number(await blockToTimestamp(saleInfo.saleStart, network, connection)) || 0;
   }
 
   const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
@@ -134,23 +134,23 @@ const getSalePhaseEndpointsFx = createEffect(async(payload: GetPhaseEndpointsPay
 
   const saleEndTimestamp =
     saleStartTimestamp -
-    BigInt(config?.interlude_length) * BigInt(blockTime) +
-    BigInt(regionDuration) * BigInt(TIMESLICE_PERIOD) * BigInt(RELAY_CHAIN_BLOCK_TIME);
+    config?.interlude_length * blockTime +
+    regionDuration * TIMESLICE_PERIOD * RELAY_CHAIN_BLOCK_TIME;
 
   console.log(saleStartTimestamp);
   console.log(saleEndTimestamp);
 
   const endpoints = {
     interlude: {
-      start: saleStartTimestamp - BigInt(config.interlude_length * blockTime),
+      start: saleStartTimestamp - config.interlude_length * blockTime,
       end: saleStartTimestamp,
     },
     leadin: {
       start: saleStartTimestamp,
-      end: saleStartTimestamp + BigInt(config.leadin_length * blockTime),
+      end: saleStartTimestamp + config.leadin_length * blockTime,
     },
     fixed: {
-      start: saleStartTimestamp + BigInt(config.leadin_length * blockTime),
+      start: saleStartTimestamp + config.leadin_length * blockTime,
       end: saleEndTimestamp,
     },
   };

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import styles from './DutchAuctionChart.module.scss';
-import { $latestSaleInfo, fetchSelloutPrice, SalePhase } from '@/coretime/saleInfo';
+import { $latestSaleInfo, $phaseEndpoints, fetchSelloutPrice, SalePhase } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getTokenSymbol, toUnit } from '@/utils';
@@ -15,6 +15,7 @@ export default function DutchAuctionChart() {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
+  const phaseEndpoints = useUnit($phaseEndpoints);
 
   const [renewalPrice, setRenewalPrice] = useState<bigint>(BigInt(0));
 
@@ -29,32 +30,32 @@ export default function DutchAuctionChart() {
 
   const data = [
     {
-      timestamp: 0,
+      timestamp: phaseEndpoints?.interlude.start,
       value: toUnit(network, renewalPrice),
       phase: SalePhase.Interlude,
     },
     {
-      timestamp: 1,
+      timestamp:  phaseEndpoints?.interlude.end,
       value: toUnit(network, renewalPrice),
       phase: SalePhase.Interlude,
     },
       {
-      timestamp: 2,
+      timestamp: phaseEndpoints?.leadin.start,
       value: toUnit(network, renewalPrice),
       phase: SalePhase.Leadin,
     },
     {
-      timestamp: 3,
+      timestamp: phaseEndpoints?.leadin.end,
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.Leadin,
     },
     {
-      timestamp: 4,
+      timestamp: phaseEndpoints?.fixed.start,
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.FixedPrice,
     },
     {
-      timestamp: 5,
+      timestamp: phaseEndpoints?.fixed.end,
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.FixedPrice,
     },
@@ -105,7 +106,6 @@ export default function DutchAuctionChart() {
     yaxis: {
       tickAmount: 4,
       min: 0,
-      // max: toUnit(network, BigInt(saleInfo?.endPrice || '0')) * 2,
       labels: {
         style: { colors: '#888' },
         formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,
@@ -121,20 +121,20 @@ export default function DutchAuctionChart() {
     annotations: {
       xaxis: [
         {
-          x: 0,
-          x2: 1,
+          x: phaseEndpoints?.interlude.start,
+          x2: phaseEndpoints?.interlude.end,
           fillColor: 'rgba(0, 255, 163, 0.05)',
           opacity: 0.3,
         },
         {
-          x: 1,
-          x2: 4,
+          x: phaseEndpoints?.leadin.start,
+          x2: phaseEndpoints?.leadin.end,
           fillColor: 'rgba(0, 17, 255, 0.05)',
           opacity: 0.3,
         },
         {
-          x: 4,
-          x2: 5,
+          x: phaseEndpoints?.fixed.start,
+          x2: phaseEndpoints?.fixed.end,
           fillColor: 'rgba(136, 136, 136, 0.05)',
           opacity: 0.3,
         },
