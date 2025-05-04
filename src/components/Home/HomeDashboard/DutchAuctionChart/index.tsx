@@ -7,7 +7,7 @@ import styles from './DutchAuctionChart.module.scss';
 import { $latestSaleInfo, $phaseEndpoints, fetchSelloutPrice, SalePhase } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { getTokenSymbol, toUnit } from '@/utils';
+import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -41,7 +41,7 @@ export default function DutchAuctionChart() {
     },
       {
       timestamp: phaseEndpoints?.leadin.start,
-      value: toUnit(network, renewalPrice),
+      value: toUnit(network, (phaseEndpoints && saleInfo) ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo)) : BigInt(0)),
       phase: SalePhase.Leadin,
     },
     {
@@ -60,6 +60,14 @@ export default function DutchAuctionChart() {
       phase: SalePhase.FixedPrice,
     },
   ];
+
+  data.push({
+    timestamp: ((phaseEndpoints?.leadin.start || 0) + (phaseEndpoints?.leadin.end || 0)) / 2,
+    value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
+    phase: SalePhase.Leadin,
+  });
+
+  data.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
   const series = [
     {
@@ -101,11 +109,13 @@ export default function DutchAuctionChart() {
       labels: { show: true },
       axisTicks: { show: false },
       axisBorder: { show: false },
-      categories: data.map(v => v.timestamp)
+      categories: data.map(v => v.timestamp),
+      type: 'datetime'
     },
     yaxis: {
-      tickAmount: 4,
+      tickAmount: 8,
       min: 0,
+      max: toUnit(network, (phaseEndpoints && saleInfo) ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo)) : BigInt(0)),
       labels: {
         style: { colors: '#888' },
         formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,

@@ -126,7 +126,6 @@ const getSalePhaseEndpointsFx = createEffect(async(payload: GetPhaseEndpointsPay
   const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
   const config = await fetchBrokerConfig(network, connections);
   if(!config) return null;
-  console.log(config);
 
   // In the new release everything is defined in relay chain blocks.
   const blockTime =
@@ -136,9 +135,6 @@ const getSalePhaseEndpointsFx = createEffect(async(payload: GetPhaseEndpointsPay
     saleStartTimestamp -
     config?.interlude_length * blockTime +
     regionDuration * TIMESLICE_PERIOD * RELAY_CHAIN_BLOCK_TIME;
-
-  console.log(saleStartTimestamp);
-  console.log(saleEndTimestamp);
 
   const endpoints = {
     interlude: {
@@ -263,7 +259,6 @@ export const fetchBrokerConfig = async (
   const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
 
   const config: Configuration = await api.query.Broker.Configuration.getValue();
-  console.log(config);
 
   return config;
 };
