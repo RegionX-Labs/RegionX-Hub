@@ -1,6 +1,10 @@
 import { Network } from '@/types';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { SaleInfo } from '@/coretime/saleInfo';
+import { Connection } from '@/api/connection';
+
+export const TIMESLICE_PERIOD = 80;
+export const RELAY_CHAIN_BLOCK_TIME = 6000;
 
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
@@ -100,12 +104,9 @@ export const timesliceToTimestamp = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   network: Network,
-  connections: any
+  connection: Connection
 ): Promise<bigint | null> => {
-  const networkChainIds = getNetworkChainIds(network);
-  if (!networkChainIds) return null;
-  const connection = connections[networkChainIds.relayChain];
-  if (!connection || !connection.client || connection.status !== 'connected') return null;
+  if (!connection.client || connection.status !== 'connected') return null;
 
   const client = connection.client;
   const metadata = getNetworkMetadata(network);
@@ -148,3 +149,20 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo): number => {
   const price = leadinFactorAt(through) * Number(endPrice);
   return Number(price.toFixed());
 };
+
+export const coretimeChainBlockTime = (network: Network) => {
+    switch (network) {
+    case Network.ROCOCO:
+      return 6 * 1000;
+    case Network.KUSAMA:
+      return 12 * 1000;
+    case Network.POLKADOT:
+      return 12 * 1000;
+    case Network.PASEO:
+      return 12 * 1000;
+    case Network.WESTEND:
+      return 6 * 1000;
+    default:
+      return 0;
+  }
+}

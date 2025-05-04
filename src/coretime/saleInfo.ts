@@ -3,6 +3,8 @@ import { getNetworkCoretimeIndexer } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
+import { blockToTimestamp, coretimeChainBlockTime, RELAY_CHAIN_BLOCK_TIME, TIMESLICE_PERIOD } from '@/utils';
+import { $connections, $network } from '@/api/connection';
 
 export enum SalePhase {
   Interlude,
@@ -10,9 +12,27 @@ export enum SalePhase {
   FixedPrice,
 };
 
-export const latestSaleRequested = createEvent<Network>();
+type Endpoints = {
+  start: BigInt;
+  end: BigInt;
+};
 
-export const $latestSaleInfo = createStore<SaleInfo | null>(null);
+type PhaseEndpoints = {
+  interlude: Endpoints;
+  leadin: Endpoints;
+  fixed: Endpoints;
+}
+
+type Configuration = {
+	advance_notice: number,
+	interlude_length: number,
+	leadin_length: number,
+	region_length: number,
+	ideal_bulk_proportion: number,
+	limit_cores_offered: number,
+	renewal_bump: number,
+	contribution_timeout: number,
+}
 
 export type SaleInfo = {
   network: Network;
@@ -27,6 +47,12 @@ export type SaleInfo = {
   startPrice: string;
   coresSold: number;
 };
+
+
+export const latestSaleRequested = createEvent<Network>();
+
+export const $latestSaleInfo = createStore<SaleInfo | null>(null);
+export const $phaseEndpoints = createStore<PhaseEndpoints | null>(null);
 
 export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
   const query = `{
@@ -75,6 +101,63 @@ const getLatestSaleInfoFx = createEffect(async (network: Network): Promise<SaleI
   return saleInfo;
 });
 
+type GetPhaseEndpointsPayload = {
+  network: Network;
+  saleInfo: SaleInfo | null;
+  connections: any;
+}
+const getSalePhaseEndpointsFx = createEffect(async(payload: GetPhaseEndpointsPayload): Promise<PhaseEndpoints | null> => {
+  const { connections, network, saleInfo } = payload;
+  if(!saleInfo) return null;
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return null;
+
+  let saleStartTimestamp;
+  if (network === Network.WESTEND) {
+    const connection = connections[chainIds.relayChain];
+    if (!connection) return null;
+    saleStartTimestamp = await blockToTimestamp(saleInfo.saleStart, network, connection) || BigInt(0);
+  } else {
+    const connection = connections[chainIds.coretimeChain];
+    if (!connection) return null;
+    saleStartTimestamp = await blockToTimestamp(saleInfo.saleStart, network, connection) || BigInt(0);
+  }
+
+  const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+  const config = await fetchBrokerConfig(network, connections);
+  if(!config) return null;
+  console.log(config);
+
+  // In the new release everything is defined in relay chain blocks.
+  const blockTime =
+    network === Network.WESTEND ? RELAY_CHAIN_BLOCK_TIME : coretimeChainBlockTime(network);
+
+  const saleEndTimestamp =
+    saleStartTimestamp -
+    BigInt(config?.interlude_length) * BigInt(blockTime) +
+    BigInt(regionDuration) * BigInt(TIMESLICE_PERIOD) * BigInt(RELAY_CHAIN_BLOCK_TIME);
+
+  console.log(saleStartTimestamp);
+  console.log(saleEndTimestamp);
+
+  const endpoints = {
+    interlude: {
+      start: saleStartTimestamp - BigInt(config.interlude_length * blockTime),
+      end: saleStartTimestamp,
+    },
+    leadin: {
+      start: saleStartTimestamp,
+      end: saleStartTimestamp + BigInt(config.leadin_length * blockTime),
+    },
+    fixed: {
+      start: saleStartTimestamp + BigInt(config.leadin_length * blockTime),
+      end: saleEndTimestamp,
+    },
+  };
+
+  return endpoints;
+});
+
 sample({
   clock: latestSaleRequested,
   target: getLatestSaleInfoFx,
@@ -83,6 +166,26 @@ sample({
 sample({
   clock: getLatestSaleInfoFx.doneData,
   target: $latestSaleInfo,
+});
+
+sample({
+  clock: getLatestSaleInfoFx.doneData,
+  source: {
+    connections: $connections,
+    network: $network,
+  },
+  fn: ({connections, network}, saleInfo) => ({
+    saleInfo,
+    connections,
+    network
+  }),
+  target: getSalePhaseEndpointsFx,
+});
+
+
+sample({
+  clock: getSalePhaseEndpointsFx.doneData,
+  target: $phaseEndpoints,
 });
 
 export const saleHistoryRequested = createEvent<Network>();
@@ -142,4 +245,25 @@ export const fetchSelloutPrice = async (
   const saleInfo = await api.query.Broker.SaleInfo.getValue();
 
   return saleInfo?.sellout_price ?? null;
+};
+
+export const fetchBrokerConfig = async (
+  network: Network,
+  connections: any
+): Promise<Configuration | null> => {
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return null;
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+
+  const config: Configuration = await api.query.Broker.Configuration.getValue();
+  console.log(config);
+
+  return config;
 };

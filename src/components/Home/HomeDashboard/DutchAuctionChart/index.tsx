@@ -21,7 +21,6 @@ export default function DutchAuctionChart() {
   useEffect(() => {
     (async () => {
       const sellout = await fetchSelloutPrice(network, connections);
-      console.log(sellout);
       if (sellout !== null) {
         setRenewalPrice(BigInt(sellout));
       }
