@@ -92,7 +92,7 @@ export default function PurchaseHistoryTable() {
   return (
     <div className={styles.tableWrapper}>
       <h2 className={styles.heading}>Latest Purchase History</h2>
-      <TableComponent data={tableData} pageSize={10} />
+      <TableComponent data={tableData} pageSize={5} />
     </div>
   );
 }
