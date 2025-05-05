@@ -8,12 +8,10 @@
   border-radius: 15px;
   padding: 30px;
   color: $white;
-  width: 380px;
+  width: 30%;
   display: flex;
   flex-direction: column;
   @include Inter;
-
-  margin-top: 100px;
   gap: 10px;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
 }

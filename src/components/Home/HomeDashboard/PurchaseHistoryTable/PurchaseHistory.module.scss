@@ -1,0 +1,19 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/_mixins' as *;
+@use 'sass:color';
+
+.tableWrapper {
+  border-radius: 12px;
+  background-color: $black;
+  padding: 24px;
+  width: 95%;
+  max-width: unset;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $white;
+  margin-bottom: 16px;
+}

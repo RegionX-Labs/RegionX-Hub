@@ -1,7 +1,30 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/_mixins' as *;
+@use 'sass:color';
+
+.dashboardWrapper {
+  border-radius: 15px;
+  color: $white;
+  width: 100%;
+  max-height: calc(100vh - 140px); // controls height like .analyticsCard
+  margin-top: 100px;
+  overflow-y: auto;
+  @include Inter;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 .dashboard {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  max-width: 1320px;
+  max-width: 100%;
   margin-left: 20px;
+  padding-bottom: 0px;
 }
