@@ -6,7 +6,8 @@
   border-radius: 12px;
   background-color: $black;
   padding: 24px;
-  max-width: 95%;
+  width: 95%;
+  max-width: unset;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
 }
 
