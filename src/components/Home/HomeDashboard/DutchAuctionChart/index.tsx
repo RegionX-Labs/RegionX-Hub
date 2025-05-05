@@ -39,7 +39,12 @@ export default function DutchAuctionChart() {
       value: toUnit(network, renewalPrice),
       phase: SalePhase.Interlude,
     },
-      {
+    {
+      timestamp: phaseEndpoints?.interlude.end,
+      value: toUnit(network, renewalPrice),
+      phase: SalePhase.Leadin,
+    },
+    {
       timestamp: phaseEndpoints?.leadin.start,
       value: toUnit(network, (phaseEndpoints && saleInfo) ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo)) : BigInt(0)),
       phase: SalePhase.Leadin,
