@@ -8,6 +8,7 @@ import { $latestSaleInfo, $phaseEndpoints, fetchSelloutPrice, SalePhase } from '
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -153,6 +154,20 @@ export default function DutchAuctionChart() {
           fillColor: 'rgba(136, 136, 136, 0.05)',
           opacity: 0.3,
         },
+        {
+          x: Date.now(),
+          borderColor: '#FBFF00',
+          strokeDashArray: 4,
+          label: {
+            text: 'Now',
+            style: {
+              color: '#FBFF00;',
+              background: '#fff',
+            },
+            orientation: 'horizontal',
+            offsetY: -10,
+          },
+        }
       ],
     },
     tooltip: {
