@@ -80,15 +80,7 @@ const Header: React.FC = () => {
                 >
                   My Regions
                 </li>
-                <li className={styles.navItem} onClick={() => handleNavigation('coretime/renew')}>
-                  Renew
-                </li>
-                <li
-                  className={styles.navItem}
-                  onClick={() => handleNavigation('coretime/purchase')}
-                >
-                  Purchase
-                </li>
+
                 <li
                   className={styles.navItem}
                   onClick={() => handleNavigation('coretime/sale-history')}
@@ -155,12 +147,7 @@ const Header: React.FC = () => {
               >
                 My Regions
               </li>
-              <li className={styles.navItem} onClick={() => handleNavigation('coretime/renew')}>
-                Renew
-              </li>
-              <li className={styles.navItem} onClick={() => handleNavigation('coretime/purchase')}>
-                Purchase
-              </li>
+
               <li
                 className={styles.navItem}
                 onClick={() => handleNavigation('coretime/sale-history')}
