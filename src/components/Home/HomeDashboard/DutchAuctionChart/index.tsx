@@ -4,7 +4,12 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import styles from './DutchAuctionChart.module.scss';
-import { $latestSaleInfo, $phaseEndpoints, fetchSelloutPrice, SalePhase } from '@/coretime/saleInfo';
+import {
+  $latestSaleInfo,
+  $phaseEndpoints,
+  fetchSelloutPrice,
+  SalePhase,
+} from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
@@ -26,7 +31,7 @@ export default function DutchAuctionChart() {
       if (sellout !== null) {
         setRenewalPrice(BigInt(sellout));
       }
-    })()
+    })();
   }, [network, connections]);
 
   const data = [
@@ -36,7 +41,7 @@ export default function DutchAuctionChart() {
       phase: SalePhase.Interlude,
     },
     {
-      timestamp:  phaseEndpoints?.interlude.end,
+      timestamp: phaseEndpoints?.interlude.end,
       value: toUnit(network, renewalPrice),
       phase: SalePhase.Interlude,
     },
@@ -47,7 +52,12 @@ export default function DutchAuctionChart() {
     },
     {
       timestamp: phaseEndpoints?.leadin.start,
-      value: toUnit(network, (phaseEndpoints && saleInfo) ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo)) : BigInt(0)),
+      value: toUnit(
+        network,
+        phaseEndpoints && saleInfo
+          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo))
+          : BigInt(0)
+      ),
       phase: SalePhase.Leadin,
     },
     {
@@ -115,13 +125,18 @@ export default function DutchAuctionChart() {
       labels: { show: true },
       axisTicks: { show: false },
       axisBorder: { show: false },
-      categories: data.map(v => v.timestamp),
-      type: 'datetime'
+      categories: data.map((v) => v.timestamp),
+      type: 'datetime',
     },
     yaxis: {
       tickAmount: 8,
       min: 0,
-      max: toUnit(network, (phaseEndpoints && saleInfo) ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo)) : BigInt(0)),
+      max: toUnit(
+        network,
+        phaseEndpoints && saleInfo
+          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo))
+          : BigInt(0)
+      ),
       labels: {
         style: { colors: '#888' },
         formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,
@@ -167,7 +182,7 @@ export default function DutchAuctionChart() {
             orientation: 'horizontal',
             offsetY: -10,
           },
-        }
+        },
       ],
     },
     tooltip: {

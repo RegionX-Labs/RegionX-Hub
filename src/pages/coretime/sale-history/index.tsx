@@ -58,7 +58,7 @@ const SaleHistoryPage = () => {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return;
       const metadata = getNetworkMetadata(network);
-      if(!metadata) return;
+      if (!metadata) return;
 
       const processed = await Promise.all(
         saleInfo.map(async (sale: Sale) => {
@@ -71,11 +71,19 @@ const SaleHistoryPage = () => {
             sale.regionEnd,
             network,
             connections
-          ); 
+          );
 
-          const saleStartTimestamp = await blockToTimestamp(sale.saleStart, connection, metadata.coretimeChain);
+          const saleStartTimestamp = await blockToTimestamp(
+            sale.saleStart,
+            connection,
+            metadata.coretimeChain
+          );
           const saleEndTimestamp = sale.leadinLength
-            ? await blockToTimestamp(sale.saleStart + sale.leadinLength, connection, metadata.coretimeChain)
+            ? await blockToTimestamp(
+                sale.saleStart + sale.leadinLength,
+                connection,
+                metadata.coretimeChain
+              )
             : null;
 
           return {

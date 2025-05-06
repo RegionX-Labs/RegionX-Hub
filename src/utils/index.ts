@@ -59,12 +59,12 @@ const getNetworkDecimals = (network: Network): number => {
     default:
       return 10;
   }
-}
+};
 
-export const toUnit =  (network: Network, amount: bigint): number => {
+export const toUnit = (network: Network, amount: bigint): number => {
   const decimals = getNetworkDecimals(network);
   return formatWithDecimals(amount.toString(), decimals);
-}
+};
 
 export const toUnitFormatted = (network: Network, amount: bigint): string => {
   const decimals = getNetworkDecimals(network);
@@ -104,7 +104,7 @@ export const timesliceToTimestamp = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
-  metadata: any,
+  metadata: any
 ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
@@ -115,9 +115,7 @@ export const blockToTimestamp = async (
     client.getTypedApi(metadata) as any
   ).query.System.Number.getValue();
 
-  const timestamp = await (
-    client.getTypedApi(metadata) as any
-  ).query.Timestamp.Now.getValue();
+  const timestamp = await (client.getTypedApi(metadata) as any).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;
@@ -150,7 +148,7 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo): number => {
 };
 
 export const coretimeChainBlockTime = (network: Network) => {
-    switch (network) {
+  switch (network) {
     case Network.ROCOCO:
       return 6 * 1000;
     case Network.KUSAMA:
@@ -164,4 +162,4 @@ export const coretimeChainBlockTime = (network: Network) => {
     default:
       return 0;
   }
-}
+};
