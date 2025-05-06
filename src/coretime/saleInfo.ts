@@ -111,16 +111,18 @@ const getSalePhaseEndpointsFx = createEffect(async(payload: GetPhaseEndpointsPay
   if(!saleInfo) return null;
   const chainIds = getNetworkChainIds(network);
   if (!chainIds) return null;
+  const metadata = getNetworkMetadata(network);
+  if(!metadata) return null;
 
   let saleStartTimestamp;
   if (network === Network.WESTEND) {
     const connection = connections[chainIds.relayChain];
     if (!connection) return null;
-    saleStartTimestamp = Number(await blockToTimestamp(saleInfo.saleStart, network, connection)) || 0;
+    saleStartTimestamp = Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)) || 0;
   } else {
     const connection = connections[chainIds.coretimeChain];
     if (!connection) return null;
-    saleStartTimestamp = Number(await blockToTimestamp(saleInfo.saleStart, network, connection)) || 0;
+    saleStartTimestamp = Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain)) || 0;
   }
 
   const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;

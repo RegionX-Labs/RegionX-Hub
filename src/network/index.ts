@@ -16,7 +16,7 @@ type NetworkChainIds = {
   coretimeChain: ChainId;
 };
 
-type NetworkMetadata = {
+export type NetworkMetadata = {
   relayChain: any;
   coretimeChain: any;
 };
