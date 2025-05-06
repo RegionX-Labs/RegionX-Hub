@@ -9,6 +9,12 @@
   width: 95%;
   max-width: unset;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  @media (max-width: 1503px) {
+    width: 93.5%;
+  }
+  @media (max-width: 1260px) {
+    width: 93%;
+  }
 }
 
 .heading {

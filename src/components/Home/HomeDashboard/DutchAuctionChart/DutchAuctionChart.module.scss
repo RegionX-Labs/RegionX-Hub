@@ -13,6 +13,12 @@
   gap: 10px;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   position: relative;
+  @media (max-width: 1800px) {
+    width: 97.5%;
+  }
+  @media (max-width: 1503px) {
+    width: 96%;
+  }
 }
 
 .title {

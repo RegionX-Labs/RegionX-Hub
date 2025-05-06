@@ -14,6 +14,24 @@
   gap: 20px;
   height: 100%;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  @media (max-width: 1800px) {
+    width: 47%;
+  }
+  @media (max-width: 1585px) {
+    width: 46%;
+  }
+  @media (max-width: 1503px) {
+    width: 43%;
+  }
+  @media (max-width: 1301px) {
+    width: 40%;
+  }
+  @media (max-width: 1161px) {
+    width: 39%;
+  }
+  @media (max-width: 1121px) {
+    width: 90%;
+  }
 }
 
 .title {

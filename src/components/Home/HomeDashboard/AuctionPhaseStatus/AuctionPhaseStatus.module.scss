@@ -13,6 +13,21 @@
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   @include Inter;
   gap: 20px;
+  @media (max-width: 1800px) {
+    width: 48%;
+  }
+  @media (max-width: 1573px) {
+    width: 47.2%;
+  }
+  @media (max-width: 1301px) {
+    width: 44.5%;
+  }
+  @media (max-width: 1161px) {
+    width: 40%;
+  }
+  @media (max-width: 1121px) {
+    width: 90%;
+  }
 }
 
 .header {
