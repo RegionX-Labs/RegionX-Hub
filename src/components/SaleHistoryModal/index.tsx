@@ -5,6 +5,7 @@ import styles from './sale-history-modal.module.scss';
 import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
 import { $network, $connections } from '@/api/connection';
 import { type SaleInfo as Sale } from '@/coretime/saleInfo';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -41,8 +42,19 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
     if (!network || !sale) return;
 
     (async () => {
+      const chainIds = getNetworkChainIds(network);
+      if (!chainIds) return null;
+      const connection = connections[chainIds.coretimeChain];
+      if (!connection) return null;
+      const metadata = getNetworkMetadata(network);
+      if (!metadata) return;
+
       const regionBeginDate = await timesliceToTimestamp(sale.regionBegin, network, connections);
-      const saleStartDate = await blockToTimestamp(sale.saleStart, network, connections);
+      const saleStartDate = await blockToTimestamp(
+        sale.saleStart,
+        connection,
+        metadata.coretimeChain
+      );
 
       setRegionBegin(regionBeginDate ? new Date(Number(regionBeginDate)).toLocaleString() : '-');
       setLength((sale.regionEnd - sale.regionBegin).toString());

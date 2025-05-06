@@ -15,7 +15,7 @@ export default function CoreComparison() {
 
   useEffect(() => {
     if (network) latestSaleRequested(network);
-  }, [network]);
+  }, [network, connections]);
 
   useEffect(() => {
     if (network && saleInfo) {

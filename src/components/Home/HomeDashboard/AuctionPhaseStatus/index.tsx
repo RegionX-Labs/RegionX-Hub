@@ -66,7 +66,7 @@ export default function AuctionPhaseStatus() {
       <div className={styles.content}>
         <div className={styles.info}>
           <div className={styles.label}>Current Phase</div>
-          <div className={styles.value}>Secondary Market</div>
+          <div className={styles.value}>Leadin Phase</div>
           <div className={styles.label}>Next Phase in</div>
           <div className={styles.value}>30 Minutes</div>
         </div>

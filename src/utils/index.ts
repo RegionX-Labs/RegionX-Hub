@@ -1,17 +1,21 @@
 import { Network } from '@/types';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { getNetworkChainIds, getNetworkMetadata, NetworkMetadata } from '@/network';
 import { SaleInfo } from '@/coretime/saleInfo';
+import { Connection } from '@/api/connection';
+
+export const TIMESLICE_PERIOD = 80;
+export const RELAY_CHAIN_BLOCK_TIME = 6000;
 
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
   return Math.floor(value * factor) / factor;
 };
 
-export const formatWithDecimals = (amount: string, decimals: number): string => {
-  if (amount == '0') return `0`;
+export const formatWithDecimals = (amount: string, decimals: number): number => {
+  if (amount == '0') return 0;
   const amountNumber = Number(amount) / 10 ** decimals;
   if (amountNumber > 1) {
-    return toFixedWithoutRounding(amountNumber, 2).toString();
+    return toFixedWithoutRounding(amountNumber, 2);
   }
 
   let amountString = amountNumber.toFixed(decimals);
@@ -24,7 +28,7 @@ export const formatWithDecimals = (amount: string, decimals: number): string => 
     amountString = amountString.slice(0, firstNonZeroPos + 3);
   }
 
-  return amountString;
+  return Number(amountString);
 };
 
 export const getTokenSymbol = (network: Network): string => {
@@ -42,25 +46,28 @@ export const getTokenSymbol = (network: Network): string => {
   }
 };
 
-export const toUnitFormatted = (network: Network, amount: bigint): string => {
-  let decimals;
+const getNetworkDecimals = (network: Network): number => {
   switch (network) {
     case Network.POLKADOT:
-      decimals = 10;
-      break;
+      return 10;
     case Network.KUSAMA:
-      decimals = 12;
-      break;
+      return 12;
     case Network.PASEO:
-      decimals = 10;
-      break;
+      return 10;
     case Network.WESTEND:
-      decimals = 12;
-      break;
+      return 12;
     default:
-      decimals = 10;
-      break;
+      return 10;
   }
+};
+
+export const toUnit = (network: Network, amount: bigint): number => {
+  const decimals = getNetworkDecimals(network);
+  return formatWithDecimals(amount.toString(), decimals);
+};
+
+export const toUnitFormatted = (network: Network, amount: bigint): string => {
+  const decimals = getNetworkDecimals(network);
 
   const formatted = formatWithDecimals(amount.toString(), decimals);
   return `${formatted} ${getTokenSymbol(network)}`;
@@ -96,25 +103,19 @@ export const timesliceToTimestamp = async (
 
 export const blockToTimestamp = async (
   blockNumber: number,
-  network: Network,
-  connections: any
+  connection: Connection,
+  metadata: any
 ): Promise<bigint | null> => {
-  const networkChainIds = getNetworkChainIds(network);
-  if (!networkChainIds) return null;
-  const connection = connections[networkChainIds.relayChain];
-  if (!connection || !connection.client || connection.status !== 'connected') return null;
+  if (!connection.client || connection.status !== 'connected') return null;
 
   const client = connection.client;
-  const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
   const currentBlockNumber = await (
-    client.getTypedApi(metadata.relayChain) as any
+    client.getTypedApi(metadata) as any
   ).query.System.Number.getValue();
 
-  const timestamp = await (
-    client.getTypedApi(metadata.relayChain) as any
-  ).query.Timestamp.Now.getValue();
+  const timestamp = await (client.getTypedApi(metadata) as any).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;
@@ -144,4 +145,21 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo): number => {
 
   const price = leadinFactorAt(through) * Number(endPrice);
   return Number(price.toFixed());
+};
+
+export const coretimeChainBlockTime = (network: Network) => {
+  switch (network) {
+    case Network.ROCOCO:
+      return 6 * 1000;
+    case Network.KUSAMA:
+      return 12 * 1000;
+    case Network.POLKADOT:
+      return 12 * 1000;
+    case Network.PASEO:
+      return 12 * 1000;
+    case Network.WESTEND:
+      return 6 * 1000;
+    default:
+      return 0;
+  }
 };

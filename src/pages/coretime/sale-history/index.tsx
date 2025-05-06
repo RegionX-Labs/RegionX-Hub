@@ -11,6 +11,7 @@ import {
 } from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
 import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -52,6 +53,13 @@ const SaleHistoryPage = () => {
     const processData = async () => {
       if (!network || !Array.isArray(saleInfo)) return;
 
+      const chainIds = getNetworkChainIds(network);
+      if (!chainIds) return;
+      const connection = connections[chainIds.coretimeChain];
+      if (!connection) return;
+      const metadata = getNetworkMetadata(network);
+      if (!metadata) return;
+
       const processed = await Promise.all(
         saleInfo.map(async (sale: Sale) => {
           const regionBeginTimestamp = await timesliceToTimestamp(
@@ -64,9 +72,18 @@ const SaleHistoryPage = () => {
             network,
             connections
           );
-          const saleStartTimestamp = await blockToTimestamp(sale.saleStart, network, connections);
+
+          const saleStartTimestamp = await blockToTimestamp(
+            sale.saleStart,
+            connection,
+            metadata.coretimeChain
+          );
           const saleEndTimestamp = sale.leadinLength
-            ? await blockToTimestamp(sale.saleStart + sale.leadinLength, network, connections)
+            ? await blockToTimestamp(
+                sale.saleStart + sale.leadinLength,
+                connection,
+                metadata.coretimeChain
+              )
             : null;
 
           return {

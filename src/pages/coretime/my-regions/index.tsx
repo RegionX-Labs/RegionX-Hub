@@ -61,7 +61,7 @@ const MyRegionsPage = () => {
 
   useEffect(() => {
     latestSaleRequested(network);
-  }, [network]);
+  }, [connections, network]);
 
   useEffect(() => {
     regions.map(async (region) => {
