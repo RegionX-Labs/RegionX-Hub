@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './home.module.scss';
 import Header from '@/components/Header';
 import GeneralAnalytics from '@/components/Home/GeneralAnalytics';
@@ -7,33 +7,29 @@ import HomeDashboard from '@/components/Home/HomeDashboard';
 
 export default function Home() {
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    const handleResize = () => setIsMobile(window.innerWidth <= 800);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isMobile = windowWidth !== null && windowWidth <= 800;
-
   return (
     <div className={styles.page}>
       <Header />
-      <div className={styles.toggleButton}>
-        {isMobile && (
-          <button
-            className={styles.AnalyticsButton}
-            onClick={() => setShowAnalytics(!showAnalytics)}
-          >
-            {showAnalytics ? 'Hide Analytics' : 'Show Analytics'}
-          </button>
-        )}
-      </div>
 
-      {(isMobile ? showAnalytics : true) && <GeneralAnalytics />}
-      <HomeDashboard />
+      {isMobile && (
+        <button
+          className={styles.AnalyticsButton}
+          onClick={() => setShowAnalytics((prev) => !prev)}
+        >
+          {showAnalytics ? 'Show Dashboard' : 'Show Analytics'}
+        </button>
+      )}
+      {(!isMobile || showAnalytics) && <GeneralAnalytics />}
+      {(!isMobile || !showAnalytics) && <HomeDashboard />}
     </div>
   );
 }

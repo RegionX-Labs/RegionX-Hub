@@ -21,6 +21,12 @@
     width: 90%;
   }
   @media (max-width: 800px) {
+    max-width: 90%;
+  }
+  @media (max-width: 750px) {
+    max-width: 85%;
+  }
+  @media (max-width: 450px) {
     max-width: 80%;
   }
 }

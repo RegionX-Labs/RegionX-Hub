@@ -26,6 +26,13 @@
     width: 92%;
   }
   @media (max-width: 800px) {
+    max-width: 92%;
+  }
+  @media (max-width: 750px) {
+    max-width: 87%;
+  }
+
+  @media (max-width: 450px) {
     max-width: 83%;
   }
 }
