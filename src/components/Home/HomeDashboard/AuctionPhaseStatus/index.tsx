@@ -16,19 +16,6 @@ import en from 'javascript-time-ago/locale/en';
 
 TimeAgo.addLocale(en);
 
-export const getRelativeTime = (timestamp: number | Date): string => {
-  const timeAgo = new TimeAgo('en-US');
-  return timeAgo.format(timestamp, {
-    steps: [
-      { formatAs: 'second' },
-      { formatAs: 'minute', minTime: 60 },
-      { formatAs: 'hour', minTime: 60 * 60 },
-      { formatAs: 'day', minTime: 24 * 60 * 60 },
-    ],
-    labels: 'long',
-  });
-};
-
 export default function AuctionPhaseStatus() {
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
@@ -170,7 +157,14 @@ export default function AuctionPhaseStatus() {
           </div>
           <div className={styles.label}>Next Phase Start</div>
           <div className={styles.value}>
-            {nextPhaseStart ? getRelativeTime(nextPhaseStart) : '-'}
+            {nextPhaseStart ? (new Date(nextPhaseStart)).toLocaleString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            }) : '-'}
           </div>
         </div>
         <div className={styles.progressWrapper}>
