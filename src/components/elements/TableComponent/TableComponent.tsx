@@ -57,43 +57,52 @@ const TableComponent: React.FC<TableProps> = ({ data, pageSize }) => {
     data.slice((page - 1) * pageSize, page * pageSize);
 
   return (
-    <div className={styles['tableWrapper']}>
-      <div className={styles['tableHeader']}>
-        {Object.keys(data[0] || {}).map((key, index) => (
-          <div
-            key={index}
-            className={`${styles['tableHeader-cell']} ${data[0][key]?.cellType ? styles[data[0][key]?.cellType] : ''}`}
-          >
-            {/* Only hide input if key is Watchlist */}
-            {key !== 'Watchlist' && (
-              <>
-                <input
-                  type='text'
-                  value={searchTerms[key]}
-                  onChange={(e) => handleSearchChange(e, key)}
-                  placeholder={key}
-                />
-                <Image src={SearchIcon} alt='Search Icon' className={styles.searchIcon} />
-              </>
+    <>
+      <div className={styles['tableWrapper']}>
+        <div className={styles['tableContent']}>
+          <div className={styles['tableHeader']}>
+            {Object.keys(data[0] || {}).map((key, index) => (
+              <div
+                key={index}
+                className={`${styles['tableHeader-cell']} ${
+                  data[0][key]?.cellType ? styles[data[0][key]?.cellType] : ''
+                }`}
+              >
+                {key !== 'Watchlist' && (
+                  <>
+                    <input
+                      type='text'
+                      value={searchTerms[key]}
+                      onChange={(e) => handleSearchChange(e, key)}
+                      placeholder={key}
+                    />
+                    <Image src={SearchIcon} alt='Search Icon' className={styles.searchIcon} />
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className={styles['tableBody']}>
+            {displayedData.length === 0 ? (
+              <div className={styles['noResultsMessage']}>No results found.</div>
+            ) : (
+              displayedData.map((row, rowIndex) => <TableRow key={rowIndex} data={row} />)
             )}
           </div>
-        ))}
+        </div>
       </div>
-      <div className={styles['tableBody']}>
-        {displayedData.length === 0 ? (
-          <div className={styles['noResultsMessage']}>No results found.</div>
-        ) : (
-          displayedData.map((row, rowIndex) => <TableRow key={rowIndex} data={row} />)
-        )}
+
+      <div className={styles.paginationContainer}>
+        <TablePagination
+          page={page}
+          setPage={setPage}
+          dataLength={filteredData.length}
+          pageSize={pageSize}
+          onPageChange={onPageChange}
+        />
       </div>
-      <TablePagination
-        page={page}
-        setPage={setPage}
-        dataLength={filteredData.length}
-        pageSize={pageSize}
-        onPageChange={onPageChange}
-      />
-    </div>
+    </>
   );
 };
 

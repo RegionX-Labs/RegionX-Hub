@@ -9,7 +9,7 @@
   background-color: $darkBackground1;
   border-radius: 14px;
   margin-bottom: 10px;
-
+  min-width: 1200px;
   transition: background 0.2s;
 
   &:hover {
@@ -26,6 +26,7 @@
     min-height: 50px;
     box-sizing: border-box;
     overflow: hidden;
+    min-width: 100px; // Adjust this to match full table size on large screens
 
     text-align: left;
     font-size: 14px;
