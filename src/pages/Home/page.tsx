@@ -7,9 +7,7 @@ import HomeDashboard from '@/components/Home/HomeDashboard';
 
 export default function Home() {
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [windowWidth, setWindowWidth] = useState<number>(
-    typeof window !== 'undefined' ? window.innerWidth : 1200
-  );
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -18,13 +16,12 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isMobile = windowWidth <= 800;
+  const isMobile = windowWidth !== null && windowWidth <= 800;
 
   return (
     <div className={styles.page}>
       <Header />
       <div className={styles.toggleButton}>
-        {' '}
         {isMobile && (
           <button
             className={styles.AnalyticsButton}
@@ -35,7 +32,7 @@ export default function Home() {
         )}
       </div>
 
-      {(!isMobile || showAnalytics) && <GeneralAnalytics />}
+      {(isMobile ? showAnalytics : true) && <GeneralAnalytics />}
       <HomeDashboard />
     </div>
   );

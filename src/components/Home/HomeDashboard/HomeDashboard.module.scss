@@ -21,6 +21,7 @@
   @media (max-width: 800px) {
     max-height: none;
     overflow: visible;
+    margin-top: 40px;
   }
 }
 
@@ -31,4 +32,7 @@
   max-width: 100%;
   margin-left: 20px;
   padding-bottom: 0px;
+  @media (max-width: 800px) {
+    margin-left: 10px;
+  }
 }

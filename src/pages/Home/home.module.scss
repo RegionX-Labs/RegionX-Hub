@@ -1,5 +1,6 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
+@use 'sass:color';
 
 .page {
   display: flex;
@@ -18,16 +19,21 @@
 
 .AnalyticsButton {
   display: none;
-  margin: 20px auto;
+  position: absolute;
+  top: 100px;
+  right: 20px;
+
   padding: 10px 16px;
-  background-color: $greenPrimary;
-  color: $black;
+  background-color: $darkBackground2;
+  color: $white;
   border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: -80px;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  z-index: 10;
   @include Inter;
+
   @media (max-width: 800px) {
     display: block;
   }
