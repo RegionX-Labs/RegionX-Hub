@@ -1,5 +1,5 @@
 import styles from './GeneralAnalytics.module.scss';
-import BulkSaleSummary from './BulkSaleSummary/index';
+import BulkSaleSummary from './BulkSaleSummary';
 
 export default function GeneralAnalytics() {
   return (
