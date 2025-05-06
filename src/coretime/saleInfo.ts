@@ -17,6 +17,12 @@ export enum SalePhase {
   FixedPrice = 'Fixed Price Phase',
 }
 
+export const salePhases: SalePhase[] = [
+  SalePhase.Interlude,
+  SalePhase.Leadin,
+  SalePhase.FixedPrice,
+];
+
 type Endpoints = {
   start: number;
   end: number;

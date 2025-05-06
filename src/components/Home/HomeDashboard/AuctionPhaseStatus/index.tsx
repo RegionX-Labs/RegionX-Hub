@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import styles from './AuctionPhaseStatus.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { $latestSaleInfo, $phaseEndpoints, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
+import {
+  $latestSaleInfo,
+  $phaseEndpoints,
+  getCurrentPhase,
+  SalePhase,
+  salePhases,
+} from '@/coretime/saleInfo';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -92,7 +98,7 @@ export default function AuctionPhaseStatus() {
 
   useEffect(() => {
     (async () => {
-      if(!saleInfo || !phaseEndpoints) return;
+      if (!saleInfo) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
       const connection = connections[networkChainIds.coretimeChain];
@@ -107,20 +113,21 @@ export default function AuctionPhaseStatus() {
       ).query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
+    })();
+  }, [network, saleInfo]);
 
-      const timestamp = Number(await (
-        client.getTypedApi(metadata.relayChain) as any
-      ).query.Timestamp.Now.getValue());
-
-      if(phase == SalePhase.Interlude) {
+  useEffect(() => {
+    if (!phaseEndpoints) return;
+    (async () => {
+      if (currentPhase == SalePhase.Interlude) {
         setNextPhaseStart(phaseEndpoints.interlude.end);
-      }else if(phase == SalePhase.Leadin) {
+      } else if (currentPhase == SalePhase.Leadin) {
         setNextPhaseStart(phaseEndpoints.leadin.end);
-      }else {
+      } else {
         setNextPhaseStart(phaseEndpoints.fixed.end);
       }
     })();
-  }, [network, saleInfo]);
+  }, [phaseEndpoints, currentPhase]);
 
   return (
     <div className={styles.auctionPhaseCard}>
@@ -129,8 +136,16 @@ export default function AuctionPhaseStatus() {
         <div className={styles.info}>
           <div className={styles.label}>Current Phase</div>
           <div className={styles.value}>{currentPhase ? currentPhase : '-'}</div>
-          <div className={styles.label}>Next Phase in</div>
-          <div className={styles.value}>{getRelativeTime(nextPhaseStart)}</div>
+          <div className={styles.label}>Next Phase</div>
+          <div className={styles.value}>
+            {currentPhase
+              ? salePhases[(salePhases.indexOf(currentPhase) + 1) % salePhases.length]
+              : '-'}
+          </div>
+          <div className={styles.label}>Next Phase Start</div>
+          <div className={styles.value}>
+            {nextPhaseStart ? getRelativeTime(nextPhaseStart) : '-'}
+          </div>
         </div>
         <div className={styles.progressWrapper}>
           <svg width='200' height='200' viewBox='0 0 200 200'>
@@ -140,7 +155,13 @@ export default function AuctionPhaseStatus() {
               Progress
             </text>
             <text x='100' y='110' textAnchor='left' fill='#fff' fontSize='15' fontWeight='600'>
-              80%
+              {phaseEndpoints &&
+                Math.floor(
+                  ((Date.now() - phaseEndpoints.interlude.start) /
+                    (phaseEndpoints.fixed.end - phaseEndpoints.interlude.start)) *
+                    100
+                )}
+              %
             </text>
           </svg>
         </div>
