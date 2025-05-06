@@ -54,7 +54,7 @@ export default function CoreComparison() {
   const isReady = renewalPrice !== null && corePrice !== null;
   const priceDiff = isReady ? corePrice! - renewalPrice! : null;
   const priceDiffFormatted = isReady ? toUnitFormatted(network, BigInt(Math.abs(priceDiff!))) : '';
-  const diffPercent = isReady ? ((priceDiff! / renewalPrice!) * 100).toFixed(0) : null;
+  const diffPercent = isReady ? ((priceDiff! / corePrice!) * 100).toFixed(0) : null;
 
   return (
     <div className={styles.coreComparisonCard}>
