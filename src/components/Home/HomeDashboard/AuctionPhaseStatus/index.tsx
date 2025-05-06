@@ -42,13 +42,28 @@ export default function AuctionPhaseStatus() {
   const [renderedDots, setRenderedDots] = useState<JSX.Element[]>();
 
   useEffect(() => {
-    if(!phaseEndpoints) return;
+    if (!phaseEndpoints) return;
     const totalDuration = phaseEndpoints.fixed.end - phaseEndpoints.interlude.start;
 
     const segments = [
-      { label: 'Interlude Phase', value: (phaseEndpoints.interlude.end - phaseEndpoints.interlude.start) / totalDuration, color: '#00E676' },
-      { label: 'Leadin Phase', value: (phaseEndpoints.leadin.end - phaseEndpoints.leadin.start) / totalDuration, color: '#00E676' },
-      { label: 'Fixed Price Phase',  value: (phaseEndpoints.fixed.end - phaseEndpoints.fixed.start) / totalDuration, color: '#888' },
+      {
+        label: 'Interlude Phase',
+        value: (phaseEndpoints.interlude.end - phaseEndpoints.interlude.start) / totalDuration,
+        color: currentPhase ? '#00E676' : '#888',
+      },
+      {
+        label: 'Leadin Phase',
+        value: (phaseEndpoints.leadin.end - phaseEndpoints.leadin.start) / totalDuration,
+        color:
+          currentPhase == SalePhase.FixedPrice || currentPhase == SalePhase.Leadin
+            ? '#00E676'
+            : '#888',
+      },
+      {
+        label: 'Fixed Price Phase',
+        value: (phaseEndpoints.fixed.end - phaseEndpoints.fixed.start) / totalDuration,
+        color: currentPhase == SalePhase.FixedPrice ? '#00E676' : '#888',
+      },
     ];
 
     const TOTAL_ANGLE = 190;
