@@ -1,5 +1,27 @@
 // Keep this entire block — it's the SVG-based version
+import { useEffect, useState } from 'react';
 import styles from './AuctionPhaseStatus.module.scss';
+import { useUnit } from 'effector-react';
+import { $connections, $network } from '@/api/connection';
+import { $latestSaleInfo, $phaseEndpoints, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+
+TimeAgo.addLocale(en);
+
+export const getRelativeTime = (timestamp: number | Date): string => {
+  const timeAgo = new TimeAgo('en-US');
+  return timeAgo.format(timestamp, {
+    steps: [
+      { formatAs: 'second' },
+      { formatAs: 'minute', minTime: 60 },
+      { formatAs: 'hour', minTime: 60 * 60 },
+      { formatAs: 'day', minTime: 24 * 60 * 60 },
+    ],
+    labels: 'long',
+  });
+};
 
 export default function AuctionPhaseStatus() {
   const segments = [
@@ -60,15 +82,55 @@ export default function AuctionPhaseStatus() {
     dots.push(<circle key={`dot-${i}`} cx={x} cy={y} r={dotRadius} fill='#6b7280' />);
   }
 
+  const network = useUnit($network);
+  const saleInfo = useUnit($latestSaleInfo);
+  const connections = useUnit($connections);
+  const phaseEndpoints = useUnit($phaseEndpoints);
+
+  const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
+  const [nextPhaseStart, setNextPhaseStart] = useState<number>(0);
+
+  useEffect(() => {
+    (async () => {
+      if(!saleInfo || !phaseEndpoints) return;
+      const networkChainIds = getNetworkChainIds(network);
+      if (!networkChainIds) return;
+      const connection = connections[networkChainIds.coretimeChain];
+      if (!connection || !connection.client || connection.status !== 'connected') return;
+
+      const client = connection.client;
+      const metadata = getNetworkMetadata(network);
+      if (!metadata) return;
+
+      const currentBlockNumber = await (
+        client.getTypedApi(metadata.coretimeChain) as any
+      ).query.System.Number.getValue();
+      const phase = getCurrentPhase(saleInfo, currentBlockNumber);
+      setCurrentPhase(phase);
+
+      const timestamp = Number(await (
+        client.getTypedApi(metadata.relayChain) as any
+      ).query.Timestamp.Now.getValue());
+
+      if(phase == SalePhase.Interlude) {
+        setNextPhaseStart(phaseEndpoints.interlude.end);
+      }else if(phase == SalePhase.Leadin) {
+        setNextPhaseStart(phaseEndpoints.leadin.end);
+      }else {
+        setNextPhaseStart(phaseEndpoints.fixed.end);
+      }
+    })();
+  }, [network, saleInfo]);
+
   return (
     <div className={styles.auctionPhaseCard}>
       <div className={styles.header}>Auction Phase Status</div>
       <div className={styles.content}>
         <div className={styles.info}>
           <div className={styles.label}>Current Phase</div>
-          <div className={styles.value}>Leadin Phase</div>
+          <div className={styles.value}>{currentPhase ? currentPhase : '-'}</div>
           <div className={styles.label}>Next Phase in</div>
-          <div className={styles.value}>30 Minutes</div>
+          <div className={styles.value}>{getRelativeTime(nextPhaseStart)}</div>
         </div>
         <div className={styles.progressWrapper}>
           <svg width='200' height='200' viewBox='0 0 200 200'>

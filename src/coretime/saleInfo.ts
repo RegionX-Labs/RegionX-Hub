@@ -12,9 +12,9 @@ import {
 import { $connections, $network } from '@/api/connection';
 
 export enum SalePhase {
-  Interlude,
-  Leadin,
-  FixedPrice,
+  Interlude = 'Inerlude Phase',
+  Leadin = 'Leadin Phase',
+  FixedPrice = 'Fixed Price Phase',
 }
 
 type Endpoints = {
@@ -270,4 +270,14 @@ export const fetchBrokerConfig = async (
   const config: Configuration = await api.query.Broker.Configuration.getValue();
 
   return config;
+};
+
+export const getCurrentPhase = (saleInfo: SaleInfo, blockNumber: number): SalePhase => {
+  if (blockNumber < saleInfo.saleStart) {
+    return SalePhase.Interlude;
+  } else if (blockNumber < saleInfo.saleStart + saleInfo.leadinLength) {
+    return SalePhase.Leadin;
+  } else {
+    return SalePhase.FixedPrice;
+  }
 };

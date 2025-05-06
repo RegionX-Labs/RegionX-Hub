@@ -13,7 +13,6 @@ import {
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
