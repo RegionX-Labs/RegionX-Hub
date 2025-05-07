@@ -6,6 +6,7 @@ import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CorePurchaseCard.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function CorePurchaseCard() {
   const [connections, network, saleInfo, purchaseHistory] = useUnit([
@@ -53,6 +54,35 @@ export default function CorePurchaseCard() {
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
 
+  const buyCore = () => {
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    };
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    };
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    };
+
+    if(!corePrice) {
+      toast.error('Failed to fetch the price of a core');
+      return;
+    }
+
+    (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({price_limit: corePrice});
+
+    toast.success('Transaction confirmed!');
+  }
+
   return (
     <div className={styles.coreRemainingCard}>
       <p className={styles.title}>Core Offered</p>
@@ -69,7 +99,8 @@ export default function CorePurchaseCard() {
         </span>
       </div>
 
-      <button className={styles.buyButton}>Buy Core</button>
+      <button onClick={buyCore} className={styles.buyButton}>Buy Core</button>
+      <Toaster />
     </div>
   );
 }
