@@ -157,14 +157,16 @@ export default function AuctionPhaseStatus() {
           </div>
           <div className={styles.label}>Next Phase Start</div>
           <div className={styles.value}>
-            {nextPhaseStart ? (new Date(nextPhaseStart)).toLocaleString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-              hour: 'numeric',
-              minute: '2-digit',
-              hour12: true
-            }) : '-'}
+            {nextPhaseStart
+              ? new Date(nextPhaseStart).toLocaleString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  hour12: true,
+                })
+              : '-'}
           </div>
         </div>
         <div className={styles.progressWrapper}>

@@ -168,7 +168,7 @@ const Header: React.FC = () => {
         </ul>
 
         <div className={styles.mobileContent}>
-          <div className={styles.networkSelector} style={{ width: '150px' }}>
+          <div className={styles.networkSelector} style={{ width: '100%' }}>
             <NetworkSelector />
           </div>
           {accounts.length > 0 ? (
