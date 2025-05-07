@@ -32,7 +32,6 @@ export default function HomeDashboard() {
         <RenewableCores />
         <CoreComparison />
         <CorePurchaseCard />
-
         <AuctionPhaseStatus />
         <DutchAuctionChart />
         <PurchaseHistoryTable />

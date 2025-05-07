@@ -7,8 +7,27 @@
   background-color: $black;
   padding: 24px;
   width: 95%;
+
   max-width: unset;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  @media (max-width: 1503px) {
+    max-width: 93.5%;
+  }
+  @media (max-width: 1260px) {
+    max-width: 93%;
+  }
+  @media (max-width: 1260px) {
+    max-width: 93%;
+  }
+  @media (max-width: 800px) {
+    max-width: 92%;
+  }
+  @media (max-width: 750px) {
+    max-width: 88%;
+  }
+  @media (max-width: 450px) {
+    max-width: 85%;
+  }
 }
 
 .heading {
