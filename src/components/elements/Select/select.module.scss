@@ -6,7 +6,7 @@
   width: 100%;
   @include Inter;
   font-size: 16px;
-  line-height: 26px;
+  line-height: 28px;
   .selectedOptionDisplay {
     display: flex;
     align-items: center;
@@ -61,7 +61,7 @@
     background-color: $darkBackground2;
     color: white;
     z-index: 1000;
-    max-height: 200px;
+    max-height: 1200px;
     overflow-y: auto;
 
     .selectDropdown-optionList {
