@@ -40,7 +40,7 @@ function App({ Component, pageProps }: AppProps) {
     networkStarted(_network);
     getExtensions();
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    if(selectedWallet) {
+    if (selectedWallet) {
       walletSelected(selectedWallet);
     }
   }, [network, router, router.isReady]);

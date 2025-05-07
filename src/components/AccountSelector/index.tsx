@@ -8,7 +8,7 @@ const AccountSelector = () => {
   const accounts = useUnit($loadedAccounts);
 
   const handleChange = (value: string | null) => {
-    if(value === 'disconnect') {
+    if (value === 'disconnect') {
       console.log('disconnect');
       walletSelected('');
       return;
@@ -40,8 +40,8 @@ const AccountSelector = () => {
     key: 'disconnect',
     value: 'disconnect',
     label: 'Disconnect',
-    icon: (<></>)
-  })
+    icon: <></>,
+  });
 
   return (
     <div className={styles.selectWrapper}>
