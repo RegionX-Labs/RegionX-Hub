@@ -43,7 +43,7 @@
 
 .backgroundLabels {
   position: absolute;
-  bottom: 30px;
+  bottom: 40px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -54,12 +54,25 @@
   z-index: 0;
   opacity: 0.3;
   @include Inter;
+  @media (max-width: 600px) {
+    font-size: 12px;
+    bottom: 50px;
+    margin-left: 10px;
+  }
+  @media (max-width: 525px) {
+    font-size: 8px;
+    bottom: 50px;
+    width: 95%;
+  }
 }
 
 .interlude {
   color: #00ffa3;
   margin-left: 20%;
   margin-bottom: 5%;
+  @media (max-width: 525px) {
+    margin-left: 30%;
+  }
 }
 
 .leadin {

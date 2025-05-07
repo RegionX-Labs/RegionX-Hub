@@ -14,7 +14,7 @@
 }
 
 .modalContent {
-  background: $white;
+  background: $darkBackground2;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -41,9 +41,9 @@
     width: 100%;
     margin: 12px 0;
     padding: 15px;
-    background: $gray3;
+    background: $darkBackground1;
     border: none;
-    color: $black;
+    color: $white;
     text-align: left;
     padding-left: 20px;
     cursor: pointer;
@@ -53,7 +53,7 @@
     font-family: Montserrat;
 
     &:hover {
-      background: #b0b0b0;
+      background: $darkBackground3;
     }
 
     .walletIcon {
@@ -75,7 +75,7 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: $black;
+    color: $sliderDisabled;
   }
 }
 

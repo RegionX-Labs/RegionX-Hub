@@ -213,6 +213,7 @@
     background-color: transparent;
     color: $white;
     width: 100%;
+    font-size: 14px;
 
     &:hover {
       background-color: $greenPrimary;
@@ -275,7 +276,7 @@
 }
 
 .mobileContent {
-  padding: 20px;
+  padding: 26px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -286,6 +287,36 @@
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  .mobileContent {
+    button {
+      @include Inter;
+      padding: 6px 10px;
+      font-size: 14px;
+      height: 40px;
+      width: 100%;
+
+      div {
+        gap: 10px;
+        height: 20px;
+
+        img {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .mobileContent {
+    .networkSelector {
+      margin-bottom: 10px;
+    }
+  }
+}
+
 .overlay {
   position: fixed;
   top: 0;
