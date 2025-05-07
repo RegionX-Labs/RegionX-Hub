@@ -8,6 +8,8 @@ import {
 
 // TODO: add tests
 
+export const SELECTED_WALLET_KEY = "wallet_selected";
+
 export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
 export const accountSelected = createEvent<string>();
@@ -27,6 +29,7 @@ const getExtensionsFx = createEffect((): WalletExtension[] => {
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
+    if(!extension) return [];
     const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
 
     return selectedExtension.getAccounts();

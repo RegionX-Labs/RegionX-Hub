@@ -1,6 +1,6 @@
 import React from 'react';
 import { useUnit } from 'effector-react';
-import { $walletExtensions, walletSelected } from '@/wallet';
+import { $walletExtensions, SELECTED_WALLET_KEY, walletSelected } from '@/wallet';
 import Image from 'next/image';
 import styles from './walletModal.module.scss';
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
@@ -40,6 +40,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const handleWalletClick = (walletId: string, isAvailable: boolean, url: string) => {
     if (isAvailable) {
       walletSelected(walletId);
+      localStorage.setItem(SELECTED_WALLET_KEY, walletId);
       onClose();
     } else {
       window.open(url, '_blank');
