@@ -1,4 +1,4 @@
-import { $loadedAccounts, accountSelected } from '@/wallet';
+import { $loadedAccounts, accountSelected, walletSelected } from '@/wallet';
 import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
 import styles from './account.module.scss';
@@ -8,6 +8,11 @@ const AccountSelector = () => {
   const accounts = useUnit($loadedAccounts);
 
   const handleChange = (value: string | null) => {
+    if (value === 'disconnect') {
+      console.log('disconnect');
+      walletSelected('');
+      return;
+    }
     if (value) {
       accountSelected(value);
     }
@@ -29,6 +34,13 @@ const AccountSelector = () => {
         </div>
       ),
     };
+  });
+
+  options.push({
+    key: 'disconnect',
+    value: 'disconnect',
+    label: 'Disconnect',
+    icon: <></>,
   });
 
   return (

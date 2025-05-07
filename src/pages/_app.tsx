@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
 import { networkStarted } from '@/api/connection';
-import { getExtensions } from '@/wallet';
+import { getExtensions, SELECTED_WALLET_KEY, walletSelected } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
@@ -39,6 +39,10 @@ function App({ Component, pageProps }: AppProps) {
     }
     networkStarted(_network);
     getExtensions();
+    const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
+    if (selectedWallet) {
+      walletSelected(selectedWallet);
+    }
   }, [network, router, router.isReady]);
 
   return (
