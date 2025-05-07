@@ -7,13 +7,15 @@ import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CorePurchaseCard.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
+import { $selectedAccount } from '@/wallet';
 
 export default function CorePurchaseCard() {
-  const [connections, network, saleInfo, purchaseHistory] = useUnit([
+  const [connections, network, saleInfo, purchaseHistory, selectedAccount] = useUnit([
     $connections,
     $network,
     $latestSaleInfo,
     $purchaseHistory,
+    $selectedAccount
   ]);
 
   const [corePrice, setCorePrice] = useState<number | null>(null);
@@ -54,7 +56,11 @@ export default function CorePurchaseCard() {
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
 
-  const buyCore = () => {
+  const buyCore = async () => {
+    if(!selectedAccount) { 
+      toast.error('Account not selected');
+      return;
+    }
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) {
       toast.error('Unknown network');
@@ -78,9 +84,14 @@ export default function CorePurchaseCard() {
       return;
     }
 
-    (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({price_limit: corePrice});
-
-    toast.success('Transaction confirmed!');
+    const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({price_limit: BigInt(corePrice)});
+    const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
+     if(res.ok) {
+      toast.success('Transaction succeded!');
+    }else {
+      // TODO: provide more detailed error
+      toast.error('Transaction failed');
+    }
   }
 
   return (
