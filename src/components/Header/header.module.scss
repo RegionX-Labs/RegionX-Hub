@@ -160,6 +160,10 @@
   cursor: pointer;
   padding: 0;
 
+  @media (min-width: 768px) and (max-width: 1435px) {
+    margin-right: 20px;
+  }
+
   &:hover {
     opacity: 0.9;
   }
