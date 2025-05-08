@@ -1,6 +1,9 @@
 .selectWrapper {
   width: 270px;
   white-space: nowrap;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .icon {
