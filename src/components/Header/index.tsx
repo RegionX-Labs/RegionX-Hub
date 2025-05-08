@@ -127,7 +127,7 @@ const Header: React.FC = () => {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
               <Image
-                src='/settingIcon.PNG'
+                src='/Settings.svg'
                 className={styles.settingIcon}
                 alt='settings'
                 width={800}
