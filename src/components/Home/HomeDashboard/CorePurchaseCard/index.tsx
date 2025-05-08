@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo, getCurrentPhase, latestSaleRequested, SalePhase } from '@/coretime/saleInfo';
 import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
@@ -20,6 +20,7 @@ export default function CorePurchaseCard() {
 
   const [corePrice, setCorePrice] = useState<number | null>(null);
   const [currentHeight, setCurrentHeight] = useState<number>(0);
+  const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
 
   useEffect(() => {
     if (network) latestSaleRequested(network);
@@ -52,6 +53,26 @@ export default function CorePurchaseCard() {
     }
   }, [saleInfo?.network, connections]);
 
+  useEffect(() => {
+    (async () => {
+      if (!saleInfo) return;
+      const networkChainIds = getNetworkChainIds(network);
+      if (!networkChainIds) return;
+      const connection = connections[networkChainIds.coretimeChain];
+      if (!connection || !connection.client || connection.status !== 'connected') return;
+
+      const client = connection.client;
+      const metadata = getNetworkMetadata(network);
+      if (!metadata) return;
+
+      const currentBlockNumber = await (
+        client.getTypedApi(metadata.coretimeChain) as any
+      ).query.System.Number.getValue();
+      const phase = getCurrentPhase(saleInfo, currentBlockNumber);
+      setCurrentPhase(phase);
+    })();
+  }, [network, saleInfo]);
+
   const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
@@ -61,6 +82,15 @@ export default function CorePurchaseCard() {
       toast.error('Account not selected');
       return;
     }
+    if(currentPhase === SalePhase.Interlude) {
+      toast.error('Cannot purchase a core during interlude phase');
+      return;
+    }
+    if(saleInfo?.coresSold == saleInfo?.coresOffered) {
+      toast.error('No more cores remaining');
+      return;
+    }
+
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) {
       toast.error('Unknown network');
