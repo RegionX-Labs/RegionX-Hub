@@ -63,7 +63,6 @@ const Header: React.FC = () => {
             <li className={styles.navItem} onClick={() => handleNavigation('')}>
               Home
             </li>
-
             <li
               className={styles.navItem}
               onClick={() => setIsCoretimeMenuOpen(!isCoretimeMenuOpen)}
@@ -71,7 +70,6 @@ const Header: React.FC = () => {
               Coretime
               <Image src={DownArrow} alt='Down Arrow' className={styles.downArrow} />
             </li>
-
             {isCoretimeMenuOpen && (
               <ul className={styles.coretimeSubMenuDesktop}>
                 <li
@@ -80,7 +78,6 @@ const Header: React.FC = () => {
                 >
                   My Regions
                 </li>
-
                 <li
                   className={styles.navItem}
                   onClick={() => handleNavigation('coretime/sale-history')}
@@ -89,7 +86,6 @@ const Header: React.FC = () => {
                 </li>
               </ul>
             )}
-
             <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
               Cross-Chain
             </li>
@@ -117,7 +113,7 @@ const Header: React.FC = () => {
             Connect Wallet
           </button>
         )}
-        <div className={styles.rpcButton}>
+        <div className={styles.rpcButtonDesktop}>
           <button
             className={styles.rpcButton}
             onClick={() => {
@@ -155,7 +151,6 @@ const Header: React.FC = () => {
               >
                 My Regions
               </li>
-
               <li
                 className={styles.navItem}
                 onClick={() => handleNavigation('coretime/sale-history')}
@@ -186,6 +181,21 @@ const Header: React.FC = () => {
           ) : (
             <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
           )}
+        </div>
+
+        <div className={styles.mobileRpcButton}>
+          <button
+            className={styles.rpcButton}
+            onClick={() => {
+              setIsRpcModalOpen(true);
+              setIsMenuOpen(false);
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
+              <Image src='/Settings.svg' alt='settings' width={24} height={24} />
+              <span style={{ color: 'white' }}></span>
+            </div>
+          </button>
         </div>
       </div>
 

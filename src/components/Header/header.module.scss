@@ -164,9 +164,12 @@
   @media (min-width: 768px) and (max-width: 1435px) {
     margin-right: 20px;
   }
+}
 
-  &:hover {
-    opacity: 0.9;
+.rpcButtonDesktop {
+  margin-right: 20px;
+  @media (max-width: 768px) {
+    display: none;
   }
 }
 
@@ -211,6 +214,16 @@
     border-color: color.adjust($darkBackground2, $lightness: 10%);
   }
 }
+.mobileRpcButton {
+  margin-top: auto;
+  padding: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
 
 .accSelector,
 .networkSelector {
@@ -250,9 +263,13 @@
     left 0.4s ease,
     opacity 0.4s ease;
   z-index: 1001;
-  padding-top: 60px;
+  padding-top: 20px;
   overflow-y: auto;
   box-sizing: border-box;
+
+  // 🟢 Add these two lines below
+  display: flex;
+  flex-direction: column;
 
   &.open {
     left: 0;
