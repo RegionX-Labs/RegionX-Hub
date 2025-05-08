@@ -110,15 +110,20 @@ export default function CorePurchaseCard() {
       return;
     }
 
-    const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({
-      price_limit: BigInt(corePrice),
-    });
-    const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
-    if (res.ok) {
-      toast.success('Transaction succeded!');
-    } else {
-      // TODO: provide more detailed error
-      toast.error('Transaction failed');
+    try {
+      const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({
+        price_limit: BigInt(corePrice),
+      });
+      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
+      if (res.ok) {
+        toast.success('Transaction succeded!');
+      } else {
+        // TODO: provide more detailed error
+        toast.error('Transaction failed');
+      }
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
     }
   };
 
