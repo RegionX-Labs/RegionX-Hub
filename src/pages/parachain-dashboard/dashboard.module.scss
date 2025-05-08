@@ -45,6 +45,11 @@
   color: white;
   margin-left: 3%;
   margin-top: -35px;
+
+  @media (max-width: 768px) {
+    text-align: left;
+    margin-top: 20px;
+  }
 }
 
 .buttonContainer {
@@ -53,9 +58,12 @@
   margin-top: -70px;
   margin-right: 3%;
 
-  @media (max-width: 475px) {
-    margin-right: 5%;
-    justify-content: center;
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    margin-top: 10px;
+    margin-left: 3%;
+    margin-right: 0;
+    gap: 10px;
   }
 }
 
@@ -80,15 +88,17 @@
   &.secondary {
     background-color: $greenPrimary;
     color: white;
+
     &:hover {
       background-color: color.adjust($greenPrimary, $lightness: -5%);
     }
   }
 
-  @media (max-width: 475px) {
-    padding: 10px 15px;
+  @media (max-width: 768px) {
+    margin-top: 0;
+    margin-left: 0;
+    padding: 10px 14px;
     font-size: 12px;
-    margin-top: 80px;
   }
 }
 
