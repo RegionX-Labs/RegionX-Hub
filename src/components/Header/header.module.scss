@@ -37,6 +37,18 @@
   transition: margin-left 0.3s ease;
   cursor: pointer;
 }
+.settingIcon {
+  width: 35px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  transition: margin-left 0.3s ease;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    width: 30px;
+  }
+}
 .leftSection {
   display: flex;
   align-items: center;
@@ -149,7 +161,7 @@
   padding: 0;
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }
 
