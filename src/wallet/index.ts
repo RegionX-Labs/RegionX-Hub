@@ -58,14 +58,14 @@ sample({
 });
 
 sample({
-  clock: walletSelectedFx.doneData,
-  target: $loadedAccounts,
+  clock: walletSelectedFx.done,
+  fn: () => null,
+  target: $selectedAccount,
 });
 
 sample({
   clock: walletSelectedFx.doneData,
-  fn: (accounts) => accounts[0],
-  target: $selectedAccount,
+  target: $loadedAccounts,
 });
 
 sample({
