@@ -1,4 +1,4 @@
-import { $loadedAccounts, accountSelected, walletSelected } from '@/wallet';
+import { $loadedAccounts, accountSelected, SELECTED_WALLET_KEY, walletSelected } from '@/wallet';
 import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
 import styles from './account.module.scss';
@@ -9,7 +9,7 @@ const AccountSelector = () => {
 
   const handleChange = (value: string | null) => {
     if (value === 'disconnect') {
-      console.log('disconnect');
+      localStorage.removeItem(SELECTED_WALLET_KEY);
       walletSelected('');
       return;
     }

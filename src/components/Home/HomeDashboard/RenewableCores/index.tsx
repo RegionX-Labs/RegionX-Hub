@@ -12,10 +12,16 @@ import {
 } from '@/coretime/renewals';
 import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { chainData } from '@/chaindata';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import toast, { Toaster } from 'react-hot-toast';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
+import { $selectedAccount } from '@/wallet';
 
 export default function RenewableCores() {
   const network = useUnit($network);
   const connections = useUnit($connections);
+  const selectedAccount = useUnit($selectedAccount);
+  const saleInfo = useUnit($latestSaleInfo);
   const potentialRenewals = useUnit($potentialRenewals);
 
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
@@ -24,12 +30,19 @@ export default function RenewableCores() {
   const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
     potentialRenewals.entries()
   )
+    .filter((renewal) => renewal[0].when >= (saleInfo?.regionBegin || 0))
     .map((renewal) => ({
       key: `${renewal[0].when}-${renewal[0].core}`,
       label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
       value: renewal,
+      icon: (
+        <img
+          style={{ width: 28, borderRadius: '100%', marginRight: '.5rem' }}
+          src={chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo}
+        />
+      ),
     }))
-    .sort((a, b) => b.key.localeCompare(a.key));
+    .sort((a, b) => a.key.localeCompare(b.key));
 
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
@@ -54,6 +67,55 @@ export default function RenewableCores() {
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  const renew = async () => {
+    if (!selected) {
+      toast.error('Core not selected');
+      return;
+    }
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    if (saleInfo?.coresSold == saleInfo?.coresOffered) {
+      toast.error('No more cores remaining');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    try {
+      const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.renew({
+        core: selected[0].core,
+      });
+      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
+      if (res.ok) {
+        toast.success('Transaction succeded!');
+      } else {
+        // TODO: provide more detailed error
+        toast.error('Transaction failed');
+      }
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
+    }
   };
 
   return (
@@ -84,7 +146,10 @@ export default function RenewableCores() {
         </div>
       </div>
 
-      <button className={styles.renewButton}>Renew Now</button>
+      <button className={styles.renewButton} onClick={renew}>
+        Renew Now
+      </button>
+      <Toaster />
     </div>
   );
 }

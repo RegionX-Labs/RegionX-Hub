@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import {
-  $latestSaleInfo,
-  getCurrentPhase,
-  latestSaleRequested,
-  SalePhase,
-} from '@/coretime/saleInfo';
+import { $latestSaleInfo, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
 import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
@@ -28,10 +23,6 @@ export default function CorePurchaseCard() {
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
 
   useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network]);
-
-  useEffect(() => {
     if (network && saleInfo) {
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
@@ -51,7 +42,7 @@ export default function CorePurchaseCard() {
         const currentBlockNumber = await (
           client.getTypedApi(metadata.coretimeChain) as any
         ).query.System.Number.getValue();
-        setCurrentHeight(currentHeight);
+        setCurrentHeight(currentBlockNumber);
         const price = getCorePriceAt(currentBlockNumber, saleInfo);
         setCorePrice(price);
       })();
@@ -119,15 +110,20 @@ export default function CorePurchaseCard() {
       return;
     }
 
-    const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({
-      price_limit: BigInt(corePrice),
-    });
-    const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
-    if (res.ok) {
-      toast.success('Transaction succeded!');
-    } else {
-      // TODO: provide more detailed error
-      toast.error('Transaction failed');
+    try {
+      const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.purchase({
+        price_limit: BigInt(corePrice),
+      });
+      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
+      if (res.ok) {
+        toast.success('Transaction succeded!');
+      } else {
+        // TODO: provide more detailed error
+        toast.error('Transaction failed');
+      }
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
     }
   };
 
