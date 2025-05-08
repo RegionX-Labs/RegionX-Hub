@@ -7,7 +7,7 @@ import AccountSelector from '@/components/AccountSelector';
 import NetworkSelector from '@/components/NetworkSelector';
 import WalletModal from '../WalletModal/WalletModal';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
-import { Button } from '@region-x/components';
+import Button from '../elements/Button/Button';
 import { $loadedAccounts } from '@/wallet';
 import DownArrow from '../../../public/DownArrow.svg';
 
@@ -112,21 +112,22 @@ const Header: React.FC = () => {
             <AccountSelector />
           </div>
         ) : (
-          <div className={styles.connectButton}>
-            <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
-          </div>
+          <button className={styles.connectButton} onClick={() => setIsModalOpen(true)}>
+            Connect Wallet
+          </button>
         )}
         <div className={styles.rpcButton}>
-          <Button
+          <button
+            className={styles.rpcButton}
             onClick={() => {
               setIsRpcModalOpen(true);
               setIsMenuOpen(false);
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '25px' }}>
-              <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
+              <Image src='/settingIcon.PNG' alt='settings' width={28} height={28} />
             </div>
-          </Button>
+          </button>
         </div>
       </div>
 

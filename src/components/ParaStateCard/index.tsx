@@ -1,5 +1,5 @@
 import { Tooltip } from 'react-tooltip';
-import { LabelCard } from '@region-x/components';
+import LabelCard from '../elements/LabelCard/LabelCard';
 
 export enum ParaState {
   RESERVED,

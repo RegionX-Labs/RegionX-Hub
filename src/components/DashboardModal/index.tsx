@@ -1,5 +1,5 @@
 import styles from './dashboardModal.module.scss';
-import { Button } from '@region-x/components';
+import Button from '../elements/Button/Button';
 import { useState, useEffect } from 'react';
 import { useUnit } from 'effector-react';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
