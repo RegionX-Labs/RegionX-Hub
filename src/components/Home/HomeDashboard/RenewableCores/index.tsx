@@ -30,14 +30,17 @@ export default function RenewableCores() {
   const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
     potentialRenewals.entries()
   )
-    .filter(renewal => 
-      renewal[0].when >= (saleInfo?.regionBegin || 0)
-    )
+    .filter((renewal) => renewal[0].when >= (saleInfo?.regionBegin || 0))
     .map((renewal) => ({
       key: `${renewal[0].when}-${renewal[0].core}`,
       label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
       value: renewal,
-      icon: <img style={{width: 28, borderRadius: '100%', marginRight: '.5rem'}} src={chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo} />
+      icon: (
+        <img
+          style={{ width: 28, borderRadius: '100%', marginRight: '.5rem' }}
+          src={chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo}
+        />
+      ),
     }))
     .sort((a, b) => a.key.localeCompare(b.key));
 
