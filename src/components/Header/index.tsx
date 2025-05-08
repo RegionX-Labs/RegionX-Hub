@@ -104,6 +104,7 @@ const Header: React.FC = () => {
       </div>
 
       <div className={styles.desktopContent}>
+        <div className={styles.content}></div>
         <div className={styles.networkSelector} style={{ width: '150px' }}>
           <NetworkSelector />
         </div>
@@ -179,17 +180,6 @@ const Header: React.FC = () => {
           ) : (
             <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
           )}
-          <Button
-            onClick={() => {
-              setIsRpcModalOpen(true);
-              setIsMenuOpen(false);
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              RPC
-              <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
-            </div>
-          </Button>
         </div>
       </div>
 
