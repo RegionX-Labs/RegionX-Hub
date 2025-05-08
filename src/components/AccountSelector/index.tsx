@@ -9,9 +9,8 @@ const AccountSelector = () => {
 
   const handleChange = (value: string | null) => {
     if (value === 'disconnect') {
-      console.log('disconnect');
-      walletSelected('');
       localStorage.removeItem(SELECTED_WALLET_KEY);
+      walletSelected('');
       return;
     }
     if (value) {

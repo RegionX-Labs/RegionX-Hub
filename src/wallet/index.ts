@@ -47,12 +47,6 @@ sample({
 });
 
 sample({
-  clock: getExtensionsFx.doneData,
-  fn: (extensions) => extensions[0].name,
-  target: walletSelected,
-});
-
-sample({
   clock: walletSelected,
   target: walletSelectedFx,
 });
