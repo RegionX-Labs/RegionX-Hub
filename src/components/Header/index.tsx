@@ -63,7 +63,6 @@ const Header: React.FC = () => {
             <li className={styles.navItem} onClick={() => handleNavigation('')}>
               Home
             </li>
-
             <li
               className={styles.navItem}
               onClick={() => setIsCoretimeMenuOpen(!isCoretimeMenuOpen)}
@@ -71,7 +70,6 @@ const Header: React.FC = () => {
               Coretime
               <Image src={DownArrow} alt='Down Arrow' className={styles.downArrow} />
             </li>
-
             {isCoretimeMenuOpen && (
               <ul className={styles.coretimeSubMenuDesktop}>
                 <li
@@ -80,7 +78,6 @@ const Header: React.FC = () => {
                 >
                   My Regions
                 </li>
-
                 <li
                   className={styles.navItem}
                   onClick={() => handleNavigation('coretime/sale-history')}
@@ -89,7 +86,6 @@ const Header: React.FC = () => {
                 </li>
               </ul>
             )}
-
             <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
               Cross-Chain
             </li>
@@ -104,6 +100,7 @@ const Header: React.FC = () => {
       </div>
 
       <div className={styles.desktopContent}>
+        <div className={styles.content}></div>
         <div className={styles.networkSelector} style={{ width: '150px' }}>
           <NetworkSelector />
         </div>
@@ -116,7 +113,7 @@ const Header: React.FC = () => {
             Connect Wallet
           </button>
         )}
-        <div className={styles.rpcButton}>
+        <div className={styles.rpcButtonDesktop}>
           <button
             className={styles.rpcButton}
             onClick={() => {
@@ -125,7 +122,13 @@ const Header: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
-              <Image src='/settingIcon.PNG' alt='settings' width={28} height={28} />
+              <Image
+                src='/Settings.svg'
+                className={styles.settingIcon}
+                alt='settings'
+                width={800}
+                height={800}
+              />
             </div>
           </button>
         </div>
@@ -148,7 +151,6 @@ const Header: React.FC = () => {
               >
                 My Regions
               </li>
-
               <li
                 className={styles.navItem}
                 onClick={() => handleNavigation('coretime/sale-history')}
@@ -179,17 +181,21 @@ const Header: React.FC = () => {
           ) : (
             <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
           )}
-          <Button
+        </div>
+
+        <div className={styles.mobileRpcButton}>
+          <button
+            className={styles.rpcButton}
             onClick={() => {
               setIsRpcModalOpen(true);
               setIsMenuOpen(false);
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              RPC
-              <Image src='/settingIcon.PNG' alt='settings' width={20} height={20} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
+              <Image src='/Settings.svg' alt='settings' width={24} height={24} />
+              <span style={{ color: 'white' }}></span>
             </div>
-          </Button>
+          </button>
         </div>
       </div>
 
