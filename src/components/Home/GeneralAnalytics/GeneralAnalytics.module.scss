@@ -13,7 +13,9 @@
   max-height: 80%;
   @include Inter;
   overflow-y: auto;
-
+  @media (max-width: 1600px) {
+    width: 400px;
+  }
   &::-webkit-scrollbar {
     width: 0;
     background: transparent;
@@ -23,10 +25,12 @@
   -ms-overflow-style: none;
 
   @media (max-width: 800px) {
-    width: 83%;
+    width: 85%;
     height: auto;
     overflow: visible;
-    margin-left: 2%;
+    margin-left: auto;
+    margin-right: auto;
+
     margin-top: 140px;
     margin-bottom: 40px;
   }
