@@ -114,7 +114,7 @@ const Header: React.FC = () => {
           </button>
         )}
         <div className={styles.rpcButtonDesktop}>
-          <button
+          {/* <button
             className={styles.rpcButton}
             onClick={() => {
               setIsRpcModalOpen(true);
@@ -130,7 +130,7 @@ const Header: React.FC = () => {
                 height={800}
               />
             </div>
-          </button>
+          </button> */}
         </div>
       </div>
 
