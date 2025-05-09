@@ -16,14 +16,22 @@ import {
   WestendCoretime,
 } from '@/assets/networks';
 import { useUnit } from 'effector-react';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import Image from 'next/image';
 import { ChainId, chains } from '@/network/chains';
 import { isHex } from '@polkadot/util';
 import { validateAddress } from '@polkadot/util-crypto';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import toast, { Toaster } from 'react-hot-toast';
+import { $selectedAccount } from '@/wallet';
+import { PolkadotClient } from 'polkadot-api';
+import { InjectedPolkadotAccount } from 'polkadot-api/pjs-signer';
+import { CoretimeChainFromRelayPerspective, fungibleAsset, RcTokenFromParachainPerspective, versionWrap } from '@/utils/xcm';
 
 const CrossChain = () => {
+  const connections = useUnit($connections);
   const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
 
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
   const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
@@ -56,14 +64,96 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
-  const handleTransfer = () => {
+  const handleTransfer = async () => {
     console.log('Transfer initiated with:', {
       originChain,
       destinationChain,
       amount,
       beneficiary,
     });
+
+    if(originChain === destinationChain) {
+      toast.error('Origin and destination chains are the same');
+      return;
+    }
+
+    if(!originChain) {
+      toast.error('Origin chain not selected');
+      return;
+    }
+
+    if(!destinationChain) {
+      toast.error('Destination chain not selected');
+      return;
+    }
+
+    if(isCoretimeChain(originChain)) {
+      // Coretime to relay
+    }else {
+      // Relay to coretime
+      await relayChainToCoretimeChain();
+    }
   };
+
+  const relayChainToCoretimeChain = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.relayChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    try {
+      const _beneficiary = {
+        parents: 0,
+        interior: {
+          X1: {
+            AccountId32: {
+              chain: 'Any',
+              id: beneficiary,
+            },
+          },
+        },
+      };
+
+      const tx = (client.getTypedApi(metadata.relayChain).tx as any).XcmPallet.limited_teleport_assets({
+        dest: versionWrap(CoretimeChainFromRelayPerspective),
+        beneficiary: versionWrap(_beneficiary), // TODO beneficiary has to be uint8array.
+        assets: versionWrap([fungibleAsset(RcTokenFromParachainPerspective, amount)]),
+        feeAssetItem: 0,
+        weightLimit: 'Unlimited'
+      });
+      console.log(tx);
+      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
+      if (res.ok) {
+        toast.success('Transaction succeded!');
+      } else {
+        // TODO: provide more detailed error
+        toast.error('Transaction failed');
+      }
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
+    }
+  }
 
   const handleSwapChains = () => {
     setOriginChain(destinationChain);
@@ -177,11 +267,15 @@ const CrossChain = () => {
     },
   ];
 
+  const isCoretimeChain = (chainId: string): boolean => {
+    return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId
+  }
+
   const filteredNetworks = networks.filter((n) => {
     if (!network) return true;
     return (
       n.value === chains[network as keyof typeof chains]?.chainId ||
-      n.value === chains[`${network}Coretime` as keyof typeof chains]?.chainId
+      isCoretimeChain(n.value)
     );
   });
 
@@ -291,6 +385,7 @@ const CrossChain = () => {
       <div className={styles.buttonContainer}>
         <Button onClick={handleTransfer}>Transfer</Button>
       </div>
+      <Toaster />
     </div>
   );
 };
