@@ -75,7 +75,7 @@ export const toUnitFormatted = (network: Network, amount: bigint): string => {
   return `${formatted} ${getTokenSymbol(network)}`;
 };
 
-export const fromUnit = (network: Network, amount: bigint): BigInt => {
+export const fromUnit = (network: Network, amount: bigint): bigint => {
   const decimals = getNetworkDecimals(network);
   return amount * BigInt(Math.pow(10, decimals));
 };
