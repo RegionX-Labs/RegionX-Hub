@@ -24,11 +24,17 @@ import { validateAddress } from '@polkadot/util-crypto';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
-import { CORETIME_PARA_ID, fungibleAsset, RcTokenFromParachainPerspective, versionWrap } from '@/utils/xcm';
-import Keyring from '@polkadot/keyring';
-import { fromUnit } from '@/utils';
-import { XcmV3Junction, XcmV3Junctions, XcmV3MultiassetAssetId, XcmV3MultiassetFungibility, XcmV3WeightLimit, XcmVersionedAssets, XcmVersionedLocation } from '@polkadot-api/descriptors';
+import {
+  XcmV3Junction,
+  XcmV3Junctions,
+  XcmV3MultiassetAssetId,
+  XcmV3MultiassetFungibility,
+  XcmV3WeightLimit,
+  XcmVersionedAssets,
+  XcmVersionedLocation,
+} from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
+import { CORETIME_PARA_ID, fromUnit } from '@/utils';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -74,24 +80,24 @@ const CrossChain = () => {
       beneficiary,
     });
 
-    if(originChain === destinationChain) {
+    if (originChain === destinationChain) {
       toast.error('Origin and destination chains are the same');
       return;
     }
 
-    if(!originChain) {
+    if (!originChain) {
       toast.error('Origin chain not selected');
       return;
     }
 
-    if(!destinationChain) {
+    if (!destinationChain) {
       toast.error('Destination chain not selected');
       return;
     }
 
-    if(isCoretimeChain(originChain)) {
+    if (isCoretimeChain(originChain)) {
       // Coretime to relay
-    }else {
+    } else {
       // Relay to coretime
       await relayChainToCoretimeChain();
     }
@@ -122,34 +128,21 @@ const CrossChain = () => {
       return;
     }
 
-    const beneficiaryKeypair = new Keyring();
-    beneficiaryKeypair.addFromAddress(beneficiary);
-
     try {
-      const _beneficiary = {
-        parents: 0,
-        interior: {
-          X1: {
-            AccountId32: {
-              chain: 'Any',
-              id: beneficiaryKeypair.pairs[0].publicKey,
-            },
-          },
-        },
-      };
-
-      const tx = (client.getTypedApi(metadata.relayChain).tx as any).XcmPallet.limited_teleport_assets({
+      const tx = (
+        client.getTypedApi(metadata.relayChain).tx as any
+      ).XcmPallet.limited_teleport_assets({
         dest: XcmVersionedLocation.V3({
           parents: 0,
-          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID))
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
         }),
         beneficiary: XcmVersionedLocation.V3({
-        parents: 0,
-        interior: XcmV3Junctions.X1(
+          parents: 0,
+          interior: XcmV3Junctions.X1(
             XcmV3Junction.AccountId32({
               network: undefined,
               id: Binary.fromBytes(AccountId().enc(beneficiary)),
-            }),
+            })
           ),
         }),
         assets: XcmVersionedAssets.V3([
@@ -173,7 +166,7 @@ const CrossChain = () => {
       toast.error('Transaction cancelled');
       console.log(e);
     }
-  }
+  };
 
   const handleSwapChains = () => {
     setOriginChain(destinationChain);
@@ -288,15 +281,12 @@ const CrossChain = () => {
   ];
 
   const isCoretimeChain = (chainId: string): boolean => {
-    return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId
-  }
+    return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
+  };
 
   const filteredNetworks = networks.filter((n) => {
     if (!network) return true;
-    return (
-      n.value === chains[network as keyof typeof chains]?.chainId ||
-      isCoretimeChain(n.value)
-    );
+    return n.value === chains[network as keyof typeof chains]?.chainId || isCoretimeChain(n.value);
   });
 
   useEffect(() => {

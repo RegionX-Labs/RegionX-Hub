@@ -1,10 +1,12 @@
 import { Network } from '@/types';
-import { getNetworkChainIds, getNetworkMetadata, NetworkMetadata } from '@/network';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { SaleInfo } from '@/coretime/saleInfo';
 import { Connection } from '@/api/connection';
 
 export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
+
+export const CORETIME_PARA_ID = 1005;
 
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
