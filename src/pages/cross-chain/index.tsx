@@ -26,6 +26,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
 import { CoretimeChainFromRelayPerspective, fungibleAsset, RcTokenFromParachainPerspective, versionWrap } from '@/utils/xcm';
 import Keyring from '@polkadot/keyring';
+import { fromUnit } from '@/utils';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -139,7 +140,7 @@ const CrossChain = () => {
       const tx = (client.getTypedApi(metadata.relayChain).tx as any).XcmPallet.limited_teleport_assets({
         dest: versionWrap(CoretimeChainFromRelayPerspective),
         beneficiary: versionWrap(_beneficiary), // TODO beneficiary has to be uint8array.
-        assets: versionWrap([fungibleAsset(RcTokenFromParachainPerspective, amount)]),
+        assets: versionWrap([fungibleAsset(RcTokenFromParachainPerspective, fromUnit(network, BigInt(amount)))]),
         feeAssetItem: 0,
         weightLimit: 'Unlimited'
       });
