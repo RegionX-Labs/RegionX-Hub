@@ -97,6 +97,7 @@ const CrossChain = () => {
 
     if (isCoretimeChain(originChain)) {
       // Coretime to relay
+      await coretimeChainToRelayChain();
     } else {
       // Relay to coretime
       await relayChainToCoretimeChain();
@@ -135,6 +136,71 @@ const CrossChain = () => {
         dest: XcmVersionedLocation.V3({
           parents: 0,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
+            id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 0 }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
+      if (res.ok) {
+        toast.success('Transaction succeded!');
+      } else {
+        // TODO: provide more detailed error
+        toast.error('Transaction failed');
+      }
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
+    }
+  };
+
+  const coretimeChainToRelayChain = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    try {
+      const tx = (
+        client.getTypedApi(metadata.coretimeChain).tx as any
+      ).PolkadotXcm.limited_teleport_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 1,
+          interior: XcmV3Junctions.Here(),
         }),
         beneficiary: XcmVersionedLocation.V3({
           parents: 0,
