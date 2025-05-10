@@ -24,9 +24,8 @@ import { validateAddress } from '@polkadot/util-crypto';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
-import { PolkadotClient } from 'polkadot-api';
-import { InjectedPolkadotAccount } from 'polkadot-api/pjs-signer';
 import { CoretimeChainFromRelayPerspective, fungibleAsset, RcTokenFromParachainPerspective, versionWrap } from '@/utils/xcm';
+import Keyring from '@polkadot/keyring';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -121,6 +120,9 @@ const CrossChain = () => {
       return;
     }
 
+    const beneficiaryKeypair = new Keyring();
+    beneficiaryKeypair.addFromAddress(beneficiary);
+
     try {
       const _beneficiary = {
         parents: 0,
@@ -128,7 +130,7 @@ const CrossChain = () => {
           X1: {
             AccountId32: {
               chain: 'Any',
-              id: beneficiary,
+              id: beneficiaryKeypair.pairs[0].publicKey,
             },
           },
         },
