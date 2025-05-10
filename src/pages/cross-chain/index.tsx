@@ -24,9 +24,11 @@ import { validateAddress } from '@polkadot/util-crypto';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
-import { CoretimeChainFromRelayPerspective, fungibleAsset, RcTokenFromParachainPerspective, versionWrap } from '@/utils/xcm';
+import { CORETIME_PARA_ID, fungibleAsset, RcTokenFromParachainPerspective, versionWrap } from '@/utils/xcm';
 import Keyring from '@polkadot/keyring';
 import { fromUnit } from '@/utils';
+import { XcmV3Junction, XcmV3Junctions, XcmV3MultiassetAssetId, XcmV3MultiassetFungibility, XcmV3WeightLimit, XcmVersionedAssets, XcmVersionedLocation } from '@polkadot-api/descriptors';
+import { AccountId, Binary } from 'polkadot-api';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -114,7 +116,6 @@ const CrossChain = () => {
 
     const client = connection.client;
 
-
     const metadata = getNetworkMetadata(network);
     if (!metadata) {
       toast.error('Failed to find metadata of the chains');
@@ -138,13 +139,29 @@ const CrossChain = () => {
       };
 
       const tx = (client.getTypedApi(metadata.relayChain).tx as any).XcmPallet.limited_teleport_assets({
-        dest: versionWrap(CoretimeChainFromRelayPerspective),
-        beneficiary: versionWrap(_beneficiary), // TODO beneficiary has to be uint8array.
-        assets: versionWrap([fungibleAsset(RcTokenFromParachainPerspective, fromUnit(network, BigInt(amount)))]),
-        feeAssetItem: 0,
-        weightLimit: 'Unlimited'
+        dest: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID))
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+        parents: 0,
+        interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            }),
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
+            id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 0 }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
       });
-      console.log(tx);
+
       const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
       if (res.ok) {
         toast.success('Transaction succeded!');

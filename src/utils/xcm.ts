@@ -1,5 +1,5 @@
 const SAFE_XCM_VERSION = 4;
-const CORETIME_PARA_ID = 1005;
+export const CORETIME_PARA_ID = 1005;
 
 export const CoretimeChainFromRelayPerspective = {
   parents: 0,
