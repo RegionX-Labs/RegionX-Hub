@@ -32,7 +32,7 @@ const CurrentCorePrice: React.FC = () => {
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       try {
-        const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+        const api = connection.client.getTypedApi(metadata.coretimeChain);
         const blockNumber: number = await api.query.System.Number.getValue();
 
         const rawPrice = getCorePriceAt(blockNumber, saleInfo);

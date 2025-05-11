@@ -32,14 +32,12 @@ export default function CoreComparison() {
         if (!metadata) return null;
 
         const currentBlockNumber = await (
-          client.getTypedApi(metadata.coretimeChain) as any
+          client.getTypedApi(metadata.coretimeChain)
         ).query.System.Number.getValue();
 
-        const endPrice = Number(saleInfo.endPrice);
         const currentPrice = getCorePriceAt(currentBlockNumber, {
           ...saleInfo,
-          price: endPrice,
-        } as any);
+        });
 
         setCorePrice(currentPrice);
 

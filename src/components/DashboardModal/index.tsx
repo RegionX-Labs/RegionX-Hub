@@ -46,12 +46,12 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
         }
 
         const nextId = await (
-          client.getTypedApi(metadata.relayChain) as any
+          client.getTypedApi(metadata.relayChain)
         ).query.Registrar.NextFreeParaId.getValue();
         setNextParaId(Number(nextId));
 
         const paraDeposit = await (
-          client.getTypedApi(metadata.relayChain) as any
+          client.getTypedApi(metadata.relayChain)
         ).constants.Registrar.ParaDeposit();
         setReservationCost(toUnitFormatted(network, paraDeposit));
       } catch (err) {

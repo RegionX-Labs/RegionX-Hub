@@ -1,5 +1,5 @@
 import { Network } from '@/types';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { CoretimeMetadata, RelayMetadata, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { SaleInfo } from '@/coretime/saleInfo';
 import { Connection } from '@/api/connection';
 
@@ -96,11 +96,11 @@ export const timesliceToTimestamp = async (
   if (!metadata) return null;
 
   const currentBlockNumber = await (
-    client.getTypedApi(metadata.relayChain) as any
+    client.getTypedApi(metadata.relayChain)
   ).query.System.Number.getValue();
 
   const timestamp = await (
-    client.getTypedApi(metadata.relayChain) as any
+    client.getTypedApi(metadata.relayChain)
   ).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp =
@@ -111,7 +111,7 @@ export const timesliceToTimestamp = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
-  metadata: any
+  metadata: RelayMetadata | CoretimeMetadata
 ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
@@ -119,10 +119,10 @@ export const blockToTimestamp = async (
   if (!metadata) return null;
 
   const currentBlockNumber = await (
-    client.getTypedApi(metadata) as any
+    client.getTypedApi(metadata)
   ).query.System.Number.getValue();
 
-  const timestamp = await (client.getTypedApi(metadata) as any).query.Timestamp.Now.getValue();
+  const timestamp = await (client.getTypedApi(metadata)).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;

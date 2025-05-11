@@ -41,7 +41,7 @@ const fetchPotentialRenewals = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return new Map();
 
-  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
 
   const potentialRenewals = await api.query.Broker.PotentialRenewals.getEntries();
   const map = new Map();

@@ -102,7 +102,7 @@ export default function RenewableCores() {
     }
 
     try {
-      const tx = (client.getTypedApi(metadata.coretimeChain).tx as any).Broker.renew({
+      const tx = (client.getTypedApi(metadata.coretimeChain).tx).Broker.renew({
         core: selected[0].core,
       });
       const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);

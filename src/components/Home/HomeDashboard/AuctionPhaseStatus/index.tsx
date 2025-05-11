@@ -122,7 +122,7 @@ export default function AuctionPhaseStatus() {
       if (!metadata) return;
 
       const currentBlockNumber = await (
-        client.getTypedApi(metadata.coretimeChain) as any
+        client.getTypedApi(metadata.coretimeChain)
       ).query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);

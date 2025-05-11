@@ -16,9 +16,12 @@ type NetworkChainIds = {
   coretimeChain: ChainId;
 };
 
+export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd;
+export type CoretimeMetadata = typeof dot_coretime | typeof ksm_coretime | typeof pas_coretime | typeof wnd_coretime;
+
 export type NetworkMetadata = {
-  relayChain: any;
-  coretimeChain: any;
+  relayChain: RelayMetadata;
+  coretimeChain: CoretimeMetadata;
 };
 
 // Get all the relevant chain ids of a network.

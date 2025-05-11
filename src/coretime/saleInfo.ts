@@ -251,7 +251,7 @@ export const fetchSelloutPrice = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
 
   const saleInfo = await api.query.Broker.SaleInfo.getValue();
 
@@ -271,7 +271,7 @@ export const fetchBrokerConfig = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
 
   const config: Configuration = await api.query.Broker.Configuration.getValue();
 

@@ -131,7 +131,7 @@ const CrossChain = () => {
 
     try {
       const tx = (
-        client.getTypedApi(metadata.relayChain).tx as any
+        client.getTypedApi(metadata.relayChain).tx
       ).XcmPallet.limited_teleport_assets({
         dest: XcmVersionedLocation.V3({
           parents: 0,
@@ -156,13 +156,14 @@ const CrossChain = () => {
         weight_limit: XcmV3WeightLimit.Unlimited(),
       });
 
-      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
-      if (res.ok) {
-        toast.success('Transaction succeded!');
-      } else {
-        // TODO: provide more detailed error
-        toast.error('Transaction failed');
-      }
+      tx.signSubmitAndWatch(selectedAccount.polkadotSigner)
+        .subscribe()
+      // if (res.ok) {
+      //   toast.success('Transaction succeded!');
+      // } else {
+      //   // TODO: provide more detailed error
+      //   toast.error('Transaction failed');
+      // }
     } catch (e) {
       toast.error('Transaction cancelled');
       console.log(e);
@@ -196,7 +197,7 @@ const CrossChain = () => {
 
     try {
       const tx = (
-        client.getTypedApi(metadata.coretimeChain).tx as any
+        client.getTypedApi(metadata.coretimeChain).tx
       ).PolkadotXcm.limited_teleport_assets({
         dest: XcmVersionedLocation.V3({
           parents: 1,
@@ -214,7 +215,7 @@ const CrossChain = () => {
         assets: XcmVersionedAssets.V3([
           {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
-            id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 0 }),
+            id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 1 }),
           },
         ]),
         fee_asset_item: 0,
