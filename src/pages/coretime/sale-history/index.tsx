@@ -10,7 +10,7 @@ import {
   PurchaseHistoryItem,
 } from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
-import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
+import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted, ChainType } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 type TableData = {
@@ -76,13 +76,15 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            metadata.coretimeChain
+            metadata.coretimeChain, // TODO; if westend
+            ChainType.ParaChain
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                metadata.coretimeChain
+                metadata.coretimeChain, // TODO; if westend
+                ChainType.ParaChain
               )
             : null;
 

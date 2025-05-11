@@ -6,6 +6,11 @@ import { Connection } from '@/api/connection';
 export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
 
+export enum ChainType {
+  RelayChain,
+  ParaChain,
+};
+
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
   return Math.floor(value * factor) / factor;
@@ -104,8 +109,9 @@ export const timesliceToTimestamp = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
-  metadata: any
-): Promise<bigint | null> => {
+  metadata: any,
+  chaintype: ChainType,
+ ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
   const client = connection.client;
@@ -116,6 +122,16 @@ export const blockToTimestamp = async (
   ).query.System.Number.getValue();
 
   const timestamp = await (client.getTypedApi(metadata) as any).query.Timestamp.Now.getValue();
+
+  let blockTime = 6000;
+  if(chaintype === ChainType.RelayChain){
+    console.log('babe');
+    blockTime = Number(await client.getTypedApi(metadata).constants.Babe.ExpectedBlockTime());
+  }else if(chaintype === ChainType.ParaChain) {
+    console.log('aura');
+    blockTime = Number(await client.getTypedApi(metadata).constants.Aura.SlotDuration());
+  }
+  console.log(blockTime);
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;
