@@ -129,7 +129,6 @@ export const blockToTimestamp = async (
   }else if(chaintype === ChainType.ParaChain) {
     blockTime = Number(await client.getTypedApi(metadata).constants.Aura.SlotDuration());
   }
-  console.log(blockTime);
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;
