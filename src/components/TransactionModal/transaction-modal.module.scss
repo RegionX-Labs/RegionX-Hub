@@ -1,0 +1,104 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: $darkBackground2;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+
+  h2 {
+    color: $greenPrimary;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .balance {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $gray3;
+    font-size: 16px;
+    margin-bottom: 12px;
+    text-align: left;
+
+    span {
+      color: $white;
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $darkBackground3;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+  }
+
+  .question {
+    font-size: 16px;
+    color: $white;
+    margin-bottom: 25px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 130px;
+
+    button {
+      padding: 10px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .yesBtn {
+      background-color: $greenPrimary;
+      color: white;
+
+      &:hover {
+        background-color: darken($greenPrimary, 10%);
+      }
+    }
+
+    .noBtn {
+      background-color: $darkBackground1;
+      color: white;
+
+      &:hover {
+        background-color: darken($darkBackground1, 1%);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 20px;
+    width: 80%;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
