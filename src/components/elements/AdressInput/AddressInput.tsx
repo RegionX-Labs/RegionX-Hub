@@ -96,7 +96,12 @@ const AddressInput: React.FC<InputProps> = ({
         )}
 
         {isValid && (
-          <Identicon className={styles['inputWrapper-identicon']} value={value} size={30} />
+          <Identicon
+            className={styles['inputWrapper-identicon']}
+            theme='polkadot'
+            value={value}
+            size={30}
+          />
         )}
 
         <input

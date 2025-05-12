@@ -58,7 +58,9 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.desktopLinks}>
+        <div
+          className={`${styles.desktopLinks} ${accounts.length === 0 ? styles.desktopLinksWithConnect : ''}`}
+        >
           <ul className={styles.navList}>
             <li className={styles.navItem} onClick={() => handleNavigation('')}>
               Home
@@ -161,7 +163,9 @@ const Header: React.FC = () => {
               <AccountSelector />
             </div>
           ) : (
-            <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
+            <button className={styles.connectButton} onClick={() => setIsModalOpen(true)}>
+              Connect Wallet
+            </button>
           )}
         </div>
 

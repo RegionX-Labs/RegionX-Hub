@@ -21,9 +21,11 @@ import Image from 'next/image';
 import { ChainId, chains } from '@/network/chains';
 import { isHex } from '@polkadot/util';
 import { validateAddress } from '@polkadot/util-crypto';
+import { $selectedAccount } from '@/wallet';
 
 const CrossChain = () => {
   const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
 
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
   const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
@@ -68,6 +70,16 @@ const CrossChain = () => {
   const handleSwapChains = () => {
     setOriginChain(destinationChain);
     setDestinationChain(originChain);
+  };
+
+  const isValidAddress = (chainAddress: string, ss58Prefix = 42) => {
+    if (isHex(chainAddress)) return false;
+    try {
+      validateAddress(chainAddress, true, ss58Prefix);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const networks = [
@@ -190,25 +202,10 @@ const CrossChain = () => {
       const isOriginChainValid = filteredNetworks.some((n) => n.value === originChain);
       const isDestinationChainValid = filteredNetworks.some((n) => n.value === destinationChain);
 
-      if (!isOriginChainValid) {
-        setOriginChain(filteredNetworks[0].value);
-      }
-
-      if (!isDestinationChainValid) {
-        setDestinationChain(filteredNetworks[0].value);
-      }
+      if (!isOriginChainValid) setOriginChain(filteredNetworks[0].value);
+      if (!isDestinationChainValid) setDestinationChain(filteredNetworks[0].value);
     }
   }, [network]);
-
-  const isValidAddress = (chainAddress: string, ss58Prefix = 42) => {
-    if (isHex(chainAddress)) return false;
-    try {
-      validateAddress(chainAddress, true, ss58Prefix);
-      return true;
-    } catch {
-      return false;
-    }
-  };
 
   const selectedCurrency = originChain ? currencyMapping[originChain] : null;
 
@@ -217,7 +214,6 @@ const CrossChain = () => {
       <div className={styles.chainSelectionContainer}>
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Origin chain:</label>
-
           <Select<ChainId>
             selectedValue={originChain}
             onChange={handleOriginChainChange}
@@ -236,7 +232,6 @@ const CrossChain = () => {
 
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Destination chain:</label>
-
           <Select<ChainId>
             selectedValue={destinationChain}
             onChange={handleDestinationChainChange}
@@ -252,11 +247,25 @@ const CrossChain = () => {
 
       <div className={styles.transferSection}>
         <label>Transfer to</label>
-        <AddressInput
-          onChange={handleBeneficiaryChange}
-          value={beneficiary}
-          placeholder='Address of the recipient'
-        />
+        <div className={styles.beneficiaryInputWrapper}>
+          <button
+            className={styles.meButton}
+            onClick={() => {
+              if (selectedAccount?.address) {
+                setBeneficiary(selectedAccount.address);
+                setBeneficiaryError(null);
+              }
+            }}
+          >
+            Me
+          </button>
+          <AddressInput
+            onChange={handleBeneficiaryChange}
+            value={beneficiary}
+            placeholder='Address of the recipient'
+          />
+        </div>
+
         {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
 
         <div className={styles.amountSection}>
