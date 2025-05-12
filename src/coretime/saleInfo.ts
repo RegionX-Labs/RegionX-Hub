@@ -5,6 +5,7 @@ import { createEffect, createEvent, createStore, sample } from 'effector';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 import {
   blockToTimestamp,
+  ChainType,
   coretimeChainBlockTime,
   RELAY_CHAIN_BLOCK_TIME,
   TIMESLICE_PERIOD,
@@ -130,12 +131,12 @@ const getSalePhaseEndpointsFx = createEffect(
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
       saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)) || 0;
+        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, ChainType.RelayChain));
     } else {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return null;
       saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain)) || 0;
+        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, ChainType.ParaChain));
     }
 
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
