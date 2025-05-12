@@ -134,7 +134,7 @@
   white-space: nowrap;
   transition: 0.2s;
   cursor: pointer;
-
+  @include Inter;
   &:hover {
     background-color: lighten($darkBackground2, 3%);
   }
