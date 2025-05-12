@@ -10,7 +10,7 @@ import {
   PurchaseHistoryItem,
 } from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
-import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted, ChainType } from '@/utils';
+import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
 
@@ -78,14 +78,12 @@ const SaleHistoryPage = () => {
             sale.saleStart,
             connection,
             network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
-            network === Network.WESTEND ? ChainType.RelayChain : ChainType.ParaChain
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
                 network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
-                network === Network.WESTEND ? ChainType.RelayChain : ChainType.ParaChain
               )
             : null;
 

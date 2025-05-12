@@ -74,8 +74,11 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
-  const handleTransfer = async () => {
+  const onTransfer = () => {
     setIsModalOpen(true);
+  }
+
+  const initiateTransferTx = async () => {
     console.log('Transfer initiated with:', {
       originChain,
       destinationChain,
@@ -105,6 +108,7 @@ const CrossChain = () => {
       // Relay to coretime
       await relayChainToCoretimeChain();
     }
+    setIsModalOpen(false);
   };
 
   const relayChainToCoretimeChain = async () => {
@@ -474,19 +478,11 @@ const CrossChain = () => {
       <TransactionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={() => {
-          setIsModalOpen(false);
-          console.log('Confirmed transfer:', {
-            originChain,
-            destinationChain,
-            amount,
-            beneficiary,
-          });
-        }}
+        onConfirm={initiateTransferTx}
       />
 
       <div className={styles.buttonContainer}>
-        <Button onClick={handleTransfer}>Transfer</Button>
+        <Button onClick={onTransfer}>Transfer</Button>
       </div>
       <Toaster />
     </div>
