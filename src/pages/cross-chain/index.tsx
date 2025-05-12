@@ -157,13 +157,20 @@ const CrossChain = () => {
       });
 
       tx.signSubmitAndWatch(selectedAccount.polkadotSigner)
-        .subscribe()
-      // if (res.ok) {
-      //   toast.success('Transaction succeded!');
-      // } else {
-      //   // TODO: provide more detailed error
-      //   toast.error('Transaction failed');
-      // }
+        .subscribe(ev => {
+          if (
+            ev.type === "finalized" ||
+            (ev.type === "txBestBlocksState" && ev.found)
+          ) {
+            if (!ev.ok) {
+              const err: any = ev.dispatchError
+              toast.error('Transaction failed');
+              console.log(err);
+            }else {
+              toast.success('Transaction succeded!');
+            }
+          }
+        });
     } catch (e) {
       toast.error('Transaction cancelled');
       console.log(e);
@@ -222,13 +229,21 @@ const CrossChain = () => {
         weight_limit: XcmV3WeightLimit.Unlimited(),
       });
 
-      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
-      if (res.ok) {
-        toast.success('Transaction succeded!');
-      } else {
-        // TODO: provide more detailed error
-        toast.error('Transaction failed');
-      }
+      tx.signSubmitAndWatch(selectedAccount.polkadotSigner)
+      .subscribe(ev => {
+        if (
+          ev.type === "finalized" ||
+          (ev.type === "txBestBlocksState" && ev.found)
+        ) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError
+            toast.error('Transaction failed');
+            console.log(err);
+          }else {
+            toast.success('Transaction succeded!');
+          }
+        }
+      });
     } catch (e) {
       toast.error('Transaction cancelled');
       console.log(e);
