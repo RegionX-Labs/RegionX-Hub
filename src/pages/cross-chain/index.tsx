@@ -4,6 +4,7 @@ import Select from '../../components/elements/Select';
 import AmountInput from '../../components/elements/AmountInput/AmountInput';
 import AddressInput from '../../components/elements/AdressInput/AddressInput';
 import Button from '../../components/elements/Button/Button';
+import TransactionModal from '@/components/TransactionModal';
 
 import {
   Kusama as KusamaIcon,
@@ -32,6 +33,7 @@ const CrossChain = () => {
   const [amount, setAmount] = useState('');
   const [beneficiary, setBeneficiary] = useState('');
   const [beneficiaryError, setBeneficiaryError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const currencyMapping: Record<ChainId, { symbol: string; icon: any }> = {
     [chains.polkadot.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
@@ -59,6 +61,8 @@ const CrossChain = () => {
   };
 
   const handleTransfer = () => {
+    setIsModalOpen(true);
+
     console.log('Transfer initiated with:', {
       originChain,
       destinationChain,
@@ -296,6 +300,19 @@ const CrossChain = () => {
           />
         </div>
       </div>
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => {
+          setIsModalOpen(false);
+          console.log('Confirmed transfer:', {
+            originChain,
+            destinationChain,
+            amount,
+            beneficiary,
+          });
+        }}
+      />
 
       <div className={styles.buttonContainer}>
         <Button onClick={handleTransfer}>Transfer</Button>
