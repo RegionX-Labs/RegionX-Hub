@@ -23,6 +23,4 @@ const getRelayIcon = (network: Network) => {
   }
 };
 
-// TODO: resize all images to 96x96
-
 export { getRelayIcon, Kusama, Paseo, Polkadot, Rococo, Westend };

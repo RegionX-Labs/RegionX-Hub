@@ -131,12 +131,12 @@ const getSalePhaseEndpointsFx = createEffect(
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
       saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, ChainType.ParaChain)) || 0;
+        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, ChainType.RelayChain));
     } else {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return null;
       saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, ChainType.ParaChain)) || 0;
+        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, ChainType.ParaChain));
     }
 
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
