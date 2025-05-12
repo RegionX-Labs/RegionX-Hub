@@ -125,7 +125,6 @@ export const blockToTimestamp = async (
 
   let blockTime = 6000;
   if(chaintype === ChainType.RelayChain){
-    console.log('babe');
     blockTime = Number(await client.getTypedApi(metadata).constants.Babe.ExpectedBlockTime());
   }else if(chaintype === ChainType.ParaChain) {
     console.log('aura');
