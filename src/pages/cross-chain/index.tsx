@@ -21,11 +21,11 @@ import Image from 'next/image';
 import { ChainId, chains } from '@/network/chains';
 import { isHex } from '@polkadot/util';
 import { validateAddress } from '@polkadot/util-crypto';
-import { $selectedAccount } from '@/wallet'; // ✅ added
+import { $selectedAccount } from '@/wallet';
 
 const CrossChain = () => {
   const network = useUnit($network);
-  const selectedAccount = useUnit($selectedAccount); // ✅ added
+  const selectedAccount = useUnit($selectedAccount);
 
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
   const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
@@ -248,11 +248,6 @@ const CrossChain = () => {
       <div className={styles.transferSection}>
         <label>Transfer to</label>
         <div className={styles.beneficiaryInputWrapper}>
-          <AddressInput
-            onChange={handleBeneficiaryChange}
-            value={beneficiary}
-            placeholder='Address of the recipient'
-          />
           <button
             className={styles.meButton}
             onClick={() => {
@@ -264,7 +259,13 @@ const CrossChain = () => {
           >
             Me
           </button>
+          <AddressInput
+            onChange={handleBeneficiaryChange}
+            value={beneficiary}
+            placeholder='Address of the recipient'
+          />
         </div>
+
         {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
 
         <div className={styles.amountSection}>

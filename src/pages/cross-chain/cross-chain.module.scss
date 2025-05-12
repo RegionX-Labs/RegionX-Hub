@@ -116,10 +116,14 @@
 .beneficiaryInputWrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 1rem;
 
-  > :first-child {
+  > .meButton {
+    flex-shrink: 0;
+  }
+
+  > :not(.meButton) {
     flex: 1;
   }
 }
