@@ -7,22 +7,23 @@
   @include Inter;
   font-size: 16px;
   line-height: 28px;
+
   .selectedOptionDisplay {
     display: flex;
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
-    .optionIcon {
-      margin-right: 10px;
-      width: 20px;
-      height: 20px;
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
     }
   }
-  @media (max-width: 1725px) {
-    .accSelector,
-    .desktopContent {
-      width: 100px;
-    }
-  }
+
   .selectBox {
     padding: 10px;
     border: 1px solid $darkBackground1;
@@ -82,14 +83,6 @@
 
       &.selected {
         color: $white;
-      }
-    }
-
-    .inputWrapper {
-      border: none;
-      input {
-        border: none;
-        border-bottom: 1px solid $gray3;
       }
     }
   }

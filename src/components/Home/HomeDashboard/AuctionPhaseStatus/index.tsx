@@ -1,4 +1,3 @@
-// Keep this entire block — it's the SVG-based version
 import { JSX, useEffect, useState } from 'react';
 import styles from './AuctionPhaseStatus.module.scss';
 import { useUnit } from 'effector-react';
