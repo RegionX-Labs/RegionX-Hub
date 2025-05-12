@@ -95,13 +95,11 @@ export const timesliceToTimestamp = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const currentBlockNumber = await (
-    client.getTypedApi(metadata.relayChain)
-  ).query.System.Number.getValue();
+  const currentBlockNumber = await client
+    .getTypedApi(metadata.relayChain)
+    .query.System.Number.getValue();
 
-  const timestamp = await (
-    client.getTypedApi(metadata.relayChain)
-  ).query.Timestamp.Now.getValue();
+  const timestamp = await client.getTypedApi(metadata.relayChain).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp =
     timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
@@ -118,11 +116,9 @@ export const blockToTimestamp = async (
   const client = connection.client;
   if (!metadata) return null;
 
-  const currentBlockNumber = await (
-    client.getTypedApi(metadata)
-  ).query.System.Number.getValue();
+  const currentBlockNumber = await client.getTypedApi(metadata).query.System.Number.getValue();
 
-  const timestamp = await (client.getTypedApi(metadata)).query.Timestamp.Now.getValue();
+  const timestamp = await client.getTypedApi(metadata).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;

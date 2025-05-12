@@ -31,9 +31,9 @@ export default function CoreComparison() {
         const metadata = getNetworkMetadata(network);
         if (!metadata) return null;
 
-        const currentBlockNumber = await (
-          client.getTypedApi(metadata.coretimeChain)
-        ).query.System.Number.getValue();
+        const currentBlockNumber = await client
+          .getTypedApi(metadata.coretimeChain)
+          .query.System.Number.getValue();
 
         const currentPrice = getCorePriceAt(currentBlockNumber, {
           ...saleInfo,

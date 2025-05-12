@@ -39,9 +39,9 @@ export default function CorePurchaseCard() {
           saleCycle: saleInfo.saleCycle,
         });
 
-        const currentBlockNumber = await (
-          client.getTypedApi(metadata.coretimeChain)
-        ).query.System.Number.getValue();
+        const currentBlockNumber = await client
+          .getTypedApi(metadata.coretimeChain)
+          .query.System.Number.getValue();
         setCurrentHeight(currentBlockNumber);
         const price = getCorePriceAt(currentBlockNumber, saleInfo);
         setCorePrice(price);
@@ -61,9 +61,9 @@ export default function CorePurchaseCard() {
       const metadata = getNetworkMetadata(network);
       if (!metadata) return;
 
-      const currentBlockNumber = await (
-        client.getTypedApi(metadata.coretimeChain)
-      ).query.System.Number.getValue();
+      const currentBlockNumber = await client
+        .getTypedApi(metadata.coretimeChain)
+        .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
     })();
@@ -111,7 +111,7 @@ export default function CorePurchaseCard() {
     }
 
     try {
-      const tx = (client.getTypedApi(metadata.coretimeChain).tx).Broker.purchase({
+      const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.purchase({
         price_limit: BigInt(corePrice),
       });
       const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);

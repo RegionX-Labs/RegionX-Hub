@@ -1,14 +1,6 @@
 import { ChainId, chains } from '@/network/chains';
 import { Network } from '@/types';
 import {
-  DotDispatchError,
-  Dot_coretimeDispatchError,
-  KsmDispatchError,
-  Ksm_coretimeDispatchError,
-  PasDispatchError,
-  Pas_coretimeDispatchError,
-  WndDispatchError,
-  Wnd_coretimeDispatchError,
   dot,
   dot_coretime,
   ksm,
@@ -25,15 +17,16 @@ type NetworkChainIds = {
 };
 
 export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd;
-export type CoretimeMetadata = typeof dot_coretime | typeof ksm_coretime | typeof pas_coretime | typeof wnd_coretime;
+export type CoretimeMetadata =
+  | typeof dot_coretime
+  | typeof ksm_coretime
+  | typeof pas_coretime
+  | typeof wnd_coretime;
 
 export type NetworkMetadata = {
   relayChain: RelayMetadata;
   coretimeChain: CoretimeMetadata;
 };
-
-export type RelayChainDispatchError = DotDispatchError | KsmDispatchError | PasDispatchError | WndDispatchError;
-export type CoretimeChainDispatchError = Dot_coretimeDispatchError | Ksm_coretimeDispatchError | Pas_coretimeDispatchError | Wnd_coretimeDispatchError;
 
 // Get all the relevant chain ids of a network.
 //

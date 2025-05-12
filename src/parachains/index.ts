@@ -15,8 +15,11 @@ export const parachainsRequested = createEvent<Network>();
 
 export const $parachains = createStore<Parachain[]>([]);
 
-const fetchActiveParas = async (client: PolkadotClient, metadata: CoretimeMetadata): Promise<number[]> => {
-  const workload = await (client.getTypedApi(metadata)).query.Broker.Workload.getEntries();
+const fetchActiveParas = async (
+  client: PolkadotClient,
+  metadata: CoretimeMetadata
+): Promise<number[]> => {
+  const workload = await client.getTypedApi(metadata).query.Broker.Workload.getEntries();
   const activeParas: number[] = [];
   for (const { value } of workload) {
     const assignments = value
@@ -29,14 +32,20 @@ const fetchActiveParas = async (client: PolkadotClient, metadata: CoretimeMetada
   return activeParas;
 };
 
-const fetchLeaseHoldingParas = async (client: PolkadotClient, metadata: CoretimeMetadata): Promise<number[]> => {
-  const leases = await (client.getTypedApi(metadata)).query.Broker.Leases.getValue();
+const fetchLeaseHoldingParas = async (
+  client: PolkadotClient,
+  metadata: CoretimeMetadata
+): Promise<number[]> => {
+  const leases = await client.getTypedApi(metadata).query.Broker.Leases.getValue();
   const paraIds = (leases as Array<{ until: number; task: number }>).map((lease) => lease.task);
   return paraIds;
 };
 
-const fetchWorkplanParas = async (client: PolkadotClient, metadata: CoretimeMetadata): Promise<number[]> => {
-  const workplan = await (client.getTypedApi(metadata)).query.Broker.Workplan.getEntries();
+const fetchWorkplanParas = async (
+  client: PolkadotClient,
+  metadata: CoretimeMetadata
+): Promise<number[]> => {
+  const workplan = await client.getTypedApi(metadata).query.Broker.Workplan.getEntries();
   const workplanParas: number[] = [];
 
   for (const { value } of workplan) {
@@ -50,10 +59,11 @@ const fetchWorkplanParas = async (client: PolkadotClient, metadata: CoretimeMeta
   return workplanParas;
 };
 
-const fetchSystemParas = async (client: PolkadotClient, metadata: CoretimeMetadata): Promise<number[]> => {
-  const reservations = await (
-    client.getTypedApi(metadata)
-  ).query.Broker.Reservations.getValue();
+const fetchSystemParas = async (
+  client: PolkadotClient,
+  metadata: CoretimeMetadata
+): Promise<number[]> => {
+  const reservations = await client.getTypedApi(metadata).query.Broker.Reservations.getValue();
 
   const systemParas: number[] = [];
   for (const value of reservations) {

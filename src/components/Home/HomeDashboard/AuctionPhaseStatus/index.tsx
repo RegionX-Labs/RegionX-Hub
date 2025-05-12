@@ -121,9 +121,9 @@ export default function AuctionPhaseStatus() {
       const metadata = getNetworkMetadata(network);
       if (!metadata) return;
 
-      const currentBlockNumber = await (
-        client.getTypedApi(metadata.coretimeChain)
-      ).query.System.Number.getValue();
+      const currentBlockNumber = await client
+        .getTypedApi(metadata.coretimeChain)
+        .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
     })();
