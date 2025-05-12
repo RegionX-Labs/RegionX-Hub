@@ -10,8 +10,9 @@ import {
   PurchaseHistoryItem,
 } from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
-import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
+import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted, ChainType } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { Network } from '@/types';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -55,7 +56,7 @@ const SaleHistoryPage = () => {
 
       const chainIds = getNetworkChainIds(network);
       if (!chainIds) return;
-      const connection = connections[chainIds.coretimeChain];
+      const connection = network === Network.WESTEND ? connections[chainIds.relayChain] : connections[chainIds.coretimeChain];
       if (!connection) return;
       const metadata = getNetworkMetadata(network);
       if (!metadata) return;
@@ -76,13 +77,15 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            metadata.coretimeChain
+            network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
+            network === Network.WESTEND ? ChainType.RelayChain : ChainType.ParaChain
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                metadata.coretimeChain
+                network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
+                network === Network.WESTEND ? ChainType.RelayChain : ChainType.ParaChain
               )
             : null;
 

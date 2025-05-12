@@ -1,4 +1,4 @@
-name: Coretime Hub CI
+name: RegionX Hub CI
 
 on:
   push:

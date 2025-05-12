@@ -27,7 +27,7 @@ const AccountSelector = () => {
     return {
       key: `${formatAddress(account.address)}`,
       value: account.address,
-      label: `${formatAddress(account.address)}`, //(${account.name})
+      label: `${account.name ?? 'Unknown'} (${formatAddress(account.address)})`,
       icon: (
         <div className={styles.icon}>
           <Identicon value={account.address} size={24} theme='polkadot' />

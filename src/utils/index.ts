@@ -8,6 +8,11 @@ export const RELAY_CHAIN_BLOCK_TIME = 6000;
 
 export const CORETIME_PARA_ID = 1005;
 
+export enum ChainType {
+  RelayChain,
+  ParaChain,
+};
+
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
   return Math.floor(value * factor) / factor;
@@ -110,7 +115,8 @@ export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
   metadata: RelayMetadata | CoretimeMetadata
-): Promise<bigint | null> => {
+  chaintype: ChainType,
+ ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
   const client = connection.client;
@@ -119,6 +125,13 @@ export const blockToTimestamp = async (
   const currentBlockNumber = await client.getTypedApi(metadata).query.System.Number.getValue();
 
   const timestamp = await client.getTypedApi(metadata).query.Timestamp.Now.getValue();
+
+  let blockTime = 6000;
+  if(chaintype === ChainType.RelayChain){
+    blockTime = Number(await client.getTypedApi(metadata).constants.Babe.ExpectedBlockTime());
+  }else if(chaintype === ChainType.ParaChain) {
+    blockTime = Number(await client.getTypedApi(metadata).constants.Aura.SlotDuration());
+  }
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
   return estimatedTimestamp;

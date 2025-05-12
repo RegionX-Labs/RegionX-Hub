@@ -28,13 +28,17 @@
   @media (max-width: 1121px) {
     width: 90%;
   }
-  @media (max-width: 800px) {
+  @media (max-width: 940px) {
+    max-width: 88%;
+  }
+
+  @media (max-width: 900px) {
     max-width: 90%;
   }
   @media (max-width: 750px) {
-    max-width: 85%;
+    max-width: 84%;
   }
-  @media (max-width: 450px) {
+  @media (max-width: 460px) {
     max-width: 80%;
   }
 }
@@ -76,6 +80,12 @@
 .label {
   font-size: 0.85rem;
   color: $gray6;
+  @media (max-width: 480px) {
+    font-size: 0.65rem;
+  }
+  @media (max-width: 410px) {
+    font-size: 0.55rem;
+  }
 }
 
 .value {
@@ -83,11 +93,36 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: $white;
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
+  @media (max-width: 410px) {
+    font-size: 0.6rem;
+  }
+}
+@media (min-width: 800px) and (max-width: 890px) {
+  .label {
+    font-size: 0.7rem;
+  }
+
+  .value {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1117px) and (max-width: 1388px) {
+  .label {
+    font-size: 0.7rem;
+  }
+
+  .value {
+    font-size: 0.8rem;
+  }
 }
 
 .progressWrapper {
-  width: 240px;
-  height: 180px;
+  width: 250px;
+  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;

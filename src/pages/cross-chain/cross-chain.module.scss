@@ -113,3 +113,31 @@
     }
   }
 }
+.beneficiaryInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 1rem;
+
+  > .meButton {
+    flex-shrink: 0;
+  }
+
+  > :not(.meButton) {
+    flex: 1;
+  }
+}
+
+.meButton {
+  background-color: $darkBackground2;
+  color: white;
+  padding: 15px 16px;
+  border-radius: 8px;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  @include Inter;
+  &:hover {
+    background-color: lighten($darkBackground2, 3%);
+  }
+}

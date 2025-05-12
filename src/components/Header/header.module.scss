@@ -23,7 +23,6 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1400px;
   margin: 0 auto;
   position: relative;
 }
@@ -75,13 +74,27 @@
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   z-index: 1;
   max-width: 700px;
-  margin-right: 120px;
   width: 100%;
   overflow: hidden;
   transition: all 0.3s ease;
+  margin-right: 9%;
+
   @media (max-width: 1301px) {
     display: none;
   }
+  @media (min-width: 2021px) {
+    margin-right: 25%;
+  }
+
+  @media (min-width: 3000px) {
+    margin-right: 30%;
+  }
+  @media (min-width: 3500px) {
+    margin-right: 35%;
+  }
+}
+.desktopLinksWithConnect {
+  margin-right: 17%;
 }
 
 .navList {
@@ -176,10 +189,11 @@
 .connectButton {
   height: 50px;
   padding: 10px 16px;
-  font-size: 14px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 25px;
   border-radius: 10px;
   color: $white;
   background-color: $darkBackground2;
@@ -237,7 +251,8 @@
 }
 
 .accSelector {
-  width: 200px;
+  width: 270px;
+  margin-right: 30px;
 }
 
 .burgerIcon {
@@ -379,9 +394,12 @@
     button {
       @include Inter;
       padding: 6px 10px;
-      font-size: 14px;
+      font-size: 16px;
       height: 50px;
       width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       background-color: $darkBackground2;
       div {
         gap: 10px;
@@ -418,7 +436,7 @@
   }
 }
 
-@media (max-width: 1472px) {
+@media (max-width: 1530px) {
   .logo {
     width: 120px;
   }
@@ -430,13 +448,6 @@
 
   .desktopContent {
     gap: 5px;
-  }
-
-  .accSelector,
-  .networkSelector {
-    width: 180px;
-    height: 25px;
-    margin-right: 10px;
   }
 }
 @media (max-width: 1341px) {

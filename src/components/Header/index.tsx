@@ -58,7 +58,9 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.desktopLinks}>
+        <div
+          className={`${styles.desktopLinks} ${accounts.length === 0 ? styles.desktopLinksWithConnect : ''}`}
+        >
           <ul className={styles.navList}>
             <li className={styles.navItem} onClick={() => handleNavigation('')}>
               Home
@@ -113,25 +115,7 @@ const Header: React.FC = () => {
             Connect Wallet
           </button>
         )}
-        <div className={styles.rpcButtonDesktop}>
-          <button
-            className={styles.rpcButton}
-            onClick={() => {
-              setIsRpcModalOpen(true);
-              setIsMenuOpen(false);
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
-              <Image
-                src='/Settings.svg'
-                className={styles.settingIcon}
-                alt='settings'
-                width={800}
-                height={800}
-              />
-            </div>
-          </button>
-        </div>
+        <div className={styles.rpcButtonDesktop}></div>
       </div>
 
       <div className={`${styles.slideMenu} ${isMenuOpen ? styles.open : ''}`}>
@@ -179,7 +163,9 @@ const Header: React.FC = () => {
               <AccountSelector />
             </div>
           ) : (
-            <Button onClick={() => setIsModalOpen(true)}>Connect Wallet</Button>
+            <button className={styles.connectButton} onClick={() => setIsModalOpen(true)}>
+              Connect Wallet
+            </button>
           )}
         </div>
 

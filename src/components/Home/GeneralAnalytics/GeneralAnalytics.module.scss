@@ -14,19 +14,24 @@
   @include Inter;
   overflow-y: auto;
 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
   &::-webkit-scrollbar {
     width: 0;
     background: transparent;
   }
 
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  @media (max-width: 1600px) {
+    width: 400px;
+  }
 
   @media (max-width: 800px) {
-    width: 83%;
+    width: 85%;
     height: auto;
     overflow: visible;
-    margin-left: 2%;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 140px;
     margin-bottom: 40px;
   }
