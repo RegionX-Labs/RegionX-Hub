@@ -52,7 +52,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
           onChange={handleCurrencyChange}
           selectedValue={currency}
           searchable={true}
-          showOnlySelectedIcon={true}
+          showOnlySelectedIcon={false}
         />
         <input
           type='text'
