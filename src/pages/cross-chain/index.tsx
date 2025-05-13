@@ -17,14 +17,28 @@ import {
   WestendCoretime,
 } from '@/assets/networks';
 import { useUnit } from 'effector-react';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import Image from 'next/image';
 import { ChainId, chains } from '@/network/chains';
 import { isHex } from '@polkadot/util';
 import { validateAddress } from '@polkadot/util-crypto';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
+import {
+  XcmV3Junction,
+  XcmV3Junctions,
+  XcmV3MultiassetAssetId,
+  XcmV3MultiassetFungibility,
+  XcmV3WeightLimit,
+  XcmVersionedAssets,
+  XcmVersionedLocation,
+} from '@polkadot-api/descriptors';
+import { AccountId, Binary } from 'polkadot-api';
+import { CORETIME_PARA_ID, fromUnit } from '@/utils';
 
 const CrossChain = () => {
+  const connections = useUnit($connections);
   const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
 
@@ -60,15 +74,175 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
-  const handleTransfer = () => {
+  const onTransfer = () => {
     setIsModalOpen(true);
+  }
 
+  const initiateTransferTx = async () => {
     console.log('Transfer initiated with:', {
       originChain,
       destinationChain,
       amount,
       beneficiary,
     });
+
+    if (originChain === destinationChain) {
+      toast.error('Origin and destination chains are the same');
+      return;
+    }
+
+    if (!originChain) {
+      toast.error('Origin chain not selected');
+      return;
+    }
+
+    if (!destinationChain) {
+      toast.error('Destination chain not selected');
+      return;
+    }
+
+    if (isCoretimeChain(originChain)) {
+      // Coretime to relay
+      await coretimeChainToRelayChain();
+    } else {
+      // Relay to coretime
+      await relayChainToCoretimeChain();
+    }
+    setIsModalOpen(false);
+  };
+
+  const relayChainToCoretimeChain = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.relayChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    try {
+      const tx = client.getTypedApi(metadata.relayChain).tx.XcmPallet.limited_teleport_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
+            id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 0 }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+      tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe((ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+          }
+        }
+      });
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
+    }
+  };
+
+  const coretimeChainToRelayChain = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    try {
+      const tx = client.getTypedApi(metadata.coretimeChain).tx.PolkadotXcm.limited_teleport_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 1,
+          interior: XcmV3Junctions.Here(),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
+            id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 1 }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+      tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe((ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+          }
+        }
+      });
+    } catch (e) {
+      toast.error('Transaction cancelled');
+      console.log(e);
+    }
   };
 
   const handleSwapChains = () => {
@@ -193,12 +367,13 @@ const CrossChain = () => {
     },
   ];
 
+  const isCoretimeChain = (chainId: string): boolean => {
+    return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
+  };
+
   const filteredNetworks = networks.filter((n) => {
     if (!network) return true;
-    return (
-      n.value === chains[network as keyof typeof chains]?.chainId ||
-      n.value === chains[`${network}Coretime` as keyof typeof chains]?.chainId
-    );
+    return n.value === chains[network as keyof typeof chains]?.chainId || isCoretimeChain(n.value);
   });
 
   useEffect(() => {
@@ -303,20 +478,13 @@ const CrossChain = () => {
       <TransactionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={() => {
-          setIsModalOpen(false);
-          console.log('Confirmed transfer:', {
-            originChain,
-            destinationChain,
-            amount,
-            beneficiary,
-          });
-        }}
+        onConfirm={initiateTransferTx}
       />
 
       <div className={styles.buttonContainer}>
-        <Button onClick={handleTransfer}>Transfer</Button>
+        <Button onClick={onTransfer}>Transfer</Button>
       </div>
+      <Toaster />
     </div>
   );
 };

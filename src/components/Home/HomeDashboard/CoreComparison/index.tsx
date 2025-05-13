@@ -31,15 +31,13 @@ export default function CoreComparison() {
         const metadata = getNetworkMetadata(network);
         if (!metadata) return null;
 
-        const currentBlockNumber = await (
-          client.getTypedApi(metadata.coretimeChain) as any
-        ).query.System.Number.getValue();
+        const currentBlockNumber = await client
+          .getTypedApi(metadata.coretimeChain)
+          .query.System.Number.getValue();
 
-        const endPrice = Number(saleInfo.endPrice);
         const currentPrice = getCorePriceAt(currentBlockNumber, {
           ...saleInfo,
-          price: endPrice,
-        } as any);
+        });
 
         setCorePrice(currentPrice);
 

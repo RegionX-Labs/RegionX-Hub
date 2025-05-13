@@ -1,15 +1,12 @@
 import { Network } from '@/types';
-import { getNetworkChainIds, getNetworkMetadata, NetworkMetadata } from '@/network';
+import { CoretimeMetadata, RelayMetadata, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { SaleInfo } from '@/coretime/saleInfo';
 import { Connection } from '@/api/connection';
 
 export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
 
-export enum ChainType {
-  RelayChain,
-  ParaChain,
-};
+export const CORETIME_PARA_ID = 1005;
 
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);
@@ -78,6 +75,11 @@ export const toUnitFormatted = (network: Network, amount: bigint): string => {
   return `${formatted} ${getTokenSymbol(network)}`;
 };
 
+export const fromUnit = (network: Network, amount: bigint): bigint => {
+  const decimals = getNetworkDecimals(network);
+  return amount * BigInt(Math.pow(10, decimals));
+};
+
 export const timesliceToTimestamp = async (
   timeslice: number,
   network: Network,
@@ -93,13 +95,11 @@ export const timesliceToTimestamp = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const currentBlockNumber = await (
-    client.getTypedApi(metadata.relayChain) as any
-  ).query.System.Number.getValue();
+  const currentBlockNumber = await client
+    .getTypedApi(metadata.relayChain)
+    .query.System.Number.getValue();
 
-  const timestamp = await (
-    client.getTypedApi(metadata.relayChain) as any
-  ).query.Timestamp.Now.getValue();
+  const timestamp = await client.getTypedApi(metadata.relayChain).query.Timestamp.Now.getValue();
 
   const estimatedTimestamp =
     timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
@@ -109,25 +109,22 @@ export const timesliceToTimestamp = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
-  metadata: any,
-  chaintype: ChainType,
+  metadata: RelayMetadata | CoretimeMetadata
  ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
   const client = connection.client;
   if (!metadata) return null;
 
-  const currentBlockNumber = await (
-    client.getTypedApi(metadata) as any
-  ).query.System.Number.getValue();
+  const currentBlockNumber = await client.getTypedApi(metadata).query.System.Number.getValue();
 
-  const timestamp = await (client.getTypedApi(metadata) as any).query.Timestamp.Now.getValue();
+  const timestamp = await client.getTypedApi(metadata).query.Timestamp.Now.getValue();
 
   let blockTime = 6000;
-  if(chaintype === ChainType.RelayChain){
-    blockTime = Number(await client.getTypedApi(metadata).constants.Babe.ExpectedBlockTime());
-  }else if(chaintype === ChainType.ParaChain) {
-    blockTime = Number(await client.getTypedApi(metadata).constants.Aura.SlotDuration());
+  if(client.getTypedApi(metadata as RelayMetadata).constants.Babe){
+    blockTime = Number(await client.getTypedApi(metadata as RelayMetadata).constants.Babe.ExpectedBlockTime());
+  }else if(client.getTypedApi(metadata as CoretimeMetadata).constants.Aura) {
+    blockTime = Number(await client.getTypedApi(metadata as CoretimeMetadata).constants.Aura.SlotDuration());
   }
 
   const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);

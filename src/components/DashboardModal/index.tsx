@@ -45,14 +45,14 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
           throw new Error('Network metadata not found');
         }
 
-        const nextId = await (
-          client.getTypedApi(metadata.relayChain) as any
-        ).query.Registrar.NextFreeParaId.getValue();
+        const nextId = await client
+          .getTypedApi(metadata.relayChain)
+          .query.Registrar.NextFreeParaId.getValue();
         setNextParaId(Number(nextId));
 
-        const paraDeposit = await (
-          client.getTypedApi(metadata.relayChain) as any
-        ).constants.Registrar.ParaDeposit();
+        const paraDeposit = await client
+          .getTypedApi(metadata.relayChain)
+          .constants.Registrar.ParaDeposit();
         setReservationCost(toUnitFormatted(network, paraDeposit));
       } catch (err) {
         console.error('Failed to fetch para ID data:', err);

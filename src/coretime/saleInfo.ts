@@ -5,7 +5,6 @@ import { createEffect, createEvent, createStore, sample } from 'effector';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 import {
   blockToTimestamp,
-  ChainType,
   coretimeChainBlockTime,
   RELAY_CHAIN_BLOCK_TIME,
   TIMESLICE_PERIOD,
@@ -131,12 +130,12 @@ const getSalePhaseEndpointsFx = createEffect(
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
       saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, ChainType.RelayChain));
+        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain));
     } else {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return null;
       saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, ChainType.ParaChain));
+        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain));
     }
 
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
@@ -252,7 +251,7 @@ export const fetchSelloutPrice = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
 
   const saleInfo = await api.query.Broker.SaleInfo.getValue();
 
@@ -272,7 +271,7 @@ export const fetchBrokerConfig = async (
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const api = connection.client.getTypedApi(metadata.coretimeChain) as any;
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
 
   const config: Configuration = await api.query.Broker.Configuration.getValue();
 
