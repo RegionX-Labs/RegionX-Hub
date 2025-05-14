@@ -84,47 +84,53 @@ const MyRegionsPage = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        {regions.length > 0 ? (
-          regions.map((region) => {
-            const regionStart = regionDateInfos?.[region.id]?.beginDate
-              ? `Begin: ${regionDateInfos[region.id].beginDate}`
-              : `Begin: Timeslice #${region.begin}`;
+      <div className={styles.mainContainer}>
+        <div className={styles.pageHeader}>
+          <h1>My Regions</h1>
+          <p className={styles.subtitle}>All regions</p>
+        </div>
+        <div className={styles.container}>
+          {regions.length > 0 ? (
+            regions.map((region) => {
+              const regionStart = regionDateInfos?.[region.id]?.beginDate
+                ? `Begin: ${regionDateInfos[region.id].beginDate}`
+                : `Begin: Timeslice #${region.begin}`;
 
-            const regionEnd = regionDateInfos?.[region.id]?.endDate
-              ? `End: ${regionDateInfos[region.id].endDate}`
-              : `End: Timeslice #${region.end}`;
+              const regionEnd = regionDateInfos?.[region.id]?.endDate
+                ? `End: ${regionDateInfos[region.id].endDate}`
+                : `End: Timeslice #${region.end}`;
 
-            const storageKey = `regionName-${regionStart}-${regionEnd}-${region.core}`;
-            const storedName =
-              typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+              const storageKey = `regionName-${regionStart}-${regionEnd}-${region.core}`;
+              const storedName =
+                typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
 
-            return (
-              <div className={styles['region-card']} key={region.id}>
-                <RegionCard
-                  selected={selectedRegionId == region.id}
-                  regionData={{
-                    chainColor: 'greenDark',
-                    chainLabel: 'Coretime Chain',
-                    coreIndex: region.core,
-                    consumed: 0,
-                    // 57600 / 80 = 720
-                    coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
-                    duration: '28 days', // TODO,
-                    name: storedName || `Region #${region.core}`,
-                    regionEnd,
-                    regionStart,
-                    currentUsage: 0, // TODO
-                    onClick: () => setSelectedRegionId(region.id),
-                  }}
-                  task={`Unassigned`} // TODO
-                />
-              </div>
-            );
-          })
-        ) : (
-          <p>No regions available.</p>
-        )}
+              return (
+                <div className={styles['region-card']} key={region.id}>
+                  <RegionCard
+                    selected={selectedRegionId == region.id}
+                    regionData={{
+                      chainColor: 'greenDark',
+                      chainLabel: 'Coretime Chain',
+                      coreIndex: region.core,
+                      consumed: 0,
+                      // 57600 / 80 = 720
+                      coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
+                      duration: '28 days', // TODO,
+                      name: storedName || `Region #${region.core}`,
+                      regionEnd,
+                      regionStart,
+                      currentUsage: 0, // TODO
+                      onClick: () => setSelectedRegionId(region.id),
+                    }}
+                    task={`Unassigned`} // TODO
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <p>No regions available.</p>
+          )}
+        </div>
       </div>
     </>
   );
