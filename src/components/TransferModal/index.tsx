@@ -36,20 +36,24 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose }) => {
           <div className={styles.inputRow}>
             <label className={styles.inputLabel}>From</label>
             <div className={styles.identityInputWrapper}>
-              <Identicon
-                value={selectedAccount?.address || ''}
-                size={22}
-                theme='polkadot'
-                className={styles.identiconInside}
-              />
+              {selectedAccount?.address && (
+                <Identicon
+                  value={selectedAccount.address}
+                  size={22}
+                  theme='polkadot'
+                  className={styles.identiconInside}
+                />
+              )}
               <input
                 type='text'
                 value={selectedAccount?.address || ''}
                 readOnly
-                className={styles.fromInputWithIcon}
+                className={selectedAccount?.address ? styles.fromInputWithIcon : styles.fromInput}
+                placeholder={!selectedAccount?.address ? 'Please select account' : ''}
               />
             </div>
           </div>
+
           <div style={{ display: 'flex', justifyContent: 'left', margin: '10px 0' }}>
             <Image
               src='/ArrowDown.svg'
