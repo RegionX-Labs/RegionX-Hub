@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styles from './assign-modal.module.scss';
 import { X } from 'lucide-react';
-import Select from '@/components/elements/Select';
 
 interface AssignModalProps {
   isOpen: boolean;
@@ -16,16 +15,13 @@ interface FinalityOption {
 
 const finalityOptions: FinalityOption[] = [
   {
-    label: 'Final',
-
+    label: 'Assign with Final finality',
     value: 'final',
     description:
       'This means your region will be permanently assigned to a specific task.\n\nNo further modifications can be made to the region, which is why it will no longer appear on the regions page.\n\nBy choosing this option others can be confident that the Coretime cannot be unassigned from the task.\n\nAlso, with Final finality, the core becomes eligible for renewal.',
-
   },
   {
-    label: 'Provisional',
-
+    label: 'Assign with Provisional finality',
     value: 'provisional',
     description:
       'This means that after assigning the region to a specific task, you retain the option to unassign and reassign it to another task at any time.\n\nThe benefit is flexibility—you can manage your region at any time.\n\nHowever, others cannot be certain that the Coretime will remain assigned.',
@@ -76,18 +72,19 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className={styles.inputRow}>
-            <label className={styles.inputLabel}>Finality Type</label>
-            <div className={styles.selectWrapper}>
-              <Select
-                options={finalityOptions.map((opt) => ({
-                  key: opt.value,
-                  label: opt.label,
-                  value: opt,
-                }))}
-                selectedValue={selectedFinality}
-                onChange={(val) => val && setSelectedFinality(val)}
-              />
-            </div>
+            <label className={styles.inputLabel}>Select</label>
+            {finalityOptions.map((option) => (
+              <label key={option.value} className={styles.radioOption}>
+                <input
+                  type='radio'
+                  name='finality'
+                  value={option.value}
+                  checked={selectedFinality?.value === option.value}
+                  onChange={() => setSelectedFinality(option)}
+                />
+                <span className={styles.radioLabel}>{option.label}</span>
+              </label>
+            ))}
           </div>
 
           {selectedFinality && formatDescription(selectedFinality.description)}
