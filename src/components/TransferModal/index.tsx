@@ -49,7 +49,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose }) => {
                 value={selectedAccount?.address || ''}
                 readOnly
                 className={selectedAccount?.address ? styles.fromInputWithIcon : styles.fromInput}
-                placeholder={!selectedAccount?.address ? 'Please select account' : ''}
+                placeholder={!selectedAccount?.address ? 'Account not seleceted' : ''}
               />
             </div>
           </div>
