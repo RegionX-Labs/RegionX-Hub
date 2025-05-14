@@ -20,7 +20,8 @@ const finalityOptions: FinalityOption[] = [
 
     value: 'final',
     description:
-      'This means your region will be permanently assigned to a specific task.\n\nNo further modifications can be made to the region, which is why it will no longer appear on the regions page.\n\nThe benefit of choosing this option is that others can be confident that the Coretime cannot be unassigned from the task.\n\nAnother key benefit is that this option allows you to renew your core.',
+      'This means your region will be permanently assigned to a specific task.\n\nNo further modifications can be made to the region, which is why it will no longer appear on the regions page.\n\nBy choosing this option others can be confident that the Coretime cannot be unassigned from the task.\n\nAlso, with Final finality, the core becomes eligible for renewal.',
+
   },
   {
     label: 'Provisional',
