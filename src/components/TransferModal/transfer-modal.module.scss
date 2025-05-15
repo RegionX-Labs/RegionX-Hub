@@ -1,0 +1,165 @@
+@use 'sass:color';
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include Inter;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: $darkBackground2;
+  padding: 24px 24px 32px;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  @media (max-width: 800px) {
+    width: 80%;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    color: $greenPrimary;
+    font-size: 20px;
+  }
+
+  .closeIcon {
+    color: $white;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.subText {
+  color: $white;
+  font-size: 14px;
+  margin-top: 1px;
+  margin-bottom: 40px;
+}
+
+.inputs {
+  max-width: 400px;
+}
+
+.fromInput {
+  width: 100%;
+  padding: 15px;
+  background-color: $darkBackground2;
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  border-radius: 10px;
+  color: $white;
+  font-size: 14px;
+  outline: none;
+}
+
+.transferBtn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px;
+  background-color: $greenPrimary;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: color.adjust($greenPrimary, $lightness: -10%);
+  }
+}
+
+.beneficiaryInputWrapper {
+  align-items: center;
+  width: 100%;
+  gap: 5px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  border-radius: 10px;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.transferSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.inputLabel {
+  width: 50px;
+  font-size: 14px;
+  color: $white;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+}
+
+.toLabel {
+  margin-top: 0px;
+}
+
+.arrowIcon {
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
+}
+
+.identityInputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .identiconInside {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+}
+
+.fromInputWithIcon {
+  width: 100%;
+  padding: 15px 15px 15px 44px;
+  background-color: $darkBackground2;
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  border-radius: 10px;
+  color: $white;
+  font-size: 14px;
+  outline: none;
+}
+
+.placeholderInput::placeholder {
+  color: gray;
+  opacity: 0.6;
+  margin-right: 20px;
+}

@@ -5,6 +5,8 @@ import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { Pencil, MoreHorizontal } from 'lucide-react';
 import { useRef } from 'react';
+import TransferModal from '../../../TransferModal';
+import AssignModal from '../../../AssignModal';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -29,6 +31,18 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(name);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isTransferModalOpen, setTransferModalOpen] = useState(false);
+  const [isAssignModalOpen, setAssignModalOpen] = useState(false);
+
+  const handleTransferClick = () => {
+    setTransferModalOpen(true);
+    setShowDropdown(false);
+  };
+
+  const handleAssignClick = () => {
+    setAssignModalOpen(true);
+    setShowDropdown(false);
+  };
 
   useEffect(() => {
     setEditedName(name);
@@ -89,12 +103,15 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             <div className={styles.dropdownMenu}>
               <div>Partition</div>
               <div>Interface</div>
-              <div>Transfer</div>
-              <div>Assign</div>
+              <div onClick={handleTransferClick}>Transfer</div>
+              <div onClick={handleAssignClick}>Assign</div>
               <div>Sell</div>
             </div>
           )}
         </div>
+
+        <TransferModal isOpen={isTransferModalOpen} onClose={() => setTransferModalOpen(false)} />
+        <AssignModal isOpen={isAssignModalOpen} onClose={() => setAssignModalOpen(false)} />
       </div>
 
       <div className={styles['regionCardHeaderWrapper-labels']}>

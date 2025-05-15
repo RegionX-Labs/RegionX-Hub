@@ -41,10 +41,6 @@
       font-size: 12px;
     }
 
-    &:hover {
-      border-color: $darkBackground2;
-    }
-
     &-disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -64,6 +60,7 @@
     z-index: 1000;
     max-height: 200px;
     overflow-y: auto;
+    border: 1px solid $darkBackground1;
 
     .selectDropdown-optionList {
       list-style: none;

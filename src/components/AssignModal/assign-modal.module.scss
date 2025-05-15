@@ -1,0 +1,171 @@
+@use 'sass:color';
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include Inter;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: $darkBackground2;
+  padding: 24px 24px 32px;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  @media (max-width: 510px) {
+    width: 80%;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    color: $greenPrimary;
+    font-size: 20px;
+  }
+
+  .closeIcon {
+    color: $white;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.subText {
+  color: $white;
+  font-size: 14px;
+  margin-top: 1px;
+  margin-bottom: 40px;
+}
+
+.inputs {
+  max-width: 420px;
+}
+
+.inputRow {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  color: $white;
+  margin-bottom: 5px;
+}
+
+.fromInput {
+  padding: 15px;
+  background-color: $darkBackground2;
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  border-radius: 10px;
+  color: $white;
+  font-size: 14px;
+  outline: none;
+}
+
+.selectWrapper {
+  width: 100%;
+}
+
+.finalityDescription {
+  color: $white;
+  font-size: 13px;
+  margin-top: -4px;
+  margin-bottom: 24px;
+  opacity: 0.85;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.assignBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: $greenPrimary;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: color.adjust($greenPrimary, $lightness: -10%);
+  }
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  background-color: color.adjust($darkBackground2, $lightness: 0%);
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: border 0.2s ease;
+  position: relative;
+
+  input[type='radio'] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid $white;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    margin-right: 12px;
+    background-color: transparent;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background-color: $greenPrimary;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.2s ease;
+    }
+
+    &:checked::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    &:hover {
+      border-color: $greenPrimary;
+    }
+  }
+
+  &:hover {
+    border-color: $greenPrimary;
+  }
+}
+
+.radioLabel {
+  color: $white;
+  font-size: 14px;
+  cursor: pointer;
+}

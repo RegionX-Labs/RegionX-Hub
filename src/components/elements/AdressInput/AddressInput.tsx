@@ -100,7 +100,7 @@ const AddressInput: React.FC<InputProps> = ({
             className={styles['inputWrapper-identicon']}
             theme='polkadot'
             value={value}
-            size={30}
+            size={22}
           />
         )}
 
