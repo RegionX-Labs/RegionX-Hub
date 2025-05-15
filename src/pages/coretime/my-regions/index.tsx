@@ -94,7 +94,7 @@ const MyRegionsPage = () => {
     <>
       <div className={styles.mainContainer}>
         <div className={styles.pageHeader}>
-          <h1>My Regions</h1>
+          {selectedAccount && <h1>My Regions</h1>}
 
           {!loading &&
           selectedAccount &&
