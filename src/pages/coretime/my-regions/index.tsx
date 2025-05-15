@@ -9,6 +9,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { timesliceToTimestamp } from '@/utils';
 import { $selectedAccount } from '@/wallet';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 type RegionDateInfo = {
   beginDate: string;
@@ -98,7 +99,9 @@ const MyRegionsPage = () => {
           {!loading &&
           selectedAccount &&
           regions.length > 0 &&
-          !regions.some((r) => encodeAddress(r.owner, 42) === encodeAddress(selectedAccount.address, 42)) ? (
+          !regions.some(
+            (r) => encodeAddress(r.owner, 42) === encodeAddress(selectedAccount.address, 42)
+          ) ? (
             <p className={styles.noRegionsMessage}>No regions owned by the selected account.</p>
           ) : (
             <p className={styles.subtitle}></p>
