@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
@@ -63,7 +64,7 @@
   width: 100%;
   padding: 15px;
   background-color: $darkBackground2;
-  border: 1px solid lighten($darkBackground1, 10%);
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
   border-radius: 10px;
   color: $white;
   font-size: 14px;
@@ -83,7 +84,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: darken($greenPrimary, 10%);
+    background-color: color.adjust($greenPrimary, $lightness: -10%);
   }
 }
 
@@ -93,7 +94,7 @@
   gap: 5px;
   margin-bottom: 20px;
   margin-top: 20px;
-  border: 1px solid lighten($darkBackground1, 10%);
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
   border-radius: 10px;
 }
 
@@ -125,17 +126,6 @@
   margin-top: 0px;
 }
 
-.fromInput {
-  flex: 1;
-  padding: 15px;
-  background-color: $darkBackground2;
-  border: 1px solid lighten($darkBackground1, 10%);
-  border-radius: 10px;
-  color: $white;
-  font-size: 14px;
-  outline: none;
-}
-
 .arrowIcon {
   width: 20px;
   height: 20px;
@@ -161,7 +151,7 @@
   width: 100%;
   padding: 15px 15px 15px 44px;
   background-color: $darkBackground2;
-  border: 1px solid lighten($darkBackground1, 10%);
+  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
   border-radius: 10px;
   color: $white;
   font-size: 14px;
