@@ -106,7 +106,13 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose, onSubm
           <X size={20} className={styles.closeIcon} onClick={onClose} />
         </div>
 
-        <p className={styles.subText}>Divide the region to avoid overlapping</p>
+        <p className={styles.subText}>
+          With interlacing, a region can be split into two new overlapping regions. This means the
+          beginning and end of the region remain the same, but both share the same core
+          simultaneously. Through interlacing, the user defines the ratio of core sharing. For
+          example, one region can occupy 60% of the computational capacity, while the other utilizes
+          the remaining 40%.
+        </p>
 
         <div className={styles.arcChart}>
           <svg viewBox='0 0 200 200' width='100%' height='250'>
@@ -175,7 +181,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose, onSubm
             onClose();
           }}
         >
-          Divide now
+          Interlace
         </button>
       </div>
     </div>

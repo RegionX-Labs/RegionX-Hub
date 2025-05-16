@@ -32,7 +32,13 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose, onSubm
           <X size={20} className={styles.closeIcon} onClick={onClose} />
         </div>
 
-        <p className={styles.subText}>Divide the region to avoid overlapping</p>
+        <p className={styles.subText}>
+          {' '}
+          With partitioning, a region can be split into two new non-overlapping regions. For
+          example, a region purchased from the bulk sale with a duration of 28 days can be
+          partitioned into two new regions, each with a duration of 14 days. One will be valid for
+          the first 14 days, and the other for the remaining 14 days.
+        </p>
         <label className={styles.inputLabel}>Select on the split point</label>
 
         <div className={styles.partitionSliderWrapper}>
@@ -51,7 +57,7 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose, onSubm
         </div>
 
         <button className={styles.assignBtn} onClick={() => onSubmit?.(percentage)}>
-          Divide now
+          Partition
         </button>
       </div>
     </div>
