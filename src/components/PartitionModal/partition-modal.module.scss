@@ -1,0 +1,132 @@
+@use 'sass:color';
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include Inter;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: $darkBackground2;
+  padding: 24px 24px 32px;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  @media (max-width: 510px) {
+    width: 80%;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    color: $greenPrimary;
+    font-size: 20px;
+  }
+
+  .closeIcon {
+    color: $white;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.subText {
+  color: $white;
+  font-size: 14px;
+  margin-top: 1px;
+  margin-bottom: 28px;
+}
+
+.inputLabel {
+  font-size: 14px;
+  color: $white;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.partitionSliderWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.partitionSlider {
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background: none;
+  outline: none;
+  appearance: none;
+  margin: 0;
+  background-color: white;
+  background-size: var(--percentage, 100%) 100%;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(to right, $greenPrimary var(--percentage, 50%));
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: $white;
+    border: 2px solid $greenPrimary;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background-color: $white;
+    border: 2px solid $greenPrimary;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
+.percentageLabel {
+  position: absolute;
+  top: -28px;
+  background-color: $greenPrimary;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.assignBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: $greenPrimary;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: color.adjust($greenPrimary, $lightness: -10%);
+  }
+}
