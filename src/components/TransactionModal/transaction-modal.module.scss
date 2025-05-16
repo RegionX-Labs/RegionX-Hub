@@ -1,5 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
+@use 'sass:color';
 
 .modalOverlay {
   position: fixed;
@@ -76,7 +77,7 @@
       color: white;
 
       &:hover {
-        background-color: darken($greenPrimary, 10%);
+        background-color: color.adjust($greenPrimary, $lightness: -10%);
       }
     }
 
@@ -85,7 +86,7 @@
       color: white;
 
       &:hover {
-        background-color: darken($darkBackground1, 1%);
+        background-color: color.adjust($darkBackground1, $lightness: -1%);
       }
     }
   }
