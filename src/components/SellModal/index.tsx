@@ -34,7 +34,7 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose, onSubmit }) => {
           <label className={styles.inputLabel}>Price</label>
           <input
             type='text'
-            placeholder='Add ID'
+            placeholder='Add Price'
             className={styles.inputField}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
@@ -45,7 +45,7 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose, onSubmit }) => {
           <label className={styles.inputLabel}>Address</label>
           <input
             type='text'
-            placeholder='Add ID'
+            placeholder='Add Address'
             className={styles.inputField}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -53,7 +53,7 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose, onSubmit }) => {
         </div>
 
         <button className={styles.assignBtn} onClick={() => onSubmit?.(price, address)}>
-          Assign now
+          List on sale
         </button>
       </div>
     </div>
