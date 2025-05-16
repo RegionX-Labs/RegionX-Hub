@@ -35,7 +35,7 @@ import {
   XcmVersionedLocation,
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
-import { CORETIME_PARA_ID, fromUnit } from '@/utils';
+import { CORETIME_PARA_ID, fetchBalance, fromUnit, toUnitFormatted } from '@/utils';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -48,6 +48,8 @@ const CrossChain = () => {
   const [beneficiary, setBeneficiary] = useState('');
   const [beneficiaryError, setBeneficiaryError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [relayBalance, setRelayBalance] = useState<bigint>(BigInt(0));
+  const [coretimeBalance, setCoretimeBalance] = useState<bigint>(BigInt(0));
 
   const currencyMapping: Record<ChainId, { symbol: string; icon: any }> = {
     [chains.polkadot.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
@@ -76,7 +78,7 @@ const CrossChain = () => {
 
   const onTransfer = () => {
     setIsModalOpen(true);
-  }
+  };
 
   const initiateTransferTx = async () => {
     console.log('Transfer initiated with:', {
@@ -386,6 +388,48 @@ const CrossChain = () => {
     }
   }, [network]);
 
+  useEffect(() => {
+    (async () => {
+      const networkChainIds = getNetworkChainIds(network);
+      if (!networkChainIds) {
+        throw new Error('Network chain IDs not found');
+      }
+
+      if (!selectedAccount) return;
+
+      const relayConnection = connections[networkChainIds.relayChain];
+      const coretimeConnection = connections[networkChainIds.coretimeChain];
+      if (
+        !relayConnection ||
+        !coretimeConnection ||
+        !relayConnection.client ||
+        !coretimeConnection ||
+        relayConnection.status !== 'connected' ||
+        coretimeConnection.status !== 'connected'
+      ) {
+        throw new Error('Connection not available');
+      }
+      const metadata = getNetworkMetadata(network);
+      if (!metadata) {
+        throw new Error('Network metadata not found');
+      }
+
+      const _relayBalance = await fetchBalance(
+        relayConnection,
+        metadata.relayChain,
+        selectedAccount?.address
+      );
+      const _coretimeBalance = await fetchBalance(
+        coretimeConnection,
+        metadata.coretimeChain,
+        selectedAccount?.address
+      );
+
+      setRelayBalance(_relayBalance);
+      setCoretimeBalance(_coretimeBalance);
+    })();
+  }, [connections, network, selectedAccount]);
+
   const selectedCurrency = originChain ? currencyMapping[originChain] : null;
 
   return (
@@ -477,6 +521,8 @@ const CrossChain = () => {
       </div>
       <TransactionModal
         isOpen={isModalOpen}
+        coretimeBalance={coretimeBalance}
+        relayBalance={relayBalance}
         onClose={() => setIsModalOpen(false)}
         onConfirm={initiateTransferTx}
       />

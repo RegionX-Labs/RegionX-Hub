@@ -129,13 +129,15 @@ const getSalePhaseEndpointsFx = createEffect(
     if (network === Network.WESTEND) {
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
-      saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain));
+      saleStartTimestamp = Number(
+        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
+      );
     } else {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return null;
-      saleStartTimestamp =
-        Number(await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain));
+      saleStartTimestamp = Number(
+        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain)
+      );
     }
 
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;

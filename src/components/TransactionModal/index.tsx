@@ -1,17 +1,27 @@
 import React from 'react';
 import styles from './transaction-modal.module.scss';
+import { toUnitFormatted } from '@/utils';
+import { useUnit } from 'effector-react';
+import { $network } from '@/api/connection';
 
 interface TransactionModalProps {
   isOpen: boolean;
+  relayBalance: bigint;
+  coretimeBalance: bigint;
   onClose: () => void;
   onConfirm: () => void;
 }
 
-const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, onConfirm }) => {
+const TransactionModal: React.FC<TransactionModalProps> = ({
+  isOpen,
+  relayBalance,
+  coretimeBalance,
+  onClose,
+  onConfirm,
+}) => {
+  const network = useUnit($network);
   if (!isOpen) return null;
 
-  const relayBalance = '12.345 DOT';
-  const coretimeBalance = '5.678 DOT';
   const txFee = '0.002 DOT';
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -26,10 +36,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ isOpen, onClose, on
         <h2>Confirm Transaction</h2>
 
         <p className={styles.balance}>
-          Relay Chain Balance: <span>{relayBalance}</span>
+          Relay Chain Balance: <span>{toUnitFormatted(network, relayBalance)}</span>
         </p>
         <p className={styles.balance}>
-          Coretime Balance: <span>{coretimeBalance}</span>
+          Coretime Balance: <span>{toUnitFormatted(network, coretimeBalance)}</span>
         </p>
         <p className={styles.balance}>
           Transaction Fee: <span>{txFee}</span>
