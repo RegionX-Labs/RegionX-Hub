@@ -99,7 +99,7 @@
 
 .navList {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   padding: 0;
@@ -437,11 +437,21 @@
   }
 }
 
-@media (max-width: 1530px) {
+@media (max-width: 1450px) {
   .logo {
     width: 120px;
   }
 
+  .navItem {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .desktopContent {
+    gap: 5px;
+  }
+}
+@media (max-width: 1375px) {
   .navItem {
     font-size: 12px;
     padding: 8px 12px;
@@ -449,25 +459,5 @@
 
   .desktopContent {
     gap: 5px;
-  }
-}
-@media (max-width: 1341px) {
-  .navItem {
-    font-size: 11px;
-    padding: 8px 12px;
-  }
-
-  .desktopContent {
-    gap: 5px;
-  }
-}
-@media (max-width: 1307px) {
-  .navItem {
-    font-size: 11px;
-    padding: 8px 12px;
-  }
-
-  .desktopContent {
-    gap: 2px;
   }
 }

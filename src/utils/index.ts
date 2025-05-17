@@ -116,22 +116,24 @@ export const blockToTimestamp = async (
   const client = connection.client;
   if (!metadata) return null;
 
-  const currentBlockNumber = await client.getTypedApi(metadata).query.System.Number.getValue();
-
-  const timestamp = await client.getTypedApi(metadata).query.Timestamp.Now.getValue();
+  const typedApi = client.getTypedApi(metadata);
+  const currentBlockNumber = await typedApi.query.System.Number.getValue();
+  const timestamp = await typedApi.query.Timestamp.Now.getValue();
 
   let blockTime = 6000;
-  if (client.getTypedApi(metadata as RelayMetadata).constants.Babe) {
-    blockTime = Number(
-      await client.getTypedApi(metadata as RelayMetadata).constants.Babe.ExpectedBlockTime()
-    );
-  } else if (client.getTypedApi(metadata as CoretimeMetadata).constants.Aura) {
-    blockTime = Number(
-      await client.getTypedApi(metadata as CoretimeMetadata).constants.Aura.SlotDuration()
-    );
+
+  try {
+    if ('Babe' in typedApi.constants && typedApi.constants.Babe?.ExpectedBlockTime) {
+      blockTime = Number(typedApi.constants.Babe.ExpectedBlockTime.toString());
+    } else if ('Aura' in typedApi.constants && typedApi.constants.Aura?.SlotDuration) {
+      blockTime = Number(typedApi.constants.Aura.SlotDuration.toString());
+    }
+  } catch (e) {
+    console.warn('Could not read ExpectedBlockTime or SlotDuration from runtime:', e);
   }
 
-  const estimatedTimestamp = timestamp - BigInt((currentBlockNumber - blockNumber) * 6000);
+  const estimatedTimestamp =
+    timestamp - BigInt((Number(currentBlockNumber) - blockNumber) * blockTime);
   return estimatedTimestamp;
 };
 
