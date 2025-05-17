@@ -7,6 +7,9 @@ import { Pencil, MoreHorizontal } from 'lucide-react';
 import { useRef } from 'react';
 import TransferModal from '../../../TransferModal';
 import AssignModal from '../../../AssignModal';
+import PartitionModal from '../../../PartitionModal';
+import SellModal from '../../../SellModal';
+import InterlaceModal from '../../../InterlaceModal';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -33,6 +36,9 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isTransferModalOpen, setTransferModalOpen] = useState(false);
   const [isAssignModalOpen, setAssignModalOpen] = useState(false);
+  const [isPartitionModalOpen, setPartitionModalOpen] = useState(false);
+  const [isSellModalOpen, setSellModalOpen] = useState(false);
+  const [isInterlaceModalOpen, setInterlaceModalOpen] = useState(false);
 
   const handleTransferClick = () => {
     setTransferModalOpen(true);
@@ -101,17 +107,63 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
             <div className={styles.dropdownMenu}>
-              <div>Partition</div>
-              <div>Interface</div>
+              <div
+                onClick={() => {
+                  setPartitionModalOpen(true);
+                  setShowDropdown(false);
+                }}
+              >
+                Partition
+              </div>
+              <div
+                onClick={() => {
+                  setInterlaceModalOpen(true);
+                  setShowDropdown(false);
+                }}
+              >
+                Interlace
+              </div>
               <div onClick={handleTransferClick}>Transfer</div>
               <div onClick={handleAssignClick}>Assign</div>
-              <div>Sell</div>
+              <div
+                onClick={() => {
+                  setSellModalOpen(true);
+                  setShowDropdown(false);
+                }}
+              >
+                Sell
+              </div>
             </div>
           )}
         </div>
 
         <TransferModal isOpen={isTransferModalOpen} onClose={() => setTransferModalOpen(false)} />
         <AssignModal isOpen={isAssignModalOpen} onClose={() => setAssignModalOpen(false)} />
+        <PartitionModal
+          isOpen={isPartitionModalOpen}
+          onClose={() => setPartitionModalOpen(false)}
+          onSubmit={(percentage) => {
+            console.log(`Partition at ${percentage}% for region: ${coreIndex}`);
+            setPartitionModalOpen(false);
+          }}
+        />
+        <InterlaceModal
+          isOpen={isInterlaceModalOpen}
+          onClose={() => setInterlaceModalOpen(false)}
+          onSubmit={(left, right) => {
+            console.log(`Interlaced region ${coreIndex} — Left: ${left}% / Right: ${right}%`);
+            setInterlaceModalOpen(false);
+          }}
+        />
+
+        <SellModal
+          isOpen={isSellModalOpen}
+          onClose={() => setSellModalOpen(false)}
+          onSubmit={(price, address) => {
+            console.log(`Sell region ${coreIndex} for ${price} to ${address}`);
+            setSellModalOpen(false);
+          }}
+        />
       </div>
 
       <div className={styles['regionCardHeaderWrapper-labels']}>

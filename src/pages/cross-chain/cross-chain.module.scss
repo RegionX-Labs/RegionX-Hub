@@ -32,11 +32,13 @@
   display: block;
   text-align: start;
 }
+
 .smallIcon {
   width: 26px;
   height: 26px;
   margin-right: 8px;
 }
+
 .chainSelection {
   display: flex;
   flex-direction: column;
@@ -113,6 +115,7 @@
     }
   }
 }
+
 .beneficiaryInputWrapper {
   display: flex;
   align-items: center;
@@ -137,7 +140,8 @@
   white-space: nowrap;
   cursor: pointer;
   @include Inter;
+
   &:hover {
-    background-color: lighten($darkBackground2, 3%);
+    background-color: color.adjust($darkBackground2, $lightness: 3%);
   }
 }
