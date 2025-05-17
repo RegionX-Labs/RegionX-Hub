@@ -76,7 +76,7 @@ const CrossChain = () => {
 
   const onTransfer = () => {
     setIsModalOpen(true);
-  }
+  };
 
   const initiateTransferTx = async () => {
     console.log('Transfer initiated with:', {
