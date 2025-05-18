@@ -12,6 +12,8 @@ type DataRequestPayload = {
 export const getAccountData = createEvent<DataRequestPayload>();
 
 type MultiAccountData = {
+	account: string; 
+	network: Network; 
 	relayChainData: AccountData;
 	coretimeChainData: AccountData;
 }
@@ -23,9 +25,9 @@ type AccountData = {
   flags: bigint;
 };
 
-export const $accountData = createStore<Record<string, MultiAccountData>>({});
+export const $accountData = createStore<Record<string, MultiAccountData | null>>({});
 
-const getAccountDataFx = createEffect(async (payload: DataRequestPayload): Promise<Record<string, MultiAccountData>> => {
+const getAccountDataFx = createEffect(async (payload: DataRequestPayload): Promise<MultiAccountData | null> => {
 	const { account, network, connections } = payload;
 
   const networkChainIds = getNetworkChainIds(network);
@@ -50,17 +52,25 @@ const getAccountDataFx = createEffect(async (payload: DataRequestPayload): Promi
     throw new Error('Network metadata not found');
   }
 
-  const _relayBalance = await fetchAccountData(
+  const _relayData = await fetchAccountData(
     relayConnection,
     metadata.relayChain,
 		account
   );
-  const _coretimeBalance = await fetchAccountData(
+  const _coretimeData = await fetchAccountData(
     coretimeConnection,
     metadata.coretimeChain,
     account
   );
-  return {};
+
+	if(!_relayData || !_coretimeData) return null;
+
+  return {
+		network,
+		account,
+		coretimeChainData: _coretimeData,
+		relayChainData: _relayData,
+	};
 });
 
 export const fetchAccountData = async (
@@ -85,5 +95,11 @@ sample({
 
 sample({
   clock: getAccountDataFx.doneData,
+  source: $accountData,
+  filter: (_,  newData) => newData !== null,
+  fn: (accountsRecord, newData) => ({
+    ...accountsRecord,
+    [newData?.account || '']: newData,
+  }),
   target: $accountData,
 });
