@@ -177,18 +177,3 @@ export const coretimeChainBlockTime = (network: Network) => {
       return 0;
   }
 };
-
-export const fetchBalance = async (
-  connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata,
-  account: string
-): Promise<bigint> => {
-  const client = connection.client;
-  if (!client || connection.status !== 'connected') {
-    return BigInt(0);
-  }
-
-  const res = await client.getTypedApi(metadata).query.System.Account.getValue(account);
-
-  return res.data.free;
-};
