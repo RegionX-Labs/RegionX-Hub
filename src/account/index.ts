@@ -19,7 +19,6 @@ export const getAccountData = createEvent<DataRequestPayload>();
 
 type MultiAccountData = {
   account: string;
-  network: Network;
   relayChainData: AccountData;
   coretimeChainData: AccountData;
 };
@@ -69,7 +68,6 @@ const getAccountDataFx = createEffect(
     if (!_relayData || !_coretimeData) return null;
 
     return {
-      network,
       account,
       coretimeChainData: _coretimeData,
       relayChainData: _relayData,
