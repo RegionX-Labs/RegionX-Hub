@@ -17,7 +17,7 @@ type DataRequestPayload = {
 
 export const getAccountData = createEvent<DataRequestPayload>();
 
-type MultiAccountData = {
+export type MultiAccountData = {
   account: string;
   relayChainData: AccountData;
   coretimeChainData: AccountData;

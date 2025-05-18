@@ -36,7 +36,7 @@ import {
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
 import { CORETIME_PARA_ID, fromUnit } from '@/utils';
-import { $accountData } from '@/account';
+import { $accountData, MultiAccountData } from '@/account';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -77,6 +77,10 @@ const CrossChain = () => {
   };
 
   const onTransfer = () => {
+    if(!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -477,13 +481,15 @@ const CrossChain = () => {
           />
         </div>
       </div>
-      <TransactionModal
-        isOpen={isModalOpen}
-        coretimeBalance={accountData[selectedAccount?.address || '']?.coretimeChainData.free || BigInt(0)}
-        relayBalance={accountData[selectedAccount?.address || '']?.relayChainData.free || BigInt(0)}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={initiateTransferTx}
-      />
+      {
+        selectedAccount && accountData[selectedAccount.address] !== null &&
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={initiateTransferTx}
+          />
+      }
 
       <div className={styles.buttonContainer}>
         <Button onClick={onTransfer}>Transfer</Button>
