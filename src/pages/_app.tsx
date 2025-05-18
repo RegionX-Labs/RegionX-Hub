@@ -66,9 +66,9 @@ function App({ Component, pageProps }: AppProps) {
   }, [networkFromRouter, router, router.isReady]);
 
   useEffect(() => {
-    if(!selectedAccount) return;
+    if (!selectedAccount) return;
 
-    getAccountData({account: selectedAccount.address, connections, network})
+    getAccountData({ account: selectedAccount.address, connections, network });
   }, [connections, network, selectedAccount]);
 
   return (
