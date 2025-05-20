@@ -36,11 +36,13 @@ import {
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
 import { CORETIME_PARA_ID, fromUnit } from '@/utils';
+import { $accountData, MultiChainAccountData } from '@/account';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
+  const accountData = useUnit($accountData);
 
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
   const [destinationChain, setDestinationChain] = useState<ChainId | null>(null);
@@ -74,11 +76,15 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
-  const onTransfer = () => {
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
     setIsModalOpen(true);
   };
 
-  const initiateTransferTx = async () => {
+  const onTransfer = async () => {
     console.log('Transfer initiated with:', {
       originChain,
       destinationChain,
@@ -475,14 +481,17 @@ const CrossChain = () => {
           />
         </div>
       </div>
-      <TransactionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={initiateTransferTx}
-      />
+      {selectedAccount && accountData[selectedAccount.address] !== null && (
+        <TransactionModal
+          isOpen={isModalOpen}
+          accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={onTransfer}
+        />
+      )}
 
       <div className={styles.buttonContainer}>
-        <Button onClick={onTransfer}>Transfer</Button>
+        <Button onClick={openModal}>Transfer</Button>
       </div>
       <Toaster />
     </div>

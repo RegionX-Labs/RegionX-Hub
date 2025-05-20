@@ -5,22 +5,29 @@ import Header from '@/components/Header';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
-import { networkStarted } from '@/api/connection';
+import { $connections, $network, networkStarted } from '@/api/connection';
 import {
   getExtensions,
   SELECTED_WALLET_KEY,
   walletSelected,
   restoreSelectedAccount,
+  $selectedAccount,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
 import Image from 'next/image';
+import { useUnit } from 'effector-react';
+import { getAccountData } from '@/account';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const { network } = router.query;
+  const { network: networkFromRouter } = router.query;
+
+  const connections = useUnit($connections);
+  const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
 
@@ -28,11 +35,11 @@ function App({ Component, pageProps }: AppProps) {
     if (!router.isReady) return;
 
     let _network = Network.NONE;
-    if (network === 'polkadot') _network = Network.POLKADOT;
-    else if (network === 'kusama') _network = Network.KUSAMA;
-    else if (network === 'paseo') _network = Network.PASEO;
-    else if (network === 'rococo') _network = Network.ROCOCO;
-    else if (network === 'westend') _network = Network.WESTEND;
+    if (networkFromRouter === 'polkadot') _network = Network.POLKADOT;
+    else if (networkFromRouter === 'kusama') _network = Network.KUSAMA;
+    else if (networkFromRouter === 'paseo') _network = Network.PASEO;
+    else if (networkFromRouter === 'rococo') _network = Network.ROCOCO;
+    else if (networkFromRouter === 'westend') _network = Network.WESTEND;
     else {
       router.push(
         {
@@ -56,7 +63,13 @@ function App({ Component, pageProps }: AppProps) {
       walletSelected(selectedWallet);
       restoreSelectedAccount();
     }
-  }, [network, router, router.isReady]);
+  }, [networkFromRouter, router, router.isReady]);
+
+  useEffect(() => {
+    if (!selectedAccount) return;
+
+    getAccountData({ account: selectedAccount.address, connections, network });
+  }, [connections, network, selectedAccount]);
 
   return (
     <div className={montserrat.className}>

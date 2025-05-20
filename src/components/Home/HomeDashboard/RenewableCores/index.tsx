@@ -16,8 +16,11 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $selectedAccount } from '@/wallet';
+import { $accountData, MultiChainAccountData } from '@/account';
+import TransactionModal from '@/components/TransactionModal';
 
 export default function RenewableCores() {
+  const accountData = useUnit($accountData);
   const network = useUnit($network);
   const connections = useUnit($connections);
   const selectedAccount = useUnit($selectedAccount);
@@ -26,6 +29,7 @@ export default function RenewableCores() {
 
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
     potentialRenewals.entries()
@@ -55,6 +59,14 @@ export default function RenewableCores() {
     if (!timestamp) return setSelectedDeadline('-');
 
     setSelectedDeadline(formatDate(timestamp));
+  };
+
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
   };
 
   const formatDate = (timestamp: Date | bigint | null): string => {
@@ -146,7 +158,16 @@ export default function RenewableCores() {
         </div>
       </div>
 
-      <button className={styles.renewButton} onClick={renew}>
+      {selectedAccount && accountData[selectedAccount.address] !== null && (
+        <TransactionModal
+          isOpen={isModalOpen}
+          accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={renew}
+        />
+      )}
+
+      <button className={styles.renewButton} onClick={openModal}>
         Renew Now
       </button>
       <Toaster />

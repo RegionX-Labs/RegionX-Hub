@@ -8,9 +8,12 @@ import styles from './CorePurchaseCard.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
+import TransactionModal from '@/components/TransactionModal';
+import { $accountData, MultiChainAccountData } from '@/account';
 
 export default function CorePurchaseCard() {
-  const [connections, network, saleInfo, purchaseHistory, selectedAccount] = useUnit([
+  const [accountData, connections, network, saleInfo, purchaseHistory, selectedAccount] = useUnit([
+    $accountData,
     $connections,
     $network,
     $latestSaleInfo,
@@ -21,6 +24,7 @@ export default function CorePurchaseCard() {
   const [corePrice, setCorePrice] = useState<number | null>(null);
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (network && saleInfo) {
@@ -69,6 +73,14 @@ export default function CorePurchaseCard() {
     })();
   }, [network, saleInfo]);
 
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
   const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
@@ -82,6 +94,8 @@ export default function CorePurchaseCard() {
       toast.error('Cannot purchase a core during interlude phase');
       return;
     }
+    // TODO: saleinfo doesn't contain coresSold.
+    console.log(saleInfo);
     if (saleInfo?.coresSold == saleInfo?.coresOffered) {
       toast.error('No more cores remaining');
       return;
@@ -143,7 +157,16 @@ export default function CorePurchaseCard() {
         </span>
       </div>
 
-      <button onClick={buyCore} className={styles.buyButton}>
+      {selectedAccount && accountData[selectedAccount.address] !== null && (
+        <TransactionModal
+          isOpen={isModalOpen}
+          accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={buyCore}
+        />
+      )}
+
+      <button onClick={openModal} className={styles.buyButton}>
         Buy Core
       </button>
       <Toaster />
