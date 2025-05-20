@@ -14,6 +14,7 @@ import { encodeAddress } from '@polkadot/util-crypto';
 type RegionDateInfo = {
   beginDate: string;
   endDate: string;
+  duration: string;
 };
 
 TimeAgo.addLocale(en);
@@ -52,7 +53,6 @@ const MyRegionsPage = () => {
         v >>= 1;
       }
     }
-
     return count;
   };
 
@@ -73,10 +73,19 @@ const MyRegionsPage = () => {
       for (const region of regions) {
         const beginTimestamp = await timesliceToTimestamp(region.begin, network, connections);
         const endTimestamp = await timesliceToTimestamp(region.end, network, connections);
+
         if (beginTimestamp && endTimestamp) {
           const beginDate = getRelativeTime(Number(beginTimestamp.toString()));
           const endDate = getRelativeTime(Number(endTimestamp.toString()));
-          updates[region.id] = { beginDate, endDate };
+
+          const durationMs = Number(endTimestamp) - Number(beginTimestamp);
+          const durationDays = Math.round(durationMs / (1000 * 60 * 60 * 24));
+
+          updates[region.id] = {
+            beginDate,
+            endDate,
+            duration: `${durationDays} day${durationDays === 1 ? '' : 's'}`,
+          };
         }
       }
       setRegionDateInfos(updates);
@@ -134,7 +143,7 @@ const MyRegionsPage = () => {
                     consumed: 0,
                     // 57600 / 80 = 720
                     coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
-                    duration: '28 days', // TODO,
+                    duration: regionDateInfos?.[region.id]?.duration || '28 days',
                     name: storedName || `Region #${region.core}`,
                     regionEnd,
                     regionStart,
@@ -150,9 +159,7 @@ const MyRegionsPage = () => {
           {!loading &&
             selectedAccount &&
             regions.length > 0 &&
-            !regions.some((r) => r.owner === selectedAccount.address) && (
-              <p className={styles.noRegionsText}>No regions owned by the selected account.</p>
-            )}
+            !regions.some((r) => r.owner === selectedAccount.address) && <></>}
         </div>
       </div>
     </>
