@@ -27,8 +27,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/components/InterlaceModal",
-    "src/components/InterlaceModal"
   ],
   "exclude": ["node_modules"]
 }
