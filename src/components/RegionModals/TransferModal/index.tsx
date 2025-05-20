@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './transfer-modal.module.scss';
-import AddressInput from '../elements/AdressInput/AddressInput';
+import AddressInput from '../../elements/AdressInput/AddressInput';
 import { ArrowDown, X } from 'lucide-react';
 import Image from 'next/image';
 import { useUnit } from 'effector-react';

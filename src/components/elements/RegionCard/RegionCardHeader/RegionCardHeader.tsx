@@ -5,11 +5,11 @@ import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { Pencil, MoreHorizontal } from 'lucide-react';
 import { useRef } from 'react';
-import TransferModal from '../../../TransferModal';
-import AssignModal from '../../../AssignModal';
-import PartitionModal from '../../../PartitionModal';
-import SellModal from '../../../SellModal';
-import InterlaceModal from '../../../InterlaceModal';
+import TransferModal from '../../../RegionModals/TransferModal';
+import AssignModal from '../../../RegionModals/AssignModal';
+import PartitionModal from '../../../RegionModals/PartitionModal';
+import SellModal from '../../../RegionModals/SellModal';
+import InterlaceModal from '../../../RegionModals/InterlaceModal';
 
 interface RegionCardHeaderProps {
   name: string;
