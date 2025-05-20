@@ -12,6 +12,7 @@ import {
 import { toUnitFormatted } from '@/utils';
 import RevenueBox from '../RevenueBox/index';
 import CurrentAuctionPrice from '../CurrentAuctionPrice';
+import UserBalance from '../UserBalance';
 
 export default function BulkSaleSummary() {
   const [network, saleInfo, purchaseHistory] = useUnit([
@@ -82,6 +83,7 @@ export default function BulkSaleSummary() {
 
   return (
     <div className={styles.analyticsCard}>
+      <UserBalance />
       <RevenueBox
         network={network}
         purchaseHistory={purchaseHistory}
