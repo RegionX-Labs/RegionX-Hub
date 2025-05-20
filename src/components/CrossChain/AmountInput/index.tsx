@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { ChainId, chains } from "@/network";
+import { ChainId, chains } from '@/network';
 import styles from './amount-input.module.scss';
 
 import {
@@ -9,14 +9,14 @@ import {
   Polkadot as PolkadotIcon,
   Westend as WestendIcon,
 } from '@/assets/networks';
-import AmountInput from "@/components/elements/AmountInput/AmountInput";
+import AmountInput from '@/components/elements/AmountInput/AmountInput';
 
 interface CrossChainAmountInputProps {
-    originChain: ChainId | null;
-    setAmount: (amount: string) => void;
+  originChain: ChainId | null;
+  setAmount: (amount: string) => void;
 }
 
-const CrossChainAmountInput = ({originChain, setAmount}: CrossChainAmountInputProps) => {
+const CrossChainAmountInput = ({ originChain, setAmount }: CrossChainAmountInputProps) => {
   const currencyMapping: Record<ChainId, { symbol: string; icon: any }> = {
     [chains.polkadot.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
     [chains.kusama.chainId]: { symbol: 'KSM', icon: KusamaIcon },
@@ -32,30 +32,30 @@ const CrossChainAmountInput = ({originChain, setAmount}: CrossChainAmountInputPr
 
   return (
     <AmountInput
-        currencyOptions={
-          selectedCurrency
-            ? [
-                {
-                  key: selectedCurrency.symbol,
-                  value: selectedCurrency.symbol,
-                  label: selectedCurrency.symbol,
-                  icon: (
-                    <Image
-                      src={selectedCurrency.icon.src}
-                      alt={selectedCurrency.symbol}
-                      className={styles.smallIcon}
-                      width={20}
-                      height={20}
-                    />
-                  ),
-                },
-              ]
-            : []
-        }
-        onAmountChange={setAmount}
-        placeholder='Enter amount'
+      currencyOptions={
+        selectedCurrency
+          ? [
+              {
+                key: selectedCurrency.symbol,
+                value: selectedCurrency.symbol,
+                label: selectedCurrency.symbol,
+                icon: (
+                  <Image
+                    src={selectedCurrency.icon.src}
+                    alt={selectedCurrency.symbol}
+                    className={styles.smallIcon}
+                    width={20}
+                    height={20}
+                  />
+                ),
+              },
+            ]
+          : []
+      }
+      onAmountChange={setAmount}
+      placeholder='Enter amount'
     />
-  )
-}
+  );
+};
 
 export default CrossChainAmountInput;

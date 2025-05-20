@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import { ChainId, chains } from "@/network";
+import { ChainId, chains } from '@/network';
 import styles from './chain-selector.module.scss';
 import {
   Kusama as KusamaIcon,
@@ -21,7 +21,7 @@ interface ChainSelectorProps {
   onChange: (chainId: ChainId | null) => void;
 }
 
-const ChainSelector = ({selectedValue, onChange}: ChainSelectorProps) => {
+const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
   const network = useUnit($network);
 
   const networks = [
@@ -150,16 +150,16 @@ const ChainSelector = ({selectedValue, onChange}: ChainSelectorProps) => {
 
   return (
     <Select<ChainId>
-        selectedValue={selectedValue}
-        onChange={onChange}
-        options={filteredNetworks.map((network) => ({
-          key: String(network.value),
-          value: network.value,
-          label: network.label,
-          icon: network.icon,
-        }))}
+      selectedValue={selectedValue}
+      onChange={onChange}
+      options={filteredNetworks.map((network) => ({
+        key: String(network.value),
+        value: network.value,
+        label: network.label,
+        icon: network.icon,
+      }))}
     />
   );
-}
+};
 
 export default ChainSelector;

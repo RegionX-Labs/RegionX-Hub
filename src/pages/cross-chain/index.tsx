@@ -253,7 +253,7 @@ const CrossChain = () => {
       <div className={styles.chainSelectionContainer}>
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Origin chain:</label>
-          <ChainSelector selectedValue={originChain} onChange={handleOriginChainChange} />  
+          <ChainSelector selectedValue={originChain} onChange={handleOriginChainChange} />
         </div>
 
         <div className={styles.swapIcon} onClick={handleSwapChains}>
@@ -262,7 +262,7 @@ const CrossChain = () => {
 
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Destination chain:</label>
-          <ChainSelector selectedValue={destinationChain} onChange={handleDestinationChainChange} />  
+          <ChainSelector selectedValue={destinationChain} onChange={handleDestinationChainChange} />
         </div>
       </div>
 
