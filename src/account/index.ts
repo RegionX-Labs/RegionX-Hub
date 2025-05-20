@@ -17,7 +17,7 @@ type DataRequestPayload = {
 
 export const getAccountData = createEvent<DataRequestPayload>();
 
-export type MultiAccountData = {
+export type MultiChainAccountData = {
   account: string;
   relayChainData: AccountData;
   coretimeChainData: AccountData;
@@ -30,10 +30,10 @@ type AccountData = {
   flags: bigint;
 };
 
-export const $accountData = createStore<Record<string, MultiAccountData | null>>({});
+export const $accountData = createStore<Record<string, MultiChainAccountData | null>>({});
 
 const getAccountDataFx = createEffect(
-  async (payload: DataRequestPayload): Promise<MultiAccountData | null> => {
+  async (payload: DataRequestPayload): Promise<MultiChainAccountData | null> => {
     const { account, network, connections } = payload;
 
     const networkChainIds = getNetworkChainIds(network);
