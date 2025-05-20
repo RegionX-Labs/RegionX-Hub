@@ -76,7 +76,7 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
-  const onTransfer = () => {
+  const openModal = () => {
     if (!selectedAccount) {
       toast.error('Account not selected');
       return;
@@ -84,7 +84,7 @@ const CrossChain = () => {
     setIsModalOpen(true);
   };
 
-  const initiateTransferTx = async () => {
+  const onTransfer = async () => {
     console.log('Transfer initiated with:', {
       originChain,
       destinationChain,
@@ -486,12 +486,12 @@ const CrossChain = () => {
           isOpen={isModalOpen}
           accountData={accountData[selectedAccount.address] as MultiChainAccountData}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={initiateTransferTx}
+          onConfirm={onTransfer}
         />
       )}
 
       <div className={styles.buttonContainer}>
-        <Button onClick={onTransfer}>Transfer</Button>
+        <Button onClick={openModal}>Transfer</Button>
       </div>
       <Toaster />
     </div>
