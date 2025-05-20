@@ -34,7 +34,7 @@ jobs:
 
       # Check Prettier
       - name: Check Prettier
-        run: npm run prettier
+        run: npm run prettier:check
 
       # Run build
       - name: Build
