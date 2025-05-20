@@ -1,5 +1,13 @@
 import Home from './Home/page';
+import Head from 'next/head';
 
 export default function HomePage() {
-  return <Home />;
+  return (
+    <>
+      <Head>
+        <title>RegionX Hub</title>
+      </Head>
+      <Home />
+    </>
+  );
 }
