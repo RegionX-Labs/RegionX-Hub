@@ -75,7 +75,7 @@ const getAccountDataFx = createEffect(
   }
 );
 
-export const fetchAccountData = async (
+const fetchAccountData = async (
   connection: Connection,
   metadata: RelayMetadata | CoretimeMetadata,
   account: string
