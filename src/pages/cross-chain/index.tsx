@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
 import styles from './cross-chain.module.scss';
-import AmountInput from '../../components/elements/AmountInput/AmountInput';
 import AddressInput from '../../components/elements/AdressInput/AddressInput';
 import Button from '../../components/elements/Button/Button';
 import TransactionModal from '@/components/TransactionModal';
 
-import {
-  Kusama as KusamaIcon,
-  Paseo as PaseoIcon,
-  Polkadot as PolkadotIcon,
-  Westend as WestendIcon,
-} from '@/assets/networks';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import Image from 'next/image';
 import { ChainId, chains } from '@/network/chains';
 import { isHex } from '@polkadot/util';
 import { validateAddress } from '@polkadot/util-crypto';
@@ -33,6 +25,7 @@ import { AccountId, Binary } from 'polkadot-api';
 import { CORETIME_PARA_ID, fromUnit } from '@/utils';
 import { $accountData, MultiChainAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
+import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -46,17 +39,6 @@ const CrossChain = () => {
   const [beneficiary, setBeneficiary] = useState('');
   const [beneficiaryError, setBeneficiaryError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const currencyMapping: Record<ChainId, { symbol: string; icon: any }> = {
-    [chains.polkadot.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
-    [chains.kusama.chainId]: { symbol: 'KSM', icon: KusamaIcon },
-    [chains.paseo.chainId]: { symbol: 'PAS', icon: PaseoIcon },
-    [chains.westend.chainId]: { symbol: 'WND', icon: WestendIcon },
-    [chains.polkadotCoretime.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
-    [chains.kusamaCoretime.chainId]: { symbol: 'KSM', icon: KusamaIcon },
-    [chains.paseoCoretime.chainId]: { symbol: 'PAS', icon: PaseoIcon },
-    [chains.westendCoretime.chainId]: { symbol: 'WND', icon: WestendIcon },
-  };
 
   const handleOriginChainChange = (value: ChainId | null) => {
     setOriginChain(value);
@@ -266,8 +248,6 @@ const CrossChain = () => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
 
-  const selectedCurrency = originChain ? currencyMapping[originChain] : null;
-
   return (
     <div className={styles.container}>
       <div className={styles.chainSelectionContainer}>
@@ -311,30 +291,7 @@ const CrossChain = () => {
 
         <div className={styles.amountSection}>
           <label>Transfer Amount:</label>
-          <AmountInput
-            currencyOptions={
-              selectedCurrency
-                ? [
-                    {
-                      key: selectedCurrency.symbol,
-                      value: selectedCurrency.symbol,
-                      label: selectedCurrency.symbol,
-                      icon: (
-                        <Image
-                          src={selectedCurrency.icon.src}
-                          alt={selectedCurrency.symbol}
-                          className={styles.smallIcon}
-                          width={20}
-                          height={20}
-                        />
-                      ),
-                    },
-                  ]
-                : []
-            }
-            onAmountChange={setAmount}
-            placeholder='Enter amount'
-          />
+          <CrossChainAmountInput originChain={originChain} setAmount={setAmount} />
         </div>
       </div>
       {selectedAccount && accountData[selectedAccount.address] !== null && (
