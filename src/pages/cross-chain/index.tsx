@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './cross-chain.module.scss';
-import Select from '../../components/elements/Select';
 import AmountInput from '../../components/elements/AmountInput/AmountInput';
 import AddressInput from '../../components/elements/AdressInput/AddressInput';
 import Button from '../../components/elements/Button/Button';
@@ -11,10 +10,6 @@ import {
   Paseo as PaseoIcon,
   Polkadot as PolkadotIcon,
   Westend as WestendIcon,
-  KusamaCoretime,
-  PaseoCoretime,
-  PolkadotCoretime,
-  WestendCoretime,
 } from '@/assets/networks';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
@@ -37,6 +32,7 @@ import {
 import { AccountId, Binary } from 'polkadot-api';
 import { CORETIME_PARA_ID, fromUnit } from '@/utils';
 import { $accountData, MultiChainAccountData } from '@/account';
+import ChainSelector from '@/components/CrossChain/ChainSelector';
 
 const CrossChain = () => {
   const connections = useUnit($connections);
@@ -266,131 +262,9 @@ const CrossChain = () => {
     }
   };
 
-  const networks = [
-    {
-      value: chains.polkadot.chainId,
-      label: 'Polkadot',
-      icon: (
-        <Image
-          src={PolkadotIcon.src}
-          alt='Polkadot'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.kusama.chainId,
-      label: 'Kusama',
-      icon: (
-        <Image
-          src={KusamaIcon.src}
-          alt='Kusama'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.paseo.chainId,
-      label: 'Paseo',
-      icon: (
-        <Image
-          src={PaseoIcon.src}
-          alt='Paseo'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.westend.chainId,
-      label: 'Westend',
-      icon: (
-        <Image
-          src={WestendIcon.src}
-          alt='Westend'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.polkadotCoretime.chainId,
-      label: 'Polkadot Coretime',
-      icon: (
-        <Image
-          src={PolkadotCoretime.src}
-          alt='Polkadot Coretime'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.kusamaCoretime.chainId,
-      label: 'Kusama Coretime',
-      icon: (
-        <Image
-          src={KusamaCoretime.src}
-          alt='Kusama Coretime'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.paseoCoretime.chainId,
-      label: 'Paseo Coretime',
-      icon: (
-        <Image
-          src={PaseoCoretime.src}
-          alt='Paseo Coretime'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-    {
-      value: chains.westendCoretime.chainId,
-      label: 'Westend Coretime',
-      icon: (
-        <Image
-          src={WestendCoretime.src}
-          alt='Westend Coretime'
-          className={styles.smallIcon}
-          width={20}
-          height={20}
-        />
-      ),
-    },
-  ];
-
   const isCoretimeChain = (chainId: string): boolean => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
-
-  const filteredNetworks = networks.filter((n) => {
-    if (!network) return true;
-    return n.value === chains[network as keyof typeof chains]?.chainId || isCoretimeChain(n.value);
-  });
-
-  useEffect(() => {
-    if (filteredNetworks.length > 0) {
-      const isOriginChainValid = filteredNetworks.some((n) => n.value === originChain);
-      const isDestinationChainValid = filteredNetworks.some((n) => n.value === destinationChain);
-
-      if (!isOriginChainValid) setOriginChain(filteredNetworks[0].value);
-      if (!isDestinationChainValid) setDestinationChain(filteredNetworks[0].value);
-    }
-  }, [network]);
 
   const selectedCurrency = originChain ? currencyMapping[originChain] : null;
 
@@ -399,16 +273,7 @@ const CrossChain = () => {
       <div className={styles.chainSelectionContainer}>
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Origin chain:</label>
-          <Select<ChainId>
-            selectedValue={originChain}
-            onChange={handleOriginChainChange}
-            options={filteredNetworks.map((network) => ({
-              key: String(network.value),
-              value: network.value,
-              label: network.label,
-              icon: network.icon,
-            }))}
-          />
+          <ChainSelector selectedValue={originChain} onChange={handleOriginChainChange} />  
         </div>
 
         <div className={styles.swapIcon} onClick={handleSwapChains}>
@@ -417,16 +282,7 @@ const CrossChain = () => {
 
         <div className={styles.chainSelection}>
           <label className={styles.sectionLabel}>Destination chain:</label>
-          <Select<ChainId>
-            selectedValue={destinationChain}
-            onChange={handleDestinationChainChange}
-            options={filteredNetworks.map((network) => ({
-              key: String(network.value),
-              value: network.value,
-              label: network.label,
-              icon: network.icon,
-            }))}
-          />
+          <ChainSelector selectedValue={destinationChain} onChange={handleDestinationChainChange} />  
         </div>
       </div>
 
