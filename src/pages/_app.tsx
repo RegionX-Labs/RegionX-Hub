@@ -19,6 +19,7 @@ import RpcSettingsModal from '@/components/RpcSettingsModal';
 import Image from 'next/image';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
+import Head from 'next/head';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -74,6 +75,15 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <div className={montserrat.className}>
+      <Head>
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'
+          rel='stylesheet'
+        />
+        <title>RegionX Hub</title>
+      </Head>
       <Header />
       <Component {...pageProps} />
       <div className='globalRpcButton'>
