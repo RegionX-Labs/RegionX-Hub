@@ -50,6 +50,7 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose }) => {
 
   const partition = async () => {
     // TODO
+    toast.error('Not supported yet');
   };
 
   return (
@@ -92,7 +93,7 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose }) => {
             onConfirm={onModalConfirm}
           />
         )}
-        <button className={styles.assignBtn} onClick={openModal}>
+        <button className={styles.assignBtn} onClick={partition}>
           Partition
         </button>
       </div>

@@ -2,10 +2,11 @@ import React, { useState, useMemo } from 'react';
 import styles from './interlace-modal.module.scss';
 import { X, Link } from 'lucide-react';
 import { useUnit } from 'effector-react';
-import { $accountData } from '@/account';
+import { $accountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import toast, { Toaster } from 'react-hot-toast';
+import TransactionModal from '@/components/TransactionModal';
 
 const RADIUS = 90;
 const CENTER = 100;
@@ -122,6 +123,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
   };
 
   const interlace = async () => {
+    toast.error('Not supported yet');
     // TODO
   };
 
@@ -200,7 +202,15 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <button className={styles.assignBtn} onClick={openModal}>
+        {selectedAccount && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={onModalConfirm}
+          />
+        )}
+        <button className={styles.assignBtn} onClick={interlace}>
           Interlace
         </button>
       </div>
