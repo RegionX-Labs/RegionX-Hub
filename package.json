@@ -17,6 +17,7 @@
     "@polkadot-api/descriptors": "file:.papi/descriptors",
     "@polkadot/util": "^13.4.4",
     "@region-x/components": "^0.1.37",
+    "@vercel/analytics": "^1.5.0",
     "apexcharts": "^4.5.0",
     "effector": "^23.3.0",
     "effector-react": "^23.3.0",

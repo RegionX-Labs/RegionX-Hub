@@ -1,5 +1,6 @@
 import '../styles/global.scss';
 import '@region-x/components/dist/style.css';
+import { Analytics } from '@vercel/analytics/next';
 import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
 import { useEffect, useState } from 'react';
@@ -87,6 +88,7 @@ function App({ Component, pageProps }: AppProps) {
         onClose={() => setIsRpcModalOpen(false)}
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
+      <Analytics />
     </div>
   );
 }
