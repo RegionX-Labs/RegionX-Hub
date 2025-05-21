@@ -9,7 +9,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
 import TransactionModal from '@/components/TransactionModal';
-import { $accountData, MultiChainAccountData } from '@/account';
+import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 
 export default function CorePurchaseCard() {
   const [accountData, connections, network, saleInfo, purchaseHistory, selectedAccount] = useUnit([
@@ -81,6 +81,11 @@ export default function CorePurchaseCard() {
     setIsModalOpen(true);
   };
 
+  const onModalConfirm = async () => {
+    await buyCore();
+    setIsModalOpen(false);
+  }
+
   const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
@@ -124,21 +129,27 @@ export default function CorePurchaseCard() {
       return;
     }
 
-    try {
-      const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.purchase({
-        price_limit: BigInt(corePrice),
-      });
-      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
-      if (res.ok) {
-        toast.success('Transaction succeded!');
-      } else {
-        // TODO: provide more detailed error
-        toast.error('Transaction failed');
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.purchase({
+      price_limit: BigInt(corePrice),
+    });
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+            getAccountData({account: selectedAccount.address, connections, network});
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled');
+        console.log(e);
       }
-    } catch (e) {
-      toast.error('Transaction cancelled');
-      console.log(e);
-    }
+    );
   };
 
   return (
@@ -162,7 +173,7 @@ export default function CorePurchaseCard() {
           isOpen={isModalOpen}
           accountData={accountData[selectedAccount.address] as MultiChainAccountData}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={buyCore}
+          onConfirm={onModalConfirm}
         />
       )}
 
