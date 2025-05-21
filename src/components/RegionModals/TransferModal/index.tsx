@@ -26,6 +26,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
   const selectedAccount = useUnit($selectedAccount);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [destination, setDestination] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -54,6 +55,11 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
       return;
     }
 
+    if (!destination) {
+      toast.error('Destination not set');
+      return;
+    }
+
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) {
       toast.error('Unknown network');
@@ -74,7 +80,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.transfer({
       region_id: regionId,
-      new_owner: '', // TODO
+      new_owner: destination,
     });
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
@@ -139,7 +145,11 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
           <div className={styles.inputRow}>
             <label className={styles.inputLabel}>To</label>
             <div className={`${styles.beneficiaryInputWrapper} ${styles.addressInput}`}>
-              <AddressInput placeholder='Add Address' />
+              <AddressInput
+                placeholder='Add Address'
+                value={destination || ''}
+                onChange={(e) => setDestination(e.target.value)}
+              />
             </div>
           </div>
         </div>

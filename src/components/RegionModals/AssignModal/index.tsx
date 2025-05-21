@@ -9,6 +9,12 @@ import TransactionModal from '@/components/TransactionModal';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
 import { RegionId } from '@/utils';
+import { Enum } from 'polkadot-api';
+
+type Finality = Enum<{
+  Provisional: undefined;
+  Final: undefined;
+}>;
 
 interface AssignModalProps {
   isOpen: boolean;
@@ -108,11 +114,11 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, regionId, onClose }) 
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.assign({
       region_id: regionId,
-      finality:
-        selectedFinality.value === 'final'
-          ? ({ Final: undefined } as any)
-          : ({ Provisional: undefined } as any),
-      task: 1000,
+      finality: {
+        type: selectedFinality.value === 'final' ? 'Final' : 'Provisional',
+        value: undefined,
+      },
+      task: Number(taskId),
     });
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
