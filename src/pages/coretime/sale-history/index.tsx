@@ -80,13 +80,15 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain
+            network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
+            network
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain
+                network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
+                network
               )
             : null;
 

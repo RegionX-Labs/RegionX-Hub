@@ -130,13 +130,13 @@ const getSalePhaseEndpointsFx = createEffect(
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
       saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
+        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, network)
       );
     } else {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return null;
       saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain)
+        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, network)
       );
     }
 

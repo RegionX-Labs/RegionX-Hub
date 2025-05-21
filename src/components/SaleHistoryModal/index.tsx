@@ -57,7 +57,8 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
       const saleStartDate = await blockToTimestamp(
         sale.saleStart,
         connection,
-        network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain
+        network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
+        network
       );
 
       setRegionBegin(regionBeginDate ? new Date(Number(regionBeginDate)).toLocaleString() : '-');
