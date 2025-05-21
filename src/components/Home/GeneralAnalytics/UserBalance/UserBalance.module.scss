@@ -55,6 +55,8 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   margin-bottom: -7px;
+  @include Inter;
+
   &:hover {
     background-color: color.adjust($greenPrimary, $lightness: -5%);
   }

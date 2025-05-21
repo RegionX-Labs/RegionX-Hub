@@ -24,7 +24,7 @@
     gap: 10px;
 
     h5 {
-      @include Montserrat;
+      @include Inter;
       font-size: 16px;
       line-height: 24px;
       color: $white;
@@ -33,7 +33,7 @@
     }
 
     p {
-      @include Montserrat;
+      @include Inter;
       font-size: 14px;
       line-height: 22px;
       color: $white;
@@ -100,7 +100,7 @@
   font-size: 14px;
   font-weight: 500;
   color: $white;
-  @include Montserrat;
+  @include Inter;
 
   img {
     width: 16px;
