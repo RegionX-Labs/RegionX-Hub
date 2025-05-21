@@ -5,8 +5,10 @@ import RegionCardProperties from './RegionCardProperties/RegionCardProperties';
 import LabelCard from '../LabelCard/LabelCard';
 import Button from '../Button/Button';
 import { RegionData } from '../../../types/type';
+import { RegionId } from '@/utils';
 
 interface RegionCardProps {
+  regionId: RegionId;
   typeMarketplace?: boolean; // Is the region listed on a marketplace
   ownedRegion?: boolean; // Is the region owned by the user (determines whether to show 'purchase' or 'unlist')
   selected?: boolean;
@@ -15,6 +17,7 @@ interface RegionCardProps {
 }
 
 const RegionCard: React.FC<RegionCardProps> = ({
+  regionId,
   task,
   typeMarketplace,
   ownedRegion,
@@ -44,6 +47,7 @@ const RegionCard: React.FC<RegionCardProps> = ({
     >
       <RegionCardHeader
         name={regionName}
+        regionId={regionId}
         regionStart={regionData.regionStart}
         regionEnd={regionData.regionEnd}
         coreIndex={regionData.coreIndex}

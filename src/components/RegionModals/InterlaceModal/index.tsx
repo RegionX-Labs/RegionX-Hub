@@ -123,7 +123,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
 
   const interlace = async () => {
     // TODO
-  }
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -200,10 +200,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <button
-          className={styles.assignBtn}
-          onClick={openModal}
-        >
+        <button className={styles.assignBtn} onClick={openModal}>
           Interlace
         </button>
       </div>

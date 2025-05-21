@@ -108,8 +108,11 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, regionId, onClose }) 
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.assign({
       region_id: regionId,
-      finality: selectedFinality.value === 'final' ? { Final: undefined } as any : { Provisional: undefined } as any,
-      task: 1000
+      finality:
+        selectedFinality.value === 'final'
+          ? ({ Final: undefined } as any)
+          : ({ Provisional: undefined } as any),
+      task: 1000,
     });
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
@@ -179,7 +182,9 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, regionId, onClose }) 
             onConfirm={onModalConfirm}
           />
         )}
-        <button className={styles.assignBtn} onClick={openModal}>Assign now</button>
+        <button className={styles.assignBtn} onClick={openModal}>
+          Assign now
+        </button>
       </div>
       <Toaster />
     </div>

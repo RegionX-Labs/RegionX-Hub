@@ -25,7 +25,6 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [percentage, setPercentage] = useState(50);
 
-
   if (!isOpen) return null;
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -51,7 +50,7 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose }) => {
 
   const partition = async () => {
     // TODO
-  }
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>

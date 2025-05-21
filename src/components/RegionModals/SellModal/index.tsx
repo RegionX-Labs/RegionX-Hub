@@ -21,8 +21,8 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose }) => {
   };
 
   const onSell = () => {
-    toast.error("Not supported yet");
-  }
+    toast.error('Not supported yet');
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>

@@ -74,7 +74,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.transfer({
       region_id: regionId,
-      new_owner: '' // TODO
+      new_owner: '', // TODO
     });
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
@@ -151,7 +151,9 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
             onConfirm={onModalConfirm}
           />
         )}
-        <button className={styles.transferBtn} onClick={openModal}>Transfer now</button>
+        <button className={styles.transferBtn} onClick={openModal}>
+          Transfer now
+        </button>
         <Toaster />
       </div>
     </div>

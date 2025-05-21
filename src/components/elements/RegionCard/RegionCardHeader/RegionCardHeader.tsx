@@ -9,9 +9,11 @@ import AssignModal from '../../../RegionModals/AssignModal';
 import PartitionModal from '../../../RegionModals/PartitionModal';
 import SellModal from '../../../RegionModals/SellModal';
 import InterlaceModal from '../../../RegionModals/InterlaceModal';
+import { RegionId } from '@/utils';
 
 interface RegionCardHeaderProps {
   name: string;
+  regionId: RegionId;
   regionStart: string;
   regionEnd: string;
   coreIndex: number;
@@ -21,6 +23,7 @@ interface RegionCardHeaderProps {
 
 const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   name,
+  regionId,
   regionStart,
   regionEnd,
   coreIndex,
@@ -136,8 +139,16 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           )}
         </div>
 
-        <TransferModal isOpen={isTransferModalOpen} onClose={() => setTransferModalOpen(false)} />
-        <AssignModal isOpen={isAssignModalOpen} onClose={() => setAssignModalOpen(false)} />
+        <TransferModal
+          isOpen={isTransferModalOpen}
+          onClose={() => setTransferModalOpen(false)}
+          regionId={regionId}
+        />
+        <AssignModal
+          isOpen={isAssignModalOpen}
+          onClose={() => setAssignModalOpen(false)}
+          regionId={regionId}
+        />
         <PartitionModal
           isOpen={isPartitionModalOpen}
           onClose={() => setPartitionModalOpen(false)}
@@ -147,10 +158,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           onClose={() => setInterlaceModalOpen(false)}
         />
 
-        <SellModal
-          isOpen={isSellModalOpen}
-          onClose={() => setSellModalOpen(false)}
-        />
+        <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
       </div>
 
       <div className={styles['regionCardHeaderWrapper-labels']}>
