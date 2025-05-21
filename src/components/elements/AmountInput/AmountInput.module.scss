@@ -42,7 +42,7 @@
       font-size: 16px;
       line-height: 24px;
       max-width: 170px;
-      @include Montserrat;
+      @include Inter;
       text-align: left;
       border: none;
       height: 48px;
@@ -65,7 +65,7 @@
     margin-bottom: 8px;
     font-size: 14px;
     color: $dark;
-    @include Montserrat;
+    @include Inter;
     font-size: 16px;
     line-height: 24px;
     text-align: left;

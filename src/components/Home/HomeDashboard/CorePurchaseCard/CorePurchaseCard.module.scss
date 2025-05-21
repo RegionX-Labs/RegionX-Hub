@@ -78,6 +78,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  @include Inter;
 
   &:hover {
     background-color: color.adjust($greenPrimary, $lightness: -5%);

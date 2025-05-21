@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   padding: 10px;
-  @include Montserrat;
+  @include Inter;
   font-size: 16px;
   line-height: 24px;
 
@@ -82,7 +82,7 @@
 
   .noResultsMessage {
     width: 100%;
-    @include Montserrat;
+    @include Inter;
     font-size: 20px;
     line-height: 28px;
     color: $white;
