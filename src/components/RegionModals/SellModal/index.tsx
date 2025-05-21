@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import styles from './sell-modal.module.scss';
 import { X } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface SellModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (price: string, address: string) => void;
 }
 
-const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose }) => {
   const [price, setPrice] = useState('');
   const [address, setAddress] = useState('');
 
@@ -18,6 +18,10 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose, onSubmit }) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
       onClose();
     }
+  };
+
+  const onSell = () => {
+    toast.error('Not supported yet');
   };
 
   return (
@@ -52,10 +56,11 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose, onSubmit }) => {
           />
         </div>
 
-        <button className={styles.assignBtn} onClick={() => onSubmit?.(price, address)}>
+        <button className={styles.assignBtn} onClick={onSell}>
           List on sale
         </button>
       </div>
+      <Toaster />
     </div>
   );
 };

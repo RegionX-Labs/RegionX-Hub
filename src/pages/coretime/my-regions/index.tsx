@@ -7,9 +7,10 @@ import styles from './my-regions.module.scss';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { timesliceToTimestamp } from '@/utils';
+import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
+import { FixedSizeBinary } from 'polkadot-api';
 
 type RegionDateInfo = {
   beginDate: string;
@@ -136,6 +137,11 @@ const MyRegionsPage = () => {
               <div className={styles['region-card']} key={region.id}>
                 <RegionCard
                   selected={selectedRegionId == region.id}
+                  regionId={{
+                    begin: region.begin,
+                    core: region.core,
+                    mask: new FixedSizeBinary(bitStringToUint8Array(maskToBin(region.mask))),
+                  }}
                   regionData={{
                     chainColor: 'greenDark',
                     chainLabel: 'Coretime Chain',
