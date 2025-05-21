@@ -23,7 +23,7 @@ import {
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
 import { CORETIME_PARA_ID, fromUnit } from '@/utils';
-import { $accountData, MultiChainAccountData } from '@/account';
+import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
 import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
 
@@ -236,6 +236,7 @@ const CrossChain = () => {
             console.log(err);
           } else {
             toast.success('Transaction succeded!');
+            getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },

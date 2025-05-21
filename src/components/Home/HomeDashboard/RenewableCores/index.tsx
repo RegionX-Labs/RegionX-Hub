@@ -16,7 +16,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $selectedAccount } from '@/wallet';
-import { $accountData, MultiChainAccountData } from '@/account';
+import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
 
 export default function RenewableCores() {
@@ -81,6 +81,11 @@ export default function RenewableCores() {
     });
   };
 
+  const onModalConfirm = async () => {
+    await renew();
+    setIsModalOpen(false);
+  };
+
   const renew = async () => {
     if (!selected) {
       toast.error('Core not selected');
@@ -113,21 +118,27 @@ export default function RenewableCores() {
       return;
     }
 
-    try {
-      const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({
-        core: selected[0].core,
-      });
-      const res = await tx.signAndSubmit(selectedAccount.polkadotSigner);
-      if (res.ok) {
-        toast.success('Transaction succeded!');
-      } else {
-        // TODO: provide more detailed error
-        toast.error('Transaction failed');
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({
+      core: selected[0].core,
+    });
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled');
+        console.log(e);
       }
-    } catch (e) {
-      toast.error('Transaction cancelled');
-      console.log(e);
-    }
+    );
   };
 
   return (
@@ -163,7 +174,7 @@ export default function RenewableCores() {
           isOpen={isModalOpen}
           accountData={accountData[selectedAccount.address] as MultiChainAccountData}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={renew}
+          onConfirm={onModalConfirm}
         />
       )}
 
