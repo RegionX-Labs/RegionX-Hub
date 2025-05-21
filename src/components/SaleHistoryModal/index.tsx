@@ -58,7 +58,7 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
         sale.saleStart,
         connection,
         network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
-        network,
+        network
       );
 
       setRegionBegin(regionBeginDate ? new Date(Number(regionBeginDate)).toLocaleString() : '-');

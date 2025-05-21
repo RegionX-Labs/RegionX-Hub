@@ -110,7 +110,7 @@ export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
   metadata: RelayMetadata | CoretimeMetadata,
-  network: Network,
+  network: Network
 ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
@@ -121,7 +121,7 @@ export const blockToTimestamp = async (
   const currentBlockNumber = await typedApi.query.System.Number.getValue();
   const timestamp = await typedApi.query.Timestamp.Now.getValue();
 
-  let blockTime = network === Network.WESTEND ? 6000 : 12000;
+  const blockTime = network === Network.WESTEND ? 6000 : 12000;
 
   const estimatedTimestamp =
     timestamp + BigInt((blockNumber - Number(currentBlockNumber)) * blockTime);
