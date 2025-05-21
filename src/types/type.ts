@@ -9,13 +9,15 @@ export interface SelectOption<T> {
 
 export interface RegionData {
   name: string;
-  regionStart: string;
-  regionEnd: string;
+  regionStart: string; // formatted date (e.g., "5/21")
+  regionEnd: string; // formatted date (e.g., "6/18")
+  regionBeginTimeslice: number; // raw timeslice (e.g., 322845)
+  regionEndTimeslice: number; // raw timeslice (e.g., 327885)
   coreIndex: number;
   duration: string;
   coreOcupaccy: number;
   consumed: number;
-  currentUsage?: number | undefined;
+  currentUsage?: number;
   chainLabel: string;
   chainColor:
     | 'yellowDark'

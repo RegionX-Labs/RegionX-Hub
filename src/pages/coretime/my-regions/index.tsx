@@ -141,16 +141,17 @@ const MyRegionsPage = () => {
                     chainLabel: 'Coretime Chain',
                     coreIndex: region.core,
                     consumed: 0,
-                    // 57600 / 80 = 720
                     coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
                     duration: regionDateInfos?.[region.id]?.duration || '28 days',
                     name: storedName || `Region #${region.core}`,
-                    regionEnd,
                     regionStart,
-                    currentUsage: 0, // TODO
+                    regionEnd,
+                    regionBeginTimeslice: region.begin,
+                    regionEndTimeslice: region.end,
+                    currentUsage: 0,
                     onClick: () => setSelectedRegionId(region.id),
                   }}
-                  task={`Unassigned`} // TODO
+                  task={`Unassigned`}
                 />
               </div>
             );
