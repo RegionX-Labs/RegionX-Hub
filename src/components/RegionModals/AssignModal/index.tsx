@@ -8,13 +8,7 @@ import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
-import { FixedSizeBinary } from 'polkadot-api';
-
-type RegionId = {
-  begin: number;
-  core: number;
-  mask: FixedSizeBinary<10>;
-}
+import { RegionId } from '@/utils';
 
 interface AssignModalProps {
   isOpen: boolean;

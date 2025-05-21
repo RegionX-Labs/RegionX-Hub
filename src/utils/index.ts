@@ -2,11 +2,18 @@ import { Network } from '@/types';
 import { CoretimeMetadata, RelayMetadata, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { SaleInfo } from '@/coretime/saleInfo';
 import { Connection } from '@/api/connection';
+import { FixedSizeBinary } from 'polkadot-api';
 
 export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
 
 export const CORETIME_PARA_ID = 1005;
+
+export type RegionId = {
+  begin: number;
+  core: number;
+  mask: FixedSizeBinary<10>;
+}
 
 const toFixedWithoutRounding = (value: number, decimalDigits: number) => {
   const factor = Math.pow(10, decimalDigits);

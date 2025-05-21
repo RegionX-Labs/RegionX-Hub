@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './transfer-modal.module.scss';
 import AddressInput from '../../elements/AdressInput/AddressInput';
 import { ArrowDown, X } from 'lucide-react';
@@ -6,14 +6,26 @@ import Image from 'next/image';
 import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
 import Identicon from '@polkadot/react-identicon';
+import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
+import { $connections, $network } from '@/api/connection';
+import toast, { Toaster } from 'react-hot-toast';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { RegionId } from '@/utils';
+import TransactionModal from '@/components/TransactionModal';
 
 interface TransferModalProps {
   isOpen: boolean;
+  regionId: RegionId;
   onClose: () => void;
 }
 
-const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose }) => {
+const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose }) => {
+  const accountData = useUnit($accountData);
+  const connections = useUnit($connections);
+  const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -21,6 +33,67 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose }) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
       onClose();
     }
+  };
+
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const onModalConfirm = async () => {
+    await assign();
+    setIsModalOpen(false);
+  };
+
+  const assign = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.transfer({
+      region_id: regionId,
+      new_owner: '' // TODO
+    });
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled');
+        console.log(e);
+      }
+    );
   };
 
   return (
@@ -70,8 +143,16 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
         </div>
-
-        <button className={styles.transferBtn}>Transfer now</button>
+        {selectedAccount && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={onModalConfirm}
+          />
+        )}
+        <button className={styles.transferBtn} onClick={openModal}>Transfer now</button>
+        <Toaster />
       </div>
     </div>
   );
