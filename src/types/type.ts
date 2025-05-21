@@ -9,10 +9,10 @@ export interface SelectOption<T> {
 
 export interface RegionData {
   name: string;
-  regionStart: string; // formatted date (e.g., "5/21")
-  regionEnd: string; // formatted date (e.g., "6/18")
-  regionBeginTimeslice: number; // raw timeslice (e.g., 322845)
-  regionEndTimeslice: number; // raw timeslice (e.g., 327885)
+  regionStart: string;
+  regionEnd: string;
+  regionBeginTimeslice: number;
+  regionEndTimeslice: number;
   coreIndex: number;
   duration: string;
   coreOcupaccy: number;
