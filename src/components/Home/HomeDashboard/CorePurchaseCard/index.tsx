@@ -84,7 +84,7 @@ export default function CorePurchaseCard() {
   const onModalConfirm = async () => {
     await buyCore();
     setIsModalOpen(false);
-  }
+  };
 
   const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
@@ -141,7 +141,7 @@ export default function CorePurchaseCard() {
             console.log(err);
           } else {
             toast.success('Transaction succeded!');
-            getAccountData({account: selectedAccount.address, connections, network});
+            getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },

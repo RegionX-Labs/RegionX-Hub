@@ -236,7 +236,7 @@ const CrossChain = () => {
             console.log(err);
           } else {
             toast.success('Transaction succeded!');
-            getAccountData({account: selectedAccount.address, connections, network});
+            getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },

@@ -84,7 +84,7 @@ export default function RenewableCores() {
   const onModalConfirm = async () => {
     await renew();
     setIsModalOpen(false);
-  }
+  };
 
   const renew = async () => {
     if (!selected) {
@@ -130,7 +130,7 @@ export default function RenewableCores() {
             console.log(err);
           } else {
             toast.success('Transaction succeded!');
-            getAccountData({account: selectedAccount.address, connections, network});
+            getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
