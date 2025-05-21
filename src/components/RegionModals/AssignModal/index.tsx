@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import styles from './assign-modal.module.scss';
 import { X } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useUnit } from 'effector-react';
+import { $selectedAccount } from '@/wallet';
+import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
+import TransactionModal from '@/components/TransactionModal';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { $connections, $network } from '@/api/connection';
+import { FixedSizeBinary } from 'polkadot-api';
+
+type RegionId = {
+  begin: number;
+  core: number;
+  mask: FixedSizeBinary<10>;
+}
 
 interface AssignModalProps {
   isOpen: boolean;
+  regionId: RegionId;
   onClose: () => void;
 }
 
@@ -28,11 +43,17 @@ const finalityOptions: FinalityOption[] = [
   },
 ];
 
-const AssignModal: React.FC<AssignModalProps> = ({ isOpen, onClose }) => {
+const AssignModal: React.FC<AssignModalProps> = ({ isOpen, regionId, onClose }) => {
+  const accountData = useUnit($accountData);
+  const connections = useUnit($connections);
+  const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
+
   const [taskId, setTaskId] = useState('');
   const [selectedFinality, setSelectedFinality] = useState<FinalityOption | null>(
     finalityOptions[0]
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -48,6 +69,73 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, onClose }) => {
         {para}
       </p>
     ));
+
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const onModalConfirm = async () => {
+    await assign();
+    setIsModalOpen(false);
+  };
+
+  const assign = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    if (!selectedFinality) {
+      toast.error('Finality not selected');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.assign({
+      region_id: regionId,
+      finality: selectedFinality.value === 'final' ? { Final: undefined } as any : { Provisional: undefined } as any,
+      task: 1000
+    });
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled');
+        console.log(e);
+      }
+    );
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
@@ -89,9 +177,17 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, onClose }) => {
 
           {selectedFinality && formatDescription(selectedFinality.description)}
         </div>
-
-        <button className={styles.assignBtn}>Assign now</button>
+        {selectedAccount && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={onModalConfirm}
+          />
+        )}
+        <button className={styles.assignBtn} onClick={openModal}>Assign now</button>
       </div>
+      <Toaster />
     </div>
   );
 };
