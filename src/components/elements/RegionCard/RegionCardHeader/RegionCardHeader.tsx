@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import LabelCard from '../../LabelCard/LabelCard';
 import styles from './RegionCardHeader.module.scss';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
@@ -142,27 +141,15 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         <PartitionModal
           isOpen={isPartitionModalOpen}
           onClose={() => setPartitionModalOpen(false)}
-          onSubmit={(percentage) => {
-            console.log(`Partition at ${percentage}% for region: ${coreIndex}`);
-            setPartitionModalOpen(false);
-          }}
         />
         <InterlaceModal
           isOpen={isInterlaceModalOpen}
           onClose={() => setInterlaceModalOpen(false)}
-          onSubmit={(left, right) => {
-            console.log(`Interlaced region ${coreIndex} — Left: ${left}% / Right: ${right}%`);
-            setInterlaceModalOpen(false);
-          }}
         />
 
         <SellModal
           isOpen={isSellModalOpen}
           onClose={() => setSellModalOpen(false)}
-          onSubmit={(price, address) => {
-            console.log(`Sell region ${coreIndex} for ${price} to ${address}`);
-            setSellModalOpen(false);
-          }}
         />
       </div>
 

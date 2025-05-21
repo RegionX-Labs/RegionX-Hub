@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
 import styles from './partition-modal.module.scss';
 import { X } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useUnit } from 'effector-react';
+import { $accountData, MultiChainAccountData } from '@/account';
+import { $connections, $network } from '@/api/connection';
+import { $selectedAccount } from '@/wallet';
+import TransactionModal from '@/components/TransactionModal';
 
 interface PartitionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (percentage: number) => void;
 }
 
-const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose }) => {
   const min = 1;
   const max = 100;
 
+  const accountData = useUnit($accountData);
+  const connections = useUnit($connections);
+  const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [percentage, setPercentage] = useState(50);
+
 
   if (!isOpen) return null;
 
@@ -23,6 +35,23 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose, onSubm
   };
 
   const normalized = ((percentage - min) / (max - min)) * 100;
+
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const onModalConfirm = async () => {
+    await partition();
+    setIsModalOpen(false);
+  };
+
+  const partition = async () => {
+    // TODO
+  }
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
@@ -56,10 +85,19 @@ const PartitionModal: React.FC<PartitionModalProps> = ({ isOpen, onClose, onSubm
           </div>
         </div>
 
-        <button className={styles.assignBtn} onClick={() => onSubmit?.(percentage)}>
+        {selectedAccount && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={onModalConfirm}
+          />
+        )}
+        <button className={styles.assignBtn} onClick={openModal}>
           Partition
         </button>
       </div>
+      <Toaster />
     </div>
   );
 };

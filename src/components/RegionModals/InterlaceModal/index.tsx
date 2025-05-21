@@ -1,6 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import styles from './interlace-modal.module.scss';
 import { X, Link } from 'lucide-react';
+import { useUnit } from 'effector-react';
+import { $accountData } from '@/account';
+import { $connections, $network } from '@/api/connection';
+import { $selectedAccount } from '@/wallet';
+import toast, { Toaster } from 'react-hot-toast';
 
 const RADIUS = 90;
 const CENTER = 100;
@@ -10,10 +15,15 @@ const GAP_ANGLE = 6;
 interface InterlaceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (left: number, right: number) => void;
 }
 
-const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
+  const accountData = useUnit($accountData);
+  const connections = useUnit($connections);
+  const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [leftRatio, setLeftRatio] = useState<string>('70');
 
   const parsedLeft = parseInt(leftRatio || '0', 10);
@@ -98,6 +108,23 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose, onSubm
 
   if (!isOpen) return null;
 
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const onModalConfirm = async () => {
+    await interlace();
+    setIsModalOpen(false);
+  };
+
+  const interlace = async () => {
+    // TODO
+  }
+
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -175,15 +202,12 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose, onSubm
 
         <button
           className={styles.assignBtn}
-          onClick={() => {
-            const validLeft = Math.max(1, Math.min(99, parseInt(leftRatio || '0', 10) || 0));
-            onSubmit?.(validLeft, 100 - validLeft);
-            onClose();
-          }}
+          onClick={openModal}
         >
           Interlace
         </button>
       </div>
+      <Toaster />
     </div>
   );
 };
