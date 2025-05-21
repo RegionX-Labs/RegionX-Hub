@@ -32,11 +32,10 @@ export default function UserBalance() {
       <h3 className={styles.coretimeValue}>{formatted}</h3>
 
       <p className={styles.infoText}>
-        This balance is used to <strong>purchase</strong> and <strong>renew</strong> coretime in
-        auctions.
+        This balance is used to <strong>purchase</strong> or <strong>renew</strong> a core
       </p>
       <p className={styles.note}>
-        To fund this balance, you must transfer tokens <br />
+        To fund the Coretime chain balance, you must transfer tokens <br />
         <strong>cross-chain</strong> from the Relay Chain to the Coretime Chain.
       </p>
 
