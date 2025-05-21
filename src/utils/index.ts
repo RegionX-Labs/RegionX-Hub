@@ -109,7 +109,8 @@ export const timesliceToTimestamp = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata
+  metadata: RelayMetadata | CoretimeMetadata,
+  network: Network,
 ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
@@ -120,20 +121,10 @@ export const blockToTimestamp = async (
   const currentBlockNumber = await typedApi.query.System.Number.getValue();
   const timestamp = await typedApi.query.Timestamp.Now.getValue();
 
-  let blockTime = 6000;
-
-  try {
-    if ('Babe' in typedApi.constants && typedApi.constants.Babe?.ExpectedBlockTime) {
-      blockTime = Number(typedApi.constants.Babe.ExpectedBlockTime.toString());
-    } else if ('Aura' in typedApi.constants && typedApi.constants.Aura?.SlotDuration) {
-      blockTime = Number(typedApi.constants.Aura.SlotDuration.toString());
-    }
-  } catch (e) {
-    console.warn('Could not read ExpectedBlockTime or SlotDuration from runtime:', e);
-  }
+  let blockTime = network === Network.WESTEND ? 6000 : 12000;
 
   const estimatedTimestamp =
-    timestamp - BigInt((Number(currentBlockNumber) - blockNumber) * blockTime);
+    timestamp + BigInt((blockNumber - Number(currentBlockNumber)) * blockTime);
   return estimatedTimestamp;
 };
 

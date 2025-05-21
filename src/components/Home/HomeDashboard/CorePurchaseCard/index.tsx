@@ -100,7 +100,6 @@ export default function CorePurchaseCard() {
       return;
     }
     // TODO: saleinfo doesn't contain coresSold.
-    console.log(saleInfo);
     if (saleInfo?.coresSold == saleInfo?.coresOffered) {
       toast.error('No more cores remaining');
       return;
