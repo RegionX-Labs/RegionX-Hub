@@ -1,15 +1,17 @@
 @use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
+@use 'sass:color';
 
 .sale_history_table {
   margin-top: 130px;
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: $black;
+  background-color: $darkBackground2;
   border-radius: 10px;
   padding: 25px;
   margin-bottom: 45px;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
 }
 
 .tableWrapper {
