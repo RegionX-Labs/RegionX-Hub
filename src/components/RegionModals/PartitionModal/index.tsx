@@ -6,11 +6,7 @@ import { useUnit } from 'effector-react';
 import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import {
-  RegionId,
-  timesliceToTimestamp,
-  timestampToTimeslice,
-} from '@/utils';
+import { RegionId, timesliceToTimestamp, timestampToTimeslice } from '@/utils';
 import TransactionModal from '@/components/TransactionModal';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
