@@ -15,7 +15,7 @@
   }
 
   &:hover {
-    background-color: color.adjust($darkBackground2, $lightness: 1%);
+    background-color: color.adjust($darkBackground2, $lightness: 10%);
   }
 
   &-cell {
