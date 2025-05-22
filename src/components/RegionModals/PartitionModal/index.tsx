@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import styles from './partition-modal.module.scss';
 import { X } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
 import { useUnit } from 'effector-react';
-import { $network, $connections } from '@/api/connection';
+import { $accountData, MultiChainAccountData } from '@/account';
+import { $connections, $network } from '@/api/connection';
+import { $selectedAccount } from '@/wallet';
 import { timesliceToTimestamp } from '@/utils';
+import TransactionModal from '@/components/TransactionModal';
 
 interface PartitionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (percentage: number) => void;
   regionBeginTimeslice: number;
   regionEndTimeslice: number;
 }
@@ -16,10 +19,18 @@ interface PartitionModalProps {
 const PartitionModal: React.FC<PartitionModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
   regionBeginTimeslice,
   regionEndTimeslice,
 }) => {
+  const min = 1;
+  const max = 100;
+
+  const accountData = useUnit($accountData);
+  const connections = useUnit($connections);
+  const network = useUnit($network);
+  const selectedAccount = useUnit($selectedAccount);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [percentage, setPercentage] = useState(50);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -84,6 +95,24 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
 
   const normalized = (percentage / 100) * 100;
 
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const onModalConfirm = async () => {
+    await partition();
+    setIsModalOpen(false);
+  };
+
+  const partition = async () => {
+    // TODO
+    toast.error('Not supported yet');
+  };
+
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -124,10 +153,19 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
           </div>
         </div>
 
-        <button className={styles.assignBtn} onClick={() => onSubmit?.(percentage)}>
+        {selectedAccount && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={onModalConfirm}
+          />
+        )}
+        <button className={styles.assignBtn} onClick={partition}>
           Partition
         </button>
       </div>
+      <Toaster />
     </div>
   );
 };

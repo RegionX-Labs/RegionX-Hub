@@ -1,5 +1,6 @@
 import '../styles/global.scss';
 import '@region-x/components/dist/style.css';
+import { Analytics } from '@vercel/analytics/next';
 import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
 import { useEffect, useState } from 'react';
@@ -18,6 +19,7 @@ import RpcSettingsModal from '@/components/RpcSettingsModal';
 import Image from 'next/image';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
+import Head from 'next/head';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -73,6 +75,15 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <div className={montserrat.className}>
+      <Head>
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'
+          rel='stylesheet'
+        />
+        <title>RegionX Hub</title>
+      </Head>
       <Header />
       <Component {...pageProps} />
       <div className='globalRpcButton'>
@@ -87,6 +98,7 @@ function App({ Component, pageProps }: AppProps) {
         onClose={() => setIsRpcModalOpen(false)}
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
+      <Analytics />
     </div>
   );
 }

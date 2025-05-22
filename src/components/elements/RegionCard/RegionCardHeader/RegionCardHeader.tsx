@@ -9,9 +9,11 @@ import AssignModal from '../../../RegionModals/AssignModal';
 import PartitionModal from '../../../RegionModals/PartitionModal';
 import SellModal from '../../../RegionModals/SellModal';
 import InterlaceModal from '../../../RegionModals/InterlaceModal';
+import { RegionId } from '@/utils';
 
 interface RegionCardHeaderProps {
   name: string;
+  regionId: RegionId;
   regionStart: string;
   regionEnd: string;
   coreIndex: number;
@@ -23,6 +25,7 @@ interface RegionCardHeaderProps {
 
 const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   name,
+  regionId,
   regionStart,
   regionEnd,
   coreIndex,
@@ -139,35 +142,28 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           )}
         </div>
 
-        <TransferModal isOpen={isTransferModalOpen} onClose={() => setTransferModalOpen(false)} />
-        <AssignModal isOpen={isAssignModalOpen} onClose={() => setAssignModalOpen(false)} />
+        <TransferModal
+          isOpen={isTransferModalOpen}
+          onClose={() => setTransferModalOpen(false)}
+          regionId={regionId}
+        />
+        <AssignModal
+          isOpen={isAssignModalOpen}
+          onClose={() => setAssignModalOpen(false)}
+          regionId={regionId}
+        />
         <PartitionModal
           isOpen={isPartitionModalOpen}
           onClose={() => setPartitionModalOpen(false)}
           regionBeginTimeslice={regionStartTimeslice}
           regionEndTimeslice={regionEndTimeslice}
-          onSubmit={(percentage) => {
-            console.log(`Partition at ${percentage}%`);
-            setPartitionModalOpen(false);
-          }}
         />
 
         <InterlaceModal
           isOpen={isInterlaceModalOpen}
           onClose={() => setInterlaceModalOpen(false)}
-          onSubmit={(left, right) => {
-            console.log(`Interlaced region ${coreIndex} — Left: ${left}% / Right: ${right}%`);
-            setInterlaceModalOpen(false);
-          }}
         />
-        <SellModal
-          isOpen={isSellModalOpen}
-          onClose={() => setSellModalOpen(false)}
-          onSubmit={(price, address) => {
-            console.log(`Sell region ${coreIndex} for ${price} to ${address}`);
-            setSellModalOpen(false);
-          }}
-        />
+        <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
       </div>
 
       <div className={styles['regionCardHeaderWrapper-labels']}>
