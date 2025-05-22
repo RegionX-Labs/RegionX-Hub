@@ -2,11 +2,14 @@ import React, { useState, useMemo } from 'react';
 import styles from './interlace-modal.module.scss';
 import { X, Link } from 'lucide-react';
 import { useUnit } from 'effector-react';
-import { $accountData, MultiChainAccountData } from '@/account';
+import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import toast, { Toaster } from 'react-hot-toast';
 import TransactionModal from '@/components/TransactionModal';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { bitStringToUint8Array, RegionId } from '@/utils';
+import { FixedSizeBinary } from 'polkadot-api';
 
 const RADIUS = 90;
 const CENTER = 100;
@@ -15,10 +18,11 @@ const GAP_ANGLE = 6;
 
 interface InterlaceModalProps {
   isOpen: boolean;
+  regionId: RegionId;
   onClose: () => void;
 }
 
-const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
+const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClose }) => {
   const accountData = useUnit($accountData);
   const connections = useUnit($connections);
   const network = useUnit($network);
@@ -123,9 +127,60 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
   };
 
   const interlace = async () => {
-    toast.error('Not supported yet');
-    // TODO
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.interlace({
+      region_id: regionId,
+      pivot: new FixedSizeBinary(bitStringToUint8Array(getBitArrayFromPercentage(Number(leftRatio))))
+    });
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled');
+        console.log(e);
+      }
+    );
   };
+
+  const getBitArrayFromPercentage = (percentage: number): string => {
+    const totalBits = 80;
+    const onBits = Math.floor((percentage / 100) * totalBits);
+    const offBits = totalBits - onBits;
+
+    return '1'.repeat(onBits) + '0'.repeat(offBits);
+  }
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -210,7 +265,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, onClose }) => {
             onConfirm={onModalConfirm}
           />
         )}
-        <button className={styles.assignBtn} onClick={interlace}>
+        <button className={styles.assignBtn} onClick={openModal}>
           Interlace
         </button>
       </div>
