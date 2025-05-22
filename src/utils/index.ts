@@ -113,6 +113,36 @@ export const timesliceToTimestamp = async (
   return estimatedTimestamp;
 };
 
+export const timestampToTimeslice = async (
+  connections: any,
+  timestamp: EpochTimeStamp,
+  network: Network,
+): Promise<number> => {
+  // We have the current block number and the corresponding timestamp.
+  // Assume that 1 block ~ 6 seconds..
+  const networkChainIds = getNetworkChainIds(network);
+  if (!networkChainIds) return 0;
+  const connection = connections[networkChainIds.relayChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return 0;
+
+  const client = connection.client;
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return 0;
+
+  const currentBlockNumber = await client
+    .getTypedApi(metadata.relayChain)
+    .query.System.Number.getValue();
+
+  const now = Number(await client.getTypedApi(metadata.relayChain).query.Timestamp.Now.getValue());
+  if (now > timestamp) {
+    const diffInBlocks = currentBlockNumber - (now - timestamp) / 6000;
+    return diffInBlocks / TIMESLICE_PERIOD;
+  } else {
+    const diffInBlocks = currentBlockNumber + (timestamp - now) / 6000;
+    return diffInBlocks / TIMESLICE_PERIOD;
+  }
+};
+
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,

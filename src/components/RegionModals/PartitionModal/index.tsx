@@ -3,14 +3,16 @@ import styles from './partition-modal.module.scss';
 import { X } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUnit } from 'effector-react';
-import { $accountData, MultiChainAccountData } from '@/account';
+import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { timesliceToTimestamp } from '@/utils';
+import { RegionId, RELAY_CHAIN_BLOCK_TIME, TIMESLICE_PERIOD, timesliceToTimestamp, timestampToTimeslice } from '@/utils';
 import TransactionModal from '@/components/TransactionModal';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 interface PartitionModalProps {
   isOpen: boolean;
+  regionId: RegionId;
   onClose: () => void;
   regionBeginTimeslice: number;
   regionEndTimeslice: number;
@@ -18,6 +20,7 @@ interface PartitionModalProps {
 
 const PartitionModal: React.FC<PartitionModalProps> = ({
   isOpen,
+  regionId,
   onClose,
   regionBeginTimeslice,
   regionEndTimeslice,
@@ -103,9 +106,63 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
   };
 
   const partition = async () => {
-    // TODO
-    toast.error('Not supported yet');
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    const timestamp = formattedDateToTimestamp(splitDate);
+    const pivotInTimeslice = Math.floor(await timestampToTimeslice(connections, timestamp, network));
+
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.partition({
+      region_id: regionId,
+      pivot: pivotInTimeslice
+    });
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed');
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!');
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled');
+        console.log(e);
+      }
+    );
   };
+
+  const formattedDateToTimestamp = (formatted: string): number => {
+    const [day, month] = formatted.split('/').map(Number);
+    const year = new Date().getFullYear();
+
+    const date = new Date(year, month - 1, day);
+    return date.getTime();
+  }
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
