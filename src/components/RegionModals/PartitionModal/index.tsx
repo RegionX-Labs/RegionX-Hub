@@ -6,7 +6,11 @@ import { useUnit } from 'effector-react';
 import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { RegionId, RELAY_CHAIN_BLOCK_TIME, TIMESLICE_PERIOD, timesliceToTimestamp, timestampToTimeslice } from '@/utils';
+import {
+  RegionId,
+  timesliceToTimestamp,
+  timestampToTimeslice,
+} from '@/utils';
 import TransactionModal from '@/components/TransactionModal';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
@@ -130,11 +134,13 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
     }
 
     const timestamp = formattedDateToTimestamp(splitDate);
-    const pivotInTimeslice = Math.floor(await timestampToTimeslice(connections, timestamp, network));
+    const pivotInTimeslice = Math.floor(
+      await timestampToTimeslice(connections, timestamp, network)
+    );
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.partition({
       region_id: regionId,
-      pivot: pivotInTimeslice
+      pivot: pivotInTimeslice,
     });
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
@@ -162,7 +168,7 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
 
     const date = new Date(year, month - 1, day);
     return date.getTime();
-  }
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>

@@ -152,7 +152,9 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.interlace({
       region_id: regionId,
-      pivot: new FixedSizeBinary(bitStringToUint8Array(getBitArrayFromPercentage(Number(leftRatio))))
+      pivot: new FixedSizeBinary(
+        bitStringToUint8Array(getBitArrayFromPercentage(Number(leftRatio)))
+      ),
     });
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
@@ -180,7 +182,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
     const offBits = totalBits - onBits;
 
     return '1'.repeat(onBits) + '0'.repeat(offBits);
-  }
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>

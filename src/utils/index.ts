@@ -116,7 +116,7 @@ export const timesliceToTimestamp = async (
 export const timestampToTimeslice = async (
   connections: any,
   timestamp: EpochTimeStamp,
-  network: Network,
+  network: Network
 ): Promise<number> => {
   // We have the current block number and the corresponding timestamp.
   // Assume that 1 block ~ 6 seconds..
