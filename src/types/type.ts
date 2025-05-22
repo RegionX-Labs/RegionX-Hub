@@ -11,11 +11,13 @@ export interface RegionData {
   name: string;
   regionStart: string;
   regionEnd: string;
+  regionBeginTimeslice: number;
+  regionEndTimeslice: number;
   coreIndex: number;
   duration: string;
   coreOcupaccy: number;
   consumed: number;
-  currentUsage?: number | undefined;
+  currentUsage?: number;
   chainLabel: string;
   chainColor:
     | 'yellowDark'

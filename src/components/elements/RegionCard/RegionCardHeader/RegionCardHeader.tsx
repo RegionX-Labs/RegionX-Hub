@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './RegionCardHeader.module.scss';
+import LabelCard from '../../LabelCard/LabelCard';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { Pencil, MoreHorizontal } from 'lucide-react';
-import { useRef } from 'react';
 import TransferModal from '../../../RegionModals/TransferModal';
 import AssignModal from '../../../RegionModals/AssignModal';
 import PartitionModal from '../../../RegionModals/PartitionModal';
@@ -19,6 +19,8 @@ interface RegionCardHeaderProps {
   coreIndex: number;
   duration: string;
   onNameChange?: (newName: string) => void;
+  regionStartTimeslice: number;
+  regionEndTimeslice: number;
 }
 
 const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
@@ -29,6 +31,8 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   coreIndex,
   duration,
   onNameChange,
+  regionStartTimeslice,
+  regionEndTimeslice,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
   const ss58Address = encodeAddress(publicKey, 42);
@@ -78,9 +82,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
     };
   }, []);
 
-  const toggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
-  };
+  const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
   return (
     <>
@@ -105,6 +107,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             {regionStart} | {regionEnd}
           </p>
         </div>
+
         <div className={styles.dropdownWrapper} ref={dropdownRef}>
           <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
@@ -152,12 +155,14 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         <PartitionModal
           isOpen={isPartitionModalOpen}
           onClose={() => setPartitionModalOpen(false)}
+          regionBeginTimeslice={regionStartTimeslice}
+          regionEndTimeslice={regionEndTimeslice}
         />
+
         <InterlaceModal
           isOpen={isInterlaceModalOpen}
           onClose={() => setInterlaceModalOpen(false)}
         />
-
         <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
       </div>
 

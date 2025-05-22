@@ -102,19 +102,6 @@
   }
 }
 
-.percentageLabel {
-  position: absolute;
-  top: -28px;
-  background-color: $greenPrimary;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 6px;
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
-
 .assignBtn {
   width: 100%;
   padding: 12px;
@@ -129,4 +116,27 @@
   &:hover {
     background-color: color.adjust($greenPrimary, $lightness: -10%);
   }
+}
+.dateLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.sliderWrapper {
+  position: relative;
+}
+
+.percentageLabel {
+  position: absolute;
+  top: -30px;
+  transform: translateX(-50%);
+  background-color: #10b981;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
 }
