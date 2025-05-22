@@ -22,9 +22,6 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
   regionBeginTimeslice,
   regionEndTimeslice,
 }) => {
-  const min = 1;
-  const max = 100;
-
   const accountData = useUnit($accountData);
   const connections = useUnit($connections);
   const network = useUnit($network);
@@ -35,9 +32,6 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [splitDate, setSplitDate] = useState('');
-
-  const network = useUnit($network);
-  const connections = useUnit($connections);
 
   useEffect(() => {
     const loadDates = async () => {
@@ -161,7 +155,7 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
             onConfirm={onModalConfirm}
           />
         )}
-        <button className={styles.assignBtn} onClick={partition}>
+        <button className={styles.assignBtn} onClick={openModal}>
           Partition
         </button>
       </div>
