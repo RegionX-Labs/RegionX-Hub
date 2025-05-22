@@ -154,6 +154,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         />
         <PartitionModal
           isOpen={isPartitionModalOpen}
+          regionId={regionId}
           onClose={() => setPartitionModalOpen(false)}
           regionBeginTimeslice={regionStartTimeslice}
           regionEndTimeslice={regionEndTimeslice}
@@ -161,6 +162,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
         <InterlaceModal
           isOpen={isInterlaceModalOpen}
+          regionId={regionId}
           onClose={() => setInterlaceModalOpen(false)}
         />
         <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
