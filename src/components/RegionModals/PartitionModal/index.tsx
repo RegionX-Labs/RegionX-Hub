@@ -116,9 +116,9 @@ const PartitionModal: React.FC<PartitionModalProps> = ({
         </div>
 
         <p className={styles.subText}>
-          With partitioning, a region can be split into two new non-overlapping regions. 
-          <br/>
-          <br/>
+          With partitioning, a region can be split into two new non-overlapping regions.
+          <br />
+          <br />
           For example, a region purchased from the bulk sale with a duration of 28 days can be
           partitioned into two new regions, each with a duration of 14 days. One will be valid for
           the first 14 days, and the other for the remaining 14 days.
