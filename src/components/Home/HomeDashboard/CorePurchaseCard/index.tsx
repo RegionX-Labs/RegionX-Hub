@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $latestSaleInfo, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
-import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
+import { $latestSaleInfo, fetchCoresSold, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
+import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CorePurchaseCard.module.scss';
@@ -12,16 +12,16 @@ import TransactionModal from '@/components/TransactionModal';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 
 export default function CorePurchaseCard() {
-  const [accountData, connections, network, saleInfo, purchaseHistory, selectedAccount] = useUnit([
+  const [accountData, connections, network, saleInfo, selectedAccount] = useUnit([
     $accountData,
     $connections,
     $network,
     $latestSaleInfo,
-    $purchaseHistory,
     $selectedAccount,
   ]);
 
   const [corePrice, setCorePrice] = useState<number | null>(null);
+  const [coresSold, setCoresSold] = useState<number>(0);
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,6 +49,8 @@ export default function CorePurchaseCard() {
         setCurrentHeight(currentBlockNumber);
         const price = getCorePriceAt(currentBlockNumber, saleInfo);
         setCorePrice(price);
+        const coresSold = await fetchCoresSold(network, connections);
+        setCoresSold(coresSold || 0);
       })();
     }
   }, [saleInfo?.network, connections]);
@@ -78,6 +80,14 @@ export default function CorePurchaseCard() {
       toast.error('Account not selected');
       return;
     }
+    if (currentPhase === SalePhase.Interlude) {
+      toast.error('Cannot purchase a core during interlude phase');
+      return;
+    }
+    if (coresSold == saleInfo?.coresOffered) {
+      toast.error('No more cores remaining');
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -86,22 +96,12 @@ export default function CorePurchaseCard() {
     setIsModalOpen(false);
   };
 
-  const coresSold = purchaseHistory.length;
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
 
   const buyCore = async () => {
     if (!selectedAccount) {
       toast.error('Account not selected');
-      return;
-    }
-    if (currentPhase === SalePhase.Interlude) {
-      toast.error('Cannot purchase a core during interlude phase');
-      return;
-    }
-    // TODO: saleinfo doesn't contain coresSold.
-    if (saleInfo?.coresSold == saleInfo?.coresOffered) {
-      toast.error('No more cores remaining');
       return;
     }
 
@@ -153,7 +153,7 @@ export default function CorePurchaseCard() {
 
   return (
     <div className={styles.coreRemainingCard}>
-      <p className={styles.title}>Core Offered</p>
+      <p className={styles.title}>Cores Offered</p>
       <h2 className={styles.value}>{saleInfo ? coresOffered : '—'}</h2>
       <p className={styles.title}>Cores Remaining</p>
       <h2 className={styles.value}>{saleInfo ? coresRemaining : '—'}</h2>
