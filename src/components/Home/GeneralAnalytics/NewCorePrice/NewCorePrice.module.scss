@@ -1,0 +1,78 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.card {
+  background-color: $darkBackground3;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  text-align: center;
+  margin-bottom: 24px;
+  @include Inter;
+}
+
+.title {
+  color: $gray6;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.gaugeWrapper {
+  position: relative;
+  margin-top: 20px;
+  height: 230px;
+}
+
+.value {
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: $white;
+  margin-top: -85px;
+  margin-bottom: 20px;
+}
+
+.label {
+  color: $gray6;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+.date {
+  color: $gray6;
+  font-size: 0.75rem;
+  margin-bottom: 16px;
+}
+
+.explainBtn {
+  background: rgba($white, 0.1);
+  border: 1px solid $gray6;
+  border-radius: 8px;
+  color: $white;
+  font-size: 0.75rem;
+  margin-top: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.glow {
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+.priceLabels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 22px;
+  margin-top: -42px;
+  font-size: 12px;
+  color: #aaa;
+
+  .left {
+    text-align: left;
+  }
+
+  .right {
+    text-align: right;
+  }
+}
