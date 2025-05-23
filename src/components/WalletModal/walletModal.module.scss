@@ -62,9 +62,20 @@
     }
   }
 
-  .disabled .walletIcon {
-    filter: grayscale(100%);
-    opacity: 0.6;
+  .disabled {
+    .walletIcon {
+      filter: grayscale(100%);
+      opacity: 0.6;
+    }
+
+    span {
+      color: gray;
+    }
+  }
+  .hideOnMobile {
+    @media (max-width: 768px) {
+      display: none !important;
+    }
   }
 
   .closeButton {
@@ -98,5 +109,28 @@
 
   .desktopOnly {
     display: none;
+  }
+}
+.walletTextWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.extensionNote {
+  font-size: 12px;
+  color: gray;
+  margin-left: auto;
+  text-align: right;
+}
+
+.hideOnMobile {
+  @media (max-width: 768px) {
+    display: none !important;
   }
 }

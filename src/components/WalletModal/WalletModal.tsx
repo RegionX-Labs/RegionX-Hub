@@ -24,7 +24,12 @@ const WALLET_OPTIONS = [
     icon: subwalletIcon,
     url: 'https://subwallet.app/',
   },
-  { name: 'Nova', id: 'nova', icon: novaIcon, url: 'https://novawallet.io/' },
+  {
+    name: 'Nova',
+    id: 'nova',
+    icon: novaIcon,
+    url: 'https://novawallet.io/',
+  },
 ];
 
 interface WalletModalProps {
@@ -43,7 +48,12 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
       localStorage.setItem(SELECTED_WALLET_KEY, walletId);
       onClose();
     } else {
-      window.open(url, '_blank');
+      const confirmed = window.confirm(
+        'This wallet extension is not installed.\nDo you want to visit the official website to install it?'
+      );
+      if (confirmed) {
+        window.open(url, '_blank');
+      }
     }
   };
 
@@ -60,21 +70,31 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.walletContainer}>
           {WALLET_OPTIONS.map((wallet) => {
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);
+            const disabledClass = !isAvailable ? styles.disabled : '';
 
             return (
               <button
                 key={wallet.id}
-                className={`${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`}
+                className={`${styles.walletButton} ${disabledClass}`}
                 onClick={() => handleWalletClick(wallet.id, isAvailable, wallet.url)}
               >
-                <Image
-                  src={wallet.icon.src}
-                  alt={wallet.name}
-                  className={styles.walletIcon}
-                  width={24}
-                  height={24}
-                />
-                <span className={styles.desktopOnly}>{wallet.name}</span>
+                <div className={styles.iconWrapper}>
+                  <Image
+                    src={wallet.icon.src}
+                    alt={wallet.name}
+                    className={styles.walletIcon}
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <div className={styles.walletTextWrapper}>
+                  <span className={styles.desktopOnly}>{wallet.name}</span>
+                  {!isAvailable && (
+                    <span className={`${styles.hideOnMobile} ${styles.extensionNote}`}>
+                      Extension not found
+                    </span>
+                  )}
+                </div>
               </button>
             );
           })}
