@@ -1,14 +1,14 @@
 'use client';
 
 import { JSX, useEffect, useState } from 'react';
-import styles from './NewCorePrice.module.scss';
+import styles from './AuctionPriceOverview.module.scss';
 import { useUnit } from 'effector-react';
 import { $network, $connections } from '@/api/connection';
 import { $latestSaleInfo, $phaseEndpoints } from '@/coretime/saleInfo';
 import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
-export default function NewCorePrice() {
+export default function AuctionPriceOverview() {
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
   const phaseEndpoints = useUnit($phaseEndpoints);
@@ -159,7 +159,7 @@ export default function NewCorePrice() {
 
   return (
     <div className={styles.card}>
-      <div className={styles.title}>New Core Price</div>
+      <div className={styles.title}>Auction Price Overview</div>
       <div className={styles.gaugeWrapper}>
         <svg width='280' height='230' viewBox='0 0 201 150'>
           <g transform='rotate(-91 100 100)'>
@@ -176,8 +176,8 @@ export default function NewCorePrice() {
             {endPrice} {getTokenSymbol(network)}
           </span>
         </div>
+        <div className={styles.value}>{currentPrice}</div>
       </div>
-      <div className={styles.value}>{currentPrice}</div>
       <div className={styles.label}>Real-time auction price</div>
       <button className={styles.explainBtn}>
         The price decreases over time. The longer you wait, the higher the chance that others will
