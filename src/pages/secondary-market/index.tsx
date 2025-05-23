@@ -217,7 +217,7 @@ export default function SecondaryMarket() {
               </div>
             </div>
 
-            <TableComponent data={filteredData} pageSize={4} />
+            <TableComponent data={filteredData} pageSize={6} />
           </div>
         </div>
       </div>
