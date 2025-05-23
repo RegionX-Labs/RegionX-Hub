@@ -36,7 +36,7 @@ export default function UserBalance() {
       </p>
       <p className={styles.note}>
         To fund your account on the Coretime chain, you must <strong>transfer</strong> tokens <br />
-         from the Relay Chain to the Coretime Chain.
+        from the Relay Chain to the Coretime Chain.
       </p>
 
       <button className={styles.transferButton} onClick={handleTransferClick}>
