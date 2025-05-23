@@ -4,6 +4,7 @@ import { $walletExtensions, SELECTED_WALLET_KEY, walletSelected } from '@/wallet
 import Image from 'next/image';
 import styles from './walletModal.module.scss';
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
+import { Download } from 'lucide-react';
 
 const WALLET_OPTIONS = [
   {
@@ -42,18 +43,11 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleWalletClick = (walletId: string, isAvailable: boolean, url: string) => {
+  const handleWalletClick = (walletId: string, isAvailable: boolean) => {
     if (isAvailable) {
       walletSelected(walletId);
       localStorage.setItem(SELECTED_WALLET_KEY, walletId);
       onClose();
-    } else {
-      const confirmed = window.confirm(
-        'This wallet extension is not installed.\nDo you want to visit the official website to install it?'
-      );
-      if (confirmed) {
-        window.open(url, '_blank');
-      }
     }
   };
 
@@ -70,15 +64,15 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.walletContainer}>
           {WALLET_OPTIONS.map((wallet) => {
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);
-            const disabledClass = !isAvailable ? styles.disabled : '';
+            const buttonClass = `${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`;
 
             return (
               <button
                 key={wallet.id}
-                className={`${styles.walletButton} ${disabledClass}`}
-                onClick={() => handleWalletClick(wallet.id, isAvailable, wallet.url)}
+                className={buttonClass}
+                onClick={() => handleWalletClick(wallet.id, isAvailable)}
               >
-                <div className={styles.iconWrapper}>
+                <div className={styles.walletIconWrapper}>
                   <Image
                     src={wallet.icon.src}
                     alt={wallet.name}
@@ -87,12 +81,18 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                     height={24}
                   />
                 </div>
+
                 <div className={styles.walletTextWrapper}>
-                  <span className={styles.desktopOnly}>{wallet.name}</span>
+                  <span className={styles.walletName}>{wallet.name}</span>
                   {!isAvailable && (
-                    <span className={`${styles.hideOnMobile} ${styles.extensionNote}`}>
-                      Extension not found
-                    </span>
+                    <a
+                      href={wallet.url}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Download size={18} className={styles.downloadIcon} />
+                    </a>
                   )}
                 </div>
               </button>

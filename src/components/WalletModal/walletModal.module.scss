@@ -17,16 +17,15 @@
   background: $darkBackground2;
   padding: 20px;
   border-radius: 8px;
-  text-align: center;
   width: 400px;
   position: relative;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  text-align: center;
 
   h2 {
     color: $greenPrimary;
     margin-bottom: 30px;
     font-size: 22px;
-    text-align: center;
   }
 
   .walletContainer {
@@ -35,53 +34,10 @@
     justify-content: center;
   }
 
-  .walletButton {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin: 12px 0;
-    padding: 15px;
-    background: $darkBackground1;
-    border: none;
-    color: $white;
-    text-align: left;
-    padding-left: 20px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: 0.3s;
-    font-size: 16px;
-    @include Inter;
-
-    &:hover {
-      background: $darkBackground3;
-    }
-
-    .walletIcon {
-      margin-right: 12px;
-      transition: filter 0.3s ease;
-    }
-  }
-
-  .disabled {
-    .walletIcon {
-      filter: grayscale(100%);
-      opacity: 0.6;
-    }
-
-    span {
-      color: gray;
-    }
-  }
-  .hideOnMobile {
-    @media (max-width: 768px) {
-      display: none !important;
-    }
-  }
-
   .closeButton {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
     background: none;
     border: none;
     font-size: 24px;
@@ -90,47 +46,103 @@
   }
 }
 
-@media (max-width: 768px) {
-  .modalContent {
-    width: 150px;
-    padding: 20px;
-  }
+.walletButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 12px 0;
+  padding: 15px 20px;
+  background: $darkBackground1;
+  border: none;
+  color: $white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: left;
+  transition: 0.3s;
+  @include Inter;
 
-  .walletButton {
-    justify-content: center;
-    width: 10px;
+  &:hover {
+    background: $darkBackground3;
   }
 
   .walletIcon {
-    width: 24px;
-    height: 24px;
-    margin-right: 0;
-  }
-
-  .desktopOnly {
-    display: none;
+    margin-right: 12px;
+    transition: filter 0.3s ease;
   }
 }
+
 .walletTextWrapper {
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
 
-  @media (max-width: 768px) {
+.walletName {
+  flex: 1;
+}
+
+.downloadIcon {
+  color: $greenPrimary;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  margin-left: auto;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.disabled {
+  .walletIcon {
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+}
+@media (max-width: 540px) {
+  .modalContent {
+    width: 70%;
+  }
+}
+
+@media (max-width: 140px) {
+  .modalContent {
+    width: 70%;
+  }
+
+  .walletButton {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .walletIcon {
+    margin-right: 0;
+  }
+
+  .walletTextWrapper {
+    display: none;
+  }
+
+  .walletButton.disabled {
+    justify-content: space-between;
+    padding: 12px 16px;
+
+    .walletTextWrapper {
+      display: flex;
+      justify-content: flex-end;
+      flex: 1;
+    }
+  }
+
+  .walletName {
     display: none;
   }
 }
 
-.extensionNote {
-  font-size: 12px;
-  color: gray;
-  margin-left: auto;
-  text-align: right;
-}
-
-.hideOnMobile {
-  @media (max-width: 768px) {
-    display: none !important;
+.desktopOnly {
+  @media (max-width: 540px) {
+    display: none;
   }
 }
