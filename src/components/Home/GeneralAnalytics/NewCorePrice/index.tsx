@@ -5,7 +5,7 @@ import styles from './NewCorePrice.module.scss';
 import { useUnit } from 'effector-react';
 import { $network, $connections } from '@/api/connection';
 import { $latestSaleInfo, $phaseEndpoints } from '@/coretime/saleInfo';
-import { getCorePriceAt, toUnit } from '@/utils';
+import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
 export default function NewCorePrice() {
@@ -169,13 +169,16 @@ export default function NewCorePrice() {
           </g>
         </svg>
         <div className={styles.priceLabels}>
-          <span className={styles.left}>{initialPrice} </span>
-          <span className={styles.right}>{endPrice}</span>
+          <span className={styles.left}>
+            {initialPrice} {getTokenSymbol(network)}
+          </span>
+          <span className={styles.right}>
+            {endPrice} {getTokenSymbol(network)}
+          </span>
         </div>
       </div>
       <div className={styles.value}>{currentPrice}</div>
       <div className={styles.label}>Real-time auction price</div>
-      <button className={styles.explainBtn}>What these stats mean?</button>
     </div>
   );
 }
