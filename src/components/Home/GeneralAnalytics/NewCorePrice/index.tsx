@@ -179,6 +179,10 @@ export default function NewCorePrice() {
       </div>
       <div className={styles.value}>{currentPrice}</div>
       <div className={styles.label}>Real-time auction price</div>
+      <button className={styles.explainBtn}>
+        The price decreases over time. The longer you wait, the higher the chance that others will
+        purchase the available cores.
+      </button>
     </div>
   );
 }
