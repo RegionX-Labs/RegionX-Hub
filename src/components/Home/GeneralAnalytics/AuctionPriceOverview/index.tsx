@@ -176,7 +176,9 @@ export default function AuctionPriceOverview() {
             {endPrice} {getTokenSymbol(network)}
           </span>
         </div>
-        <div className={styles.value}>{currentPrice}</div>
+        <div className={styles.value}>
+          {currentPrice} {getTokenSymbol(network)}
+        </div>
       </div>
       <div className={styles.label}>Real-time auction price</div>
       <button className={styles.explainBtn}>
