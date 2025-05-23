@@ -56,7 +56,7 @@ export type SaleInfo = {
   idealCoresSold: number;
   coresOffered: number;
   startPrice: string;
-  coresSold: number;
+  coresSold: number | undefined;
 };
 
 export const latestSaleRequested = createEvent<Network>();
@@ -258,6 +258,26 @@ export const fetchSelloutPrice = async (
   const saleInfo = await api.query.Broker.SaleInfo.getValue();
 
   return saleInfo?.sellout_price ?? null;
+};
+
+export const fetchCoresSold = async (
+  network: Network,
+  connections: any
+): Promise<number | null> => {
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return null;
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
+
+  const saleInfo = await api.query.Broker.SaleInfo.getValue();
+
+  return saleInfo?.cores_sold ?? null;
 };
 
 export const fetchBrokerConfig = async (
