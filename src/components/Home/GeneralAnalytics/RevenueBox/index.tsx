@@ -31,7 +31,7 @@ const RevenueBox = ({
       <p className={styles.metricLabel}>Total Sales</p>
       <h3 className={styles.coretimeValue}>{purchaseHistory.length.toLocaleString()}</h3>
       <p className={styles.gain}>
-        Compared to last month{' '}
+        Compared to last sale cycle{' '}
         <span className={styles.gainAmount}>
           {previousBulkRevenue === null ? 'Loading...' : `${gainSign}${gainAmount}`}
         </span>

@@ -35,8 +35,8 @@ export default function UserBalance() {
         This balance is used to <strong>purchase</strong> or <strong>renew</strong> a core
       </p>
       <p className={styles.note}>
-        To fund the Coretime chain balance, you must transfer tokens <br />
-        <strong>cross-chain</strong> from the Relay Chain to the Coretime Chain.
+        To fund your account on the Coretime chain, you must <strong>transfer</strong> tokens <br />
+         from the Relay Chain to the Coretime Chain.
       </p>
 
       <button className={styles.transferButton} onClick={handleTransferClick}>
