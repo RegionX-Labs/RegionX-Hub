@@ -2,43 +2,48 @@
 @use '../../styles/mixins' as *;
 @use 'sass:color';
 
+.secondaryMarketPage {
+  width: 100%;
+}
+
 .secondaryMarketTableContainer {
   width: 100%;
-  margin-top: 200px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: $darkBackground2;
+  margin: 200px auto 45px;
+  background: $darkBackground2;
   @include Inter;
   border-radius: 20px;
-  margin-bottom: 45px;
   border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
-
   overflow-x: auto;
 }
 
 .secondaryMarketTableInner {
   margin-top: 30px;
   width: 97%;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: transparent;
+  margin-inline: auto;
+  background: transparent;
   border-radius: 10px;
   overflow-x: auto;
 }
 
 .tableWrapper {
+  background: $darkBackground2;
   border-radius: 12px;
-  background-color: $darkBackground2;
-  padding: 0;
-  overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  padding: 0;
   min-width: 600px;
 }
 
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .marketHeading {
-  font-size: 20px;
-  font-weight: 600;
-  color: white;
+  font: 600 20px/1;
+  color: $white;
 
   @media (max-width: 768px) {
     text-align: left;
@@ -64,6 +69,90 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: color.adjust($white, $lightness: -25%);
+    background: color.adjust($white, $lightness: -25%);
+  }
+}
+
+$grayDark: #1f1f1f !default;
+$gray: #3a3a3a !default;
+
+.filterWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.filterButton {
+  background: $darkBackground2;
+  border: 1px solid $gray;
+  color: $white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  svg {
+    stroke-width: 2;
+  }
+
+  &:hover {
+    background: lighten($grayDark, 5%);
+  }
+}
+
+.filterDropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 220px;
+  background: $background;
+  border: 1px solid $gray;
+  border-radius: 12px;
+  padding: 16px;
+  z-index: 100;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.filterInputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: $white;
+    margin-bottom: 4px;
+  }
+
+  input {
+    padding: 8px 10px;
+    border: 1px solid $gray;
+    background-color: $darkBackground1;
+    border-radius: 6px;
+    color: $white;
+    font-size: 14px;
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &::-moz-number-spin-box,
+    &::-moz-inner-spin-button,
+    &::-moz-outer-spin-button {
+      appearance: none;
+    }
+
+    &:focus {
+      border-color: $sliderDisabled;
+      outline: none;
+    }
   }
 }
