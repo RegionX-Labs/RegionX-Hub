@@ -177,7 +177,7 @@ export default function CorePurchaseCard() {
       )}
 
       <button onClick={openModal} className={styles.buyButton}>
-        Buy Core
+        Purchase New Core
       </button>
       <Toaster />
     </div>

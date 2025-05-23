@@ -39,7 +39,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           <span>{toUnitFormatted(network, accountData.relayChainData.free)}</span>
         </p>
         <p className={styles.balance}>
-          Coretime Balance:{' '}
+          Coretime Chain Balance:{' '}
           <span>{toUnitFormatted(network, accountData.coretimeChainData.free)}</span>
         </p>
         <p className={styles.balance}>

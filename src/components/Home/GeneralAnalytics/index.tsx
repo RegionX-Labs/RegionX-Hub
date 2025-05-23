@@ -6,7 +6,7 @@ export default function GeneralAnalytics() {
     <div className={styles.analyticsCard}>
       <div className={styles.header}>
         <h2>General Analytics</h2>
-        <p>Control all the metrics in this section</p>
+        <p>Overview of all statistics and user-related data</p>
       </div>
       <div className={styles.tabsWrapper}>
         <ul className={styles.tabs}>
