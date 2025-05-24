@@ -12,7 +12,7 @@ import {
 import { $connections, $network } from '@/api/connection';
 
 export enum SalePhase {
-  Interlude = 'Inerlude Phase',
+  Interlude = 'Interlude Phase',
   Leadin = 'Leadin Phase',
   FixedPrice = 'Fixed Price Phase',
 }
