@@ -8,6 +8,13 @@ import HomeDashboard from '@/components/Home/HomeDashboard';
 export default function Home() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 800);
