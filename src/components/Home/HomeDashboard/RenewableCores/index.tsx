@@ -57,7 +57,7 @@ export default function RenewableCores() {
       .sort((a, b) => a.key.localeCompare(b.key));
     setOptions(_options);
 
-    if(_options[0]) setSelected(_options[0].value);
+    if (_options[0]) setSelected(_options[0].value);
   }, [potentialRenewals]);
 
   const getDateFromTimeslice = async (timeslice: number | null) => {
