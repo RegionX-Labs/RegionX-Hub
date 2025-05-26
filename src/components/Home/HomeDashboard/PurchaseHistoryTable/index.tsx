@@ -64,7 +64,7 @@ export default function PurchaseHistoryTable() {
         data: purchase.address,
         searchKey: purchase.address,
       },
-      Core: {
+      CoreID: {
         cellType: 'text' as const,
         data: String(purchase.core),
         searchKey: String(purchase.core),
