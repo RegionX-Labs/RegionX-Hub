@@ -18,9 +18,10 @@ export default function UserBalance() {
   if (!selectedAccount || !accountDataMap) return null;
 
   const accountData = accountDataMap[selectedAccount.address];
-  if (!accountData || !accountData.coretimeChainData) return null;
+  if (!accountData || !accountData.coretimeChainData || !accountData.relayChainData) return null;
 
-  const formatted = toUnitFormatted(network, accountData.coretimeChainData.free);
+  const formattedCoretime = toUnitFormatted(network, accountData.coretimeChainData.free);
+  const formattedRelay = toUnitFormatted(network, accountData.relayChainData.free);
 
   const handleTransferClick = () => {
     router.push('/cross-chain');
@@ -28,8 +29,11 @@ export default function UserBalance() {
 
   return (
     <div className={styles.metricBox}>
+      <span className={styles.metricLabel}>Relay Chain Balance</span>
+      <h3 className={styles.coretimeValue}>{formattedRelay}</h3>
+
       <span className={styles.metricLabel}>Coretime Chain Balance</span>
-      <h3 className={styles.coretimeValue}>{formatted}</h3>
+      <h3 className={styles.coretimeValue}>{formattedCoretime}</h3>
 
       <p className={styles.infoText}>
         This balance is used to <strong>purchase</strong> or <strong>renew</strong> a core
