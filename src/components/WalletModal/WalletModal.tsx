@@ -4,6 +4,7 @@ import { $walletExtensions, SELECTED_WALLET_KEY, walletSelected } from '@/wallet
 import Image from 'next/image';
 import styles from './walletModal.module.scss';
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
+import { Download } from 'lucide-react';
 
 const WALLET_OPTIONS = [
   {
@@ -24,7 +25,12 @@ const WALLET_OPTIONS = [
     icon: subwalletIcon,
     url: 'https://subwallet.app/',
   },
-  { name: 'Nova', id: 'nova', icon: novaIcon, url: 'https://novawallet.io/' },
+  {
+    name: 'Nova',
+    id: 'nova',
+    icon: novaIcon,
+    url: 'https://novawallet.io/',
+  },
 ];
 
 interface WalletModalProps {
@@ -37,13 +43,11 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleWalletClick = (walletId: string, isAvailable: boolean, url: string) => {
+  const handleWalletClick = (walletId: string, isAvailable: boolean) => {
     if (isAvailable) {
       walletSelected(walletId);
       localStorage.setItem(SELECTED_WALLET_KEY, walletId);
       onClose();
-    } else {
-      window.open(url, '_blank');
     }
   };
 
@@ -60,21 +64,37 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.walletContainer}>
           {WALLET_OPTIONS.map((wallet) => {
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);
+            const buttonClass = `${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`;
 
             return (
               <button
                 key={wallet.id}
-                className={`${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`}
-                onClick={() => handleWalletClick(wallet.id, isAvailable, wallet.url)}
+                className={buttonClass}
+                onClick={() => handleWalletClick(wallet.id, isAvailable)}
               >
-                <Image
-                  src={wallet.icon.src}
-                  alt={wallet.name}
-                  className={styles.walletIcon}
-                  width={24}
-                  height={24}
-                />
-                <span className={styles.desktopOnly}>{wallet.name}</span>
+                <div className={styles.walletIconWrapper}>
+                  <Image
+                    src={wallet.icon.src}
+                    alt={wallet.name}
+                    className={styles.walletIcon}
+                    width={24}
+                    height={24}
+                  />
+                </div>
+
+                <div className={styles.walletTextWrapper}>
+                  <span className={styles.walletName}>{wallet.name}</span>
+                  {!isAvailable && (
+                    <a
+                      href={wallet.url}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Download size={18} className={styles.downloadIcon} />
+                    </a>
+                  )}
+                </div>
               </button>
             );
           })}
