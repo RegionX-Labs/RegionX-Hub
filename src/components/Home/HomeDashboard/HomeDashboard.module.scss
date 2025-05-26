@@ -12,16 +12,12 @@
   @include Inter;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 0;
+    background: transparent;
   }
 
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   @media (max-width: 800px) {
     max-height: none;
     overflow: visible;
