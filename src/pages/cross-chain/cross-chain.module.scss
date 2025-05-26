@@ -8,7 +8,7 @@
   align-items: center;
   padding: 3rem;
   min-height: 100vh;
-  margin-top: 100px;
+  margin-top: 70px;
   color: white;
   @include Inter;
 }
@@ -135,7 +135,7 @@
 .meButton {
   background-color: $darkBackground2;
   color: white;
-  padding: 14px 16px;
+  padding: 16px 16px;
   border-radius: 8px;
   border: none;
   white-space: nowrap;
@@ -144,5 +144,47 @@
 
   &:hover {
     background-color: color.adjust($darkBackground2, $lightness: 3%);
+  }
+}
+.balanceBox {
+  display: flex;
+  gap: 40px;
+  background: $darkBackground2;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 820px;
+  justify-content: space-between;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.balanceItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: $gray6;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $white;
+}
+.balanceItem.alignRight {
+  align-items: flex-end;
+  text-align: right;
+
+  @media (max-width: 600px) {
+    align-items: flex-start;
+    text-align: left;
   }
 }
