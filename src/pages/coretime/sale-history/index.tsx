@@ -93,7 +93,7 @@ const SaleHistoryPage = () => {
             : null;
 
           return {
-            SaleId: {
+            SaleID: {
               cellType: 'link' as const,
               data: String(sale.saleCycle),
               link: `/sales/${sale.saleCycle}`,
@@ -161,7 +161,7 @@ const SaleHistoryPage = () => {
         data: purchase.address,
         searchKey: purchase.address,
       },
-      Core: {
+      CoreID: {
         cellType: 'text' as const,
         data: String(purchase.core),
         searchKey: String(purchase.core),
