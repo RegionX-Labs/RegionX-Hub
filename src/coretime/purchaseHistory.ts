@@ -9,7 +9,7 @@ export const $purchaseHistory = createStore<PurchaseHistoryItem[]>([]);
 export const $totalPurchases = createStore<number>(0);
 
 export enum PurchaseType {
-  BULK = 'bulk',
+  BULK = 'bulk sale purchase',
   RENEWAL = 'renewal',
 }
 
@@ -67,7 +67,7 @@ const getPurchaseHistoryFx = createEffect(
           extrinsicId: `${height}-${extrinsicId}`,
           timestamp: new Date(Number(timestamp)),
           price: parseInt(price),
-          type: purchaseType,
+          type: purchaseType === 'bulk' ? PurchaseType.BULK : PurchaseType.RENEWAL,
         }) as PurchaseHistoryItem
     );
 
