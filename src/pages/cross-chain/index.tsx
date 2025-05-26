@@ -151,7 +151,7 @@ const CrossChain = () => {
       }),
       assets: XcmVersionedAssets.V3([
         {
-          fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
+          fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount)) as bigint),
           id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 0 }),
         },
       ]),
@@ -219,7 +219,7 @@ const CrossChain = () => {
       }),
       assets: XcmVersionedAssets.V3([
         {
-          fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, BigInt(amount)) as bigint),
+          fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount)) as bigint),
           id: XcmV3MultiassetAssetId.Concrete({ interior: XcmV3Junctions.Here(), parents: 1 }),
         },
       ]),

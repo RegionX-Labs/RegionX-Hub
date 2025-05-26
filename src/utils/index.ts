@@ -82,9 +82,9 @@ export const toUnitFormatted = (network: Network, amount: bigint): string => {
   return `${formatted} ${getTokenSymbol(network)}`;
 };
 
-export const fromUnit = (network: Network, amount: bigint): bigint => {
+export const fromUnit = (network: Network, amount: number): bigint => {
   const decimals = getNetworkDecimals(network);
-  return amount * BigInt(Math.pow(10, decimals));
+  return BigInt(amount * Math.pow(10, decimals));
 };
 
 export const timesliceToTimestamp = async (
