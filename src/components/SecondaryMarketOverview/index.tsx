@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './SecondaryMarketOverview.module.scss';
 import { useUnit } from 'effector-react';
-import { $network, $connections } from '@/api/connection';
+import { $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import { $accountData } from '@/account';
-import { toUnitFormatted } from '@/utils';
+import { getTokenSymbol, toUnitFormatted } from '@/utils';
 
 export default function SecondaryMarketOverview() {
   const [network, selectedAccount, accountDataMap] = useUnit([
@@ -28,20 +28,20 @@ export default function SecondaryMarketOverview() {
   return (
     <div className={styles.card}>
       <div className={styles.title}>Average Price</div>
-      <div className={styles.averagePrice}>SOL 65.740</div>
+      <div className={styles.averagePrice}>{getTokenSymbol(network)} 65.740</div>
 
       <div className={styles.volumeLabel}>Volume of recent sales</div>
-      <div className={styles.volumeValue}>DOT 43</div>
+      <div className={styles.volumeValue}>{getTokenSymbol(network)} 43</div>
 
       {selectedAccount && accountData && (
         <div className={styles.balanceBox}>
           <div className={styles.balanceItem}>
             <span className={styles.label}>Relay Chain Balance</span>
-            <span className={styles.value}>{formattedRelay} DOT</span>
+            <span className={styles.value}>{formattedRelay}</span>
           </div>
           <div className={`${styles.balanceItem} ${styles.alignRight}`}>
             <span className={styles.label}>Coretime Chain Balance</span>
-            <span className={styles.value}>{formattedCoretime} DOT</span>
+            <span className={styles.value}>{formattedCoretime}</span>
           </div>
         </div>
       )}
