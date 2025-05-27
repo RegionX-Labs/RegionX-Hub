@@ -1,0 +1,140 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:color';
+
+.card {
+  background-color: $darkBackground3;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  text-align: left;
+  color: $white;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.title {
+  color: $gray6;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.averagePrice {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: $white;
+}
+
+.volumeLabel {
+  color: $gray6;
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+.volumeValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $white;
+}
+
+.listingLabel {
+  color: $gray6;
+  font-size: 0.8rem;
+  margin-top: 60px;
+}
+
+.listingBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $darkBackground2;
+  padding: 10px 12px;
+  border-radius: 8px;
+  gap: 8px;
+  margin-top: 6px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.listingId {
+  background-color: $gray3;
+  color: $black;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.listingPrice {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $white;
+  flex: 1;
+  text-align: right;
+
+  @media (max-width: 480px) {
+    text-align: left;
+  }
+}
+
+.buyButton {
+  background-color: $white;
+  color: $black;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: $gray3;
+  }
+}
+.balanceBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+
+  @media (max-width: 480px) {
+    align-items: flex-start;
+  }
+}
+
+.balanceItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+.label {
+  color: $gray6;
+}
+
+.value {
+  color: $white;
+  font-weight: 600;
+  text-align: right;
+
+  @media (max-width: 480px) {
+    text-align: left;
+  }
+}
+
+.alignRight {
+  justify-content: space-between;
+}
