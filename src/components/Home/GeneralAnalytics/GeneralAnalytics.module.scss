@@ -10,7 +10,7 @@
   width: 500px;
   margin-top: 100px;
   margin-left: 20px;
-  max-height: 80%;
+  max-height: 80vh;
   @include Inter;
   overflow-y: auto;
 
@@ -28,12 +28,11 @@
 
   @media (max-width: 800px) {
     width: 85%;
-    height: auto;
-    overflow: visible;
     margin-left: auto;
     margin-right: auto;
     margin-top: 140px;
     margin-bottom: 40px;
+    max-height: 75vh;
   }
 }
 
