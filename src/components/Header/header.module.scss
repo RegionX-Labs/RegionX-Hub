@@ -28,14 +28,16 @@
 }
 
 .logo {
-  width: 150px;
+  width: 160px;
   height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  transition: margin-left 0.3s ease;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    margin-left: auto;
+    margin-right: 25px;
+  }
 }
+
 .settingIcon {
   width: 30px;
   height: auto;
@@ -57,6 +59,11 @@
 .burgerAndLogo {
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+    width: 100%;
+  }
 
   @media (min-width: 1281px) {
     .burgerIcon {
@@ -455,7 +462,7 @@
 
 @media (max-width: 1450px) {
   .logo {
-    width: 120px;
+    width: 150px;
   }
 
   .navItem {
@@ -475,5 +482,31 @@
 
   .desktopContent {
     gap: 5px;
+  }
+}
+@media (max-width: 800px) {
+  .logo {
+    width: 150px;
+  }
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+.burgerAndLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+    width: auto;
   }
 }

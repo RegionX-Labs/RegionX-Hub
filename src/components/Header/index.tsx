@@ -43,19 +43,17 @@ const Header: React.FC = () => {
     <nav className={styles.navbar}>
       <div className={styles.navbarInner}>
         <div className={styles.leftSection}>
-          <div className={styles.burgerAndLogo}>
-            <div className={styles.burgerIcon} onClick={toggleMenu}>
-              ☰
-            </div>
-            <Image
-              src='/WhiteLogo.png'
-              alt='Logo'
-              className={styles.logo}
-              width={1829}
-              height={782}
-              onClick={() => handleNavigation('/')}
-            />
+          <div className={styles.burgerIcon} onClick={toggleMenu}>
+            ☰
           </div>
+          <Image
+            src='/WhiteLogo.png'
+            alt='Logo'
+            className={styles.logo}
+            width={1829}
+            height={782}
+            onClick={() => handleNavigation('/')}
+          />
         </div>
 
         <div
@@ -102,7 +100,6 @@ const Header: React.FC = () => {
       </div>
 
       <div className={styles.desktopContent}>
-        <div className={styles.content}></div>
         <div className={styles.networkSelector} style={{ width: '150px' }}>
           <NetworkSelector />
         </div>
@@ -155,7 +152,7 @@ const Header: React.FC = () => {
         </ul>
 
         <div className={styles.mobileContent}>
-          <div className={styles.networkSelector} style={{ width: '100%' }}>
+          <div className={styles.networkSelector}>
             <NetworkSelector />
           </div>
           {accounts.length > 0 ? (
@@ -179,7 +176,6 @@ const Header: React.FC = () => {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
               <Image src='/Settings.svg' alt='settings' width={24} height={24} />
-              <span style={{ color: 'white' }}></span>
             </div>
           </button>
         </div>
