@@ -73,7 +73,7 @@ export const chains = {
     name: 'Paseo Coretime',
     nodes: [
       { url: 'wss://sys.ibp.network/coretime-paseo' },
-      { url: 'wss://sys.ibp.network/coretime-westend' },
+      { url: 'wss://paseo-coretime.paranodes.io' },
     ],
   },
   westendCoretime: {
