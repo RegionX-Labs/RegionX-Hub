@@ -99,7 +99,7 @@ $gray: #3a3a3a !default;
   }
 
   &:hover {
-    background: lighten($grayDark, 5%);
+    background: color.adjust($grayDark, $lightness: 5%);
   }
 }
 

@@ -1,6 +1,5 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
 @use 'sass:color';
 
 .card {
@@ -43,7 +42,7 @@
 .listingLabel {
   color: $gray6;
   font-size: 0.8rem;
-  margin-top: 120px; // pushes it to the bottom
+  margin-top: 60px;
 }
 
 .listingBox {
@@ -97,4 +96,45 @@
   &:hover {
     background-color: $gray3;
   }
+}
+.balanceBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+
+  @media (max-width: 480px) {
+    align-items: flex-start;
+  }
+}
+
+.balanceItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+.label {
+  color: $gray6;
+}
+
+.value {
+  color: $white;
+  font-weight: 600;
+  text-align: right;
+
+  @media (max-width: 480px) {
+    text-align: left;
+  }
+}
+
+.alignRight {
+  justify-content: space-between;
 }
