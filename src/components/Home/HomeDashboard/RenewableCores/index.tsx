@@ -41,7 +41,7 @@ export default function RenewableCores() {
     const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
       potentialRenewals.entries()
     )
-      .filter((renewal) => renewal[0].when >= saleInfo.regionBegin && renewal[0].when <= saleInfo.regionEnd)
+      .filter((renewal) => renewal[0].when === saleInfo.regionBegin)
       .map((renewal) => ({
         key: `${renewal[0].when}-${renewal[0].core}`,
         label: `Core ${renewal[0].core} | ${
