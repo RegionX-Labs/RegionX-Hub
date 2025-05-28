@@ -43,7 +43,10 @@ export default function RenewableCores() {
       .filter((renewal) => renewal[0].when >= (saleInfo?.regionBegin || 0))
       .map((renewal) => ({
         key: `${renewal[0].when}-${renewal[0].core}`,
-        label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
+        label: `Core ${renewal[0].core} | ${
+          chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ??
+          'Parachain ' + (renewal[1].completion as any).value[0].assignment.value
+        }`,
         value: renewal,
         icon: (
           <img
