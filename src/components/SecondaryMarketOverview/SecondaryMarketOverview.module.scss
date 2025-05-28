@@ -13,6 +13,7 @@
   flex-direction: column;
   gap: 12px;
   flex: 1;
+  @include Inter;
 }
 
 .title {
