@@ -37,7 +37,7 @@ export default function RenewableCores() {
   }, [network, connections]);
 
   useEffect(() => {
-    if(!saleInfo) return;
+    if (!saleInfo) return;
     const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
       potentialRenewals.entries()
     )
@@ -66,12 +66,11 @@ export default function RenewableCores() {
 
   useEffect(() => {
     (async () => {
-      if(!selected) return setSelectedDeadline('-');
-      const deadline = await timesliceToTimestamp(selected[0].when, network, connections); 
-      if(!deadline) return setSelectedDeadline('-');
+      if (!selected) return setSelectedDeadline('-');
+      const deadline = await timesliceToTimestamp(selected[0].when, network, connections);
+      if (!deadline) return setSelectedDeadline('-');
       setSelectedDeadline(formatDate(deadline));
     })();
-
   }, [selected]);
 
   const openModal = () => {
@@ -159,11 +158,7 @@ export default function RenewableCores() {
       <p className={styles.title}>Renewable Cores</p>
 
       <div className={styles.selectBox}>
-        <Select
-          options={options}
-          selectedValue={selected}
-          onChange={setSelected}
-        />
+        <Select options={options} selectedValue={selected} onChange={setSelected} />
       </div>
 
       <div className={styles.details}>
