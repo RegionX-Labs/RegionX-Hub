@@ -21,7 +21,7 @@
 .SecondaryMarketOverview {
   flex: 1.1;
   min-width: 300px;
-  max-width: 37%;
+  max-width: 30%;
   @media (max-width: 1024px) {
     max-width: 100%;
   }
@@ -38,5 +38,6 @@
 
 .PricingChartCard {
   flex: 1;
+  height: 100%;
   max-width: 100%;
 }

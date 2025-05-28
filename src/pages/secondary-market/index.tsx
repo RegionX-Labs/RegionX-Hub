@@ -6,6 +6,7 @@ import SecondaryMarketOverview from '@/components/SecondaryMarketOverview';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import { latestSaleRequested } from '@/coretime/saleInfo';
+import HistoricalPricingChart from '@/components/HistoricalPricingChart';
 
 export default function SecondaryMarket() {
   const network = useUnit($network);
@@ -24,7 +25,7 @@ export default function SecondaryMarket() {
           <AuctionPriceOverview />
         </div>
         <div className={styles.PricingChartCard}>
-          <AuctionPriceOverview />
+          <HistoricalPricingChart />
         </div>
       </div>
       <SecondaryMarketplaceTable />
