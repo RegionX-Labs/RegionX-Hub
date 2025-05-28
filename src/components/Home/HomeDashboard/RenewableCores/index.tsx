@@ -37,10 +37,11 @@ export default function RenewableCores() {
   }, [network, connections]);
 
   useEffect(() => {
+    if (!saleInfo) return;
     const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
       potentialRenewals.entries()
     )
-      .filter((renewal) => renewal[0].when >= (saleInfo?.regionBegin || 0))
+      .filter((renewal) => renewal[0].when === saleInfo.regionBegin)
       .map((renewal) => ({
         key: `${renewal[0].when}-${renewal[0].core}`,
         label: `Core ${renewal[0].core} | ${
@@ -61,16 +62,16 @@ export default function RenewableCores() {
     setOptions(_options);
 
     if (_options[0]) setSelected(_options[0].value);
-  }, [potentialRenewals]);
+  }, [saleInfo, potentialRenewals]);
 
-  const getDateFromTimeslice = async (timeslice: number | null) => {
-    setSelectedDeadline('-');
-    if (!timeslice) return;
-    const timestamp = await timesliceToTimestamp(timeslice, network, connections);
-    if (!timestamp) return setSelectedDeadline('-');
-
-    setSelectedDeadline(formatDate(timestamp));
-  };
+  useEffect(() => {
+    (async () => {
+      if (!selected) return setSelectedDeadline('-');
+      const deadline = await timesliceToTimestamp(selected[0].when, network, connections);
+      if (!deadline) return setSelectedDeadline('-');
+      setSelectedDeadline(formatDate(deadline));
+    })();
+  }, [selected]);
 
   const openModal = () => {
     if (!selectedAccount) {
@@ -157,14 +158,7 @@ export default function RenewableCores() {
       <p className={styles.title}>Renewable Cores</p>
 
       <div className={styles.selectBox}>
-        <Select
-          options={options}
-          selectedValue={selected}
-          onChange={(val) => {
-            setSelected(val);
-            getDateFromTimeslice(val ? val[0].when : null);
-          }}
-        />
+        <Select options={options} selectedValue={selected} onChange={setSelected} />
       </div>
 
       <div className={styles.details}>
