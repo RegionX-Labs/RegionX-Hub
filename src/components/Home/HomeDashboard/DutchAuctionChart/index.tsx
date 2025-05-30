@@ -154,19 +154,19 @@ export default function DutchAuctionChart() {
           x: phaseEndpoints?.interlude.start,
           x2: phaseEndpoints?.interlude.end,
           fillColor: 'rgba(0, 255, 163, 0.05)',
-          opacity: 0.3,
+          opacity: 0.8,
         },
         {
           x: phaseEndpoints?.leadin.start,
           x2: phaseEndpoints?.leadin.end,
           fillColor: 'rgba(0, 17, 255, 0.05)',
-          opacity: 0.3,
+          opacity: 0.8,
         },
         {
           x: phaseEndpoints?.fixed.start,
           x2: phaseEndpoints?.fixed.end,
           fillColor: 'rgba(136, 136, 136, 0.05)',
-          opacity: 0.3,
+          opacity: 0.8,
         },
         {
           x: Date.now(),

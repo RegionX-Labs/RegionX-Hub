@@ -63,7 +63,7 @@
 .fromInput {
   width: 100%;
   padding: 15px;
-  background-color: $darkBackground2;
+  background-color: $darkBackground1;
   border: 1px solid $darkBackground3;
   border-radius: 10px;
   color: $white;
@@ -94,7 +94,8 @@
   gap: 5px;
   margin-bottom: 20px;
   margin-top: 20px;
-  border: 1px solid $darkBackground3;
+  background-color: $darkBackground1;
+  border: 1px solid $darkBackground1;
   border-radius: 10px;
 }
 
@@ -150,8 +151,8 @@
 .fromInputWithIcon {
   width: 100%;
   padding: 15px 15px 15px 44px;
-  background-color: $darkBackground2;
-  border: 1px solid $darkBackground3;
+  background-color: $darkBackground1;
+  border: 1px solid $darkBackground1;
   border-radius: 10px;
   color: $white;
   font-size: 14px;

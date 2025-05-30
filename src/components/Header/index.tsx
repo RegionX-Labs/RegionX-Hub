@@ -11,7 +11,11 @@ import Button from '../elements/Button/Button';
 import { $loadedAccounts } from '@/wallet';
 import DownArrow from '../../../public/DownArrow.svg';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  theme: 'light' | 'dark';
+}
+
+const Header: React.FC<HeaderProps> = ({ theme }) => {
   const accounts = useUnit($loadedAccounts);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
@@ -47,12 +51,13 @@ const Header: React.FC = () => {
             ☰
           </div>
           <Image
-            src='/WhiteLogo.png'
+            src={theme === 'dark' ? '/WhiteLogo.png' : '/DarkLogo.png'}
             alt='Logo'
             className={styles.logo}
-            width={1829}
+            width={1229}
             height={782}
             onClick={() => handleNavigation('/')}
+            priority
           />
         </div>
 
@@ -115,73 +120,6 @@ const Header: React.FC = () => {
         <div className={styles.rpcButtonDesktop}></div>
       </div>
 
-      <div className={`${styles.slideMenu} ${isMenuOpen ? styles.open : ''}`}>
-        <ul className={styles.navList}>
-          <li className={styles.navItem} onClick={() => handleNavigation('')}>
-            Home
-          </li>
-          <li className={styles.navItem} onClick={() => setIsCoretimeMenuOpen(!isCoretimeMenuOpen)}>
-            Coretime
-            <Image src={DownArrow} alt='Down Arrow' className={styles.downArrow} />
-          </li>
-          {isCoretimeMenuOpen && (
-            <div className={styles.coretimeSubMenu}>
-              <li
-                className={styles.navItem}
-                onClick={() => handleNavigation('coretime/my-regions')}
-              >
-                My Regions
-              </li>
-              <li
-                className={styles.navItem}
-                onClick={() => handleNavigation('coretime/sale-history')}
-              >
-                Sale History
-              </li>
-            </div>
-          )}
-          <li className={styles.navItem} onClick={() => handleNavigation('cross-chain')}>
-            Cross-Chain
-          </li>
-          <li className={styles.navItem} onClick={() => handleNavigation('parachain-dashboard')}>
-            Parachain Dashboard
-          </li>
-          <li className={styles.navItem} onClick={() => handleNavigation('secondary-market')}>
-            Secondary Market
-          </li>
-        </ul>
-
-        <div className={styles.mobileContent}>
-          <div className={styles.networkSelector}>
-            <NetworkSelector />
-          </div>
-          {accounts.length > 0 ? (
-            <div className={styles.accSelector}>
-              <AccountSelector />
-            </div>
-          ) : (
-            <button className={styles.connectButton} onClick={() => setIsModalOpen(true)}>
-              Connect Wallet
-            </button>
-          )}
-        </div>
-
-        <div className={styles.mobileRpcButton}>
-          <button
-            className={styles.rpcButton}
-            onClick={() => {
-              setIsRpcModalOpen(true);
-              setIsMenuOpen(false);
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
-              <Image src='/Settings.svg' alt='settings' width={24} height={24} />
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {isMenuOpen && <div className={styles.overlay} onClick={toggleMenu} />}
       <WalletModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <RpcSettingsModal
         isOpen={isRpcModalOpen}

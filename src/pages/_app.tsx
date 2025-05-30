@@ -34,7 +34,6 @@ function App({ Component, pageProps }: AppProps) {
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
-  // Load network & wallet
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -62,7 +61,6 @@ function App({ Component, pageProps }: AppProps) {
       restoreSelectedAccount();
     }
 
-    // Load theme
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {
       setTheme(savedTheme);
@@ -94,9 +92,8 @@ function App({ Component, pageProps }: AppProps) {
         />
       </Head>
 
-      <Header />
+      <Header theme={theme} />
 
-      {/* Theme Toggle Button */}
       <div style={{ position: 'fixed', top: 15, right: 15, zIndex: 9999 }}>
         <button
           onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}

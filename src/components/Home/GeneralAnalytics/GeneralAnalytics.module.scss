@@ -79,7 +79,7 @@
 
   &:hover {
     background-color: $greenPrimary;
-    color: black;
+    color: var(--dark-background-2);
   }
 
   &.active {
