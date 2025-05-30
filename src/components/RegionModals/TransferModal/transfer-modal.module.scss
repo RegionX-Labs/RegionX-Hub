@@ -1,4 +1,3 @@
-@use 'sass:color';
 @use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
@@ -23,6 +22,7 @@
   width: 420px;
   max-width: 90%;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+
   @media (max-width: 800px) {
     width: 80%;
   }
@@ -63,8 +63,8 @@
 .fromInput {
   width: 100%;
   padding: 15px;
-  background-color: $darkBackground2;
-  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  background-color: $darkBackground1;
+  border: 1px solid $darkBackground3;
   border-radius: 10px;
   color: $white;
   font-size: 14px;
@@ -84,7 +84,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: color.adjust($greenPrimary, $lightness: -10%);
+    background-color: $greenDark2;
   }
 }
 
@@ -94,7 +94,8 @@
   gap: 5px;
   margin-bottom: 20px;
   margin-top: 20px;
-  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  background-color: $darkBackground1;
+  border: 1px solid $darkBackground1;
   border-radius: 10px;
 }
 
@@ -150,8 +151,8 @@
 .fromInputWithIcon {
   width: 100%;
   padding: 15px 15px 15px 44px;
-  background-color: $darkBackground2;
-  border: 1px solid color.adjust($darkBackground1, $lightness: 10%);
+  background-color: $darkBackground1;
+  border: 1px solid $darkBackground1;
   border-radius: 10px;
   color: $white;
   font-size: 14px;

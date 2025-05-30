@@ -216,17 +216,31 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
               />
             </g>
 
-            <text x='100' y='98' textAnchor='middle' fill='#ffffff' fontSize='12' fontWeight='600'>
+            <text
+              x='100'
+              y='98'
+              textAnchor='middle'
+              fill='var(--white)'
+              fontSize='12'
+              fontWeight='600'
+            >
               Computational
             </text>
-            <text x='100' y='114' textAnchor='middle' fill='#ffffff' fontSize='12' fontWeight='600'>
+            <text
+              x='100'
+              y='114'
+              textAnchor='middle'
+              fill='var(--white)'
+              fontSize='12'
+              fontWeight='600'
+            >
               capacity
             </text>
 
-            <text x='20' y='170' fontSize='10' fill='#ffffff' textAnchor='middle'>
+            <text x='20' y='170' fontSize='12' fill='var(--white)' textAnchor='middle'>
               {clampedLeft}%
             </text>
-            <text x='180' y='170' fontSize='10' fill='#ffffff' textAnchor='middle'>
+            <text x='180' y='170' fontSize='10' fill='var(--white)' textAnchor='middle'>
               {rightRatio}%
             </text>
           </svg>

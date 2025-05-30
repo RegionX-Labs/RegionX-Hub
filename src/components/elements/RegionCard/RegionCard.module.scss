@@ -9,10 +9,10 @@
   border: 1px solid $darkBackground1;
   padding: 10px 20px;
   transition: background-color 0.2s ease;
-  color: white;
+  color: $white;
 
   &.selected {
-    background-color: $darkBackground4;
+    background-color: $darkBackground2;
   }
 
   &-labels {
@@ -27,6 +27,6 @@
   .buttonWrapper {
     width: 100%;
     justify-content: center;
-    color: $dark5;
+    color: $gray6;
   }
 }

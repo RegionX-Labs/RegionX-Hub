@@ -1,6 +1,5 @@
-@use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-@use 'sass:color';
+@use '@/styles/variables' as *;
 
 .metricBox {
   margin-bottom: 24px;
@@ -9,7 +8,7 @@
   background: $darkBackground3;
   padding: 20px 16px 16px;
   border-radius: 12px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
   transition: transform 0.15s ease;
   display: flex;
   flex-direction: column;
@@ -17,7 +16,7 @@
 }
 
 .metricLabel {
-  color: $gray6;
+  color: var(--text-muted);
   font-size: 0.95rem;
   font-weight: 500;
   margin-bottom: -20px;
@@ -26,28 +25,28 @@
 .coretimeValue {
   font-size: 2rem;
   font-weight: 700;
-  color: $white;
+  color: var(--text-color);
   line-height: 1.2;
   margin-bottom: 16px;
 }
 
 .infoText {
   font-size: 0.875rem;
-  color: $gray6;
+  color: var(--text-muted);
   margin-bottom: 12px;
   line-height: 1.4;
 }
 
 .note {
   font-size: 0.7rem;
-  color: $gray5;
+  color: var(--text-faded);
   font-style: italic;
   line-height: 1.3;
 }
 
 .transferButton {
   background-color: $greenPrimary;
-  color: $darkBackground2;
+  color: var(--card-background);
   padding: 10px 0;
   border: none;
   border-radius: 8px;
@@ -55,10 +54,9 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-bottom: -7px;
   @include Inter;
 
   &:hover {
-    background-color: color.adjust($greenPrimary, $lightness: -5%);
+    background-color: var(--accent-green-hover);
   }
 }

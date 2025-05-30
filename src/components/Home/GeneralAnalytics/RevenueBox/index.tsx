@@ -1,4 +1,4 @@
-import styles from '../BulkSaleSummary/BulkSaleSummary.module.scss';
+import styles from './Revenue.module.scss';
 import { toUnitFormatted } from '@/utils';
 
 type RevenueBoxProps = {

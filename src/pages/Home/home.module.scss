@@ -1,6 +1,5 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-@use 'sass:color';
 
 .page {
   display: flex;
@@ -39,7 +38,7 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid $gray6;
   z-index: 10;
   @include Inter;
 
