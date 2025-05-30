@@ -1,4 +1,4 @@
-import '../styles/global.scss';
+import '@/styles/global.scss';
 import '@region-x/components/dist/style.css';
 import { Analytics } from '@vercel/analytics/next';
 import type { AppProps } from 'next/app';
@@ -32,7 +32,9 @@ function App({ Component, pageProps }: AppProps) {
   const selectedAccount = useUnit($selectedAccount);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
+  // Load network & wallet
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -44,13 +46,7 @@ function App({ Component, pageProps }: AppProps) {
     else if (networkFromRouter === 'westend') _network = Network.WESTEND;
     else {
       router.push(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            network: 'polkadot',
-          },
-        },
+        { pathname: router.pathname, query: { ...router.query, network: 'polkadot' } },
         undefined,
         { shallow: false }
       );
@@ -65,27 +61,63 @@ function App({ Component, pageProps }: AppProps) {
       walletSelected(selectedWallet);
       restoreSelectedAccount();
     }
-  }, [networkFromRouter, router, router.isReady]);
+
+    // Load theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme);
+    } else {
+      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
+    }
+  }, [networkFromRouter, router]);
 
   useEffect(() => {
     if (!selectedAccount) return;
-
     getAccountData({ account: selectedAccount.address, connections, network });
   }, [connections, network, selectedAccount]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   return (
     <div className={montserrat.className}>
       <Head>
+        <title>RegionX Hub</title>
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />
         <link
-          href='https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'
+          href='https://fonts.googleapis.com/css2?family=Inter&family=Montserrat&display=swap'
           rel='stylesheet'
         />
-        <title>RegionX Hub</title>
       </Head>
+
       <Header />
+
+      {/* Theme Toggle Button */}
+      <div style={{ position: 'fixed', top: 15, right: 15, zIndex: 9999 }}>
+        <button
+          onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+          aria-label='Toggle Theme'
+          style={{
+            backgroundColor: 'var(--accent-green)',
+            color: 'var(--text-primary)',
+            border: 'none',
+            padding: '6px 12px',
+            fontSize: '14px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+          }}
+        >
+          {theme === 'dark' ? '☀ Light' : '🌙 Dark'}
+        </button>
+      </div>
+
       <Component {...pageProps} />
+
       <div className='globalRpcButton'>
         <button className='rpcButton' onClick={() => setIsRpcModalOpen(true)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
@@ -93,11 +125,13 @@ function App({ Component, pageProps }: AppProps) {
           </div>
         </button>
       </div>
+
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
+
       <Analytics />
     </div>
   );

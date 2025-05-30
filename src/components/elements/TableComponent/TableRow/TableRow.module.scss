@@ -2,6 +2,21 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
+.addressCellIcons {
+  display: flex;
+  width: 20px;
+  position: relative;
+  padding-left: 10px;
+
+  .identicon {
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+  }
+}
+
 .tableRow {
   display: flex;
   align-items: center;
@@ -15,7 +30,7 @@
   }
 
   &:hover {
-    background-color: color.adjust($darkBackground2, $lightness: 10%);
+    background-color: rgba(235, 235, 235, 0.06);
   }
 
   &-cell {
@@ -28,8 +43,7 @@
     min-height: 50px;
     box-sizing: border-box;
     overflow: hidden;
-    min-width: 100px; // Adjust this to match full table size on large screens
-
+    min-width: 100px;
     text-align: left;
     font-size: 14px;
     color: $white;
@@ -38,6 +52,7 @@
   &-cell:first-child {
     margin-left: 0;
   }
+
   &-cell:last-child {
     margin-right: 0;
   }

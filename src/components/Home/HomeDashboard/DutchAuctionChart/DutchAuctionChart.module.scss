@@ -1,18 +1,18 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/_mixins' as *;
-@use 'sass:color';
 
 .chartCard {
   background: $darkBackground2;
   border-radius: 15px;
   padding: 10px;
-  color: $white;
+  color: var(--text-primary);
   width: 58%;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--border-subtle);
   position: relative;
+
   @media (max-width: 1800px) {
     width: 97.5%;
   }
@@ -35,7 +35,7 @@
 
 .title {
   font-size: 0.875rem;
-  color: $gray6;
+  color: var(--text-secondary);
   @include Inter;
   margin-left: 20px;
   margin-top: 5px;
@@ -54,6 +54,7 @@
   z-index: 0;
   opacity: 0.3;
   @include Inter;
+
   @media (max-width: 600px) {
     font-size: 12px;
     bottom: 50px;
@@ -67,22 +68,23 @@
 }
 
 .interlude {
-  color: #00ffa3;
+  color: var(--accent-green);
   margin-left: 20%;
   margin-bottom: 5%;
+
   @media (max-width: 525px) {
     margin-left: 30%;
   }
 }
 
 .leadin {
-  color: #ffffff;
+  color: var(--text-primary);
   text-align: center;
   flex: 1;
 }
 
 .fixed {
-  color: #888888;
+  color: var(--text-disabled);
   margin-right: 10%;
   text-align: right;
 }
