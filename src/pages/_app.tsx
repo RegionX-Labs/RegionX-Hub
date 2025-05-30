@@ -1,9 +1,11 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import '@/styles/global.scss';
 import '@region-x/components/dist/style.css';
 import { Analytics } from '@vercel/analytics/next';
 import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
 import { $connections, $network, networkStarted } from '@/api/connection';
@@ -16,7 +18,6 @@ import {
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
-import Image from 'next/image';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
 import Head from 'next/head';
@@ -92,42 +93,84 @@ function App({ Component, pageProps }: AppProps) {
         />
       </Head>
 
-      <Header theme={theme} />
-
-      <div style={{ position: 'fixed', top: 15, right: 15, zIndex: 9999 }}>
-        <button
-          onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
-          aria-label='Toggle Theme'
-          style={{
-            backgroundColor: 'var(--accent-green)',
-            color: 'var(--text-primary)',
-            border: 'none',
-            padding: '6px 12px',
-            fontSize: '14px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          {theme === 'dark' ? '☀ Light' : '🌙 Dark'}
-        </button>
-      </div>
+      <Header theme={theme} setTheme={setTheme} openRpcModal={() => setIsRpcModalOpen(true)} />
 
       <Component {...pageProps} />
-
-      <div className='globalRpcButton'>
-        <button className='rpcButton' onClick={() => setIsRpcModalOpen(true)}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
-            <Image src='/Settings.svg' alt='settings' width={24} height={24} />
-          </div>
-        </button>
-      </div>
 
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
+
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          zIndex: 9999,
+          display: 'none',
+        }}
+        className='mobile-theme-buttons'
+      >
+        <div
+          style={{
+            backgroundColor: '#1f1f1f',
+            borderRadius: '30px',
+            padding: '6px 10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+          }}
+        >
+          <button
+            onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+            title='Toggle Theme'
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+              border: 'none',
+              fontSize: '18px',
+              cursor: 'pointer',
+              padding: '4px 6px',
+            }}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+
+          <button
+            onClick={() => setIsRpcModalOpen(true)}
+            title='RPC Settings'
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'transform 0.2s ease-in-out',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <img src='/Settings.svg' alt='settings' width={24} height={24} />
+          </button>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .mobile-theme-buttons {
+            display: block !important;
+          }
+        }
+      `}</style>
 
       <Analytics />
     </div>
