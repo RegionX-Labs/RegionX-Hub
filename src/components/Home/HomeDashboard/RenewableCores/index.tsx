@@ -158,7 +158,13 @@ export default function RenewableCores() {
       <p className={styles.title}>Renewable Cores</p>
 
       <div className={styles.selectBox}>
-        <Select options={options} selectedValue={selected} onChange={setSelected} />
+        {options.length > 0 ? (
+          <Select options={options} selectedValue={selected} onChange={setSelected} />
+        ) : (
+          <p className={styles.noDataMessage}>
+            All cores have been renewed. Nothing left to renew!
+          </p>
+        )}
       </div>
 
       <div className={styles.details}>
