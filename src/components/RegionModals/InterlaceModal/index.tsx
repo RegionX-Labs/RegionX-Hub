@@ -237,7 +237,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
               capacity
             </text>
 
-            <text x='20' y='170' fontSize='10' fill='var(--white)' textAnchor='middle'>
+            <text x='20' y='170' fontSize='12' fill='var(--white)' textAnchor='middle'>
               {clampedLeft}%
             </text>
             <text x='180' y='170' fontSize='10' fill='var(--white)' textAnchor='middle'>
