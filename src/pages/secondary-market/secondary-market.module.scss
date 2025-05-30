@@ -1,27 +1,43 @@
-@use '../../styles/variables' as *;
-@use '../../styles/mixins' as *;
+@use '@/styles/variables' as *;
+@use 'sass:color';
 
-.secondaryMarketContainer {
-  margin-top: 130px;
-  width: 50%;
-  min-height: 50vh;
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  border-radius: 20px;
-  padding: 40px;
+.secondaryMarketPage {
+  width: 100%;
+  padding: 100px 0px;
 }
 
-.comingSoonLabel {
-  font-size: 100px;
-  font-weight: 700;
-  color: $darkBackground1;
-  text-align: center;
+.cardsRow {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  justify-content: space-between;
+  margin-bottom: 10px;
 
-  @media (max-width: 768px) {
-    font-size: 28px;
+  @media (max-width: 1024px) {
+    flex-direction: column;
   }
+}
+
+.SecondaryMarketOverview {
+  flex: 1.1;
+  min-width: 300px;
+  max-width: 30%;
+  @media (max-width: 1024px) {
+    max-width: 100%;
+  }
+}
+
+.AuctionPriceOverview {
+  flex: 1;
+  max-width: 450px;
+  width: 100%;
+  @media (max-width: 1024px) {
+    max-width: 100%;
+  }
+}
+
+.PricingChartCard {
+  flex: 1;
+  height: 100%;
+  max-width: 100%;
 }
