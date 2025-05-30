@@ -47,12 +47,12 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   pointer-events: none;
   user-select: none;
   z-index: 0;
-  opacity: 0.3;
+  opacity: 0.8;
   @include Inter;
 
   @media (max-width: 600px) {
@@ -68,7 +68,7 @@
 }
 
 .interlude {
-  color: var(--accent-green);
+  color: var(--text-primary);
   margin-left: 20%;
   margin-bottom: 5%;
 
@@ -84,7 +84,7 @@
 }
 
 .fixed {
-  color: var(--text-disabled);
+  color: var(--text-primary);
   margin-right: 10%;
   text-align: right;
 }

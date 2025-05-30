@@ -153,13 +153,13 @@ export default function DutchAuctionChart() {
         {
           x: phaseEndpoints?.interlude.start,
           x2: phaseEndpoints?.interlude.end,
-          fillColor: 'rgba(0, 255, 163, 0.05)',
+          fillColor: 'rgba(0, 255, 163, 0.10)',
           opacity: 0.8,
         },
         {
           x: phaseEndpoints?.leadin.start,
           x2: phaseEndpoints?.leadin.end,
-          fillColor: 'rgba(0, 17, 255, 0.05)',
+          fillColor: 'rgba(0, 17, 255, 0.1)',
           opacity: 0.8,
         },
         {
@@ -170,13 +170,14 @@ export default function DutchAuctionChart() {
         },
         {
           x: Date.now(),
-          borderColor: '#FBFF00',
+          borderColor: '#3B82F6',
           strokeDashArray: 4,
           label: {
             text: 'Now',
             style: {
-              color: '#FBFF00;',
-              background: '#fff',
+              color: '#fff',
+              background: '#3B82F6',
+              fontWeight: 500,
             },
             orientation: 'horizontal',
             offsetY: -10,
