@@ -129,14 +129,20 @@ function App({ Component, pageProps }: AppProps) {
             title='Toggle Theme'
             style={{
               backgroundColor: 'transparent',
-              color: 'white',
               border: 'none',
-              fontSize: '18px',
               cursor: 'pointer',
               padding: '4px 6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            <img
+              src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
+              alt={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              width={24}
+              height={24}
+            />
           </button>
 
           <button
