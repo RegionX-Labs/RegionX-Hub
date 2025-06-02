@@ -189,7 +189,12 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             title='Toggle Theme'
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            <Image
+              src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
+              alt={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              width={24}
+              height={24}
+            />
           </button>
         </div>
       </div>
