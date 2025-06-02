@@ -33,7 +33,20 @@ function App({ Component, pageProps }: AppProps) {
   const selectedAccount = useUnit($selectedAccount);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'dark';
+  });
+
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -61,14 +74,6 @@ function App({ Component, pageProps }: AppProps) {
       walletSelected(selectedWallet);
       restoreSelectedAccount();
     }
-
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      setTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
-    }
   }, [networkFromRouter, router]);
 
   useEffect(() => {
@@ -80,6 +85,8 @@ function App({ Component, pageProps }: AppProps) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  if (!hasMounted) return null;
 
   return (
     <div className={montserrat.className}>
