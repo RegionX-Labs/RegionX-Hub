@@ -4,7 +4,11 @@ import styles from './home.module.scss';
 import GeneralAnalytics from '@/components/Home/GeneralAnalytics';
 import HomeDashboard from '@/components/Home/HomeDashboard';
 
-export default function Home() {
+interface HomeProps {
+  theme: 'light' | 'dark';
+}
+
+export default function Home({ theme }: HomeProps) {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -33,7 +37,7 @@ export default function Home() {
         </button>
       )}
       {(!isMobile || showAnalytics) && <GeneralAnalytics />}
-      {(!isMobile || !showAnalytics) && <HomeDashboard />}
+      {(!isMobile || !showAnalytics) && <HomeDashboard theme={theme} />}
     </div>
   );
 }

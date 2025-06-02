@@ -16,7 +16,11 @@ import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-export default function DutchAuctionChart() {
+interface DutchAuctionChartProps {
+  theme: 'light' | 'dark';
+}
+
+export default function DutchAuctionChart({ theme }: DutchAuctionChartProps) {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
@@ -104,12 +108,8 @@ export default function DutchAuctionChart() {
       type: 'line',
       height: 300,
       background: 'transparent',
-      toolbar: {
-        show: false,
-      },
-      zoom: {
-        enabled: false,
-      },
+      toolbar: { show: false },
+      zoom: { enabled: false },
     },
     stroke: {
       width: [2, 2],
@@ -137,13 +137,13 @@ export default function DutchAuctionChart() {
           : BigInt(0)
       ),
       labels: {
-        style: { colors: '#888' },
+        style: { colors: theme === 'dark' ? '#aaa' : '#444' },
         formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,
       },
     },
     grid: {
       show: true,
-      borderColor: '#333',
+      borderColor: theme === 'dark' ? '#828c85' : 'rgba(175, 175, 175, 0.25)',
       strokeDashArray: 4,
       xaxis: { lines: { show: false } },
       yaxis: { lines: { show: true } },
@@ -153,30 +153,30 @@ export default function DutchAuctionChart() {
         {
           x: phaseEndpoints?.interlude.start,
           x2: phaseEndpoints?.interlude.end,
-          fillColor: 'rgba(0, 255, 163, 0.10)',
+          fillColor: theme === 'dark' ? 'rgba(0, 255, 163, 0.10)' : 'rgba(0, 200, 140, 0.12)',
           opacity: 0.8,
         },
         {
           x: phaseEndpoints?.leadin.start,
           x2: phaseEndpoints?.leadin.end,
-          fillColor: 'rgba(0, 17, 255, 0.1)',
+          fillColor: theme === 'dark' ? 'rgba(0, 17, 255, 0.1)' : 'rgba(50, 80, 255, 0.12)',
           opacity: 0.8,
         },
         {
           x: phaseEndpoints?.fixed.start,
           x2: phaseEndpoints?.fixed.end,
-          fillColor: 'rgba(136, 136, 136, 0.05)',
+          fillColor: theme === 'dark' ? 'rgba(136, 136, 136, 0.05)' : 'rgba(100, 100, 100, 0.06)',
           opacity: 0.8,
         },
         {
           x: Date.now(),
-          borderColor: '#3B82F6',
+          borderColor: theme === 'dark' ? '#3B82F6' : '#1C64F2',
           strokeDashArray: 4,
           label: {
             text: 'Now',
             style: {
-              color: '#fff',
-              background: '#3B82F6',
+              color: theme === 'dark' ? '#fff' : '#000',
+              background: theme === 'dark' ? '#3B82F6' : '#B3D4FF',
               fontWeight: 500,
             },
             orientation: 'horizontal',
