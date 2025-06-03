@@ -1,4 +1,3 @@
-@use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
 .modalOverlay {
@@ -11,10 +10,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .modalContent {
-  background: $darkBackground2;
+  background: var(--dark-background-2);
   padding: 20px;
   border-radius: 8px;
   width: 400px;
@@ -23,7 +23,7 @@
   text-align: center;
 
   h2 {
-    color: $greenPrimary;
+    color: var(--green-primary);
     margin-bottom: 30px;
     font-size: 22px;
   }
@@ -42,7 +42,7 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: $sliderDisabled;
+    color: var(--slider-disabled);
   }
 }
 
@@ -53,9 +53,9 @@
   width: 100%;
   margin: 12px 0;
   padding: 15px 20px;
-  background: $darkBackground1;
+  background: var(--dark-background-1);
   border: none;
-  color: $white;
+  color: var(--white);
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
@@ -64,7 +64,7 @@
   @include Inter;
 
   &:hover {
-    background: $darkBackground3;
+    background: var(--dark-background-3);
   }
 
   .walletIcon {
@@ -85,7 +85,7 @@
 }
 
 .downloadIcon {
-  color: $greenPrimary;
+  color: var(--green-primary);
   transition: opacity 0.2s;
   cursor: pointer;
   margin-left: auto;
@@ -101,6 +101,7 @@
     opacity: 0.6;
   }
 }
+
 @media (max-width: 540px) {
   .modalContent {
     width: 70%;

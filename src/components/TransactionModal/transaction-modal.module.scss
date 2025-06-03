@@ -1,6 +1,4 @@
-@use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
-@use 'sass:color';
 
 .modalOverlay {
   position: fixed;
@@ -16,7 +14,7 @@
 }
 
 .modalContent {
-  background: $darkBackground2;
+  background: var(--dark-background-2);
   padding: 30px;
   border-radius: 12px;
   width: 400px;
@@ -25,7 +23,7 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 
   h2 {
-    color: $greenPrimary;
+    color: var(--green-primary);
     font-size: 22px;
     margin-bottom: 20px;
   }
@@ -34,19 +32,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: $gray3;
+    color: var(--text-primary);
     font-size: 16px;
     margin-bottom: 12px;
     text-align: left;
 
     span {
-      color: $white;
+      color: var(--white);
       margin-left: 10px;
       white-space: nowrap;
     }
 
     &:not(:last-of-type) {
-      border-bottom: 1px solid $darkBackground3;
+      border-bottom: 1px solid var(--dark-background-3);
       padding-bottom: 8px;
       margin-bottom: 16px;
     }
@@ -54,7 +52,7 @@
 
   .question {
     font-size: 16px;
-    color: $white;
+    color: var(--white);
     margin-bottom: 25px;
   }
 
@@ -73,20 +71,20 @@
     }
 
     .yesBtn {
-      background-color: $greenPrimary;
-      color: white;
+      background-color: var(--green-primary);
+      color: var(--white);
 
       &:hover {
-        background-color: color.adjust($greenPrimary, $lightness: -10%);
+        background-color: var(--accent-green-hover);
       }
     }
 
     .noBtn {
-      background-color: $darkBackground1;
-      color: white;
+      background-color: var(--dark-background-1);
+      color: var(--white);
 
       &:hover {
-        background-color: color.adjust($darkBackground1, $lightness: -1%);
+        background-color: var(--dark-background-1);
       }
     }
   }

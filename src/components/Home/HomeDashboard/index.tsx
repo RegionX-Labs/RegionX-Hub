@@ -7,7 +7,11 @@ import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
 import styles from './HomeDashboard.module.scss';
 
-export default function HomeDashboard() {
+interface HomeDashboardProps {
+  theme: 'light' | 'dark';
+}
+
+export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
@@ -33,7 +37,7 @@ export default function HomeDashboard() {
         <CoreComparison />
         <CorePurchaseCard />
         <AuctionPhaseStatus />
-        <DutchAuctionChart />
+        <DutchAuctionChart theme={theme} />
         <PurchaseHistoryTable />
       </div>
     </div>

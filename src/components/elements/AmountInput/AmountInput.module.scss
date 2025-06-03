@@ -1,4 +1,3 @@
-@use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
 .amountInputWrapper {
@@ -24,7 +23,7 @@
         width: 100%;
         height: 100%;
         border: none;
-        background-color: $gray3;
+        background-color: var(--gray-3);
         border-radius: 6px;
         box-sizing: border-box;
       }
@@ -37,7 +36,7 @@
     .amountInputField {
       width: 100%;
       height: 48px;
-      background-color: $darkBackground2;
+      background-color: var(--dark-background-2);
       padding: 10px;
       border: none;
       outline: none;
@@ -47,7 +46,7 @@
       text-align: left;
       box-sizing: border-box;
       border-radius: 10px;
-      color: white;
+      color: var(--white);
 
       &:focus {
         outline: none;
@@ -74,7 +73,7 @@
     display: block;
     margin-bottom: 8px;
     font-size: 16px;
-    color: $dark;
+    color: var(--text-primary);
     @include Inter;
     line-height: 24px;
     text-align: left;

@@ -10,15 +10,19 @@
   line-height: 20px;
   background-color: var(--label-color);
   border-radius: 6px;
+
   &.dark {
-    color: $dark;
+    color: var(--white-text);
   }
+
   &.light {
-    color: $white;
+    color: var(--white-text);
   }
+
   &.transparent {
     border: 1px solid var(--label-color);
     color: var(--label-color);
+
     &.yellowDark {
       background-color: $yellowLight3;
     }
@@ -44,6 +48,7 @@
       background-color: $blueLight5;
     }
   }
+
   &.pill {
     border-radius: 30px;
   }

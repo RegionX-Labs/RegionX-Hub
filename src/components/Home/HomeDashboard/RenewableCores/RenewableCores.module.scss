@@ -1,19 +1,19 @@
 @use '@/styles/variables' as *;
 @use '@/styles/_mixins' as *;
-@use 'sass:color';
 
 .renewableCoresCard {
   background: $darkBackground2;
   border-radius: 15px;
   padding: 30px;
-  color: $white;
+  color: var(--text-primary);
   @include Inter;
   width: 30%;
   display: flex;
   flex-direction: column;
   gap: 20px;
   height: 100%;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
+
   @media (max-width: 1800px) {
     width: 47%;
   }
@@ -45,14 +45,14 @@
 
 .title {
   font-size: 0.875rem;
-  color: $gray6;
+  color: var(--text-secondary);
   margin-bottom: -10px;
 }
 
 .selectBox {
-  background-color: $darkBackground1;
+  background-color: var(--card-inner);
   border-radius: 10px;
-  padding: 2px 2px;
+  padding: 2px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,7 +64,7 @@
 .arrowIcon {
   width: 16px;
   height: 16px;
-  fill: $white;
+  fill: var(--text-primary);
 }
 
 .details {
@@ -79,7 +79,7 @@
 
 .label {
   font-size: 0.75rem;
-  color: $gray6;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
@@ -90,7 +90,7 @@
 
 .renewButton {
   background-color: $greenPrimary;
-  color: $darkBackground2;
+  color: var(--black-text);
   padding: 10px 0;
   border: none;
   border-radius: 8px;
@@ -102,7 +102,7 @@
   @include Inter;
 
   &:hover {
-    background-color: color.adjust($greenPrimary, $lightness: -5%);
+    background-color: var(--accent-green-hover);
   }
 }
 .noDataMessage {

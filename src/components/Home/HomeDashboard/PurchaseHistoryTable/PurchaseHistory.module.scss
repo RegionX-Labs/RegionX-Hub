@@ -1,20 +1,16 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/_mixins' as *;
-@use 'sass:color';
 
 .tableWrapper {
   border-radius: 12px;
-  background-color: $darkBackground2;
+  background: $darkBackground2;
   padding: 24px;
   width: 95%;
-
   max-width: unset;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
+
   @media (max-width: 1503px) {
     max-width: 93.5%;
-  }
-  @media (max-width: 1260px) {
-    max-width: 93%;
   }
   @media (max-width: 1260px) {
     max-width: 93%;
@@ -26,9 +22,6 @@
     max-width: 91%;
   }
   @media (max-width: 865px) {
-    max-width: 90%;
-  }
-  @media (max-width: 845px) {
     max-width: 90%;
   }
   @media (max-width: 800px) {
@@ -45,6 +38,6 @@
 .heading {
   font-size: 1.5rem;
   font-weight: 600;
-  color: $white;
+  color: var(--text-primary);
   margin-bottom: 16px;
 }

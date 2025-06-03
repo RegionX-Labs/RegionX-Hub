@@ -1,18 +1,16 @@
-@use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
-@use 'sass:color';
 
 .parachain_dashboard_table {
   margin-top: 130px;
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: $darkBackground2;
+  background-color: var(--dark-background-2);
   @include Inter;
   border-radius: 20px;
   margin-bottom: 45px;
   overflow-x: auto;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--dark-background-3);
 }
 
 .dashboard_table {
@@ -33,8 +31,7 @@
 
 .tableWrapper {
   border-radius: 12px;
-
-  background-color: $darkBackground2;
+  background-color: var(--dark-background-2);
   padding: 0;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -44,7 +41,7 @@
 .heading {
   font-size: 20px;
   font-weight: 600;
-  color: white;
+  color: var(--white);
   margin-left: 3%;
   margin-top: -35px;
 
@@ -70,9 +67,9 @@
 }
 
 .customButton {
-  background-color: $darkBackground2;
-  color: $greenPrimary;
-  border: 1px solid $greenPrimary;
+  background-color: var(--dark-background-2);
+  color: var(--green-primary);
+  border: 1px solid var(--green-primary);
   border-radius: 10px;
   padding: 15px 20px;
   margin-left: 10px;
@@ -81,18 +78,17 @@
   font-size: 14px;
   @include Inter;
   transition: all 0.3s ease;
-  @include Inter;
 
   &:hover {
-    background-color: color.adjust($darkBackground2, $lightness: -1%);
+    background-color: var(--dark-background-3);
   }
 
   &.secondary {
-    background-color: $greenPrimary;
-    color: white;
+    background-color: var(--green-primary);
+    color: var(--black-text);
 
     &:hover {
-      background-color: color.adjust($greenPrimary, $lightness: -5%);
+      background-color: var(--green-dark-2);
     }
   }
 
@@ -106,7 +102,7 @@
 
 .starIcon {
   cursor: pointer;
-  color: $dark5;
+  color: var(--gray-6);
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
@@ -115,11 +111,11 @@
   height: 20px;
 
   &:hover {
-    color: color.adjust($dark5, $lightness: -10%);
+    color: var(--gray-4);
   }
 
   &.starActive {
-    color: $greenPrimary;
+    color: var(--green-primary);
   }
 }
 

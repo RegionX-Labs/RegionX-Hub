@@ -9,7 +9,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  color: white;
+  color: var(--text-color);
   align-items: center;
   z-index: 999;
   padding-top: 40px;
@@ -18,7 +18,7 @@
 .modal {
   width: 80%;
   max-width: 500px;
-  background-color: $darkBackground2;
+  background-color: $darkBackground1;
   border-radius: 10px;
   padding: 25px;
   max-height: 70vh;
@@ -59,11 +59,11 @@
 }
 
 .input {
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 2px solid $darkBackground1;
+  padding: 15px 12px;
+  border-radius: 10px;
+  border: 2px solid $darkBackground2;
   font-size: 14px;
-  background-color: $darkBackground1;
+  background-color: $darkBackground2;
   color: $white;
 
   &:focus {
