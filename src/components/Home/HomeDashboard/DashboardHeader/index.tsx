@@ -24,7 +24,7 @@ export default function DashboardHeader() {
     <div className={styles.headerWrapper}>
       <div className={styles.greetingBlock}>
         <div className={styles.greeting}>👋 Hi {selectedAccount?.name ?? 'there'}</div>
-        <div className={styles.subtext}>Welcome back to your Coretime Hub</div>
+        <div className={styles.subtext}>Welcome back to RegionX Hub</div>
       </div>
       <div className={styles.dropdownWrapper}>
         <div className={styles.dropdownHeader} onClick={toggleDropdown}>
