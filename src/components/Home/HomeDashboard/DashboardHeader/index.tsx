@@ -1,14 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useUnit } from 'effector-react';
 import styles from './DashboardHeader.module.scss';
 import { ChevronDown } from 'lucide-react';
+import { $selectedAccount } from '@/wallet';
 
 const dashboards = ['Existing teams', 'New teams', 'Coretime Reseller', 'Enthusiast'];
 
 export default function DashboardHeader() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selected, setSelected] = useState('Existing teams');
+
+  const selectedAccount = useUnit($selectedAccount);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const handleSelect = (item: string) => {
@@ -19,7 +23,7 @@ export default function DashboardHeader() {
   return (
     <div className={styles.headerWrapper}>
       <div className={styles.greetingBlock}>
-        <div className={styles.greeting}>👋 Hi Samuele</div>
+        <div className={styles.greeting}>👋 Hi {selectedAccount?.name ?? 'there'}</div>
         <div className={styles.subtext}>Welcome back to your Coretime Hub</div>
       </div>
       <div className={styles.dropdownWrapper}>
