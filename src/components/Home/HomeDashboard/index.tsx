@@ -6,7 +6,6 @@ import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
 import styles from './HomeDashboard.module.scss';
-
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -37,7 +36,9 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
         <CoreComparison />
         <CorePurchaseCard />
         <AuctionPhaseStatus />
+
         <DutchAuctionChart theme={theme} />
+
         <PurchaseHistoryTable />
       </div>
     </div>
