@@ -15,6 +15,7 @@ import CurrentAuctionPrice from '../CurrentAuctionPrice';
 import UserBalance from '../UserBalance';
 import AuctionPriceOverview from '../AuctionPriceOverview';
 import CoreRemainingCard from '../CoreRemainingCard';
+import RevenueGeneratedCard from '../RevenueGeneratedCard';
 
 export default function BulkSaleSummary() {
   const [network, saleInfo, purchaseHistory] = useUnit([
@@ -88,7 +89,7 @@ export default function BulkSaleSummary() {
       <UserBalance />
       <AuctionPriceOverview />
       <CoreRemainingCard />
-
+      <RevenueGeneratedCard />
       <RevenueBox
         network={network}
         purchaseHistory={purchaseHistory}
