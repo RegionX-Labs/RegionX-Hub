@@ -193,7 +193,7 @@ export default function DutchAuctionChart({ theme }: DutchAuctionChartProps) {
     legend: {
       show: false,
     },
-    colors: ['#00FFA3', '#888'],
+    colors: ['#58bd86', '#888'],
   };
 
   return (

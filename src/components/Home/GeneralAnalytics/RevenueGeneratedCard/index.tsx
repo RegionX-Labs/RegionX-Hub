@@ -38,7 +38,7 @@ export default function RevenueGeneratedCard() {
         datasets: [
           {
             data,
-            borderColor: '#00FFB2',
+            borderColor: '#58bd86',
             borderWidth: 2,
             pointRadius: 0,
             fill: {
