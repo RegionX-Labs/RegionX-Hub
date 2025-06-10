@@ -79,7 +79,7 @@ export default function CoreRemainingCard() {
         {
           label: 'Cores Remaining',
           data: [startPoint, ...points],
-          borderColor: '#00FFB2',
+          borderColor: '#58bd86',
           borderWidth: 2,
           pointRadius: 0,
           fill: false,
