@@ -2,18 +2,16 @@ import styles from './TopBuyerCard.module.scss';
 import { useMemo } from 'react';
 import { useUnit } from 'effector-react';
 import { $purchaseHistory } from '@/coretime/purchaseHistory';
-import { $latestSaleInfo, SaleInfo } from '@/coretime/saleInfo';
-import { PurchaseType } from '@/coretime/purchaseHistory';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import Identicon from '@polkadot/react-identicon';
 
 export default function TopBuyerCard() {
   const [purchaseHistory, saleInfo] = useUnit([$purchaseHistory, $latestSaleInfo]);
 
   const { topBuyer, totalBought } = useMemo(() => {
-    const bulkPurchases = purchaseHistory.filter((p) => p.type === PurchaseType.BULK);
     const grouped: Record<string, number> = {};
 
-    for (const item of bulkPurchases) {
+    for (const item of purchaseHistory) {
       grouped[item.address] = (grouped[item.address] || 0) + item.core;
     }
 
