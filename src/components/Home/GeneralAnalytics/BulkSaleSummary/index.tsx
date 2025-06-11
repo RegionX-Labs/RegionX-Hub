@@ -16,6 +16,7 @@ import UserBalance from '../UserBalance';
 import AuctionPriceOverview from '../AuctionPriceOverview';
 import CoreRemainingCard from '../CoreRemainingCard';
 import RevenueGeneratedCard from '../RevenueGeneratedCard';
+import TopBuyerCard from '../TopBuyerCard';
 
 export default function BulkSaleSummary() {
   const [network, saleInfo, purchaseHistory] = useUnit([
@@ -88,8 +89,10 @@ export default function BulkSaleSummary() {
     <div className={styles.analyticsCard}>
       <UserBalance />
       <AuctionPriceOverview />
+      <TopBuyerCard />
       <CoreRemainingCard />
       <RevenueGeneratedCard />
+
       <RevenueBox
         network={network}
         purchaseHistory={purchaseHistory}
