@@ -35,15 +35,27 @@ export default function TopBuyerCard() {
   return (
     <div className={styles.topBuyerCard}>
       <p className={styles.label}>Top Buyer</p>
-      <div className={styles.row}>
-        <Identicon value={topBuyer} size={32} theme='polkadot' />
-        <span className={styles.address}>
-          {topBuyer.slice(0, 6)}...{topBuyer.slice(-6)}
-        </span>
+
+      <div className={styles.buyerRow}>
+        <Identicon value={topBuyer} size={36} theme='polkadot' />
+        <div className={styles.addressGroup}>
+          <span className={styles.address}>
+            {topBuyer.slice(0, 6)}...{topBuyer.slice(-6)}
+          </span>
+          <span className={styles.subtext}>Most cores purchased this cycle</span>
+        </div>
       </div>
-      <p className={styles.cores}>
-        {totalBought} cores ({percentage}%)
-      </p>
+
+      <div className={styles.metrics}>
+        <div className={styles.metric}>
+          <span className={styles.value}>{totalBought}</span>
+          <span className={styles.metricLabel}>Cores purchased</span>
+        </div>
+        <div className={styles.metric}>
+          <span className={styles.value}>{percentage}%</span>
+          <span className={styles.metricLabel}>of total offered</span>
+        </div>
+      </div>
     </div>
   );
 }
