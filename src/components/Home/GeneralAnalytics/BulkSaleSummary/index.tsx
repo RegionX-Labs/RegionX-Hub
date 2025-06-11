@@ -89,9 +89,9 @@ export default function BulkSaleSummary() {
     <div className={styles.analyticsCard}>
       <UserBalance />
       <AuctionPriceOverview />
+      <TopBuyerCard />
       <CoreRemainingCard />
       <RevenueGeneratedCard />
-      <TopBuyerCard />
 
       <RevenueBox
         network={network}
