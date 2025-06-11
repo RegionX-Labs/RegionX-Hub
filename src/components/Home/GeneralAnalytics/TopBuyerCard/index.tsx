@@ -12,7 +12,7 @@ export default function TopBuyerCard() {
     const grouped: Record<string, number> = {};
 
     for (const item of purchaseHistory) {
-      grouped[item.address] = (grouped[item.address] || 0) + item.core;
+      grouped[item.address] = (grouped[item.address] || 0) + 1;
     }
 
     let topBuyer: string | null = null;
@@ -37,7 +37,9 @@ export default function TopBuyerCard() {
       <p className={styles.label}>Top Buyer</p>
       <div className={styles.row}>
         <Identicon value={topBuyer} size={32} theme='polkadot' />
-        <span className={styles.address}>{topBuyer.slice(0, 10)}…</span>
+        <span className={styles.address}>
+          {topBuyer.slice(0, 6)}...{topBuyer.slice(-6)}
+        </span>
       </div>
       <p className={styles.cores}>
         {totalBought} cores ({percentage}%)
