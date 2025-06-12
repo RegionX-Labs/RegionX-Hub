@@ -6,6 +6,8 @@ import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
 import TimeLeftToRenew from './TimeLeftToRenew';
+import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
+import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
 import styles from './HomeDashboard.module.scss';
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
@@ -34,6 +36,8 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
     >
       <div className={styles.dashboard}>
         <TimeLeftToRenew />
+        <CoreRemainingCard />
+        <RevenueGeneratedCard />
         <RenewableCores />
         <CoreComparison />
         <CorePurchaseCard />
