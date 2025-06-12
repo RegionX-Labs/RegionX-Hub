@@ -8,7 +8,9 @@
   width: 95%;
   max-width: unset;
   border: 1px solid var(--card-border);
-
+  @media (min-width: 3000px) {
+    width: 97.5%;
+  }
   @media (max-width: 1503px) {
     max-width: 93.5%;
   }
@@ -19,13 +21,13 @@
     max-width: 92%;
   }
   @media (max-width: 1060px) {
-    max-width: 91%;
+    max-width: 90%;
   }
   @media (max-width: 865px) {
     max-width: 90%;
   }
   @media (max-width: 800px) {
-    max-width: 92%;
+    max-width: 90%;
   }
   @media (max-width: 750px) {
     max-width: 87%;

@@ -35,14 +35,14 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       ref={wrapperRef}
     >
       <div className={styles.dashboard}>
-        <TimeLeftToRenew />
-        <CoreRemainingCard />
-        <RevenueGeneratedCard />
         <RenewableCores />
         <CoreComparison />
         <CorePurchaseCard />
         <AuctionPhaseStatus />
         <DutchAuctionChart theme={theme} />
+        <TimeLeftToRenew />
+        <CoreRemainingCard />
+        <RevenueGeneratedCard />
         <PurchaseHistoryTable />
       </div>
     </div>
