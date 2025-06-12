@@ -5,6 +5,7 @@ import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
+import TimeLeftToRenew from './TimeLeftToRenew';
 import styles from './HomeDashboard.module.scss';
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
@@ -32,13 +33,12 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       ref={wrapperRef}
     >
       <div className={styles.dashboard}>
+        <TimeLeftToRenew />
         <RenewableCores />
         <CoreComparison />
         <CorePurchaseCard />
         <AuctionPhaseStatus />
-
         <DutchAuctionChart theme={theme} />
-
         <PurchaseHistoryTable />
       </div>
     </div>
