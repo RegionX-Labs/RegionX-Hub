@@ -5,14 +5,12 @@ import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
-<<<<<<< user-dashboards
 import DashboardHeader from './DashboardHeader';
-=======
 import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
->>>>>>> main
 import styles from './HomeDashboard.module.scss';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
