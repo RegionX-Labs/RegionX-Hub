@@ -5,10 +5,12 @@ import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
+import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
 import styles from './HomeDashboard.module.scss';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -34,6 +36,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       className={`${styles.dashboardWrapper} ${scrolled ? styles.scrolled : ''}`}
       ref={wrapperRef}
     >
+      <DashboardHeader />
       <div className={styles.dashboard}>
         <RenewableCores />
         <CoreComparison />
