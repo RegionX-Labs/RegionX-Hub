@@ -1,9 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './GeneralAnalytics.module.scss';
 import BulkSaleSummary from './BulkSaleSummary';
+import TopBuyerCard from './TopBuyerCard';
+import UserBalance from './UserBalance';
 
 export default function GeneralAnalytics() {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'users'>('all');
 
   useEffect(() => {
     const el = cardRef.current;
@@ -31,13 +34,42 @@ export default function GeneralAnalytics() {
       </div>
       <div className={styles.tabsWrapper}>
         <ul className={styles.tabs}>
-          <li className={`${styles.tab} ${styles.active}`}>All stats</li>
-          <li className={styles.tab}>Sales</li>
-          <li className={styles.tab}>Users</li>
-          <li className={styles.tab}>Market</li>
+          <li
+            className={`${styles.tab} ${activeTab === 'all' ? styles.active : ''}`}
+            onClick={() => setActiveTab('all')}
+          >
+            All stats
+          </li>
+          <li
+            className={`${styles.tab} ${activeTab === 'sales' ? styles.active : ''}`}
+            onClick={() => setActiveTab('sales')}
+          >
+            Sales
+          </li>
+          <li
+            className={`${styles.tab} ${activeTab === 'users' ? styles.active : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            Users
+          </li>
+          <li className={`${styles.tab} ${styles.disabled}`}>Market</li>
         </ul>
       </div>
-      <BulkSaleSummary />
+
+      {activeTab === 'all' && <BulkSaleSummary />}
+
+      {activeTab === 'sales' && (
+        <div className={styles.tabContent}>
+          <BulkSaleSummary />
+        </div>
+      )}
+
+      {activeTab === 'users' && (
+        <div className={styles.tabContent}>
+          <UserBalance />
+          <TopBuyerCard />
+        </div>
+      )}
     </div>
   );
 }
