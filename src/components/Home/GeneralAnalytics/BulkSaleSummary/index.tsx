@@ -14,8 +14,6 @@ import RevenueBox from '../RevenueBox/index';
 import CurrentAuctionPrice from '../CurrentAuctionPrice';
 import UserBalance from '../UserBalance';
 import AuctionPriceOverview from '../AuctionPriceOverview';
-import CoreRemainingCard from '../CoreRemainingCard';
-import RevenueGeneratedCard from '../RevenueGeneratedCard';
 import TopBuyerCard from '../TopBuyerCard';
 
 export default function BulkSaleSummary() {
@@ -90,8 +88,6 @@ export default function BulkSaleSummary() {
       <UserBalance />
       <AuctionPriceOverview />
       <TopBuyerCard />
-      <CoreRemainingCard />
-      <RevenueGeneratedCard />
 
       <RevenueBox
         network={network}

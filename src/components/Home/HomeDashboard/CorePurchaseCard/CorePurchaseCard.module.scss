@@ -12,7 +12,9 @@
   flex-direction: column;
   gap: 20px;
   @include Inter;
-
+  @media (min-width: 3000px) {
+    width: 32%;
+  }
   @media (max-width: 1800px) {
     width: 40%;
   }
@@ -26,7 +28,7 @@
     width: 92%;
   }
   @media (max-width: 800px) {
-    max-width: 92%;
+    max-width: 90%;
   }
   @media (max-width: 750px) {
     max-width: 87%;
