@@ -5,7 +5,7 @@ import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
-import TimeLeftToRenew from './TimeLeftToRenew';
+import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
 import styles from './HomeDashboard.module.scss';
@@ -40,7 +40,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
         <CorePurchaseCard />
         <AuctionPhaseStatus />
         <DutchAuctionChart theme={theme} />
-        <TimeLeftToRenew />
+        <RenewalsOverview />
         <CoreRemainingCard />
         <RevenueGeneratedCard />
         <PurchaseHistoryTable />

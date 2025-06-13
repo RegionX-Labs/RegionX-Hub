@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './TimeLeftToRenew.module.scss';
+import styles from './RenewalsOverview.module.scss';
 import { useUnit } from 'effector-react';
 import { $phaseEndpoints, $latestSaleInfo, fetchCoresSold } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
@@ -12,7 +12,7 @@ const formatTime = (ms: number) => {
   return `${days}d ${hours}h ${minutes}m`;
 };
 
-export default function TimeLeftToRenew() {
+export default function RenewalsOverview() {
   const [phaseEndpoints, saleInfo, connections, network] = useUnit([
     $phaseEndpoints,
     $latestSaleInfo,
@@ -63,15 +63,18 @@ export default function TimeLeftToRenew() {
       </div>
 
       {coresRemaining !== null ? (
-        <div className={styles.caption} style={{ marginTop: '8px' }}>
-          {coresRemaining > 0
-            ? `Only ${coresRemaining} core${coresRemaining !== 1 ? 's' : ''} remaining.`
-            : 'All cores have been sold — you are unable to renew if you haven’t already.'}
-        </div>
+        coresRemaining > 0 ? (
+          <div className={styles.coresLeft}>
+            Only <span className={styles.boldNumber}>{coresRemaining}</span> core
+            {coresRemaining !== 1 ? 's' : ''} remaining.
+          </div>
+        ) : (
+          <div className={styles.caption}>
+            All cores have been sold — you are unable to renew if you haven’t already.
+          </div>
+        )
       ) : (
-        <div className={styles.caption} style={{ marginTop: '8px' }}>
-          Core availability data not available.
-        </div>
+        <div className={styles.caption}>Core availability data not available.</div>
       )}
     </div>
   );
