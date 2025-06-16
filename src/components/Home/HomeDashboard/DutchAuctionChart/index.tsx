@@ -18,9 +18,10 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 interface DutchAuctionChartProps {
   theme: 'light' | 'dark';
+  view?: string;
 }
 
-export default function DutchAuctionChart({ theme }: DutchAuctionChartProps) {
+export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProps) {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
@@ -78,13 +79,12 @@ export default function DutchAuctionChart({ theme }: DutchAuctionChartProps) {
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.FixedPrice,
     },
+    {
+      timestamp: ((phaseEndpoints?.leadin.start || 0) + (phaseEndpoints?.leadin.end || 0)) / 2,
+      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
+      phase: SalePhase.Leadin,
+    },
   ];
-
-  data.push({
-    timestamp: ((phaseEndpoints?.leadin.start || 0) + (phaseEndpoints?.leadin.end || 0)) / 2,
-    value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
-    phase: SalePhase.Leadin,
-  });
 
   data.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
@@ -116,10 +116,7 @@ export default function DutchAuctionChart({ theme }: DutchAuctionChartProps) {
       curve: 'straight',
       dashArray: [0, 7],
     },
-    markers: {
-      size: 0,
-      strokeWidth: 0,
-    },
+    markers: { size: 0, strokeWidth: 0 },
     xaxis: {
       labels: { show: true },
       axisTicks: { show: false },
@@ -185,19 +182,15 @@ export default function DutchAuctionChart({ theme }: DutchAuctionChartProps) {
         },
       ],
     },
-    tooltip: {
-      theme: 'dark',
-      shared: false,
-      intersect: false,
-    },
-    legend: {
-      show: false,
-    },
+    tooltip: { theme: 'dark', shared: false, intersect: false },
+    legend: { show: false },
     colors: ['#58bd86', '#888'],
   };
 
   return (
-    <div className={styles.chartCard}>
+    <div
+      className={`${styles.chartCard} ${view === 'Deploying a new project' ? styles.compact : ''}`}
+    >
       <div className={styles.backgroundLabels}>
         <span className={styles.interlude}>Interlude</span>
         <span className={styles.leadin}>Leadin</span>

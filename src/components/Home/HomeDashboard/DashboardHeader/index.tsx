@@ -6,16 +6,25 @@ import styles from './DashboardHeader.module.scss';
 import { ChevronDown } from 'lucide-react';
 import { $selectedAccount } from '@/wallet';
 
-const dashboards = ['Existing teams', 'New teams', 'Coretime Reseller', 'Enthusiast'];
+const dashboards = [
+  { name: 'Overview', enabled: true },
+  { name: 'Deploying a new project', enabled: true },
+  { name: 'Managing Existing Project', enabled: false },
+  { name: 'Coretime Reseller', enabled: false },
+];
 
-export default function DashboardHeader() {
+type Props = {
+  selected: string;
+  setSelected: (value: string) => void;
+};
+
+export default function DashboardHeader({ selected, setSelected }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selected, setSelected] = useState('Existing teams');
-
   const selectedAccount = useUnit($selectedAccount);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const handleSelect = (item: string) => {
+  const handleSelect = (item: string, enabled: boolean) => {
+    if (!enabled) return;
     setSelected(item);
     setDropdownOpen(false);
   };
@@ -33,9 +42,13 @@ export default function DashboardHeader() {
         </div>
         {dropdownOpen && (
           <div className={styles.dropdownMenu}>
-            {dashboards.map((item) => (
-              <div key={item} className={styles.dropdownItem} onClick={() => handleSelect(item)}>
-                {item}
+            {dashboards.map(({ name, enabled }) => (
+              <div
+                key={name}
+                className={`${styles.dropdownItem} ${!enabled ? styles.disabled : ''}`}
+                onClick={() => handleSelect(name, enabled)}
+              >
+                {name}
               </div>
             ))}
           </div>

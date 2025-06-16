@@ -19,7 +19,11 @@ import { $selectedAccount } from '@/wallet';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
 
-export default function RenewableCores() {
+type Props = {
+  view: string;
+};
+
+export default function RenewableCores({ view }: Props) {
   const accountData = useUnit($accountData);
   const network = useUnit($network);
   const connections = useUnit($connections);
@@ -154,7 +158,11 @@ export default function RenewableCores() {
   };
 
   return (
-    <div className={styles.renewableCoresCard}>
+    <div
+      className={`${styles.renewableCoresCard} ${
+        view === 'Deploying a new project' ? styles.compact : ''
+      }`}
+    >
       <p className={styles.title}>Renewable Cores</p>
 
       <div className={styles.selectBox}>
