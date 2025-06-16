@@ -38,9 +38,10 @@
 .dropdownWrapper {
   position: relative;
   user-select: none;
-  width: 220px;
+  width: 260px;
   border: 1px solid var(--card-border);
   border-radius: 10px;
+  font-size: 1rem;
 }
 
 .dropdownHeader {
