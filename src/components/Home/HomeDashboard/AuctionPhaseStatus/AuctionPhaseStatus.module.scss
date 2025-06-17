@@ -45,8 +45,11 @@
   }
 
   &.compact {
-    width: 30.8%;
+    width: 39.5%;
 
+    @media (max-width: 1921px) {
+      width: 30.8%;
+    }
     @media (max-width: 1800px) {
       width: 35%;
     }
@@ -54,7 +57,7 @@
       width: 35%;
     }
     @media (max-width: 1390px) {
-      width: 33%;
+      width: 33.5%;
     }
     @media (max-width: 1306px) {
       width: 91%;
@@ -78,7 +81,7 @@
     @media (max-width: 750px) {
       max-width: 85%;
     }
-    @media (max-width: 460px) {
+    @media (max-width: 450px) {
       max-width: 80%;
     }
   }

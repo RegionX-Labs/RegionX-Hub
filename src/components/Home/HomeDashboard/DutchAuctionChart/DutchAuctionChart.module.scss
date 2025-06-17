@@ -39,18 +39,19 @@
   }
 
   &.compact {
-    @media (max-width: 1800px) {
-      width: 55%;
+    width: 98.5%;
+    @media (max-width: 3000px) {
+      width: 97%;
     }
 
     @media (max-width: 1300px) {
-      width: 75%;
+      width: 97%;
     }
     @media (max-width: 1510px) {
-      width: 54%;
+      width: 97%;
     }
     @media (max-width: 1500px) {
-      width: 46%;
+      width: 96.5%;
     }
     @media (max-width: 1306px) {
       width: 96.5%;

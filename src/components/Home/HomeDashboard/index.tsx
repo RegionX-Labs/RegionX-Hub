@@ -12,7 +12,6 @@ import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
-
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -58,10 +57,9 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
         {selected === 'Deploying a new project' && (
           <>
             <CoreRemainingCard view={selected} />
-            <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
+
             <DutchAuctionChart theme={theme} view={selected} />
-            <RenewableCores view={selected} />
             <PurchaseHistoryTable />
           </>
         )}
