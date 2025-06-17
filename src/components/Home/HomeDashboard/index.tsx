@@ -12,6 +12,7 @@ import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
