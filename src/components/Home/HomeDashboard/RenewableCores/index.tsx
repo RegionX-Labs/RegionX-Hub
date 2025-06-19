@@ -55,7 +55,7 @@ export default function RenewableCores({ view }: Props) {
         value: renewal,
         icon: (
           <img
-            style={{ width: 28, borderRadius: '100%', marginRight: '.5rem' }}
+            style={{ width: 28, borderRadius: '100%', marginRight: '8' }}
             src={
               chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo
             }

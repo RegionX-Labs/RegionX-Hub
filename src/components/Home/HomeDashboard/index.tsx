@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from './HomeDashboard.module.scss';
+
 import RenewableCores from './RenewableCores';
 import CoreComparison from './CoreComparison';
 import DutchAuctionChart from './DutchAuctionChart';
@@ -13,6 +14,8 @@ import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
 
+import RenewalInfoCard from './RenewalInfoCard';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -21,6 +24,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [selected, setSelected] = useState('Overview');
+  const [paraId, setParaId] = useState<number | null>(null);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -40,6 +44,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       ref={wrapperRef}
     >
       <DashboardHeader selected={selected} setSelected={setSelected} />
+
       <div className={styles.dashboard}>
         {selected === 'Overview' && (
           <>
@@ -59,9 +64,17 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
           <>
             <CoreRemainingCard view={selected} />
             <AuctionPhaseStatus view={selected} />
-
             <DutchAuctionChart theme={theme} view={selected} />
             <PurchaseHistoryTable />
+          </>
+        )}
+
+        {selected === 'Managing Existing Project' && (
+          <>
+            <RenewalInfoCard />
+            <CoreComparison view={selected} />
+            <AuctionPhaseStatus view={selected} />
+            <DutchAuctionChart theme={theme} view={selected} />
           </>
         )}
       </div>
