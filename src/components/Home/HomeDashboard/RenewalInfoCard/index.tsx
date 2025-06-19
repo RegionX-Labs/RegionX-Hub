@@ -4,93 +4,66 @@ import { useEffect, useState } from 'react';
 import styles from './RenewalInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { $latestSaleInfo } from '@/coretime/saleInfo';
-import {
-  $potentialRenewals,
-  potentialRenewalsRequested,
-  RenewalKey,
-  RenewalRecord,
-} from '@/coretime/renewals';
-import { timesliceToTimestamp } from '@/utils';
+import { $parachains, parachainsRequested } from '@/parachains';
 import { chainData } from '@/chaindata';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
 import Identicon from '@polkadot/react-identicon';
 import { blake2AsHex } from '@polkadot/util-crypto';
+import { ParaStateCard } from '@/components/ParaStateCard';
+import { ParaState } from '@/components/ParaStateCard';
 
 export default function RenewalInfoCard() {
   const network = useUnit($network);
   const connections = useUnit($connections);
-  const saleInfo = useUnit($latestSaleInfo);
-  const potentialRenewals = useUnit($potentialRenewals);
+  const parachains = useUnit($parachains);
 
-  const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
-  const [deadline, setDeadline] = useState<string>('-');
-  const [options, setOptions] = useState<SelectOption<[RenewalKey, RenewalRecord]>[]>([]);
+  const [selected, setSelected] = useState<any | null>(null);
+  const [options, setOptions] = useState<SelectOption<any>[]>([]);
 
   useEffect(() => {
-    potentialRenewalsRequested({ network, connections });
+    parachainsRequested(network);
   }, [network, connections]);
 
   useEffect(() => {
-    const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
-      potentialRenewals.entries()
-    )
-      .map(([key, record]) => {
-        const paraId = (record.completion as any)?.value?.[0]?.assignment?.value;
+    const filtered = parachains.filter((p) => p.network === network);
 
-        if (typeof paraId !== 'number' || isNaN(paraId)) return null;
+    const opts: SelectOption<any>[] = filtered.map((item) => {
+      const meta = chainData[network]?.[item.id];
+      const name = meta?.name || `Parachain ${item.id}`;
+      const logo = meta?.logo;
 
-        const chain = chainData[network]?.[paraId];
-        const rawName = chain?.name || `Parachain ${paraId}`;
-        const logo = chain?.logo;
+      return {
+        key: item.id.toString(),
+        label: name,
+        value: item,
+        icon: logo ? (
+          <img
+            src={logo}
+            alt='logo'
+            style={{ width: 24, height: 24, borderRadius: '100%', marginRight: 8 }}
+          />
+        ) : (
+          <Identicon
+            value={blake2AsHex(`${network}-${item.id}`, 256)}
+            size={24}
+            theme='substrate'
+            style={{ marginRight: 8 }}
+          />
+        ),
+      };
+    });
 
-        const displayName = rawName.includes(String(paraId)) ? rawName : `${rawName}`;
+    setOptions(opts);
+    if (opts[0]) setSelected(opts[0].value);
+  }, [parachains, network]);
 
-        return {
-          key: `${key.when}-${key.core}`,
-          label: displayName,
-          value: [key, record],
-          icon: logo ? (
-            <img
-              src={logo}
-              alt='logo'
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: '100%',
-                marginRight: 8,
-              }}
-            />
-          ) : (
-            <Identicon
-              value={blake2AsHex(`${network}${paraId}`, 256)}
-              size={24}
-              theme='substrate'
-              style={{ marginRight: 8 }}
-            />
-          ),
-        };
-      })
-      .filter(Boolean) as SelectOption<[RenewalKey, RenewalRecord]>[];
-
-    setOptions(_options);
-    if (_options[0]) setSelected(_options[0].value);
-  }, [saleInfo, potentialRenewals, network]);
-
-  useEffect(() => {
-    (async () => {
-      if (!selected) return setDeadline('-');
-      const ts = await timesliceToTimestamp(selected[0].when, network, connections);
-      setDeadline(ts ? new Date(Number(ts)).toLocaleString() : '-');
-    })();
-  }, [selected]);
-
-  const paraId = selected ? (selected[1].completion as any)?.value?.[0]?.assignment?.value : null;
-  const chain = paraId !== null ? chainData[network]?.[paraId] : null;
+  const paraId = selected?.id;
+  const chain = paraId !== undefined ? chainData[network]?.[paraId] : null;
   const name = chain?.name || `Parachain ${paraId}`;
   const logoSrc = chain?.logo;
   const homepage = chain?.homepage || '';
+  const state = selected?.state;
 
   return (
     <div className={styles.card}>
@@ -101,14 +74,17 @@ export default function RenewalInfoCard() {
               <img src={logoSrc} alt='logo' className={styles.largeLogo} />
             ) : (
               <Identicon
-                value={blake2AsHex(`${network}${paraId}`, 256)}
+                value={blake2AsHex(`${network}-${paraId}`, 256)}
                 size={48}
                 theme='substrate'
                 className={styles.largeLogo}
               />
             )}
             <div className={styles.infoText}>
-              <div className={styles.name}>{name}</div>
+              <div className={styles.name}>
+                {name}
+                {typeof state === 'number' && <ParaStateCard state={state} />}
+              </div>
               <div className={styles.paraId}>Para ID: {paraId}</div>
               {homepage && (
                 <a
@@ -123,16 +99,16 @@ export default function RenewalInfoCard() {
             </div>
           </div>
         ) : (
-          <p>No renewal info found.</p>
+          <p>No parachain selected.</p>
         )}
       </div>
 
       {!selected && (
         <p className={styles.description}>
-          Select a parachain to view its icon, name, ID, and website. Use this to confirm renewal
-          deadlines and verify parachain details.
+          Select a parachain to view its icon, name, ID, and website.
         </p>
       )}
+
       <div className={styles.inputSection}>
         <label>Select Parachain</label>
         <Select options={options} selectedValue={selected} onChange={setSelected} />

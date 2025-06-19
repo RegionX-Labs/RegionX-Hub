@@ -19,7 +19,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .inputSection {
@@ -28,76 +28,19 @@
   gap: 8px;
   margin-top: auto;
   padding-top: 20px;
+
   label {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-muted);
   }
-
-  .inputRow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    input {
-      flex: 1;
-      min-width: 0;
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      transition:
-        border-color 0.2s ease,
-        background-color 0.2s ease;
-
-      &:focus {
-        outline: none;
-        border-color: $greenPrimary;
-        box-shadow: 0 0 0 2px rgba($greenPrimary, 0.2);
-        background: var(--input-bg);
-      }
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px var(--input-bg) inset !important;
-        -webkit-text-fill-color: var(--text-primary) !important;
-      }
-    }
-
-    button {
-      flex-shrink: 0;
-      padding: 10px 20px;
-      background: $greenPrimary;
-      color: black;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      @include Inter;
-      transition: background 0.2s ease;
-
-      &:hover {
-        background: var(--accent-green-hover);
-      }
-    }
-  }
 }
 
-.header {
+.infoBox {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.logo {
-  width: 38px;
-  height: 38px;
-  border-radius: 100%;
-  object-fit: cover;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 8px;
 }
 
 .largeLogo {
@@ -108,42 +51,33 @@
   flex-shrink: 0;
 }
 
-.infoBox {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-top: 8px;
-}
-
 .infoText {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .name {
   font-weight: 600;
   font-size: 1.05rem;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .paraId {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
-.deadline {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
 .siteLink {
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: $greenPrimary;
   text-decoration: none;
-  margin-top: 4px;
-  display: inline-block;
-  word-break: break-all;
+  margin-top: 2px;
+  word-break: break-word;
 
   &:hover {
     text-decoration: underline;
@@ -156,6 +90,6 @@
   font-size: 0.95rem;
   color: var(--text-secondary);
   line-height: 1.5;
-  padding-top: 20px;
   text-align: center;
+  padding-top: 16px;
 }
