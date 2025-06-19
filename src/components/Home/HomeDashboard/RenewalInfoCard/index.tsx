@@ -16,6 +16,7 @@ import { chainData } from '@/chaindata';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
 import Identicon from '@polkadot/react-identicon';
+import { blake2AsHex } from '@polkadot/util-crypto';
 
 export default function RenewalInfoCard() {
   const network = useUnit($network);
@@ -61,22 +62,12 @@ export default function RenewalInfoCard() {
                 marginRight: 8,
               }}
             />
-          ) : typeof paraId === 'number' ? (
+          ) : (
             <Identicon
-              value={paraId.toString()}
+              value={blake2AsHex(`${network}-${paraId}`, 256)}
               size={24}
               theme='substrate'
               style={{ marginRight: 8 }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: '100%',
-                backgroundColor: '#444',
-                marginRight: 8,
-              }}
             />
           ),
         };
@@ -108,17 +99,12 @@ export default function RenewalInfoCard() {
           <div className={styles.infoBox}>
             {logoSrc ? (
               <img src={logoSrc} alt='logo' className={styles.largeLogo} />
-            ) : typeof paraId === 'number' ? (
+            ) : (
               <Identicon
-                value={paraId.toString()}
+                value={blake2AsHex(`${network}-${paraId}`, 256)}
                 size={48}
                 theme='substrate'
                 className={styles.largeLogo}
-              />
-            ) : (
-              <div
-                className={styles.largeLogo}
-                style={{ backgroundColor: '#444', borderRadius: '50%' }}
               />
             )}
             <div className={styles.infoText}>
