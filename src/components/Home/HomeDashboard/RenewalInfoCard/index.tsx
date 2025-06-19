@@ -10,8 +10,7 @@ import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
 import Identicon from '@polkadot/react-identicon';
 import { blake2AsHex } from '@polkadot/util-crypto';
-import { ParaStateCard } from '@/components/ParaStateCard';
-import { ParaState } from '@/components/ParaStateCard';
+import { ParaStateCard, ParaState, paraStateProperties } from '@/components/ParaStateCard';
 
 export default function RenewalInfoCard() {
   const network = useUnit($network);
@@ -63,7 +62,7 @@ export default function RenewalInfoCard() {
   const name = chain?.name || `Parachain ${paraId}`;
   const logoSrc = chain?.logo;
   const homepage = chain?.homepage || '';
-  const state = selected?.state;
+  const state: ParaState | undefined = selected?.state;
 
   return (
     <div className={styles.card}>
@@ -81,11 +80,9 @@ export default function RenewalInfoCard() {
               />
             )}
             <div className={styles.infoText}>
-              <div className={styles.name}>
-                {name}
-                {typeof state === 'number' && <ParaStateCard state={state} />}
-              </div>
+              <div className={styles.name}>{name}</div>
               <div className={styles.paraId}>Para ID: {paraId}</div>
+
               {homepage && (
                 <a
                   href={homepage}
@@ -102,6 +99,13 @@ export default function RenewalInfoCard() {
           <p>No parachain selected.</p>
         )}
       </div>
+
+      {typeof state === 'number' && (
+        <div className={styles.stateTooltip}>
+          <ParaStateCard state={state} withTooltip={false} />
+          <div className={styles.stateText}>{paraStateProperties[state]?.description}</div>
+        </div>
+      )}
 
       {!selected && (
         <p className={styles.description}>
