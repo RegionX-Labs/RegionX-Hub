@@ -64,7 +64,7 @@ export default function RenewalInfoCard() {
             />
           ) : (
             <Identicon
-              value={blake2AsHex(`${network}-${paraId}`, 256)}
+              value={blake2AsHex(`${network}${paraId}`, 256)}
               size={24}
               theme='substrate'
               style={{ marginRight: 8 }}
@@ -101,7 +101,7 @@ export default function RenewalInfoCard() {
               <img src={logoSrc} alt='logo' className={styles.largeLogo} />
             ) : (
               <Identicon
-                value={blake2AsHex(`${network}-${paraId}`, 256)}
+                value={blake2AsHex(`${network}${paraId}`, 256)}
                 size={48}
                 theme='substrate'
                 className={styles.largeLogo}
