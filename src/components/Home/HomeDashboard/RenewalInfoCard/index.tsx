@@ -15,6 +15,7 @@ import { timesliceToTimestamp } from '@/utils';
 import { chainData } from '@/chaindata';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
+import Identicon from '@polkadot/react-identicon';
 
 export default function RenewalInfoCard() {
   const network = useUnit($network);
@@ -25,7 +26,6 @@ export default function RenewalInfoCard() {
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [deadline, setDeadline] = useState<string>('-');
   const [options, setOptions] = useState<SelectOption<[RenewalKey, RenewalRecord]>[]>([]);
-  const [showLogo, setShowLogo] = useState(true);
 
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
@@ -34,29 +34,54 @@ export default function RenewalInfoCard() {
   useEffect(() => {
     const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
       potentialRenewals.entries()
-    ).map(([key, record]) => {
-      const paraId = (record.completion as any).value[0].assignment.value;
-      const rawName = chainData[network]?.[paraId]?.name || `Parachain ${paraId}`;
-      const logo = chainData[network]?.[paraId]?.logo;
+    )
+      .map(([key, record]) => {
+        const paraId = (record.completion as any)?.value?.[0]?.assignment?.value;
 
-      const displayName = rawName.includes(String(paraId)) ? rawName : `${rawName}`;
+        if (typeof paraId !== 'number' || isNaN(paraId)) return null;
 
-      return {
-        key: `${key.when}-${key.core}`,
-        label: displayName,
-        value: [key, record],
-        icon: logo ? (
-          <img
-            src={logo}
-            style={{
-              width: 24,
-              borderRadius: '100%',
-              marginRight: 8,
-            }}
-          />
-        ) : undefined,
-      };
-    });
+        const chain = chainData[network]?.[paraId];
+        const rawName = chain?.name || `Parachain ${paraId}`;
+        const logo = chain?.logo;
+
+        const displayName = rawName.includes(String(paraId)) ? rawName : `${rawName}`;
+
+        return {
+          key: `${key.when}-${key.core}`,
+          label: displayName,
+          value: [key, record],
+          icon: logo ? (
+            <img
+              src={logo}
+              alt='logo'
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: '100%',
+                marginRight: 8,
+              }}
+            />
+          ) : typeof paraId === 'number' ? (
+            <Identicon
+              value={paraId.toString()}
+              size={24}
+              theme='substrate'
+              style={{ marginRight: 8 }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: '100%',
+                backgroundColor: '#444',
+                marginRight: 8,
+              }}
+            />
+          ),
+        };
+      })
+      .filter(Boolean) as SelectOption<[RenewalKey, RenewalRecord]>[];
 
     setOptions(_options);
     if (_options[0]) setSelected(_options[0].value);
@@ -70,24 +95,30 @@ export default function RenewalInfoCard() {
     })();
   }, [selected]);
 
-  const paraId = selected ? (selected[1].completion as any).value[0].assignment.value : null;
-  const rawName =
-    paraId !== null ? chainData[network]?.[paraId]?.name || `Parachain ${paraId}` : '';
-  const name = rawName;
-  const logoSrc = paraId !== null ? chainData[network]?.[paraId]?.logo : '';
-  const homepage = paraId !== null ? chainData[network]?.[paraId]?.homepage : '';
+  const paraId = selected ? (selected[1].completion as any)?.value?.[0]?.assignment?.value : null;
+  const chain = paraId !== null ? chainData[network]?.[paraId] : null;
+  const name = chain?.name || `Parachain ${paraId}`;
+  const logoSrc = chain?.logo;
+  const homepage = chain?.homepage || '';
 
   return (
     <div className={styles.card}>
       <div className={styles.content}>
         {selected ? (
           <div className={styles.infoBox}>
-            {showLogo && logoSrc && (
-              <img
-                src={logoSrc}
-                alt='logo'
+            {logoSrc ? (
+              <img src={logoSrc} alt='logo' className={styles.largeLogo} />
+            ) : typeof paraId === 'number' ? (
+              <Identicon
+                value={paraId.toString()}
+                size={48}
+                theme='substrate'
                 className={styles.largeLogo}
-                onError={() => setShowLogo(false)}
+              />
+            ) : (
+              <div
+                className={styles.largeLogo}
+                style={{ backgroundColor: '#444', borderRadius: '50%' }}
               />
             )}
             <div className={styles.infoText}>
