@@ -62,7 +62,7 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
     background: 'greenDark',
     tooltip: 'An active parachain that can be renewed and is able to produce blocks.',
     description:
-      'A parachain using bulk Coretime that must renew on time during each sale cycle to continue producing blocks.',
+      'A parachain using bulk coretime that must renew on time during each sale cycle to continue producing blocks.',
   },
   [ParaState.IN_WORKPLAN]: {
     title: 'Idle (In Workplan)',
