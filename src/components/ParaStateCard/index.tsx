@@ -42,7 +42,7 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
     background: 'blueDark',
     tooltip: 'Parachain that utilizes on-demand coretime.',
     description:
-      'A parachain that purely utilizes on-demand Coretime and does not need to worry about bulk sale cycles.',
+      'A parachain that purely utilizes on-demand coretime and does not need to worry about bulk sale cycles.',
   },
   [ParaState.IDLE_PARA]: {
     title: 'Idle Parachain',
