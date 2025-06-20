@@ -83,7 +83,7 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
     background: 'yellowDark',
     tooltip: 'Parachain responsible for core Polkadot protocol features.',
     description:
-      'A special parachain assigned Coretime at the protocol level to run core features of the relay chain.',
+      'A special parachain assigned coretime at the protocol level to run core features of the relay chain.',
   },
 };
 
