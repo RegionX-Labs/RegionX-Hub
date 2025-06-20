@@ -55,7 +55,7 @@ export default function RenewableCores({ view }: Props) {
         value: renewal,
         icon: (
           <img
-            style={{ width: 28, borderRadius: '100%', marginRight: '8' }}
+            style={{ width: 28, borderRadius: '100%', marginRight: 8 }}
             src={
               chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo
             }
@@ -167,7 +167,12 @@ export default function RenewableCores({ view }: Props) {
 
       <div className={styles.selectBox}>
         {options.length > 0 ? (
-          <Select options={options} selectedValue={selected} onChange={setSelected} />
+          <Select
+            options={options}
+            selectedValue={selected}
+            onChange={setSelected}
+            variant='secondary'
+          />
         ) : (
           <p className={styles.noDataMessage}>
             All cores have been renewed. Nothing left to renew!
