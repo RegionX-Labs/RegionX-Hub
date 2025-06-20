@@ -69,7 +69,7 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
     background: 'cyanDark',
     tooltip: 'Parachain scheduled for execution',
     description:
-      'A parachain waiting for its reserved Coretime to begin. It will start producing blocks soon.',
+      'A parachain waiting for its reserved coretime to begin. It will start producing blocks soon.',
   },
   [ParaState.LEASE_HOLDING]: {
     title: 'Lease Holding',
