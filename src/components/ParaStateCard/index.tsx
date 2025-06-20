@@ -76,7 +76,7 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
     background: 'purpleDark',
     tooltip: 'Parachain that secured coretime through the legacy slot auction model.',
     description:
-      'This parachain holds Coretime through the legacy auction system instead of the new Coretime mechanism.',
+      'This parachain holds coretime through the legacy auction system instead of the new coretime mechanism.',
   },
   [ParaState.SYSTEM]: {
     title: 'System Parachain',
