@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, latestSaleRequested, fetchSelloutPrice } from '@/coretime/saleInfo';
@@ -59,7 +61,11 @@ export default function CoreComparison({ view }: Props) {
   return (
     <div
       className={`${styles.coreComparisonCard} ${
-        view === 'Deploying a new project' ? styles.compact : ''
+        view === 'Deploying a new project'
+          ? styles.compact
+          : view === 'Managing Existing Project'
+            ? styles.extended
+            : ''
       }`}
     >
       <p className={styles.title}>Renewal vs New Core price difference</p>

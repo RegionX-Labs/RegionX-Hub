@@ -9,11 +9,29 @@
   flex-direction: column;
   justify-content: flex-start;
   height: 100%;
-  min-height: 300px;
-  width: 100%;
-  max-width: 420px;
+  min-height: 330px;
+  max-height: 330px;
+  width: 420px;
   border: 1px solid var(--card-border);
   @include Inter;
+  @media (min-width: 1930px) {
+    width: 31%;
+  }
+  @media (max-width: 1800px) {
+    width: 32%;
+  }
+  @media (max-width: 1430px) {
+    width: 92%;
+  }
+  @media (max-width: 800px) {
+    max-width: 90%;
+  }
+  @media (max-width: 750px) {
+    max-width: 86%;
+  }
+  @media (max-width: 450px) {
+    max-width: 82%;
+  }
 }
 
 .content {
