@@ -55,7 +55,7 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
     title: 'Active Parachain',
     background: 'greenDark',
     tooltip: 'An active parachain that is able to produce blocks.',
-    description: 'A parachain that has reserved bulk Coretime and is actively producing blocks.',
+    description: 'A parachain that has reserved bulk coretime and is actively producing blocks.',
   },
   [ParaState.ACTIVE_RENEWABLE_PARA]: {
     title: 'Active Parachain',
