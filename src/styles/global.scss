@@ -3,6 +3,19 @@
 @use './theme' as *;
 @use 'sass:color';
 
+html,
+body {
+  height: 100%;
+  min-height: -webkit-fill-available;
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--background);
