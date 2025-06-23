@@ -11,10 +11,6 @@
   overflow-y: auto;
   @include Inter;
 
-  @supports (-webkit-touch-callout: none) {
-    max-height: -webkit-fill-available;
-  }
-
   scrollbar-width: thin;
   scrollbar-color: rgba(150, 150, 150, 0.4) transparent;
 
