@@ -65,6 +65,44 @@
       max-width: 80%;
     }
   }
+
+  &.extended {
+    width: 59.5%;
+    @media (max-width: 1910px) {
+      width: 59%;
+    }
+    @media (max-width: 1893px) {
+      width: 58%;
+    }
+    @media (max-width: 1860px) {
+      width: 57%;
+    }
+    @media (max-width: 1820px) {
+      width: 56%;
+    }
+    @media (max-width: 1705px) {
+      width: 55%;
+    }
+    @media (max-width: 1430px) {
+      width: 91%;
+    }
+
+    @media (max-width: 1000px) {
+      width: 88%;
+    }
+
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+
+    @media (max-width: 750px) {
+      max-width: 84%;
+    }
+
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
+  }
 }
 
 .title {

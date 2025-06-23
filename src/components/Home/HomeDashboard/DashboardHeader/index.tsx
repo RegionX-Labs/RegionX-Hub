@@ -9,7 +9,7 @@ import { $selectedAccount } from '@/wallet';
 const dashboards = [
   { name: 'Overview', enabled: true },
   { name: 'Deploying a new project', enabled: true },
-  { name: 'Managing Existing Project', enabled: false },
+  { name: 'Managing Existing Project', enabled: true },
   { name: 'Coretime Reseller', enabled: false },
 ];
 

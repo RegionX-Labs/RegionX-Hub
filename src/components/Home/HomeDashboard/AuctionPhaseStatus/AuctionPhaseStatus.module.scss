@@ -85,6 +85,32 @@
       max-width: 80%;
     }
   }
+
+  &.extended {
+    @media (max-width: 1800px) {
+      width: 93.5%;
+    }
+
+    @media (max-width: 1430px) {
+      width: 91%;
+    }
+
+    @media (max-width: 1000px) {
+      width: 88%;
+    }
+
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+
+    @media (max-width: 750px) {
+      max-width: 84%;
+    }
+
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
+  }
 }
 
 .header {

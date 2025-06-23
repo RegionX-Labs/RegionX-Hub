@@ -181,7 +181,13 @@ export default function AuctionPhaseStatus({ view }: Props) {
 
   return (
     <div
-      className={`${styles.auctionPhaseCard} ${view === 'Deploying a new project' ? styles.compact : ''}`}
+      className={`${styles.auctionPhaseCard} ${
+        view === 'Deploying a new project'
+          ? styles.compact
+          : view === 'Managing Existing Project'
+            ? styles.extended
+            : ''
+      }`}
     >
       <div className={styles.header}>Auction Phase Status</div>
       <div className={styles.content}>
