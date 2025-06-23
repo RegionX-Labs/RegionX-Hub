@@ -55,6 +55,13 @@ export default function RenewalInfoCard() {
   }, [network, connections]);
 
   useEffect(() => {
+    if (!selected && parachains.length > 0 && potentialRenewals && saleInfo) {
+      const first = parachains.find((p) => p.network === network);
+      if (first) setSelected(first);
+    }
+  }, [parachains, potentialRenewals, saleInfo, selected, network]);
+
+  useEffect(() => {
     if (!saleInfo || !selected) return;
 
     const match = Array.from(potentialRenewals.entries()).find(
