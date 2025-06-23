@@ -84,6 +84,7 @@
     background-color: $darkBackground4;
   }
 }
+
 .helpButton {
   background: var(--green-primary);
   color: black;
@@ -98,5 +99,13 @@
 
   &:hover {
     background-color: var(--green-primary-hover);
+  }
+}
+
+.buttonText {
+  display: inline;
+
+  @media (max-width: 500px) {
+    display: none;
   }
 }

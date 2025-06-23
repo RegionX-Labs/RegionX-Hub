@@ -41,9 +41,12 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
 
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <button className={styles.helpButton} onClick={() => setIsHelpOpen(true)}>
-          <HelpCircle size={18} style={{ marginRight: 6 }} />
-          Help Center
+          <HelpCircle size={18} style={{ marginRight: 0 }} />
+          <span className={styles.buttonText} style={{ marginLeft: 6 }}>
+            Help Center
+          </span>
         </button>
+
         <div className={styles.dropdownWrapper}>
           <div className={styles.dropdownHeader} onClick={toggleDropdown}>
             {selected}
