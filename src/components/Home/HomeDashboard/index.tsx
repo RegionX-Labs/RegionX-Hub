@@ -1,14 +1,21 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
+import styles from './HomeDashboard.module.scss';
+
 import RenewableCores from './RenewableCores';
 import CoreComparison from './CoreComparison';
 import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
 import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
+import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
 import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
-import styles from './HomeDashboard.module.scss';
+
+import RenewalInfoCard from './RenewalInfoCard';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -16,6 +23,8 @@ interface HomeDashboardProps {
 export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [selected, setSelected] = useState('Overview');
+  const [paraId, setParaId] = useState<number | null>(null);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -34,16 +43,40 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       className={`${styles.dashboardWrapper} ${scrolled ? styles.scrolled : ''}`}
       ref={wrapperRef}
     >
+      <DashboardHeader selected={selected} setSelected={setSelected} />
+
       <div className={styles.dashboard}>
-        <RenewableCores />
-        <CoreComparison />
-        <CorePurchaseCard />
-        <AuctionPhaseStatus />
-        <DutchAuctionChart theme={theme} />
-        <RenewalsOverview />
-        <CoreRemainingCard />
-        <RevenueGeneratedCard />
-        <PurchaseHistoryTable />
+        {selected === 'Overview' && (
+          <>
+            <RenewableCores view={selected} />
+            <CoreComparison view={selected} />
+            <CorePurchaseCard />
+            <AuctionPhaseStatus view={selected} />
+            <DutchAuctionChart theme={theme} />
+            <RenewalsOverview />
+            <CoreRemainingCard view={selected} />
+            <RevenueGeneratedCard />
+            <PurchaseHistoryTable />
+          </>
+        )}
+
+        {selected === 'Deploying a new project' && (
+          <>
+            <CoreRemainingCard view={selected} />
+            <AuctionPhaseStatus view={selected} />
+            <DutchAuctionChart theme={theme} view={selected} />
+            <PurchaseHistoryTable />
+          </>
+        )}
+
+        {selected === 'Managing Existing Project' && (
+          <>
+            <RenewalInfoCard />
+            <CoreComparison view={selected} />
+            <AuctionPhaseStatus view={selected} />
+            <DutchAuctionChart theme={theme} view={selected} />
+          </>
+        )}
       </div>
     </div>
   );

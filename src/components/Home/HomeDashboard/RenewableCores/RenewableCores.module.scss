@@ -41,6 +41,35 @@
   @media (max-width: 450px) {
     max-width: 80%;
   }
+  &.compact {
+    width: 33%;
+
+    @media (max-width: 1800px) {
+      width: 35.5%;
+    }
+
+    @media (max-width: 1500px) {
+      width: 42%;
+    }
+    @media (max-width: 1306px) {
+      width: 92%;
+    }
+    @media (max-width: 1121px) {
+      width: 90%;
+    }
+    @media (max-width: 1000px) {
+      width: 88%;
+    }
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+    @media (max-width: 750px) {
+      max-width: 85%;
+    }
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
+  }
 }
 
 .title {

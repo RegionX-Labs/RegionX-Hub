@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, latestSaleRequested, fetchSelloutPrice } from '@/coretime/saleInfo';
@@ -7,7 +9,11 @@ import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CoreComparison.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 
-export default function CoreComparison() {
+type Props = {
+  view: string;
+};
+
+export default function CoreComparison({ view }: Props) {
   const [network, saleInfo, connections] = useUnit([$network, $latestSaleInfo, $connections]);
 
   const [renewalPrice, setRenewalPrice] = useState<number | null>(null);
@@ -35,9 +41,7 @@ export default function CoreComparison() {
           .getTypedApi(metadata.coretimeChain)
           .query.System.Number.getValue();
 
-        const currentPrice = getCorePriceAt(currentBlockNumber, {
-          ...saleInfo,
-        });
+        const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo });
 
         setCorePrice(currentPrice);
 
@@ -55,7 +59,15 @@ export default function CoreComparison() {
   const diffPercent = isReady ? ((priceDiff! / corePrice!) * 100).toFixed(0) : null;
 
   return (
-    <div className={styles.coreComparisonCard}>
+    <div
+      className={`${styles.coreComparisonCard} ${
+        view === 'Deploying a new project'
+          ? styles.compact
+          : view === 'Managing Existing Project'
+            ? styles.extended
+            : ''
+      }`}
+    >
       <p className={styles.title}>Renewal vs New Core price difference</p>
       <h2 className={`${styles.value} ${priceDiff! >= 0 ? styles.positive : styles.negative}`}>
         {priceDiff! >= 0 ? '+' : '−'}

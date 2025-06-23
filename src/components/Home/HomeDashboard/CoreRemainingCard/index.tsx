@@ -19,7 +19,11 @@ import { coretimeChainBlockTime } from '@/utils';
 
 ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, TimeScale);
 
-export default function CoreRemainingCard() {
+type Props = {
+  view: string;
+};
+
+export default function CoreRemainingCard({ view }: Props) {
   const [coresRemaining, setCoresRemaining] = useState<number | null>(null);
   const [coresOffered, setCoresOffered] = useState<number | null>(null);
 
@@ -53,10 +57,7 @@ export default function CoreRemainingCard() {
 
   const chartData = useMemo(() => {
     if (!coresOffered || purchaseHistory.length === 0) {
-      return {
-        labels: [],
-        datasets: [],
-      };
+      return { labels: [], datasets: [] };
     }
 
     const sorted = [...purchaseHistory].sort(
@@ -98,33 +99,21 @@ export default function CoreRemainingCard() {
         time: {
           unit: 'day',
           tooltipFormat: 'dd MMM yyyy',
-          displayFormats: {
-            day: 'd MMM',
-          },
+          displayFormats: { day: 'd MMM' },
         },
         ticks: {
           display: true,
           autoSkip: false,
-          font: {
-            size: 12,
-          },
+          font: { size: 12 },
           maxRotation: 0,
           minRotation: 0,
         },
-        grid: {
-          display: false,
-        },
+        grid: { display: false },
       },
       y: {
         beginAtZero: true,
-        grid: {
-          display: false,
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-        },
+        grid: { display: false },
+        ticks: { font: { size: 12 } },
       },
     },
     plugins: {
@@ -134,10 +123,13 @@ export default function CoreRemainingCard() {
   } satisfies import('chart.js').ChartOptions<'line'>;
 
   return (
-    <div className={`${styles.coreRemainingCard} ${styles.metricBox}`}>
+    <div
+      className={`${styles.coreRemainingCard} ${styles.metricBox} ${
+        view === 'Deploying a new project' ? styles.compact : ''
+      }`}
+    >
       <p className={styles.label}>Cores Remaining</p>
       <h2 className={styles.value}>{coresRemaining !== null ? coresRemaining : ''}</h2>
-
       <div className={styles.chartWrapper}>
         <Line data={chartData} options={chartOptions} />
       </div>

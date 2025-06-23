@@ -43,19 +43,73 @@
   @media (max-width: 460px) {
     max-width: 80%;
   }
-}
 
-@media (max-width: 533px) {
-  .info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-right: 20px;
+  &.compact {
+    width: 39.5%;
+
+    @media (max-width: 1921px) {
+      width: 30.8%;
+    }
+    @media (max-width: 1800px) {
+      width: 35%;
+    }
+    @media (max-width: 1573px) {
+      width: 35%;
+    }
+    @media (max-width: 1390px) {
+      width: 33.5%;
+    }
+    @media (max-width: 1306px) {
+      width: 91%;
+    }
+
+    @media (max-width: 1121px) {
+      width: 90%;
+    }
+    @media (max-width: 1000px) {
+      max-width: 88%;
+    }
+    @media (max-width: 940px) {
+      max-width: 88%;
+    }
+    @media (max-width: 900px) {
+      max-width: 87%;
+    }
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+    @media (max-width: 750px) {
+      max-width: 85%;
+    }
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
   }
 
-  .label {
-    font-size: 0.45rem;
-    color: $gray6;
+  &.extended {
+    @media (max-width: 1800px) {
+      width: 93.5%;
+    }
+
+    @media (max-width: 1430px) {
+      width: 91%;
+    }
+
+    @media (max-width: 1000px) {
+      width: 88%;
+    }
+
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+
+    @media (max-width: 750px) {
+      max-width: 84%;
+    }
+
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
   }
 }
 
@@ -75,7 +129,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 
 .label {
@@ -132,6 +186,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   svg {
     width: 100%;
     height: 100%;
@@ -151,6 +206,7 @@
 .foregroundArc {
   transition: stroke-dashoffset 0.6s ease;
 }
+
 .progressLabel {
   fill: $gray6;
   font-size: 13px;
@@ -160,4 +216,18 @@
   fill: var(--text-color);
   font-size: 16px;
   font-weight: 600;
+}
+
+@media (max-width: 533px) {
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-right: 20px;
+  }
+
+  .label {
+    font-size: 0.45rem;
+    color: $gray6;
+  }
 }

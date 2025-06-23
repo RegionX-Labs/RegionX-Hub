@@ -1,3 +1,5 @@
+'use client';
+
 import { JSX, useEffect, useMemo, useState } from 'react';
 import styles from './AuctionPhaseStatus.module.scss';
 import { useUnit } from 'effector-react';
@@ -15,7 +17,11 @@ import en from 'javascript-time-ago/locale/en';
 
 TimeAgo.addLocale(en);
 
-export default function AuctionPhaseStatus() {
+type Props = {
+  view: string;
+};
+
+export default function AuctionPhaseStatus({ view }: Props) {
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
   const connections = useUnit($connections);
@@ -174,7 +180,15 @@ export default function AuctionPhaseStatus() {
   }, [phaseEndpoints, currentPhase]);
 
   return (
-    <div className={styles.auctionPhaseCard}>
+    <div
+      className={`${styles.auctionPhaseCard} ${
+        view === 'Deploying a new project'
+          ? styles.compact
+          : view === 'Managing Existing Project'
+            ? styles.extended
+            : ''
+      }`}
+    >
       <div className={styles.header}>Auction Phase Status</div>
       <div className={styles.content}>
         <div className={styles.info}>
