@@ -19,10 +19,6 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  @supports (-webkit-touch-callout: none) {
-    max-height: -webkit-fill-available;
-  }
-
   &::-webkit-scrollbar {
     width: 0;
     background: transparent;

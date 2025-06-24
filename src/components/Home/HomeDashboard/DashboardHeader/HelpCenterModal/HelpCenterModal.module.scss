@@ -15,7 +15,7 @@
   background: var(--dark-background-2);
   padding: 24px;
   border-radius: 12px;
-  width: 400px;
+  width: 440px;
   max-width: 90%;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
@@ -37,5 +37,37 @@
     &:hover {
       opacity: 0.7;
     }
+  }
+}
+
+.helpBody {
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: white;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+
+  button {
+    background-color: var(--green-primary);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  span {
+    color: white;
   }
 }

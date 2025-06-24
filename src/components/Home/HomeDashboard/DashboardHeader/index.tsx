@@ -3,10 +3,9 @@
 import { useState } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './DashboardHeader.module.scss';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
 import { $selectedAccount } from '@/wallet';
 import HelpCenterModal from './HelpCenterModal';
-import { HelpCircle } from 'lucide-react';
 
 const dashboards = [
   { name: 'Overview', enabled: true },
@@ -41,7 +40,7 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
 
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <button className={styles.helpButton} onClick={() => setIsHelpOpen(true)}>
-          <HelpCircle size={18} style={{ marginRight: 0 }} />
+          <HelpCircle size={18} />
           <span className={styles.buttonText} style={{ marginLeft: 6 }}>
             Help Center
           </span>
@@ -68,7 +67,11 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
         </div>
       </div>
 
-      <HelpCenterModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
+      <HelpCenterModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        selected={selected}
+      />
     </div>
   );
 }
