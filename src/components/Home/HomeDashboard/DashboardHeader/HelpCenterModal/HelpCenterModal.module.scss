@@ -15,9 +15,14 @@
   background: var(--dark-background-2);
   padding: 24px;
   border-radius: 12px;
-  width: 440px;
-  max-width: 90%;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  width: 720px;
+  max-width: 96%;
+  max-height: 90vh;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: hidden;
 }
 
 .modalHeader {
@@ -27,12 +32,15 @@
 
   h2 {
     font-size: 20px;
+    font-weight: 600;
     color: var(--green-primary);
+    margin: 0;
   }
 
   .closeIcon {
     cursor: pointer;
     color: white;
+    transition: opacity 0.2s ease;
 
     &:hover {
       opacity: 0.7;
@@ -41,25 +49,57 @@
 }
 
 .helpBody {
-  margin-top: 16px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: white;
+  display: flex;
+  gap: 24px;
+  overflow: hidden;
+
+  .text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-color);
+    overflow-y: auto;
+    max-height: 400px;
+    padding-right: 8px;
+  }
+
+  .images {
+    flex: 0 0 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+}
+
+.helpImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
 }
 
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  gap: 12px;
 
   button {
     background-color: var(--green-primary);
     border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
     color: white;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: var(--green-primary-hover);
+    }
 
     &:disabled {
       opacity: 0.5;
@@ -68,6 +108,8 @@
   }
 
   span {
-    color: white;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
   }
 }
