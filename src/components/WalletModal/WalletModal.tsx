@@ -37,6 +37,10 @@ function isNovaWallet() {
   return typeof window !== 'undefined' && /NovaWallet/i.test(navigator.userAgent);
 }
 
+function isMobile() {
+  return typeof window !== 'undefined' && window.innerWidth < 768;
+}
+
 interface WalletModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -44,19 +48,31 @@ interface WalletModalProps {
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isNova, setIsNova] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const [walletsToShow, setWalletsToShow] = useState(WALLET_OPTIONS);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const checkMobile = () => setIsMobileView(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
-    setIsNova(isNovaWallet());
-  }, []);
+    const hasPolkadotJs = availableWallets.some((w) => w.name === 'polkadot-js');
+    const hasNova = availableWallets.some((w) => w.name === 'nova');
+    const inNova = isNovaWallet();
+
+    let filtered = WALLET_OPTIONS;
+
+    if (inNova) {
+      filtered = WALLET_OPTIONS.filter((w) => w.id === 'nova');
+    } else if (isMobileView && hasPolkadotJs) {
+      filtered = WALLET_OPTIONS.filter((w) => w.id !== 'polkadot-js');
+    }
+
+    setWalletsToShow(filtered);
+  }, [availableWallets, isMobileView]);
 
   if (!isOpen) return null;
 
@@ -74,18 +90,12 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const filteredWallets = isNova
-    ? WALLET_OPTIONS.filter((w) => w.id === 'nova')
-    : isMobile
-      ? WALLET_OPTIONS.filter((w) => w.id !== 'polkadot-js')
-      : WALLET_OPTIONS;
-
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
-          {filteredWallets.map((wallet) => {
+          {walletsToShow.map((wallet) => {
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);
             const buttonClass = `${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`;
 
