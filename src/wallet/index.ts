@@ -33,11 +33,8 @@ const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     let selectedKey = extension;
 
-    if (extension === 'polkadot-js' && isNovaMobile()) {
+    if (extension === 'nova') {
       selectedKey = 'polkadot-js';
-      localStorage.setItem(SELECTED_WALLET_KEY, 'nova');
-    } else {
-      localStorage.setItem(SELECTED_WALLET_KEY, extension);
     }
 
     const injected = await connectInjectedExtension(selectedKey);

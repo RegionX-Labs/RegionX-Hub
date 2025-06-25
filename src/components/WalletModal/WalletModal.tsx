@@ -26,9 +26,18 @@ const isNovaMobile = () =>
 const getAdjustedWalletOptions = () => {
   return WALLET_OPTIONS.map((wallet) => {
     if (wallet.id === 'polkadot-js' && isNovaMobile()) {
-      return { ...wallet, name: 'Nova Wallet', icon: novaIcon };
+      return {
+        ...wallet,
+        name: 'Nova Wallet',
+        icon: novaIcon,
+        id: 'nova',
+        realId: 'polkadot-js',
+      };
     }
-    return wallet;
+    return {
+      ...wallet,
+      realId: wallet.id,
+    };
   });
 };
 
@@ -43,17 +52,15 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const isAvailable = (walletId: string): boolean => {
-    if (walletId === 'nova' && isNovaMobile()) return true;
-    return availableWallets.some((w) => w.name === walletId);
+  const isAvailable = (wallet: { id: string; realId: string }) => {
+    if (wallet.id === 'nova' && isNovaMobile()) return true;
+    return availableWallets.some((w) => w.name === wallet.realId);
   };
 
-  const handleWalletClick = (walletId: string, available: boolean) => {
+  const handleWalletClick = (displayId: string, realId: string, available: boolean) => {
     if (!available) return;
-
-    const connectId = walletId === 'nova' ? 'polkadot-js' : walletId;
-    walletSelected(connectId);
-    localStorage.setItem(SELECTED_WALLET_KEY, walletId);
+    walletSelected(displayId); // store 'nova' or actual extension
+    localStorage.setItem(SELECTED_WALLET_KEY, displayId);
     onClose();
   };
 
@@ -67,14 +74,14 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
           {walletsToShow.map((wallet) => {
-            const available = isAvailable(wallet.id);
-            const btnClass = `${styles.walletButton} ${!available ? styles.disabled : ''}`;
+            const available = isAvailable(wallet);
+            const buttonClass = `${styles.walletButton} ${!available ? styles.disabled : ''}`;
 
             return (
               <button
                 key={wallet.id}
-                className={btnClass}
-                onClick={() => handleWalletClick(wallet.id, available)}
+                className={buttonClass}
+                onClick={() => handleWalletClick(wallet.id, wallet.realId, available)}
               >
                 <div className={styles.walletIconWrapper}>
                   <Image
