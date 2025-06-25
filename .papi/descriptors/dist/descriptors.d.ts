@@ -6,3 +6,4 @@ export declare const Pas: Record<string, object>;
 export declare const Pas_coretime: Record<string, object>;
 export declare const Wnd: Record<string, object>;
 export declare const Wnd_coretime: Record<string, object>;
+export declare const Rx_ksm: Record<string, object>;

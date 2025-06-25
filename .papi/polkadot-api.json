@@ -41,6 +41,11 @@
       "wsUrl": "wss://coretime-westend.dotters.network",
       "metadata": ".papi/metadata/wnd_coretime.scale",
       "genesis": "0xf938510edee7c23efa6e9db74f227c827a1b518bffe92e2f6c9842dc53d38840"
+    },
+    "rx_ksm": {
+      "wsUrl": "ws://127.0.0.1:8001",
+      "metadata": ".papi/metadata/rx_ksm.scale",
+      "genesis": "0x4545454545454545454545454545454545454545454545454545454545454545"
     }
   }
 }
