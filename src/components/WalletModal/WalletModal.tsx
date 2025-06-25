@@ -33,6 +33,10 @@ const WALLET_OPTIONS = [
   },
 ];
 
+function isNovaWallet() {
+  return typeof window !== 'undefined' && /NovaWallet/i.test(navigator.userAgent);
+}
+
 interface WalletModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -41,15 +45,17 @@ interface WalletModalProps {
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
   const [isMobile, setIsMobile] = useState(false);
+  const [isNova, setIsNova] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    setIsNova(isNovaWallet());
   }, []);
 
   if (!isOpen) return null;
@@ -68,9 +74,11 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const filteredWallets = WALLET_OPTIONS.filter((wallet) =>
-    isMobile ? wallet.id !== 'polkadot-js' : true
-  );
+  const filteredWallets = isNova
+    ? WALLET_OPTIONS.filter((w) => w.id === 'nova')
+    : isMobile
+      ? WALLET_OPTIONS.filter((w) => w.id !== 'polkadot-js')
+      : WALLET_OPTIONS;
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
