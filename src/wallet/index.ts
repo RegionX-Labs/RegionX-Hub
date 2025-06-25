@@ -13,6 +13,7 @@ export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
 export const accountSelected = createEvent<string>();
 export const restoreSelectedAccount = createEvent();
+export const disconnectWallet = createEvent();
 
 type WalletExtension = {
   name: string;
@@ -22,6 +23,9 @@ export const $walletExtensions = createStore<WalletExtension[]>([]);
 export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
+const isNovaMobile = () =>
+  typeof navigator !== 'undefined' && /NovaWallet/i.test(navigator.userAgent);
+
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
   return extensions.map((e) => ({ name: e }));
@@ -29,16 +33,28 @@ const getExtensionsFx = createEffect((): WalletExtension[] => {
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
-    if (!extension) return [];
-    const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
+    let selectedKey = extension;
+
+    if (extension === 'polkadot-js' && isNovaMobile()) {
+      selectedKey = 'polkadot-js';
+      localStorage.setItem(SELECTED_WALLET_KEY, 'nova');
+    } else {
+      localStorage.setItem(SELECTED_WALLET_KEY, extension);
+    }
+
+    const selectedExtension: InjectedExtension = await connectInjectedExtension(selectedKey);
     return selectedExtension.getAccounts();
   }
 );
 
 const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount | null> => {
-  const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
+  let selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
+
+  if (selectedWallet === 'nova') {
+    selectedWallet = 'polkadot-js';
+  }
 
   const extension = await connectInjectedExtension(selectedWallet);
   const accounts = await extension.getAccounts();
@@ -89,4 +105,18 @@ sample({
 sample({
   clock: restoreAccountFx.doneData,
   target: $selectedAccount,
+});
+
+$selectedAccount.reset(disconnectWallet);
+$loadedAccounts.reset(disconnectWallet);
+$walletExtensions.reset(disconnectWallet);
+
+disconnectWallet.watch(() => {
+  localStorage.removeItem(SELECTED_WALLET_KEY);
+  localStorage.removeItem(SELECTED_ACCOUNT_KEY);
+});
+
+sample({
+  clock: disconnectWallet,
+  target: getExtensions,
 });

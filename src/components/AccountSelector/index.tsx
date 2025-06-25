@@ -2,14 +2,7 @@ import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
 import styles from './account.module.scss';
 import Select from '../elements/Select';
-import {
-  $loadedAccounts,
-  $selectedAccount,
-  accountSelected,
-  SELECTED_WALLET_KEY,
-  SELECTED_ACCOUNT_KEY,
-  walletSelected,
-} from '@/wallet';
+import { $loadedAccounts, $selectedAccount, accountSelected, disconnectWallet } from '@/wallet';
 
 const AccountSelector = () => {
   const accounts = useUnit($loadedAccounts);
@@ -17,10 +10,7 @@ const AccountSelector = () => {
 
   const handleChange = (value: string | null) => {
     if (value === 'disconnect') {
-      localStorage.removeItem(SELECTED_WALLET_KEY);
-      localStorage.removeItem(SELECTED_ACCOUNT_KEY);
-      walletSelected('');
-      accountSelected('');
+      disconnectWallet();
       return;
     }
     if (value) {
@@ -28,9 +18,8 @@ const AccountSelector = () => {
     }
   };
 
-  const formatAddress = (address: string): string => {
-    return `${address.slice(0, 4)}...${address.slice(-6)}`;
-  };
+  const formatAddress = (address: string): string =>
+    `${address.slice(0, 4)}...${address.slice(-6)}`;
 
   const options = accounts.map((account) => ({
     key: account.address,
