@@ -23,6 +23,13 @@
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
+  @media (max-width: 768px) {
+    width: 85%;
+  }
+  @media (max-width: 420px) {
+    width: 75%;
+    height: 90%;
+  }
 }
 
 .modalHeader {
@@ -71,6 +78,20 @@
     align-items: center;
     justify-content: flex-start;
     overflow: hidden;
+  }
+
+  @media (max-width: 420px) {
+    flex-direction: column;
+    .text {
+      max-height: none;
+      padding-right: 0;
+    }
+
+    .images {
+      flex: unset;
+      width: 100%;
+      gap: 16px;
+    }
   }
 }
 
