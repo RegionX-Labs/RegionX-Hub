@@ -11,13 +11,24 @@
   overflow-y: auto;
   @include Inter;
 
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 150, 150, 0.4) transparent;
+
   &::-webkit-scrollbar {
-    width: 0;
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(150, 150, 150, 0.4);
+    border-radius: 3px;
+  }
+
+  -ms-overflow-style: auto;
+
   @media (max-width: 800px) {
     max-height: none;
     overflow: visible;

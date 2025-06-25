@@ -72,7 +72,7 @@ const CurrentCorePrice: React.FC = () => {
 
       <div className={styles.price}>{price}</div>
       <div className={styles.unit}>/coretime</div>
-      <div className={styles.timer}>Bulk ends {relativeTime}</div>
+      <div className={styles.timer}>Bulk sale ends {relativeTime}</div>
     </div>
   );
 };

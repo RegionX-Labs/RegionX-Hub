@@ -67,3 +67,44 @@
     background-color: color.adjust($white, $lightness: -25%);
   }
 }
+
+.secondaryMarketPage {
+  width: 100%;
+  padding: 100px 0px;
+}
+
+.cardsRow {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+  }
+}
+
+.SecondaryMarketOverview {
+  flex: 1.1;
+  min-width: 300px;
+  max-width: 30%;
+  @media (max-width: 1024px) {
+    max-width: 100%;
+  }
+}
+
+.AuctionPriceOverview {
+  flex: 1;
+  max-width: 450px;
+  width: 100%;
+  @media (max-width: 1024px) {
+    max-width: 100%;
+  }
+}
+
+.PricingChartCard {
+  flex: 1;
+  height: 100%;
+  max-width: 100%;
+}

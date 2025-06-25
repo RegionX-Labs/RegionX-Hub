@@ -10,6 +10,15 @@
   height: 100vh;
   overflow: hidden;
 
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
   @media (max-width: 800px) {
     flex-direction: column;
     height: auto;
