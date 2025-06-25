@@ -21,7 +21,7 @@ const WALLET_OPTIONS = [
   },
   {
     name: 'SubWallet',
-    id: 'subwallet',
+    id: 'subwallet-js',
     icon: subwalletIcon,
     url: 'https://subwallet.app/',
   },
