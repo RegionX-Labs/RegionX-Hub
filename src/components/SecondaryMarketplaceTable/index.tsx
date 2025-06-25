@@ -2,154 +2,77 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './SecondaryMarketplaceTable.module.scss';
 import { TableComponent } from '@/components/elements/TableComponent';
 import { Filter } from 'lucide-react';
+import { useUnit } from 'effector-react';
+import { TableData } from '@/types/type';
+import { $connections, $network } from '@/api/connection';
+import { $listedRegions, listedRegionsRequested, RegionListing } from '@/marketplace';
+import { countBits, timesliceToTimestamp, toUnitFormatted } from '@/utils';
 
 export default function SecondaryMarketplaceTable() {
-  const rawData = [
-    {
-      CoreId: { cellType: 'text' as const, data: '#1045' },
-      Timeline: { cellType: 'text' as const, data: '28 May → 2 June' },
-      Price: { cellType: 'text' as const, data: '42 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Immediate Use' },
-      CorePercentage: { cellType: 'text' as const, data: '60%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1046' },
-      Timeline: { cellType: 'text' as const, data: '28 May → 2 June' },
-      Price: { cellType: 'text' as const, data: '35 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Full Core' },
-      CorePercentage: { cellType: 'text' as const, data: '100%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1048' },
-      Timeline: { cellType: 'text' as const, data: '2 June → 9 June' },
-      Price: { cellType: 'text' as const, data: '38 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Full Core' },
-      CorePercentage: { cellType: 'text' as const, data: '100%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1049' },
-      Timeline: { cellType: 'text' as const, data: '2 June → 9 June' },
-      Price: { cellType: 'text' as const, data: '26 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Shared Core' },
-      CorePercentage: { cellType: 'text' as const, data: '40%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1050' },
-      Timeline: { cellType: 'text' as const, data: '2 June → 9 June' },
-      Price: { cellType: 'text' as const, data: '50 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Immediate Use' },
-      CorePercentage: { cellType: 'text' as const, data: '75%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1051' },
-      Timeline: { cellType: 'text' as const, data: '9 June → 16 June' },
-      Price: { cellType: 'text' as const, data: '45 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Full Core' },
-      CorePercentage: { cellType: 'text' as const, data: '90%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1052' },
-      Timeline: { cellType: 'text' as const, data: '9 June → 16 June' },
-      Price: { cellType: 'text' as const, data: '30 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Shared Core' },
-      CorePercentage: { cellType: 'text' as const, data: '55%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1053' },
-      Timeline: { cellType: 'text' as const, data: '9 June → 16 June' },
-      Price: { cellType: 'text' as const, data: '60 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Immediate Use' },
-      CorePercentage: { cellType: 'text' as const, data: '85%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-    {
-      CoreId: { cellType: 'text' as const, data: '#1054' },
-      Timeline: { cellType: 'text' as const, data: '16 June → 23 June' },
-      Price: { cellType: 'text' as const, data: '20 DOT' },
-      Deployment: { cellType: 'text' as const, data: 'Shared Core' },
-      CorePercentage: { cellType: 'text' as const, data: '30%' },
-      Action: {
-        cellType: 'jsx' as const,
-        data: (
-          <div className={styles.actionCell}>
-            <button className={styles.buyButton}>Buy Now</button>
-          </div>
-        ),
-      },
-    },
-  ];
-
+  const [network, connections, listedRegions] = useUnit([$network, $connections, $listedRegions]);
+  const [tableData, setTableData] = useState<Record<string, TableData>[]>([]);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [minPercentage, setMinPercentage] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    listedRegionsRequested({network, connections});
+  }, [network, connections]);
+
+  useEffect(() => {
+    (async() => {
+      const data = [];
+      for(const listing of listedRegions) {
+        const beginDate = await getDateFromTimeslice(listing.region.begin);
+        const endDate = await getDateFromTimeslice(listing.region.end);
+
+        data.push({
+          CoreId: { cellType: 'text' as const, data: listing.region.core.toString() },
+          Timeline: { cellType: 'text' as const, data: `${beginDate} → ${endDate}` },
+          Price: { cellType: 'text' as const, data: toUnitFormatted(network, calculatePrice(listing)) }, // TODO: need region end for this.
+          Deployment: { cellType: 'text' as const, data: `Usable from ${beginDate}` },
+          CorePercentage: { cellType: 'text' as const, data: `${((countBits(listing.region.mask) * 720) / 57600) * 100}%` },
+          Action: {
+            cellType: 'jsx' as const,
+            data: (
+              <div className={styles.actionCell}>
+                <button className={styles.buyButton}>Buy Now</button>
+              </div>
+            ),
+          },
+        });
+      }
+
+      return data;
+    })().then(_data => setTableData(_data));
+ 
+  }, [listedRegions]);
+  
+  const getDateFromTimeslice = async (timeslice: number): Promise<string> => {
+    const timestamp = await timesliceToTimestamp(timeslice, network, connections);
+    if (!timestamp) return '-';
+
+    return formatDate(timestamp);
+  };
+
+  const formatDate = (timestamp: Date | bigint | null): string => {
+    if (!timestamp) return '-';
+    const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
+    return date.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const calculatePrice = (listing: RegionListing): bigint => {
+    return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin)
+  }
+
   const parseNumber = (value: string) => parseFloat(value.replace(/[^\d.]/g, ''));
 
-  const filteredData = rawData.filter((row) => {
+  const filteredData = tableData.filter((row: any) => {
     const price = parseNumber(row.Price.data);
     const percentage = parseNumber(row.CorePercentage.data);
     return (

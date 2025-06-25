@@ -6,6 +6,10 @@ import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { countBits, timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { TableData } from '@/types/type';
+import SecondaryMarketOverview from '@/components/SecondaryMarketOverview';
+import AuctionPriceOverview from '@/components/Home/GeneralAnalytics/AuctionPriceOverview';
+import HistoricalPricingChart from '@/components/HistoricalPricingChart';
+import SecondaryMarketplaceTable from '@/components/SecondaryMarketplaceTable';
 
 export default function SecondaryMarket() {
   const [network, connections, listedRegions] = useUnit([$network, $connections, $listedRegions]);
@@ -66,16 +70,19 @@ export default function SecondaryMarket() {
   }
 
   return (
-    <div className={styles.secondaryMarketPage}>
-      <div className={styles.secondaryMarketTableContainer}>
-        <div className={styles.secondaryMarketTableInner}>
-          <div className={styles.tableWrapper}>
-            <h2 className={styles.marketHeading}>Regions on sale</h2>
-
-            <TableComponent data={tableData} pageSize={4} />
-          </div>
+     <div className={styles.secondaryMarketPage}>
+      <div className={styles.cardsRow}>
+        <div className={styles.SecondaryMarketOverview}>
+          <SecondaryMarketOverview />
+        </div>
+        <div className={styles.AuctionPriceOverview}>
+          <AuctionPriceOverview />
+        </div>
+        <div className={styles.PricingChartCard}>
+          <HistoricalPricingChart />
         </div>
       </div>
+      <SecondaryMarketplaceTable />
     </div>
   );
 }
