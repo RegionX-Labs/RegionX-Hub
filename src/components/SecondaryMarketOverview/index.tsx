@@ -12,7 +12,7 @@ export default function SecondaryMarketOverview() {
     $network,
     $selectedAccount,
     $accountData,
-    $listedRegions
+    $listedRegions,
   ]);
 
   const [averageBlockPrice, setAverageBlockPrice] = useState(BigInt(0));
@@ -22,17 +22,21 @@ export default function SecondaryMarketOverview() {
   const [bestListing, setBestListing] = useState<RegionListing | null>(null);
 
   useEffect(() => {
-    if(listedRegions.length < 1) return;
+    if (listedRegions.length < 1) return;
 
     const averageTimeslicePrice = listedRegions.length
-      ? listedRegions.reduce((sum, r) => sum + r.timeslice_price, BigInt(0)) / BigInt(listedRegions.length)
+      ? listedRegions.reduce((sum, r) => sum + r.timeslice_price, BigInt(0)) /
+        BigInt(listedRegions.length)
       : BigInt(0);
 
     setAverageBlockPrice(averageTimeslicePrice / BigInt(80));
-    const lowestPricePerTimeslice = listedRegions.reduce((min, r) => r.timeslice_price < min ? r.timeslice_price : min, listedRegions[0].timeslice_price);
+    const lowestPricePerTimeslice = listedRegions.reduce(
+      (min, r) => (r.timeslice_price < min ? r.timeslice_price : min),
+      listedRegions[0].timeslice_price
+    );
     setLowestBlockPrice(lowestPricePerTimeslice / BigInt(80));
 
-    const _bestListing = listedRegions.find(l => l.timeslice_price === lowestPricePerTimeslice);
+    const _bestListing = listedRegions.find((l) => l.timeslice_price === lowestPricePerTimeslice);
     setBestListing(_bestListing ?? null);
   }, [listedRegions]);
 
@@ -47,11 +51,10 @@ export default function SecondaryMarketOverview() {
     accountData?.coretimeChainData?.free != null
       ? toUnitFormatted(network, accountData.coretimeChainData.free)
       : '--';
-    
+
   const calculatePrice = (listing: RegionListing): bigint => {
     return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin);
   };
-
 
   return (
     <div className={styles.card}>
@@ -77,7 +80,9 @@ export default function SecondaryMarketOverview() {
       <div className={styles.listingLabel}>Best Current Listing (based on block price)</div>
       <div className={styles.listingBox}>
         <div className={styles.listingId}>Core ID {bestListing?.region.core}</div>
-        <div className={styles.listingPrice}>{bestListing ? toUnitFormatted(network, calculatePrice(bestListing)) : '-'}</div>
+        <div className={styles.listingPrice}>
+          {bestListing ? toUnitFormatted(network, calculatePrice(bestListing)) : '-'}
+        </div>
         <button className={styles.buyButton}>Buy Now</button>
       </div>
     </div>

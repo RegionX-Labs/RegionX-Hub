@@ -14,7 +14,7 @@ export default function SecondaryMarket() {
   useEffect(() => {
     // Needed for auction price overview
     latestSaleRequested(network);
-  })
+  });
 
   return (
     <div className={styles.secondaryMarketPage}>
