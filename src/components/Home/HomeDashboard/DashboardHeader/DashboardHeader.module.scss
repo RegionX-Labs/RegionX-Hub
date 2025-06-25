@@ -84,3 +84,28 @@
     background-color: $darkBackground4;
   }
 }
+
+.helpButton {
+  background: var(--green-primary);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--green-primary-hover);
+  }
+}
+
+.buttonText {
+  display: inline;
+
+  @media (max-width: 500px) {
+    display: none;
+  }
+}
