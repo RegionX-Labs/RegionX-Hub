@@ -22,14 +22,10 @@ export const $walletExtensions = createStore<WalletExtension[]>([]);
 export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
-function isNovaWallet() {
-  return typeof window !== 'undefined' && /NovaWallet/i.test(navigator.userAgent);
-}
-
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
 
-  if (isNovaWallet()) {
+  if ((window as any).injectedWeb3?.nova) {
     extensions.push('nova');
   }
 

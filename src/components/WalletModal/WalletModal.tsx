@@ -27,18 +27,14 @@ const WALLET_OPTIONS = [
   },
   {
     name: 'Nova',
-    id: 'nova-js',
+    id: 'nova',
     icon: novaIcon,
     url: 'https://novawallet.io/',
   },
 ];
 
 function isNovaWallet() {
-  return typeof window !== 'undefined' && /NovaWallet/i.test(navigator.userAgent);
-}
-
-function isMobile() {
-  return typeof window !== 'undefined' && window.innerWidth < 768;
+  return typeof window !== 'undefined' && /nova/i.test(navigator.userAgent);
 }
 
 interface WalletModalProps {
@@ -65,7 +61,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
     let filtered = WALLET_OPTIONS;
 
-    if (inNova) {
+    if (inNova || (isMobileView && hasNova)) {
       filtered = WALLET_OPTIONS.filter((w) => w.id === 'nova');
     } else if (isMobileView && hasPolkadotJs) {
       filtered = WALLET_OPTIONS.filter((w) => w.id !== 'polkadot-js');
