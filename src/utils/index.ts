@@ -246,4 +246,3 @@ export const countBits = (regionMask: string) => {
   }
   return count;
 };
-

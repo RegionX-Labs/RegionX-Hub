@@ -17,22 +17,28 @@ export default function SecondaryMarketplaceTable() {
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    listedRegionsRequested({network, connections});
+    listedRegionsRequested({ network, connections });
   }, [network, connections]);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const data = [];
-      for(const listing of listedRegions) {
+      for (const listing of listedRegions) {
         const beginDate = await getDateFromTimeslice(listing.region.begin);
         const endDate = await getDateFromTimeslice(listing.region.end);
 
         data.push({
           CoreId: { cellType: 'text' as const, data: listing.region.core.toString() },
           Timeline: { cellType: 'text' as const, data: `${beginDate} → ${endDate}` },
-          Price: { cellType: 'text' as const, data: toUnitFormatted(network, calculatePrice(listing)) }, // TODO: need region end for this.
+          Price: {
+            cellType: 'text' as const,
+            data: toUnitFormatted(network, calculatePrice(listing)),
+          }, // TODO: need region end for this.
           Deployment: { cellType: 'text' as const, data: `Usable from ${beginDate}` },
-          CorePercentage: { cellType: 'text' as const, data: `${((countBits(listing.region.mask) * 720) / 57600) * 100}%` },
+          CorePercentage: {
+            cellType: 'text' as const,
+            data: `${((countBits(listing.region.mask) * 720) / 57600) * 100}%`,
+          },
           Action: {
             cellType: 'jsx' as const,
             data: (
@@ -45,10 +51,9 @@ export default function SecondaryMarketplaceTable() {
       }
 
       return data;
-    })().then(_data => setTableData(_data));
- 
+    })().then((_data) => setTableData(_data));
   }, [listedRegions]);
-  
+
   const getDateFromTimeslice = async (timeslice: number): Promise<string> => {
     const timestamp = await timesliceToTimestamp(timeslice, network, connections);
     if (!timestamp) return '-';
@@ -67,8 +72,8 @@ export default function SecondaryMarketplaceTable() {
   };
 
   const calculatePrice = (listing: RegionListing): bigint => {
-    return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin)
-  }
+    return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin);
+  };
 
   const parseNumber = (value: string) => parseFloat(value.replace(/[^\d.]/g, ''));
 

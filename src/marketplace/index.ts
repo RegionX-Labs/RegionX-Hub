@@ -7,16 +7,16 @@ type RegionId = {
   begin: number;
   core: number;
   mask: string;
-}
+};
 
 export type RegionListing = {
-  region: Region,
+  region: Region;
   sale_recipeint: string;
   seller: string;
   timeslice_price: bigint;
-}
+};
 
-type Payload = { network: Network, connections: any }
+type Payload = { network: Network; connections: any };
 export const listedRegionsRequested = createEvent<Payload>();
 
 export const $listedRegions = createStore<RegionListing[]>([]);
@@ -38,10 +38,7 @@ sample({
   target: $listedRegions,
 });
 
-const fetchListedRegions = async (
-  network: Network,
-  connections: any
-): Promise<RegionListing[]> => {
+const fetchListedRegions = async (network: Network, connections: any): Promise<RegionListing[]> => {
   const chainIds = getNetworkChainIds(network);
   if (!chainIds) return [];
 
@@ -55,23 +52,23 @@ const fetchListedRegions = async (
 
   const entries = await api.query.Market.Listings.getEntries();
   const listedRegions: RegionListing[] = [];
-  for(const entry of entries) {
+  for (const entry of entries) {
     const regionId = {
       core: entry.keyArgs[0].core,
       begin: entry.keyArgs[0].begin,
-      mask: entry.keyArgs[0].mask
+      mask: entry.keyArgs[0].mask,
     };
 
     const region = await fetchRegionData(network, connection, regionId);
-    if(!region) continue;
+    if (!region) continue;
 
     listedRegions.push({
       region: {
         ...region,
         mask: regionId.mask.asHex(),
       },
-      ...entry.value
-    })
+      ...entry.value,
+    });
   }
 
   return listedRegions;
@@ -80,14 +77,14 @@ const fetchListedRegions = async (
 const fetchRegionData = async (
   network: Network,
   connection: any,
-  regionId: RegionId,
+  regionId: RegionId
 ): Promise<Region | null> => {
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
   const api = connection.client.getTypedApi(metadata.regionxChain);
 
-  const {value} = (await api.query.Regions.Regions.getValue(regionId)).record;
+  const { value } = (await api.query.Regions.Regions.getValue(regionId)).record;
 
   return {
     ...regionId,
