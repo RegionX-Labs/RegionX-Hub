@@ -14,6 +14,8 @@ export { default as wnd, WndCallData } from './wnd';
 export type * from './wnd';
 export { default as wnd_coretime, Wnd_coretimeCallData } from './wnd_coretime';
 export type * from './wnd_coretime';
+export { default as rx_ksm, Rx_ksmCallData } from './rx_ksm';
+export type * from './rx_ksm';
 export {
   DigestItem,
   Phase,
@@ -179,4 +181,5 @@ export {
   XcmVersionedXcm,
   PolkadotRuntimeCommonAssignedSlotsSlotLeasePeriodStart,
   XcmVersionedAsset,
+  WestendRuntimeRuntimeHoldReason,
 } from './common-types';
