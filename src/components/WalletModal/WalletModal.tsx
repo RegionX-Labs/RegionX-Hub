@@ -15,28 +15,22 @@ const WALLET_OPTIONS = [
     icon: polkadotIcon,
     url: 'https://polkadot.js.org/extension/',
   },
-  {
-    name: 'Talisman',
-    id: 'talisman',
-    icon: talismanIcon,
-    url: 'https://www.talisman.xyz/',
-  },
-  {
-    name: 'SubWallet',
-    id: 'subwallet-js',
-    icon: subwalletIcon,
-    url: 'https://subwallet.app/',
-  },
-  {
-    name: 'Nova Wallet',
-    id: 'nova',
-    icon: novaIcon,
-    url: 'https://novawallet.io/',
-  },
+  { name: 'Talisman', id: 'talisman', icon: talismanIcon, url: 'https://www.talisman.xyz/' },
+  { name: 'SubWallet', id: 'subwallet-js', icon: subwalletIcon, url: 'https://subwallet.app/' },
+  { name: 'Nova Wallet', id: 'nova', icon: novaIcon, url: 'https://novawallet.io/' },
 ];
 
 const isNovaMobile = () =>
   typeof navigator !== 'undefined' && /NovaWallet/i.test(navigator.userAgent);
+
+const getAdjustedWalletOptions = () => {
+  return WALLET_OPTIONS.map((wallet) => {
+    if (wallet.id === 'polkadot-js' && isNovaMobile()) {
+      return { ...wallet, name: 'Nova Wallet', icon: novaIcon };
+    }
+    return wallet;
+  });
+};
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -45,6 +39,7 @@ interface WalletModalProps {
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
+  const walletsToShow = getAdjustedWalletOptions();
 
   if (!isOpen) return null;
 
@@ -56,15 +51,14 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const handleWalletClick = (walletId: string, available: boolean) => {
     if (!available) return;
 
-    walletSelected(walletId);
+    const connectId = walletId === 'nova' ? 'polkadot-js' : walletId;
+    walletSelected(connectId);
     localStorage.setItem(SELECTED_WALLET_KEY, walletId);
     onClose();
   };
 
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
-      onClose();
-    }
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLDivElement).classList.contains(styles.modalOverlay)) onClose();
   };
 
   return (
@@ -72,26 +66,25 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
-          {WALLET_OPTIONS.map((wallet) => {
+          {walletsToShow.map((wallet) => {
             const available = isAvailable(wallet.id);
-            const buttonClass = `${styles.walletButton} ${!available ? styles.disabled : ''}`;
+            const btnClass = `${styles.walletButton} ${!available ? styles.disabled : ''}`;
 
             return (
               <button
                 key={wallet.id}
-                className={buttonClass}
+                className={btnClass}
                 onClick={() => handleWalletClick(wallet.id, available)}
               >
                 <div className={styles.walletIconWrapper}>
                   <Image
                     src={wallet.icon.src}
                     alt={wallet.name}
-                    className={styles.walletIcon}
                     width={24}
                     height={24}
+                    className={styles.walletIcon}
                   />
                 </div>
-
                 <div className={styles.walletTextWrapper}>
                   <span className={styles.walletName}>{wallet.name}</span>
                   {!available && (

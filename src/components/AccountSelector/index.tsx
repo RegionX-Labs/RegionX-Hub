@@ -11,15 +11,12 @@ const AccountSelector = () => {
   const handleChange = (value: string | null) => {
     if (value === 'disconnect') {
       disconnectWallet();
-      return;
-    }
-    if (value) {
+    } else if (value) {
       accountSelected(value);
     }
   };
 
-  const formatAddress = (address: string): string =>
-    `${address.slice(0, 4)}...${address.slice(-6)}`;
+  const formatAddress = (address: string) => `${address.slice(0, 4)}...${address.slice(-6)}`;
 
   const options = accounts.map((account) => ({
     key: account.address,
