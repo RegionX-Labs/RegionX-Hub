@@ -27,7 +27,7 @@ const WALLET_OPTIONS = [
   },
   {
     name: 'Nova',
-    id: 'nova',
+    id: 'nova-js',
     icon: novaIcon,
     url: 'https://novawallet.io/',
   },
