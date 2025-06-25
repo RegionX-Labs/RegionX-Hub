@@ -21,14 +21,14 @@ const helpContent: Record<string, HelpPage[]> = {
     {
       text: `**Welcome to the Overview Dashboard**
 
-This view provides a high-level summary of your parachain’s Coretime activity. It's designed to give you immediate insight into your current status and renewal needs, including:
+This view provides a high-level summary of all Coretime related activity. It's designed to give you an overview of the entire Coretime system: 
 
 - Which cores are renewable this cycle
 - The cost efficiency of renewal vs. new purchases
-- Current auction pricing trends
-- A history of purchases and actions
+- Insight into the current bulk sale auction
+- A history of purchases and renewals
 
-Use this dashboard to monitor, manage, and plan your Coretime usage effectively.`,
+💡 Tip: Use this dashboard to get an overview of the entire system. If you want to register a new project or manage an existing one, use the appropriate dashboard.`,
       images: ['/help/Overview.png', '/help/Overview2.png', '/help/Overview3.png'],
     },
     {
@@ -36,15 +36,14 @@ Use this dashboard to monitor, manage, and plan your Coretime usage effectively.
 
 This section lists all cores that are eligible for renewal during the current sale cycle. Each item includes:
 
-- Para ID and its identicon
-- A "Renew Now" button for direct renewal
+- Para ID
 - Time remaining until the renewal window closes
 - The renewal cost in real time
 
-If all renewable cores have already been renewed, a confirmation message is displayed.  
-This ensures you never miss a deadline or double-check unnecessarily.
+If you can't find your project here, it is either not eligible for renewal or it has already renewed for the current sale cycle. To check its status, go to the '**Managing Existing Project**' dashboard and view the overview of your parachain.
 
-💡 Tip: Renew during the **interlude phase** to avoid losing priority. Renewals submitted late are not guaranteed to be processed in time.`,
+
+💡 Tip: Renew during the **interlude phase**. Renewals attempted later are not guaranteed to succeed if all cores are sold.`,
       images: ['/help/RenewTutorial.png', '/help/RenewTutorial2.png'],
     },
     {
@@ -53,12 +52,10 @@ This ensures you never miss a deadline or double-check unnecessarily.
 This section helps you decide whether to renew a core or purchase a new one based on current pricing:
 
 - Shows the **current auction price** for new cores
-- Shows the **calculated renewal price** for your existing cores
+- Shows the **renewal price** determined by the previous sale cycle
 - Highlights if renewal is cheaper, equal, or more expensive
 
-If renewing is less efficient, a warning is shown so you can make the best decision financially.
-
-💡 Tip: Prices can shift quickly. Use this comparison to plan ahead or time your renewals strategically.`,
+💡 Tip:  Even if purchasing a new core is cheaper, there is a risk involved, as all cores can sell out quickly and you may end up without one.`,
       images: ['/help/CoreComparison.png', '/help/CoreComparison2.png'],
     },
     {
@@ -67,9 +64,9 @@ If renewing is less efficient, a warning is shown so you can make the best decis
 This widget displays the current auction phase and time progress for the ongoing sale cycle.
 
 Phases:
+- **Interlude**: Window to submit renewals before the sale starts.
 - **Leadin**: Core prices decrease block-by-block.
-- **Fixed Price**: Price is locked; only renewals and late buys happen.
-- **Interlude**: Window to submit renewals before the next cycle.
+- **Fixed Price**: End period of the sale — the price is at its lowest point.
 
 The visual ring shows:
 - Progress through the current phase
@@ -83,11 +80,11 @@ The visual ring shows:
 
 **Dutch Auction Chart**
 
-This interactive graph visualizes how core prices evolve over time within the Dutch auction cycle.
+This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 
-- **Blue curve**: historical or simulated pricing as blocks progress.
-- **Green marker**: current block and active core price.
-- **Y-axis**: price in DOT.
+Overview:
+
+- **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
 The auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant. During the **Interlude**, new purchases are no longer accepted, but renewals can still be submitted.
@@ -113,10 +110,10 @@ This table lists all recent coretime purchases in the current or recent cycles. 
 - Para ID
 - Buyer address
 - Price paid
-- Type of purchase (e.g., Renewal, New, Bulk)
+- Type of purchase (Renewal or New core purchase)
 - Timestamp
 
-Click through pages using the pagination at the bottom.
+Go through pages using the pagination at the bottom.
 
 💡 Tip: Use this data to spot patterns, such as bulk buys or aggressive renewals, and adjust your strategy accordingly.`,
       images: ['/help/PurchaseHistoryTable.png', '/help/PurchaseHistoryTable2.png'],
