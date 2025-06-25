@@ -7,7 +7,7 @@ import styles from './my-regions.module.scss';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
+import { bitStringToUint8Array, countBits, maskToBin, timesliceToTimestamp } from '@/utils';
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { FixedSizeBinary } from 'polkadot-api';
@@ -43,19 +43,6 @@ const MyRegionsPage = () => {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [regionDateInfos, setRegionDateInfos] = useState<Record<string, RegionDateInfo>>();
   const [loading, setLoading] = useState(true);
-
-  const countBits = (regionMask: string) => {
-    let count = 0;
-    // Convert hex to bits and count ones.
-    for (let i = 2; i < regionMask.length; ++i) {
-      let v = parseInt(regionMask.slice(i, i + 1), 16);
-      while (v > 0) {
-        if (v & 1) ++count;
-        v >>= 1;
-      }
-    }
-    return count;
-  };
 
   useEffect(() => {
     if (!saleInfo) return;

@@ -233,3 +233,17 @@ export function bitStringToUint8Array(bits: string): Uint8Array {
 
   return bytes;
 }
+
+export const countBits = (regionMask: string) => {
+  let count = 0;
+  // Convert hex to bits and count ones.
+  for (let i = 2; i < regionMask.length; ++i) {
+    let v = parseInt(regionMask.slice(i, i + 1), 16);
+    while (v > 0) {
+      if (v & 1) ++count;
+      v >>= 1;
+    }
+  }
+  return count;
+};
+

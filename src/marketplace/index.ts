@@ -10,7 +10,7 @@ type RegionId = {
 }
 
 export type RegionListing = {
-  regionId: RegionId,
+  region: Region,
   sale_recipeint: string;
   seller: string;
   timeslice_price: bigint;
@@ -53,16 +53,26 @@ const fetchListedRegions = async (
 
   const api = connection.client.getTypedApi(metadata.regionxChain);
 
-  const listedRegions: RegionListing[] = (await api.query.Market.Listings.getEntries()).map((entry: any) => {
-    return {
-      regionId: {
-        core: entry.keyArgs[0].core,
-        begin: entry.keyArgs[0].begin,
-        mask: entry.keyArgs[0].mask.asHex()
+  const entries = await api.query.Market.Listings.getEntries();
+  const listedRegions: RegionListing[] = [];
+  for(const entry of entries) {
+    const regionId = {
+      core: entry.keyArgs[0].core,
+      begin: entry.keyArgs[0].begin,
+      mask: entry.keyArgs[0].mask
+    };
+
+    const region = await fetchRegionData(network, connection, regionId);
+    if(!region) continue;
+
+    listedRegions.push({
+      region: {
+        ...region,
+        mask: regionId.mask.asHex(),
       },
       ...entry.value
-    }
-  });
+    })
+  }
 
   return listedRegions;
 };
@@ -77,8 +87,10 @@ const fetchRegionData = async (
 
   const api = connection.client.getTypedApi(metadata.regionxChain);
 
-  const region: Region = await api.query.Regions.Regions.getValue(regionId);
+  const {value} = (await api.query.Regions.Regions.getValue(regionId)).record;
 
-  return region;
+  return {
+    ...regionId,
+    ...value,
+  };
 };
-
