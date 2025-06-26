@@ -22,30 +22,29 @@ export const $walletExtensions = createStore<WalletExtension[]>([]);
 export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
+// Use Nova's recommended detection method
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
 
-  // Add explicit Nova Wallet detection
-  if (typeof window !== 'undefined' && window.injectedWeb3?.nova) {
-    if (!extensions.includes('nova')) {
-      extensions.push('nova');
-    }
-  }
+  const isNova =
+    typeof window !== 'undefined' &&
+    typeof window.walletExtension === 'object' &&
+    window.walletExtension.isNovaWallet === true;
 
-  return extensions.map((e) => ({ name: e }));
+  return extensions.map((extName) => {
+    if (extName === 'polkadot-js' && isNova) {
+      return { name: 'nova' };
+    }
+    return { name: extName };
+  });
 });
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     if (!extension) return [];
-
-    try {
-      const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
-      return await selectedExtension.getAccounts();
-    } catch (error) {
-      console.error(`Wallet connection failed: ${error}`);
-      return [];
-    }
+    const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
+    const selectedExtension: InjectedExtension = await connectInjectedExtension(realExtension);
+    return selectedExtension.getAccounts();
   }
 );
 
@@ -54,17 +53,12 @@ const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount 
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
 
-  try {
-    const extension = await connectInjectedExtension(selectedWallet);
-    const accounts = await extension.getAccounts();
-    return accounts.find((a) => a.address === selectedAccount) || null;
-  } catch (error) {
-    console.error(`Account restore failed: ${error}`);
-    return null;
-  }
+  const realExtension = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
+  const extension = await connectInjectedExtension(realExtension);
+  const accounts = await extension.getAccounts();
+  return accounts.find((a) => a.address === selectedAccount) || null;
 });
 
-// Setup effects
 sample({
   clock: getExtensions,
   target: getExtensionsFx,
