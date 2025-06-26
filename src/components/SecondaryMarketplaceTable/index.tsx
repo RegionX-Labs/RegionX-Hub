@@ -6,7 +6,13 @@ import { useUnit } from 'effector-react';
 import { TableData } from '@/types/type';
 import { $connections, $network } from '@/api/connection';
 import { $listedRegions, listedRegionsRequested, RegionListing } from '@/marketplace';
-import { bitStringToUint8Array, countBits, maskToBin, timesliceToTimestamp, toUnitFormatted } from '@/utils';
+import {
+  bitStringToUint8Array,
+  countBits,
+  maskToBin,
+  timesliceToTimestamp,
+  toUnitFormatted,
+} from '@/utils';
 import { $selectedAccount } from '@/wallet';
 import toast, { Toaster } from 'react-hot-toast';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
@@ -165,7 +171,9 @@ export default function SecondaryMarketplaceTable() {
             cellType: 'jsx' as const,
             data: (
               <div className={styles.actionCell}>
-                <button onClick={openModal} className={styles.buyButton}>Buy Now</button>
+                <button onClick={openModal} className={styles.buyButton}>
+                  Buy Now
+                </button>
                 {selectedAccount && accountData[selectedAccount.address] !== null && (
                   <TransactionModal
                     isOpen={isModalOpen}
@@ -174,7 +182,7 @@ export default function SecondaryMarketplaceTable() {
                     onConfirm={() => onModalConfirm(listing)}
                   />
                 )}
-              </div>  
+              </div>
             ),
           },
         });
@@ -182,12 +190,7 @@ export default function SecondaryMarketplaceTable() {
 
       return data;
     })().then((_data) => setTableData(_data));
-  }, [
-    listedRegions,
-    isModalOpen,
-    selectedAccount,
-    accountData
-  ]);
+  }, [listedRegions, isModalOpen, selectedAccount, accountData]);
 
   return (
     <div className={styles.secondaryMarketTableContainer}>

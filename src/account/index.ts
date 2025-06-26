@@ -21,6 +21,7 @@ export type MultiChainAccountData = {
   account: string;
   relayChainData: AccountData;
   coretimeChainData: AccountData;
+  regionxChainData: AccountData | null;
 };
 
 type AccountData = {
@@ -43,11 +44,13 @@ const getAccountDataFx = createEffect(
 
     const relayConnection = connections[networkChainIds.relayChain];
     const coretimeConnection = connections[networkChainIds.coretimeChain];
+    const regionxConnection = connections[networkChainIds.regionxChain];
+
     if (
       !relayConnection ||
       !coretimeConnection ||
       !relayConnection.client ||
-      !coretimeConnection ||
+      !coretimeConnection.client ||
       relayConnection.status !== 'connected' ||
       coretimeConnection.status !== 'connected'
     ) {
@@ -65,12 +68,18 @@ const getAccountDataFx = createEffect(
       account
     );
 
+    let _regionxData;
+    if (regionxConnection && regionxConnection.client && regionxConnection.status === 'connected') {
+      _regionxData = await fetchAccountData(regionxConnection, metadata.relayChain, account);
+    }
+
     if (!_relayData || !_coretimeData) return null;
 
     return {
       account,
       coretimeChainData: _coretimeData,
       relayChainData: _relayData,
+      regionxChainData: _regionxData ?? null,
     };
   }
 );
