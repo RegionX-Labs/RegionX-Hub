@@ -24,7 +24,8 @@ export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
-  const isNova = /nova/i.test(navigator.userAgent);
+
+  const isNova = typeof navigator !== 'undefined' && /nova/i.test(navigator.userAgent);
 
   const detected: WalletExtension[] = extensions.map((e) => {
     if (e === 'polkadot-js' && isNova) {
@@ -54,9 +55,8 @@ const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount 
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
 
-  const extension = await connectInjectedExtension(
-    selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet
-  );
+  const extToUse = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
+  const extension = await connectInjectedExtension(extToUse);
   const accounts = await extension.getAccounts();
   return accounts.find((a) => a.address === selectedAccount) || null;
 });
