@@ -43,6 +43,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           <span>{toUnitFormatted(network, accountData.coretimeChainData.free)}</span>
         </p>
         <p className={styles.balance}>
+          RegionX Chain Balance:{' '}
+          <span>{toUnitFormatted(network, accountData.coretimeChainData.free)}</span>
+        </p>
+        <p className={styles.balance}>
           Transaction Fee: <span>{txFee}</span>
         </p>
 

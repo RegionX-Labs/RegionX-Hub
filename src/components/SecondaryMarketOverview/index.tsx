@@ -4,8 +4,9 @@ import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import { $accountData } from '@/account';
-import { getTokenSymbol, toUnitFormatted } from '@/utils';
-import { $listedRegions, listedRegionsRequested, RegionListing } from '@/marketplace';
+import { toUnitFormatted } from '@/utils';
+import { $listedRegions, RegionListing } from '@/marketplace';
+import { Toaster } from 'react-hot-toast';
 
 export default function SecondaryMarketOverview() {
   const [network, selectedAccount, accountDataMap, listedRegions] = useUnit([
@@ -85,6 +86,7 @@ export default function SecondaryMarketOverview() {
         </div>
         <button className={styles.buyButton}>Buy Now</button>
       </div>
+      <Toaster />
     </div>
   );
 }
