@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './sell-modal.module.scss';
 import { X } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import { useUnit } from 'effector-react';
+import { $selectedAccount } from '@/wallet';
 
 interface SellModalProps {
   isOpen: boolean;
@@ -11,6 +13,14 @@ interface SellModalProps {
 const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose }) => {
   const [price, setPrice] = useState('');
   const [address, setAddress] = useState('');
+
+  const selectedAccount = useUnit($selectedAccount);
+
+  useEffect(() => {
+    if (isOpen && selectedAccount?.address) {
+      setAddress(selectedAccount.address);
+    }
+  }, [isOpen, selectedAccount]);
 
   if (!isOpen) return null;
 
