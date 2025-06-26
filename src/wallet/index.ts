@@ -24,18 +24,15 @@ export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions = getInjectedExtensions();
-
-  const novaInjected =
-    typeof window !== 'undefined' &&
-    window.injectedWeb3 &&
-    window.injectedWeb3['polkadot-js'] &&
-    (window.injectedWeb3['polkadot-js'] as any).isNovaWallet;
+  const isMobile =
+    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+  const isNova = typeof navigator !== 'undefined' && /nova/i.test(navigator.userAgent);
 
   const detected: WalletExtension[] = [];
 
   for (const ext of extensions) {
     if (ext === 'polkadot-js') {
-      if (novaInjected) {
+      if (isMobile && isNova) {
         detected.push({ name: 'nova' });
       } else {
         detected.push({ name: 'polkadot-js' });
@@ -43,10 +40,6 @@ const getExtensionsFx = createEffect((): WalletExtension[] => {
     } else {
       detected.push({ name: ext });
     }
-  }
-
-  if (novaInjected && !detected.find((w) => w.name === 'nova')) {
-    detected.push({ name: 'nova' });
   }
 
   return detected;

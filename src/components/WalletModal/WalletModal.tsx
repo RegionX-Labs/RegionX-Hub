@@ -41,7 +41,8 @@ interface WalletModalProps {
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
   const isMobile =
-    typeof window !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+  const isNova = typeof navigator !== 'undefined' && /nova/i.test(navigator.userAgent);
 
   if (!isOpen) return null;
 
@@ -65,7 +66,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
           {WALLET_OPTIONS.map((wallet) => {
-            if (isMobile && wallet.id === 'polkadot-js') return null;
+            if (isMobile && isNova && wallet.id === 'polkadot-js') return null;
 
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);
             const buttonClass = `${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`;
