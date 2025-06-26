@@ -25,28 +25,29 @@ export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
 
+  const isMobile =
+    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+
   const isNova =
     typeof window !== 'undefined' &&
     typeof window.walletExtension === 'object' &&
     window.walletExtension.isNovaWallet === true;
 
-  if (isNova) {
-    return extensions.map((extName) =>
-      extName === 'polkadot-js' ? { name: 'nova' } : { name: extName }
-    );
-  }
+  const hasSubWallet = extensions.includes('subwallet-js');
 
-  const isSubWalletOnly =
-    extensions.length === 1 &&
-    extensions[0] === 'polkadot-js' &&
-    typeof window !== 'undefined' &&
-    typeof window.walletExtension === 'undefined';
-
-  if (isSubWalletOnly) {
-    return [{ name: 'polkadot-js' }];
-  }
-
-  return extensions.map((extName) => ({ name: extName }));
+  return extensions
+    .map((extName) => {
+      if (extName === 'polkadot-js' && isNova) {
+        return { name: 'nova' };
+      }
+      return { name: extName };
+    })
+    .filter((ext) => {
+      if (isMobile && ext.name === 'nova' && hasSubWallet) {
+        return false;
+      }
+      return true;
+    });
 });
 
 const walletSelectedFx = createEffect(
