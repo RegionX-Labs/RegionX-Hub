@@ -182,7 +182,12 @@ export default function SecondaryMarketplaceTable() {
 
       return data;
     })().then((_data) => setTableData(_data));
-  }, [listedRegions]);
+  }, [
+    listedRegions,
+    isModalOpen,
+    selectedAccount,
+    accountData
+  ]);
 
   return (
     <div className={styles.secondaryMarketTableContainer}>
