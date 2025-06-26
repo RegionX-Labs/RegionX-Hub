@@ -24,18 +24,27 @@ export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
+  const isNova = /nova/i.test(navigator.userAgent);
 
-  if ((window as any).injectedWeb3?.nova) {
-    extensions.push('nova');
+  const detected: WalletExtension[] = extensions.map((e) => {
+    if (e === 'polkadot-js' && isNova) {
+      return { name: 'nova' };
+    }
+    return { name: e };
+  });
+
+  if (isNova && !detected.some((w) => w.name === 'nova')) {
+    detected.push({ name: 'nova' });
   }
 
-  return [...new Set(extensions)].map((e) => ({ name: e }));
+  return detected;
 });
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     if (!extension) return [];
-    const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
+    const extToUse = extension === 'nova' ? 'polkadot-js' : extension;
+    const selectedExtension: InjectedExtension = await connectInjectedExtension(extToUse);
     return selectedExtension.getAccounts();
   }
 );
@@ -45,37 +54,18 @@ const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount 
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
 
-  const extension = await connectInjectedExtension(selectedWallet);
+  const extension = await connectInjectedExtension(
+    selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet
+  );
   const accounts = await extension.getAccounts();
   return accounts.find((a) => a.address === selectedAccount) || null;
 });
 
-sample({
-  clock: getExtensions,
-  target: getExtensionsFx,
-});
-
-sample({
-  clock: getExtensionsFx.doneData,
-  target: $walletExtensions,
-});
-
-sample({
-  clock: walletSelected,
-  target: walletSelectedFx,
-});
-
-sample({
-  clock: walletSelectedFx.done,
-  fn: () => null,
-  target: $selectedAccount,
-});
-
-sample({
-  clock: walletSelectedFx.doneData,
-  target: $loadedAccounts,
-});
-
+sample({ clock: getExtensions, target: getExtensionsFx });
+sample({ clock: getExtensionsFx.doneData, target: $walletExtensions });
+sample({ clock: walletSelected, target: walletSelectedFx });
+sample({ clock: walletSelectedFx.done, fn: () => null, target: $selectedAccount });
+sample({ clock: walletSelectedFx.doneData, target: $loadedAccounts });
 sample({
   clock: accountSelected,
   source: $loadedAccounts,
@@ -85,13 +75,5 @@ sample({
   },
   target: $selectedAccount,
 });
-
-sample({
-  clock: restoreSelectedAccount,
-  target: restoreAccountFx,
-});
-
-sample({
-  clock: restoreAccountFx.doneData,
-  target: $selectedAccount,
-});
+sample({ clock: restoreSelectedAccount, target: restoreAccountFx });
+sample({ clock: restoreAccountFx.doneData, target: $selectedAccount });
