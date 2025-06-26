@@ -69,6 +69,10 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.walletContainer}>
           {WALLET_OPTIONS.filter((wallet) => {
             if (wallet.id === 'polkadot-js' && isMobileNova) return false;
+            if (wallet.id === 'nova') {
+              const novaAvailable = availableWallets.some((w) => w.name === 'nova');
+              return novaAvailable;
+            }
             return true;
           }).map((wallet) => {
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);

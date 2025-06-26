@@ -22,7 +22,6 @@ export const $walletExtensions = createStore<WalletExtension[]>([]);
 export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
-// Use Nova's recommended detection method
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
 
@@ -31,12 +30,23 @@ const getExtensionsFx = createEffect((): WalletExtension[] => {
     typeof window.walletExtension === 'object' &&
     window.walletExtension.isNovaWallet === true;
 
-  return extensions.map((extName) => {
-    if (extName === 'polkadot-js' && isNova) {
-      return { name: 'nova' };
-    }
-    return { name: extName };
-  });
+  if (isNova) {
+    return extensions.map((extName) =>
+      extName === 'polkadot-js' ? { name: 'nova' } : { name: extName }
+    );
+  }
+
+  const isSubWalletOnly =
+    extensions.length === 1 &&
+    extensions[0] === 'polkadot-js' &&
+    typeof window !== 'undefined' &&
+    typeof window.walletExtension === 'undefined';
+
+  if (isSubWalletOnly) {
+    return [{ name: 'polkadot-js' }];
+  }
+
+  return extensions.map((extName) => ({ name: extName }));
 });
 
 const walletSelectedFx = createEffect(
