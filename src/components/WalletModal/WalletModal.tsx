@@ -8,6 +8,12 @@ import { Download } from 'lucide-react';
 
 const WALLET_OPTIONS = [
   {
+    name: 'Nova',
+    id: 'nova',
+    icon: novaIcon,
+    url: 'https://novawallet.io/',
+  },
+  {
     name: 'Polkadot{.js}',
     id: 'polkadot-js',
     icon: polkadotIcon,
@@ -25,12 +31,6 @@ const WALLET_OPTIONS = [
     icon: subwalletIcon,
     url: 'https://subwallet.app/',
   },
-  {
-    name: 'Nova',
-    id: 'nova',
-    icon: novaIcon,
-    url: 'https://novawallet.io/',
-  },
 ];
 
 interface WalletModalProps {
@@ -40,17 +40,18 @@ interface WalletModalProps {
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
-  const isMobile =
-    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
-  const isNova = typeof navigator !== 'undefined' && /nova/i.test(navigator.userAgent);
 
   if (!isOpen) return null;
 
-  const handleWalletClick = (walletId: string, isAvailable: boolean) => {
-    if (isAvailable) {
-      walletSelected(walletId);
-      localStorage.setItem(SELECTED_WALLET_KEY, walletId);
-      onClose();
+  const handleWalletClick = async (walletId: string, isAvailable: boolean) => {
+    try {
+      if (isAvailable) {
+        await walletSelected(walletId);
+        localStorage.setItem(SELECTED_WALLET_KEY, walletId);
+        onClose();
+      }
+    } catch (error) {
+      console.error(`Wallet selection failed: ${error}`);
     }
   };
 
@@ -66,8 +67,6 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
           {WALLET_OPTIONS.map((wallet) => {
-            if (isMobile && isNova && wallet.id === 'polkadot-js') return null;
-
             const isAvailable = availableWallets.some((w) => w.name === wallet.id);
             const buttonClass = `${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`;
 

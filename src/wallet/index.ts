@@ -23,34 +23,29 @@ export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
-  const extensions = getInjectedExtensions();
-  const isMobile =
-    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
-  const isNova = typeof navigator !== 'undefined' && /nova/i.test(navigator.userAgent);
+  const extensions: string[] = getInjectedExtensions();
 
-  const detected: WalletExtension[] = [];
-
-  for (const ext of extensions) {
-    if (ext === 'polkadot-js') {
-      if (isMobile && isNova) {
-        detected.push({ name: 'nova' });
-      } else {
-        detected.push({ name: 'polkadot-js' });
-      }
-    } else {
-      detected.push({ name: ext });
+  // Add explicit Nova Wallet detection
+  if (typeof window !== 'undefined' && window.injectedWeb3?.nova) {
+    if (!extensions.includes('nova')) {
+      extensions.push('nova');
     }
   }
 
-  return detected;
+  return extensions.map((e) => ({ name: e }));
 });
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     if (!extension) return [];
-    const extToUse = extension === 'nova' ? 'polkadot-js' : extension;
-    const selectedExtension: InjectedExtension = await connectInjectedExtension(extToUse);
-    return selectedExtension.getAccounts();
+
+    try {
+      const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
+      return await selectedExtension.getAccounts();
+    } catch (error) {
+      console.error(`Wallet connection failed: ${error}`);
+      return [];
+    }
   }
 );
 
@@ -59,17 +54,43 @@ const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount 
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
 
-  const extToUse = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
-  const extension = await connectInjectedExtension(extToUse);
-  const accounts = await extension.getAccounts();
-  return accounts.find((a) => a.address === selectedAccount) || null;
+  try {
+    const extension = await connectInjectedExtension(selectedWallet);
+    const accounts = await extension.getAccounts();
+    return accounts.find((a) => a.address === selectedAccount) || null;
+  } catch (error) {
+    console.error(`Account restore failed: ${error}`);
+    return null;
+  }
 });
 
-sample({ clock: getExtensions, target: getExtensionsFx });
-sample({ clock: getExtensionsFx.doneData, target: $walletExtensions });
-sample({ clock: walletSelected, target: walletSelectedFx });
-sample({ clock: walletSelectedFx.done, fn: () => null, target: $selectedAccount });
-sample({ clock: walletSelectedFx.doneData, target: $loadedAccounts });
+// Setup effects
+sample({
+  clock: getExtensions,
+  target: getExtensionsFx,
+});
+
+sample({
+  clock: getExtensionsFx.doneData,
+  target: $walletExtensions,
+});
+
+sample({
+  clock: walletSelected,
+  target: walletSelectedFx,
+});
+
+sample({
+  clock: walletSelectedFx.done,
+  fn: () => null,
+  target: $selectedAccount,
+});
+
+sample({
+  clock: walletSelectedFx.doneData,
+  target: $loadedAccounts,
+});
+
 sample({
   clock: accountSelected,
   source: $loadedAccounts,
@@ -79,5 +100,13 @@ sample({
   },
   target: $selectedAccount,
 });
-sample({ clock: restoreSelectedAccount, target: restoreAccountFx });
-sample({ clock: restoreAccountFx.doneData, target: $selectedAccount });
+
+sample({
+  clock: restoreSelectedAccount,
+  target: restoreAccountFx,
+});
+
+sample({
+  clock: restoreAccountFx.doneData,
+  target: $selectedAccount,
+});
