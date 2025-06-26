@@ -23,18 +23,29 @@ export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
-  const extensions: string[] = getInjectedExtensions();
+  const extensions = getInjectedExtensions();
 
-  const isNova = typeof navigator !== 'undefined' && /nova/i.test(navigator.userAgent);
+  const novaInjected =
+    typeof window !== 'undefined' &&
+    window.injectedWeb3 &&
+    window.injectedWeb3['polkadot-js'] &&
+    (window.injectedWeb3['polkadot-js'] as any).isNovaWallet;
 
-  const detected: WalletExtension[] = extensions.map((e) => {
-    if (e === 'polkadot-js' && isNova) {
-      return { name: 'nova' };
+  const detected: WalletExtension[] = [];
+
+  for (const ext of extensions) {
+    if (ext === 'polkadot-js') {
+      if (novaInjected) {
+        detected.push({ name: 'nova' });
+      } else {
+        detected.push({ name: 'polkadot-js' });
+      }
+    } else {
+      detected.push({ name: ext });
     }
-    return { name: e };
-  });
+  }
 
-  if (isNova && !detected.some((w) => w.name === 'nova')) {
+  if (novaInjected && !detected.find((w) => w.name === 'nova')) {
     detected.push({ name: 'nova' });
   }
 
