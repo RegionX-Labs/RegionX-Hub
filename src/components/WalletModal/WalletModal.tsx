@@ -67,7 +67,10 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
-          {WALLET_OPTIONS.map((wallet) => {
+          {WALLET_OPTIONS.filter((wallet) => {
+            if (wallet.id === 'polkadot-js' && isMobile) return false;
+            return true;
+          }).map((wallet) => {
             const isDetected = availableWallets.some((w) => w.name === wallet.id);
 
             const shouldDisable = !isDetected || (wallet.id === 'nova' && isMobile && hasSubWallet);
