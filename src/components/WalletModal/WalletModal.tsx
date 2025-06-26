@@ -6,10 +6,8 @@ import styles from './walletModal.module.scss';
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
 import { Download } from 'lucide-react';
 
-const isMobileNova =
-  typeof window !== 'undefined' &&
-  typeof window.walletExtension === 'object' &&
-  window.walletExtension.isNovaWallet === true;
+const isMobile =
+  typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
 
 const WALLET_OPTIONS = [
   {
@@ -46,6 +44,8 @@ interface WalletModalProps {
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
 
+  const hasSubWallet = availableWallets.some((w) => w.name === 'subwallet-js');
+
   if (!isOpen) return null;
 
   const handleWalletClick = (walletId: string, isAvailable: boolean) => {
@@ -67,22 +67,18 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
         <div className={styles.walletContainer}>
-          {WALLET_OPTIONS.filter((wallet) => {
-            if (wallet.id === 'polkadot-js' && isMobileNova) return false;
-            if (wallet.id === 'nova') {
-              const novaAvailable = availableWallets.some((w) => w.name === 'nova');
-              return novaAvailable;
-            }
-            return true;
-          }).map((wallet) => {
-            const isAvailable = availableWallets.some((w) => w.name === wallet.id);
-            const buttonClass = `${styles.walletButton} ${!isAvailable ? styles.disabled : ''}`;
+          {WALLET_OPTIONS.map((wallet) => {
+            const isDetected = availableWallets.some((w) => w.name === wallet.id);
+
+            const shouldDisable = !isDetected || (wallet.id === 'nova' && isMobile && hasSubWallet);
+
+            const buttonClass = `${styles.walletButton} ${shouldDisable ? styles.disabled : ''}`;
 
             return (
               <button
                 key={wallet.id}
                 className={buttonClass}
-                onClick={() => handleWalletClick(wallet.id, isAvailable)}
+                onClick={() => handleWalletClick(wallet.id, !shouldDisable)}
               >
                 <div className={styles.walletIconWrapper}>
                   <Image
@@ -95,7 +91,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className={styles.walletTextWrapper}>
                   <span className={styles.walletName}>{wallet.name}</span>
-                  {!isAvailable && (
+                  {shouldDisable && (
                     <a
                       href={wallet.url}
                       target='_blank'

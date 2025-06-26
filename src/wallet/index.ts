@@ -33,21 +33,12 @@ const getExtensionsFx = createEffect((): WalletExtension[] => {
     typeof window.walletExtension === 'object' &&
     window.walletExtension.isNovaWallet === true;
 
-  const hasSubWallet = extensions.includes('subwallet-js');
-
-  return extensions
-    .map((extName) => {
-      if (extName === 'polkadot-js' && isNova) {
-        return { name: 'nova' };
-      }
-      return { name: extName };
-    })
-    .filter((ext) => {
-      if (isMobile && ext.name === 'nova' && hasSubWallet) {
-        return false;
-      }
-      return true;
-    });
+  return extensions.map((extName) => {
+    if (extName === 'polkadot-js' && isNova) {
+      return { name: 'nova' };
+    }
+    return { name: extName };
+  });
 });
 
 const walletSelectedFx = createEffect(
