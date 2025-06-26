@@ -1,3 +1,5 @@
+//test
+
 import React from 'react';
 import { useUnit } from 'effector-react';
 import { $walletExtensions, SELECTED_WALLET_KEY, walletSelected } from '@/wallet';
