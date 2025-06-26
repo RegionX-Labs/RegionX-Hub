@@ -2,6 +2,7 @@ import { Connection } from '@/api/connection';
 import {
   ChainId,
   CoretimeMetadata,
+  RegionXMetadata,
   RelayMetadata,
   getNetworkChainIds,
   getNetworkMetadata,
@@ -70,7 +71,7 @@ const getAccountDataFx = createEffect(
 
     let _regionxData;
     if (regionxConnection && regionxConnection.client && regionxConnection.status === 'connected') {
-      _regionxData = await fetchAccountData(regionxConnection, metadata.relayChain, account);
+      _regionxData = await fetchAccountData(regionxConnection, metadata.regionxChain, account);
     }
 
     if (!_relayData || !_coretimeData) return null;
@@ -86,7 +87,7 @@ const getAccountDataFx = createEffect(
 
 const fetchAccountData = async (
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata,
+  metadata: RelayMetadata | CoretimeMetadata | RegionXMetadata,
   account: string
 ): Promise<AccountData | null> => {
   const client = connection.client;

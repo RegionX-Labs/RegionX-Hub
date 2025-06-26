@@ -43,9 +43,9 @@ export default function SecondaryMarketOverview() {
 
   const accountData = selectedAccount?.address ? accountDataMap[selectedAccount.address] : null;
 
-  const formattedRelay =
-    accountData?.relayChainData?.free != null
-      ? toUnitFormatted(network, accountData.relayChainData.free)
+  const formattedRegionX =
+    accountData?.regionxChainData?.free != null
+      ? toUnitFormatted(network, accountData.regionxChainData.free)
       : '--';
 
   const formattedCoretime =
@@ -67,13 +67,13 @@ export default function SecondaryMarketOverview() {
 
       {selectedAccount && accountData && (
         <div className={styles.balanceBox}>
-          <div className={styles.balanceItem}>
-            <span className={styles.label}>Relay Chain Balance</span>
-            <span className={styles.value}>{formattedRelay}</span>
-          </div>
           <div className={`${styles.balanceItem} ${styles.alignRight}`}>
             <span className={styles.label}>Coretime Chain Balance</span>
             <span className={styles.value}>{formattedCoretime}</span>
+          </div>
+          <div className={styles.balanceItem}>
+            <span className={styles.label}>RegionX Chain Balance</span>
+            <span className={styles.value}>{formattedRegionX}</span>
           </div>
         </div>
       )}

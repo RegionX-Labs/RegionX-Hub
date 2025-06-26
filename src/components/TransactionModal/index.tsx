@@ -44,7 +44,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
         </p>
         <p className={styles.balance}>
           RegionX Chain Balance:{' '}
-          <span>{toUnitFormatted(network, accountData.coretimeChainData.free)}</span>
+          <span>{toUnitFormatted(network, accountData.regionxChainData?.free || BigInt(0))}</span>
         </p>
         <p className={styles.balance}>
           Transaction Fee: <span>{txFee}</span>
