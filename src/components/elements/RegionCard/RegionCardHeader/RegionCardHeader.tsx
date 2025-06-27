@@ -13,6 +13,8 @@ import InterlaceModal from '../../../RegionModals/InterlaceModal';
 import TransferToMarketplaceModal from '../../../RegionModals/TransferToMarketplaceModal';
 
 import { RegionId } from '@/utils';
+import { useUnit } from 'effector-react';
+import { $network } from '@/api/connection';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -50,6 +52,9 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   const [isSellModalOpen, setSellModalOpen] = useState(false);
   const [isInterlaceModalOpen, setInterlaceModalOpen] = useState(false);
   const [isMarketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
+
+  const network = useUnit($network);
+  const isKusama = network === 'kusama';
 
   const handleTransferClick = () => {
     setTransferModalOpen(true);
@@ -142,14 +147,16 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
               >
                 Sell
               </div>
-              <div
-                onClick={() => {
-                  setMarketplaceModalOpen(true);
-                  setShowDropdown(false);
-                }}
-              >
-                Transfer to RegionX
-              </div>
+              {isKusama && (
+                <div
+                  onClick={() => {
+                    setMarketplaceModalOpen(true);
+                    setShowDropdown(false);
+                  }}
+                >
+                  Transfer to RegionX
+                </div>
+              )}
             </div>
           )}
         </div>
