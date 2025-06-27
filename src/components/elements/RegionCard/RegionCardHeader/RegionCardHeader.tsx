@@ -4,12 +4,17 @@ import LabelCard from '../../LabelCard/LabelCard';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { Pencil, MoreHorizontal } from 'lucide-react';
+
 import TransferModal from '../../../RegionModals/TransferModal';
 import AssignModal from '../../../RegionModals/AssignModal';
 import PartitionModal from '../../../RegionModals/PartitionModal';
 import SellModal from '../../../RegionModals/SellModal';
 import InterlaceModal from '../../../RegionModals/InterlaceModal';
+import TransferToMarketplaceModal from '../../../RegionModals/TransferToMarketplaceModal';
+
 import { RegionId } from '@/utils';
+import { useUnit } from 'effector-react';
+import { $network } from '@/api/connection';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -40,11 +45,16 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(name);
   const [showDropdown, setShowDropdown] = useState(false);
+
   const [isTransferModalOpen, setTransferModalOpen] = useState(false);
   const [isAssignModalOpen, setAssignModalOpen] = useState(false);
   const [isPartitionModalOpen, setPartitionModalOpen] = useState(false);
   const [isSellModalOpen, setSellModalOpen] = useState(false);
   const [isInterlaceModalOpen, setInterlaceModalOpen] = useState(false);
+  const [isMarketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
+
+  const network = useUnit($network);
+  const isKusama = network === 'kusama';
 
   const handleTransferClick = () => {
     setTransferModalOpen(true);
@@ -75,7 +85,6 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         setShowDropdown(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -138,6 +147,16 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
               >
                 Sell
               </div>
+              {isKusama && (
+                <div
+                  onClick={() => {
+                    setMarketplaceModalOpen(true);
+                    setShowDropdown(false);
+                  }}
+                >
+                  Transfer to RegionX
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -159,13 +178,17 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           regionBeginTimeslice={regionStartTimeslice}
           regionEndTimeslice={regionEndTimeslice}
         />
-
         <InterlaceModal
           isOpen={isInterlaceModalOpen}
           regionId={regionId}
           onClose={() => setInterlaceModalOpen(false)}
         />
         <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
+        <TransferToMarketplaceModal
+          isOpen={isMarketplaceModalOpen}
+          onClose={() => setMarketplaceModalOpen(false)}
+          regionId={regionId}
+        />
       </div>
 
       <div className={styles['regionCardHeaderWrapper-labels']}>
