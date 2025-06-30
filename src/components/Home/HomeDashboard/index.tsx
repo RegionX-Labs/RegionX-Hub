@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './HomeDashboard.module.scss';
 
 import RenewableCores from './RenewableCores';
@@ -11,20 +12,39 @@ import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
 import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
-import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
-import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
-
+import CoreRemainingCard from './CoreRemainingCard';
+import RevenueGeneratedCard from './RevenueGeneratedCard';
 import RenewalInfoCard from './RenewalInfoCard';
 
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
 
+const dashboards = [
+  { name: 'Overview', enabled: true },
+  { name: 'Deploying a new project', enabled: true },
+  { name: 'Managing Existing Project', enabled: true },
+  { name: 'Coretime Reseller', enabled: false },
+];
+
 export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [selected, setSelected] = useState('Overview');
-  const [paraId, setParaId] = useState<number | null>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const dashboardParam = searchParams.get('dashboard');
+  const network = searchParams.get('network') || 'polkadot';
+
+  const selected =
+    dashboards.find((d) => d.name.toLowerCase().replace(/\s+/g, '-') === dashboardParam)?.name ||
+    'Overview';
+
+  const setSelected = (newSelection: string) => {
+    const basePath = newSelection.toLowerCase().replace(/\s+/g, '-');
+    router.push(`?dashboard=${basePath}&network=${network}`, { scroll: false });
+  };
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
