@@ -121,6 +121,8 @@
 .subtext {
   font-size: 0.85rem;
   color: $gray6;
+  margin-bottom: -5px;
+  margin-left: 1px;
 
   .positive {
     color: $greenPrimary;
@@ -159,4 +161,11 @@
 
 .amount {
   color: var(--text-color);
+}
+
+.bottomSection {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
