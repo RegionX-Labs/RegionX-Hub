@@ -35,7 +35,10 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const searchParams = useSearchParams();
 
   const dashboardParam = searchParams.get('dashboard');
+  const paraIdParam = searchParams.get('paraId');
   const network = searchParams.get('network') || 'polkadot';
+
+  const [selectedParaId, setSelectedParaId] = useState<string | null>(null);
 
   const selected =
     dashboards.find((d) => d.name.toLowerCase().replace(/\s+/g, '-') === dashboardParam)?.name ||
@@ -43,8 +46,18 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
 
   const setSelected = (newSelection: string) => {
     const basePath = newSelection.toLowerCase().replace(/\s+/g, '-');
-    router.push(`?dashboard=${basePath}&network=${network}`, { scroll: false });
+    const paraPart =
+      basePath === 'managing-existing-project' && selectedParaId ? `&paraId=${selectedParaId}` : '';
+    router.push(`?dashboard=${basePath}&network=${network}${paraPart}`, { scroll: false });
   };
+
+  const hasSetInitial = useRef(false);
+  useEffect(() => {
+    if (!hasSetInitial.current && paraIdParam) {
+      setSelectedParaId(paraIdParam);
+      hasSetInitial.current = true;
+    }
+  }, [paraIdParam]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -91,7 +104,17 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
 
         {selected === 'Managing Existing Project' && (
           <>
-            <RenewalInfoCard />
+            <RenewalInfoCard
+              initialParaId={selectedParaId ?? undefined}
+              onSelectParaId={(id) => {
+                setSelectedParaId(id);
+                router.push(
+                  `?dashboard=managing-existing-project&network=${network}&paraId=${id}`,
+                  { scroll: false }
+                );
+              }}
+            />
+
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
