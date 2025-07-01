@@ -15,7 +15,7 @@ import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from './CoreRemainingCard';
 import RevenueGeneratedCard from './RevenueGeneratedCard';
 import RenewalInfoCard from './RenewalInfoCard';
-
+import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -89,6 +89,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <RenewalsOverview />
             <CoreRemainingCard view={selected} />
             <RevenueGeneratedCard />
+            <UpcomingRenewalsTable />
             <PurchaseHistoryTable />
           </>
         )}
