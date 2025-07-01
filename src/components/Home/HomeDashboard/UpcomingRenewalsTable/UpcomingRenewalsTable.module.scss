@@ -1,0 +1,64 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.wrapper {
+  border-radius: 12px;
+  background: $darkBackground2;
+  padding: 24px;
+  width: 95%;
+  max-width: unset;
+  border: 1px solid var(--card-border);
+  @media (min-width: 3000px) {
+    width: 97.5%;
+  }
+  @media (max-width: 1503px) {
+    max-width: 93.5%;
+  }
+  @media (max-width: 1260px) {
+    max-width: 93%;
+  }
+  @media (max-width: 1130px) {
+    max-width: 92%;
+  }
+  @media (max-width: 1060px) {
+    max-width: 90%;
+  }
+  @media (max-width: 865px) {
+    max-width: 90%;
+  }
+  @media (max-width: 800px) {
+    max-width: 90%;
+  }
+  @media (max-width: 750px) {
+    max-width: 87%;
+  }
+  @media (max-width: 450px) {
+    max-width: 85%;
+  }
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 15px;
+  @include Inter;
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.parachainNameContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoFallback {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #8899a8;
+}
