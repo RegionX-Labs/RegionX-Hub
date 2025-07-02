@@ -65,7 +65,7 @@ This widget displays the current auction phase and time progress for the ongoing
 
 Phases:
 - **Interlude**: Window to submit renewals before the sale starts.
-- **Leadin**: Core prices decrease block-by-block.
+- **Leadin**: Sale starts and core price decreases block-by-block
 - **Fixed Price**: End period of the sale — the price is at its lowest point.
 
 The visual ring shows:
@@ -87,14 +87,14 @@ Overview:
 - **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
-The auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant. During the **Interlude**, new purchases are no longer accepted, but renewals can still be submitted.
+During the **interlude** phase only renewals are accapted. After that the  auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
 
 Use this chart to:
 - Identify ideal entry points for core purchases.
 - Predict when your target price may be reached.
 - Understand historical buying behavior from previous cycles.
 
-💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase window entirely — especially in high-demand cycles.
+💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase opportunity  — especially in high-demand cycles.
 `,
       images: [
         '/help/DutchAuctionChart2.png',
@@ -115,7 +115,7 @@ This table lists all recent coretime purchases in the current or recent cycles. 
 
 Go through pages using the pagination at the bottom.
 
-💡 Tip: Use this data to spot patterns, such as bulk buys or aggressive renewals, and adjust your strategy accordingly.`,
+💡 Tip: Use this data to spot patterns of bulk buys and renewals, and adjust your strategy accordingly.`,
       images: ['/help/PurchaseHistoryTable.png', '/help/PurchaseHistoryTable2.png'],
     },
   ],
@@ -127,22 +127,18 @@ This view offers a simplified overview intended for new projects that want to pu
 
 Here users are able to see the price of a new core from bulk sale as well as track the current bulk sale cycle. 
 
-New projects don't have the option to renew, as they don't own a core yet. Therefore, no renewal-related information is shown on this dashboard.
-`
+📌 Note: New projects don't have the option to renew, as they don't own a core yet. Therefore, no renewal-related information is shown on this dashboard.
+`,
+      images: ['/help/DeployNewProject1.png', '/help/DeployNewProject2.png'],
     },
     {
       text: `**Cores Remaining**
 
-This section displays a real-time chart showing how many Coretime units are still available for purchase during the current sale cycle.
-
-What it shows:
-- The total number of cores offered at the start of the cycle
-- A line graph showing the remaining cores over time
-- The current number of available cores (left of the chart)
+This section displays a real-time chart showing how many cores are still available for purchase during the current sale cycle.
 
 The graph updates as purchases occur, with each drop representing a new sale. This lets you visually assess demand and competition over time.
 
-💡 Tip: A steep drop early in the sale is a strong signal that high-demand bulk buyers are active. When remaining cores reach 0, the current sale cycle is effectively sold out for new buyers.`,
+💡 Tip: A steep drop early in the sale signals high demand for Coretime. Once the remaining cores reach zero, the current sale cycle is considered sold out.`,
       images: ['/help/CoreRemaining4.png', '/help/CoreRemaining3.png'],
     },
 
@@ -152,37 +148,34 @@ The graph updates as purchases occur, with each drop representing a new sale. Th
 This widget displays the current auction phase and time progress for the ongoing sale cycle.
 
 Phases:
-- **Leadin**: Core prices decrease block-by-block.
-- **Fixed Price**: Price is locked; only renewals and late buys happen.
-- **Interlude**: Window to submit renewals before the next cycle.
+- **Interlude**: Window to submit renewals before the sale starts.
+- **Leadin**: Sale starts and core price decreases block-by-block
+- **Fixed Price**: End period of the sale — the price is at its lowest point.
 
 The visual ring shows:
 - Progress through the current phase
 - When the next phase begins
-
-💡 Tip: Use this to time renewals or new purchases — especially if you're targeting optimal pricing in Leadin or submitting during Interlude.`,
+`,
       images: ['/help/AuctionPhaseStatus.png', '/help/AuctionPhaseStatus2.png'],
     },
     {
       text: `**Dutch Auction Chart**
 
-**Dutch Auction Chart**
+This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 
-This interactive graph visualizes how core prices evolve over time within the Dutch auction cycle.
+Overview:
 
-- **Blue curve**: historical or simulated pricing as blocks progress.
-- **Green marker**: current block and active core price.
-- **Y-axis**: price in DOT.
+- **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
-The auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant. During the **Interlude**, new purchases are no longer accepted, but renewals can still be submitted.
+During the **interlude** phase only renewals are accapted. After that the  auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
 
 Use this chart to:
 - Identify ideal entry points for core purchases.
 - Predict when your target price may be reached.
 - Understand historical buying behavior from previous cycles.
 
-💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase window entirely — especially in high-demand cycles.
+💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase opportunity  — especially in high-demand cycles.
 `,
       images: [
         '/help/DutchAuctionChart2.png',
@@ -203,7 +196,7 @@ This table lists all recent coretime purchases in the current or recent cycles. 
 
 Click through pages using the pagination at the bottom.
 
-💡 Tip: Use this data to spot patterns, such as bulk buys or aggressive renewals, and adjust your strategy accordingly.`,
+💡 Tip: Use this data to spot patterns of bulk buys and renewals, and adjust your strategy accordingly.`,
       images: ['/help/PurchaseHistoryTable.png', '/help/PurchaseHistoryTable2.png'],
     },
   ],
@@ -244,7 +237,7 @@ If renewing is less efficient, a warning is shown so you can make the best decis
 This widget displays the current auction phase and time progress for the ongoing sale cycle.
 
 Phases:
-- **Leadin**: Core prices decrease block-by-block.
+- **Leadin**: Sale starts and core price decreases block-by-block
 - **Fixed Price**: Price is locked; only renewals and late buys happen.
 - **Interlude**: Window to submit renewals before the next cycle.
 
@@ -258,23 +251,21 @@ The visual ring shows:
     {
       text: `**Dutch Auction Chart**
 
-**Dutch Auction Chart**
+This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 
-This interactive graph visualizes how core prices evolve over time within the Dutch auction cycle.
+Overview:
 
-- **Blue curve**: historical or simulated pricing as blocks progress.
-- **Green marker**: current block and active core price.
-- **Y-axis**: price in DOT.
+- **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
-The auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant. During the **Interlude**, new purchases are no longer accepted, but renewals can still be submitted.
+During the **interlude** phase only renewals are accapted. After that the  auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
 
 Use this chart to:
 - Identify ideal entry points for core purchases.
 - Predict when your target price may be reached.
 - Understand historical buying behavior from previous cycles.
 
-💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase window entirely — especially in high-demand cycles.
+💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase opportunity  — especially in high-demand cycles.
 `,
       images: [
         '/help/DutchAuctionChart2.png',
