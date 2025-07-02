@@ -71,8 +71,7 @@ Phases:
 The visual ring shows:
 - Progress through the current phase
 - When the next phase begins
-
-💡 Tip: Use this to time renewals or new purchases — especially if you're targeting optimal pricing in Leadin or submitting during Interlude.`,
+`,
       images: ['/help/AuctionPhaseStatus.png', '/help/AuctionPhaseStatus2.png'],
     },
     {
@@ -87,7 +86,7 @@ Overview:
 - **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
-During the **interlude** phase only renewals are accapted. After that the  auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
+During the **Interlude** only renewals can be submitted. After that the auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
 
 Use this chart to:
 - Identify ideal entry points for core purchases.
@@ -168,7 +167,7 @@ Overview:
 - **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
-During the **interlude** phase only renewals are accapted. After that the  auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
+During the **Interlude** only renewals can be submitted. After that the auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
 
 Use this chart to:
 - Identify ideal entry points for core purchases.
@@ -209,12 +208,12 @@ This section allows you to manage and renew core allocations for your selected p
 Here's what you can do:
 - Select a parachain from the dropdown to view its status
 - See the current state of the parachain (e.g., Active, Idle, Renewable) along with a description of what that means
-- In case the parachain has the potential to renew it willdisplay renewal cost and the deadline to submit the renewal
+- In case the parachain has the potential to renew it will display renewal cost and the deadline to submit the renewal
 - Use the **Renew** button to directly initiate a core renewal transaction for the selected parachain
 
 If no core is available for renewal, the Renew button will not appear.
 
-💡 Tip: Submitting your renewal during the interlude phase ensures the best chance of inclusion in the next cycle. Missed renewals could lead to region loss or delays.`,
+💡 Tip:  Submitting your renewal during the interlude phase ensures that a core will be allocated to the project. Missing the renewal can result in the project failing to secure a core, leading to stalling block production.`,
       images: ['/help/RenewalInfoCard.png', '/help/RenewalInfoCard2.png'],
     },
     {
@@ -226,9 +225,7 @@ This section helps you decide whether to renew a core or purchase a new one base
 - Shows the **calculated renewal price** for your existing cores
 - Highlights if renewal is cheaper, equal, or more expensive
 
-If renewing is less efficient, a warning is shown so you can make the best decision financially.
-
-💡 Tip: Prices can shift quickly. Use this comparison to plan ahead or time your renewals strategically.`,
+💡 Tip:  Even if renewing a core is the more expensive option, it guarantees that the project will have a core. Purchasing from the auction could result in failing to secure one if all cores are sold out before your purchase.`,
       images: ['/help/CoreComparison.png', '/help/CoreComparison2.png'],
     },
     {
@@ -244,8 +241,7 @@ Phases:
 The visual ring shows:
 - Progress through the current phase
 - When the next phase begins
-
-💡 Tip: Use this to time renewals or new purchases — especially if you're targeting optimal pricing in Leadin or submitting during Interlude.`,
+`,
       images: ['/help/AuctionPhaseStatus.png', '/help/AuctionPhaseStatus2.png'],
     },
     {
@@ -258,7 +254,7 @@ Overview:
 - **Y-axis**: price in the relay chain currency.
 - **X-axis**: block timeline from start to end of the sale cycle.
 
-During the **interlude** phase only renewals are accapted. After that the  auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
+During the **Interlude** only renewals can be submitted. After that the auction begins with a high initial price that decreases linearly over the **Leadin** phase. Once the **Fixed Price** phase begins, the price stops decreasing and remains constant.
 
 Use this chart to:
 - Identify ideal entry points for core purchases.
