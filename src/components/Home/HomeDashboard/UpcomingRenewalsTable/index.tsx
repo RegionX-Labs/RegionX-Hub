@@ -44,7 +44,14 @@ const UpcomingRenewalsTable = () => {
         const cost = toUnitFormatted(network, BigInt(record.price));
 
         const deadlineDate = await timesliceToTimestamp(key.when, network, connections);
-        const deadline = deadlineDate ? new Date(Number(deadlineDate)).toLocaleString() : 'Unknown';
+        if (!deadlineDate) continue;
+
+        const deadlineTimestamp = Number(deadlineDate);
+        const now = Date.now();
+
+        if (deadlineTimestamp < now) continue;
+
+        const deadline = new Date(deadlineTimestamp).toLocaleString();
 
         rows.push({
           ParaId: {
