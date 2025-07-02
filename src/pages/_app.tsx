@@ -86,6 +86,26 @@ function App({ Component, pageProps }: AppProps) {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      const nextUrl = new URL(window.location.origin + url);
+      if (nextUrl.pathname === '/') return;
+
+      nextUrl.searchParams.delete('dashboard');
+      nextUrl.searchParams.delete('paraId');
+
+      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
+      if (newUrl !== window.location.pathname + window.location.search) {
+        window.history.replaceState({}, '', newUrl);
+      }
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router]);
+
   if (!hasMounted) return null;
 
   return (

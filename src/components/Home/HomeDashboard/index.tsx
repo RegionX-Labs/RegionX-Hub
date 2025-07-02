@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './HomeDashboard.module.scss';
 
 import RenewableCores from './RenewableCores';
@@ -11,20 +12,52 @@ import CorePurchaseCard from './CorePurchaseCard';
 import PurchaseHistoryTable from './PurchaseHistoryTable';
 import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
-import CoreRemainingCard from '../HomeDashboard/CoreRemainingCard';
-import RevenueGeneratedCard from '../HomeDashboard/RevenueGeneratedCard';
-
+import CoreRemainingCard from './CoreRemainingCard';
+import RevenueGeneratedCard from './RevenueGeneratedCard';
 import RenewalInfoCard from './RenewalInfoCard';
-
+import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
 
+const dashboards = [
+  { name: 'Overview', enabled: true },
+  { name: 'Deploying a new project', enabled: true },
+  { name: 'Managing Existing Project', enabled: true },
+  { name: 'Coretime Reseller', enabled: false },
+];
+
 export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [selected, setSelected] = useState('Overview');
-  const [paraId, setParaId] = useState<number | null>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const dashboardParam = searchParams.get('dashboard');
+  const paraIdParam = searchParams.get('paraId');
+  const network = searchParams.get('network') || 'polkadot';
+
+  const [selectedParaId, setSelectedParaId] = useState<string | null>(null);
+
+  const selected =
+    dashboards.find((d) => d.name.toLowerCase().replace(/\s+/g, '-') === dashboardParam)?.name ||
+    'Overview';
+
+  const setSelected = (newSelection: string) => {
+    const basePath = newSelection.toLowerCase().replace(/\s+/g, '-');
+    const paraPart =
+      basePath === 'managing-existing-project' && selectedParaId ? `&paraId=${selectedParaId}` : '';
+    router.push(`?dashboard=${basePath}&network=${network}${paraPart}`, { scroll: false });
+  };
+
+  const hasSetInitial = useRef(false);
+  useEffect(() => {
+    if (!hasSetInitial.current && paraIdParam) {
+      setSelectedParaId(paraIdParam);
+      hasSetInitial.current = true;
+    }
+  }, [paraIdParam]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -56,6 +89,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <RenewalsOverview />
             <CoreRemainingCard view={selected} />
             <RevenueGeneratedCard />
+            <UpcomingRenewalsTable />
             <PurchaseHistoryTable />
           </>
         )}
@@ -71,7 +105,17 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
 
         {selected === 'Managing Existing Project' && (
           <>
-            <RenewalInfoCard />
+            <RenewalInfoCard
+              initialParaId={selectedParaId ?? undefined}
+              onSelectParaId={(id) => {
+                setSelectedParaId(id);
+                router.push(
+                  `?dashboard=managing-existing-project&network=${network}&paraId=${id}`,
+                  { scroll: false }
+                );
+              }}
+            />
+
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />

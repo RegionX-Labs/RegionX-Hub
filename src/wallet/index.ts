@@ -24,13 +24,28 @@ export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null
 
 const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
-  return extensions.map((e) => ({ name: e }));
+
+  const isMobile =
+    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+
+  const isNova =
+    typeof window !== 'undefined' &&
+    typeof window.walletExtension === 'object' &&
+    window.walletExtension.isNovaWallet === true;
+
+  return extensions.map((extName) => {
+    if (extName === 'polkadot-js' && isNova) {
+      return { name: 'nova' };
+    }
+    return { name: extName };
+  });
 });
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     if (!extension) return [];
-    const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
+    const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
+    const selectedExtension: InjectedExtension = await connectInjectedExtension(realExtension);
     return selectedExtension.getAccounts();
   }
 );
@@ -40,7 +55,8 @@ const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount 
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
 
-  const extension = await connectInjectedExtension(selectedWallet);
+  const realExtension = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
+  const extension = await connectInjectedExtension(realExtension);
   const accounts = await extension.getAccounts();
   return accounts.find((a) => a.address === selectedAccount) || null;
 });

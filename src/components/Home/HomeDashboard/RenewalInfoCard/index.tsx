@@ -25,8 +25,14 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
 
-export default function RenewalInfoCard() {
+type Props = {
+  onSelectParaId?: (id: string) => void;
+  initialParaId?: string;
+};
+
+export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props) {
   const [selected, setSelected] = useState<any | null>(null);
+  const [hasSetInitial, setHasSetInitial] = useState(false);
   const [renewalEntry, setRenewalEntry] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [deadline, setDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,11 +61,22 @@ export default function RenewalInfoCard() {
   }, [network, connections]);
 
   useEffect(() => {
-    if (!selected && parachains.length > 0 && potentialRenewals && saleInfo) {
-      const first = parachains.find((p) => p.network === network);
-      if (first) setSelected(first);
+    if (hasSetInitial || parachains.length === 0 || !potentialRenewals || !saleInfo) return;
+
+    const match = parachains.find((p) => `${p.id}` === initialParaId && p.network === network);
+    if (match) {
+      setSelected(match);
+      onSelectParaId?.(match.id.toString());
+    } else {
+      const fallback = parachains.find((p) => p.network === network);
+      if (fallback) {
+        setSelected(fallback);
+        onSelectParaId?.(fallback.id.toString());
+      }
     }
-  }, [parachains, potentialRenewals, saleInfo, selected, network]);
+
+    setHasSetInitial(true);
+  }, [parachains, potentialRenewals, saleInfo, network, initialParaId, hasSetInitial]);
 
   useEffect(() => {
     if (!saleInfo || !selected) return;
@@ -202,7 +219,7 @@ export default function RenewalInfoCard() {
             </div>
           </div>
         ) : (
-          <p>No parachain selected.</p>
+          <p></p>
         )}
         {typeof state === 'number' && (
           <div className={styles.stateTooltip}>
@@ -226,15 +243,20 @@ export default function RenewalInfoCard() {
         </div>
       )}
 
-      <div className={styles.inputSection}>
-        <label>Select Parachain</label>
-        <Select
-          options={selectOptions}
-          selectedValue={selected}
-          onChange={setSelected}
-          variant='secondary'
-        />
-      </div>
+      {selected && (
+        <div className={styles.inputSection}>
+          <label>Select Parachain</label>
+          <Select
+            options={selectOptions}
+            selectedValue={selected}
+            onChange={(value) => {
+              setSelected(value);
+              onSelectParaId?.(value.id.toString());
+            }}
+            variant='secondary'
+          />
+        </div>
+      )}
 
       {selectedAccount && accountData[selectedAccount.address] && (
         <TransactionModal
