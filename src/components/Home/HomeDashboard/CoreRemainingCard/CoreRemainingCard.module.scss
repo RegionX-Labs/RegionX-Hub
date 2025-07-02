@@ -37,6 +37,9 @@
 
   &.compact {
     width: 21%;
+    @media (min-width: 3000px) and (max-width: 3400px) {
+      width: 19%;
+    }
     @media (max-width: 1920px) {
       width: 29%;
     }
