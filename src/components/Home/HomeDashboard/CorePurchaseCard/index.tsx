@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, fetchCoresSold, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
@@ -11,7 +13,11 @@ import { $selectedAccount } from '@/wallet';
 import TransactionModal from '@/components/TransactionModal';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 
-export default function CorePurchaseCard() {
+type Props = {
+  view?: string;
+};
+
+export default function CorePurchaseCard({ view }: Props) {
   const [accountData, connections, network, saleInfo, selectedAccount] = useUnit([
     $accountData,
     $connections,
@@ -49,8 +55,8 @@ export default function CorePurchaseCard() {
         setCurrentHeight(currentBlockNumber);
         const price = getCorePriceAt(currentBlockNumber, saleInfo);
         setCorePrice(price);
-        const coresSold = await fetchCoresSold(network, connections);
-        setCoresSold(coresSold || 0);
+        const sold = await fetchCoresSold(network, connections);
+        setCoresSold(sold || 0);
       })();
     }
   }, [saleInfo?.network, connections]);
@@ -84,7 +90,7 @@ export default function CorePurchaseCard() {
       toast.error('Cannot purchase a core during interlude phase');
       return;
     }
-    if (coresSold == saleInfo?.coresOffered) {
+    if (coresSold === saleInfo?.coresOffered) {
       toast.error('No more cores remaining');
       return;
     }
@@ -131,13 +137,13 @@ export default function CorePurchaseCard() {
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.purchase({
       price_limit: BigInt(corePrice),
     });
+
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
-            const err: any = ev.dispatchError;
             toast.error('Transaction failed');
-            console.log(err);
+            console.log(ev.dispatchError);
           } else {
             toast.success('Transaction succeded!');
             getAccountData({ account: selectedAccount.address, connections, network });
@@ -152,7 +158,11 @@ export default function CorePurchaseCard() {
   };
 
   return (
-    <div className={styles.coreRemainingCard}>
+    <div
+      className={`${styles.coreRemainingCard} ${
+        view === 'Deploying a new project' ? styles.compact : ''
+      }`}
+    >
       <p className={styles.title}>Cores Offered</p>
       <h2 className={styles.value}>{saleInfo ? coresOffered : '—'}</h2>
       <p className={styles.title}>Cores Remaining</p>

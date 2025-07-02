@@ -97,6 +97,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
         {selected === 'Deploying a new project' && (
           <>
             <CoreRemainingCard view={selected} />
+            <CorePurchaseCard view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
             <PurchaseHistoryTable />
