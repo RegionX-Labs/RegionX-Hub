@@ -77,8 +77,6 @@ The visual ring shows:
     {
       text: `**Dutch Auction Chart**
 
-**Dutch Auction Chart**
-
 This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 
 Overview:
