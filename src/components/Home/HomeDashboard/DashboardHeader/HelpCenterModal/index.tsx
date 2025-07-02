@@ -121,6 +121,16 @@ Go through pages using the pagination at the bottom.
   ],
   'Deploying a new project': [
     {
+      text: `**Welcome to the dashboard for deploying a new project**
+
+This view offers a simplified overview intended for new projects that want to purchase a core and deploy.
+
+Here users are able to see the price of a new core from bulk sale as well as track the current bulk sale cycle. 
+
+New projects don't have the option to renew, as they don't own a core yet. Therefore, no renewal-related information is shown on this dashboard.
+`
+    },
+    {
       text: `**Cores Remaining**
 
 This section displays a real-time chart showing how many Coretime units are still available for purchase during the current sale cycle.
@@ -204,10 +214,9 @@ Click through pages using the pagination at the bottom.
 This section allows you to manage and renew core allocations for your selected parachain.
 
 Here's what you can do:
-- Select a parachain from the dropdown to view its renewal status
-- View its name, Para ID, project logo, and website link (if available)
+- Select a parachain from the dropdown to view its status
 - See the current state of the parachain (e.g., Active, Idle, Renewable) along with a description of what that means
-- Check the renewal cost and the deadline to submit the renewal before the interlude ends
+- In case the parachain has the potential to renew it willdisplay renewal cost and the deadline to submit the renewal
 - Use the **Renew** button to directly initiate a core renewal transaction for the selected parachain
 
 If no core is available for renewal, the Renew button will not appear.
