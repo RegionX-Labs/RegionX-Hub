@@ -23,7 +23,7 @@ type TableData = {
   searchKey?: string;
 };
 
-const SUBSCAN_CORETIME_URL: Record<string, string> = {
+export const SUBSCAN_CORETIME_URL: Record<string, string> = {
   polkadot: 'https://coretime-polkadot.subscan.io',
   kusama: 'https://coretime-kusama.subscan.io',
   paseo: 'https://coretime-paseo.subscan.io',
