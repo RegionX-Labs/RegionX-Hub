@@ -145,11 +145,17 @@ export default function CorePurchaseCard({ view }: Props) {
         toast.loading(
           <span>
             Transaction submitted:&nbsp;
-            <a href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', color: '#60a5fa' }}>
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
               view transaction
             </a>
-          </span>
-        , { id: toastId });
+          </span>,
+          { id: toastId }
+        );
         console.log(ev.txHash);
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
