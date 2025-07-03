@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './sale-history.module.scss';
@@ -19,6 +21,15 @@ type TableData = {
   data: string | React.ReactElement;
   link?: string;
   searchKey?: string;
+};
+
+const SUBSCAN_CORETIME_URL: Record<string, string> = {
+  polkadot: 'https://coretime-polkadot.subscan.io',
+  kusama: 'https://coretime-kusama.subscan.io',
+  paseo: 'https://coretime-paseo.subscan.io',
+  rococo: 'https://coretime-rococo.subscan.io',
+  westend: 'https://coretime-westend.subscan.io',
+  none: '',
 };
 
 const formatDate = (timestamp: Date | bigint | null): string => {
@@ -149,13 +160,23 @@ const SaleHistoryPage = () => {
   useEffect(() => {
     if (!network) return;
 
+    const baseUrl = SUBSCAN_CORETIME_URL[network] || 'https://subscan.io';
+
     const formatted = purchaseHistory.map((purchase: PurchaseHistoryItem) => ({
       ExtrinsicID: {
-        cellType: 'link' as const,
-        data: purchase.extrinsicId,
-        link: '#',
+        cellType: 'jsx' as const,
+        data: (
+          <a
+            href={`${baseUrl}/extrinsic/${purchase.extrinsicId}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            {purchase.extrinsicId}
+          </a>
+        ),
         searchKey: purchase.extrinsicId,
       },
+
       Account: {
         cellType: 'address' as const,
         data: purchase.address,

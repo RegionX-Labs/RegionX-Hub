@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { TableComponent } from '../../../elements/TableComponent';
@@ -10,6 +12,17 @@ import {
 } from '@/coretime/purchaseHistory';
 import { $network } from '@/api/connection';
 import { toUnitFormatted } from '@/utils';
+
+type NetworkType = 'polkadot' | 'kusama' | 'paseo' | 'rococo' | 'westend' | 'none';
+
+const SUSBCAN_CORETIME_URL: Record<NetworkType, string> = {
+  polkadot: 'https://coretime-polkadot.subscan.io',
+  kusama: 'https://coretime-kusama.subscan.io',
+  paseo: 'https://coretime-paseo.subscan.io',
+  rococo: 'https://coretime-rococo.subscan.io',
+  westend: 'https://coretime-westend.subscan.io',
+  none: '',
+};
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -52,11 +65,13 @@ export default function PurchaseHistoryTable() {
   useEffect(() => {
     if (!network) return;
 
+    const baseUrl = SUSBCAN_CORETIME_URL[network as NetworkType] || 'https://subscan.io';
+
     const formatted = purchaseHistory.map((purchase: PurchaseHistoryItem) => ({
       ExtrinsicID: {
         cellType: 'link' as const,
         data: purchase.extrinsicId,
-        link: '#',
+        link: `${baseUrl}/extrinsic/${purchase.extrinsicId}`,
         searchKey: purchase.extrinsicId,
       },
       Account: {
