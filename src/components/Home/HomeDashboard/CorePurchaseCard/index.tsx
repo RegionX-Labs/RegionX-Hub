@@ -86,14 +86,14 @@ export default function CorePurchaseCard({ view }: Props) {
       toast.error('Account not selected');
       return;
     }
-    if (currentPhase === SalePhase.Interlude) {
-      toast.error('Cannot purchase a core during interlude phase');
-      return;
-    }
-    if (coresSold === saleInfo?.coresOffered) {
-      toast.error('No more cores remaining');
-      return;
-    }
+    // if (currentPhase === SalePhase.Interlude) {
+    //   toast.error('Cannot purchase a core during interlude phase');
+    //   return;
+    // }
+    // if (coresSold === saleInfo?.coresOffered) {
+    //   toast.error('No more cores remaining');
+    //   return;
+    // }
     setIsModalOpen(true);
   };
 
@@ -138,20 +138,22 @@ export default function CorePurchaseCard({ view }: Props) {
       price_limit: BigInt(corePrice),
     });
 
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        console.log(ev.txHash);
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
             console.log(ev.dispatchError);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );
