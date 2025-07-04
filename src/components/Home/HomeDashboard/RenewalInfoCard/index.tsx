@@ -24,6 +24,7 @@ import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
 type Props = {
   onSelectParaId?: (id: string) => void;
@@ -138,19 +139,34 @@ export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props
       core: key.core,
     });
 
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (ev.ok) {
-            toast.success('Renewal successful');
+            toast.success('Renewal successful', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           } else {
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
           }
         }
       },
       (e) => {
-        toast.error('Transaction error');
+        toast.error('Transaction error', { id: toastId });
         console.error(e);
       }
     );

@@ -12,6 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
 import TransactionModal from '@/components/TransactionModal';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
 type Props = {
   view?: string;
@@ -138,20 +139,35 @@ export default function CorePurchaseCard({ view }: Props) {
       price_limit: BigInt(corePrice),
     });
 
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
             console.log(ev.dispatchError);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );
