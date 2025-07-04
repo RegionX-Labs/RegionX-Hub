@@ -87,14 +87,14 @@ export default function CorePurchaseCard({ view }: Props) {
       toast.error('Account not selected');
       return;
     }
-    // if (currentPhase === SalePhase.Interlude) {
-    //   toast.error('Cannot purchase a core during interlude phase');
-    //   return;
-    // }
-    // if (coresSold === saleInfo?.coresOffered) {
-    //   toast.error('No more cores remaining');
-    //   return;
-    // }
+    if (currentPhase === SalePhase.Interlude) {
+      toast.error('Cannot purchase a core during interlude phase');
+      return;
+    }
+    if (coresSold === saleInfo?.coresOffered) {
+      toast.error('No more cores remaining');
+      return;
+    }
     setIsModalOpen(true);
   };
 
