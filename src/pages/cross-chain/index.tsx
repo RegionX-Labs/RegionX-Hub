@@ -26,6 +26,7 @@ import { CORETIME_PARA_ID, fromUnit, toUnitFormatted } from '@/utils';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
 import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
+import { SUBSCAN_CORETIME_URL, SUBSCAN_RELAY_URL } from '../coretime/sale-history';
 
 const CrossChain = () => {
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
@@ -111,14 +112,32 @@ const CrossChain = () => {
         weight_limit: XcmV3WeightLimit.Unlimited(),
       });
 
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) toast.error('Transaction failed');
-          else toast.success('Transaction succeeded!');
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
         }
       },
-      (e) => toast.error('Transaction cancelled')
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
     );
   };
 
@@ -159,17 +178,32 @@ const CrossChain = () => {
         weight_limit: XcmV3WeightLimit.Unlimited(),
       });
 
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) toast.error('Transaction failed');
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
           else {
-            toast.success('Transaction succeeded!');
+            toast.success('Transaction succeeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
-      (e) => toast.error('Transaction cancelled')
+      (e) => toast.error('Transaction cancelled', { id: toastId })
     );
   };
 
