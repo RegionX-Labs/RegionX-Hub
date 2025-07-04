@@ -41,6 +41,11 @@
       "wsUrl": "wss://coretime-westend.dotters.network",
       "metadata": ".papi/metadata/wnd_coretime.scale",
       "genesis": "0xf938510edee7c23efa6e9db74f227c827a1b518bffe92e2f6c9842dc53d38840"
+    },
+    "dot_people": {
+      "wsUrl": "wss://sys.ibp.network/people-polkadot",
+      "metadata": ".papi/metadata/dot_people.scale",
+      "genesis": "0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008"
     }
   }
 }

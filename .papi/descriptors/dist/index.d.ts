@@ -14,6 +14,8 @@ export { default as wnd, WndCallData } from './wnd';
 export type * from './wnd';
 export { default as wnd_coretime, Wnd_coretimeCallData } from './wnd_coretime';
 export type * from './wnd_coretime';
+export { default as dot_people, Dot_peopleCallData } from './dot_people';
+export type * from './dot_people';
 export {
   DigestItem,
   Phase,

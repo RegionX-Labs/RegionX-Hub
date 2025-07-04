@@ -20,8 +20,8 @@ var toBinary = (() => {
     return bytes;
   };
 })();
-var descriptorValues = import('./descriptors-VFISNSLX.mjs').then((module) => module['Dot']);
-var metadataTypes = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var descriptorValues = import('./descriptors-WRN7ZV7O.mjs').then((module) => module['Dot']);
+var metadataTypes = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary('default' in module ? module.default : module)
 );
 var asset = {};
@@ -55,10 +55,10 @@ var toBinary2 = (() => {
     return bytes;
   };
 })();
-var descriptorValues2 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues2 = import('./descriptors-WRN7ZV7O.mjs').then(
   (module) => module['Dot_coretime']
 );
-var metadataTypes2 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var metadataTypes2 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary2('default' in module ? module.default : module)
 );
 var asset2 = {};
@@ -98,10 +98,10 @@ var toBinary3 = (() => {
     return bytes;
   };
 })();
-var descriptorValues3 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues3 = import('./descriptors-WRN7ZV7O.mjs').then(
   (module) => module['Ksm_coretime']
 );
-var metadataTypes3 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var metadataTypes3 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary3('default' in module ? module.default : module)
 );
 var asset3 = {};
@@ -141,8 +141,8 @@ var toBinary4 = (() => {
     return bytes;
   };
 })();
-var descriptorValues4 = import('./descriptors-VFISNSLX.mjs').then((module) => module['Ksm']);
-var metadataTypes4 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var descriptorValues4 = import('./descriptors-WRN7ZV7O.mjs').then((module) => module['Ksm']);
+var metadataTypes4 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary4('default' in module ? module.default : module)
 );
 var asset4 = {};
@@ -182,8 +182,8 @@ var toBinary5 = (() => {
     return bytes;
   };
 })();
-var descriptorValues5 = import('./descriptors-VFISNSLX.mjs').then((module) => module['Pas']);
-var metadataTypes5 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var descriptorValues5 = import('./descriptors-WRN7ZV7O.mjs').then((module) => module['Pas']);
+var metadataTypes5 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary5('default' in module ? module.default : module)
 );
 var asset5 = {};
@@ -223,10 +223,10 @@ var toBinary6 = (() => {
     return bytes;
   };
 })();
-var descriptorValues6 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues6 = import('./descriptors-WRN7ZV7O.mjs').then(
   (module) => module['Pas_coretime']
 );
-var metadataTypes6 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var metadataTypes6 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary6('default' in module ? module.default : module)
 );
 var asset6 = {};
@@ -266,8 +266,8 @@ var toBinary7 = (() => {
     return bytes;
   };
 })();
-var descriptorValues7 = import('./descriptors-VFISNSLX.mjs').then((module) => module['Wnd']);
-var metadataTypes7 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var descriptorValues7 = import('./descriptors-WRN7ZV7O.mjs').then((module) => module['Wnd']);
+var metadataTypes7 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary7('default' in module ? module.default : module)
 );
 var asset7 = {};
@@ -307,10 +307,10 @@ var toBinary8 = (() => {
     return bytes;
   };
 })();
-var descriptorValues8 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues8 = import('./descriptors-WRN7ZV7O.mjs').then(
   (module) => module['Wnd_coretime']
 );
-var metadataTypes8 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var metadataTypes8 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
   toBinary8('default' in module ? module.default : module)
 );
 var asset8 = {};
@@ -327,6 +327,47 @@ var _allDescriptors8 = {
   genesis: genesis8,
 };
 var wnd_coretime_default = _allDescriptors8;
+
+// .papi/descriptors/src/dot_people.ts
+var toBinary9 = (() => {
+  const table = new Uint8Array(128);
+  for (let i = 0; i < 64; i++)
+    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
+  return (base64) => {
+    const n = base64.length,
+      bytes = new Uint8Array(
+        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
+      );
+    for (let i2 = 0, j = 0; i2 < n; ) {
+      const c0 = table[base64.charCodeAt(i2++)],
+        c1 = table[base64.charCodeAt(i2++)];
+      const c2 = table[base64.charCodeAt(i2++)],
+        c3 = table[base64.charCodeAt(i2++)];
+      bytes[j++] = (c0 << 2) | (c1 >> 4);
+      bytes[j++] = (c1 << 4) | (c2 >> 2);
+      bytes[j++] = (c2 << 6) | c3;
+    }
+    return bytes;
+  };
+})();
+var descriptorValues9 = import('./descriptors-WRN7ZV7O.mjs').then((module) => module['Dot_people']);
+var metadataTypes9 = import('./metadataTypes-7BIGS435.mjs').then((module) =>
+  toBinary9('default' in module ? module.default : module)
+);
+var asset9 = {};
+var getMetadata9 = () =>
+  import('./dot_people_metadata-3SRNLWRO.mjs').then((module) =>
+    toBinary9('default' in module ? module.default : module)
+  );
+var genesis9 = '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008';
+var _allDescriptors9 = {
+  descriptors: descriptorValues9,
+  metadataTypes: metadataTypes9,
+  asset: asset9,
+  getMetadata: getMetadata9,
+  genesis: genesis9,
+};
+var dot_people_default = _allDescriptors9;
 
 // .papi/descriptors/src/common-types.ts
 import { _Enum } from 'polkadot-api';
@@ -661,6 +702,7 @@ export {
   XcmVersionedXcm,
   dot_default as dot,
   dot_coretime_default as dot_coretime,
+  dot_people_default as dot_people,
   ksm_default as ksm,
   ksm_coretime_default as ksm_coretime,
   pas_default as pas,
