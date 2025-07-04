@@ -84,4 +84,13 @@ export const chains = {
       { url: 'wss://sys.ibp.network/coretime-westend' },
     ],
   },
+
+  people: {
+    chainId: '0x7fcbe7b0a942f4087c8978f984ac09fae7199463c430b1d4dcd9c1a03265e455' as ChainId,
+    name: 'People',
+    nodes: [
+      { url: 'wss://rpc.ibp.network/people-polkadot' },
+      { url: 'wss://people-rpc.polkadotters.network' },
+    ],
+  },
 };

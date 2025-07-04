@@ -47,6 +47,22 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const testPeoplePolkadot = () => {
+      const { getNetworkMetadata, getNetworkChainIds } = require('@/network');
+      const { Network } = require('@/types');
+
+      const metadata = getNetworkMetadata(Network.PEOPLE_POLKADOT);
+      const chainIds = getNetworkChainIds(Network.PEOPLE_POLKADOT);
+
+      console.log('TEST: PEOPLE_POLKADOT METADATA:', metadata);
+      console.log('TEST: PEOPLE_POLKADOT CHAIN IDS:', chainIds);
+    };
+
+    testPeoplePolkadot();
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -80,7 +96,6 @@ function App({ Component, pageProps }: AppProps) {
     if (!selectedAccount) return;
     getAccountData({ account: selectedAccount.address, connections, network });
   }, [connections, network, selectedAccount]);
-
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);

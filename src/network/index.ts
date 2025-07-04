@@ -1,3 +1,5 @@
+// network.ts
+
 import { ChainId, chains } from '@/network/chains';
 import { Network } from '@/types';
 import {
@@ -9,14 +11,11 @@ import {
   pas_coretime,
   wnd,
   wnd_coretime,
+  dot_people,
 } from '@polkadot-api/descriptors';
 
-type NetworkChainIds = {
-  relayChain: ChainId;
-  coretimeChain: ChainId;
-};
+export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd | typeof dot_people;
 
-export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd;
 export type CoretimeMetadata =
   | typeof dot_coretime
   | typeof ksm_coretime
@@ -28,9 +27,11 @@ export type NetworkMetadata = {
   coretimeChain: CoretimeMetadata;
 };
 
-// Get all the relevant chain ids of a network.
-//
-// This will be the coretime chain, relay chain and the regionx chain.
+type NetworkChainIds = {
+  relayChain: ChainId;
+  coretimeChain: ChainId;
+};
+
 export const getNetworkChainIds = (network: Network): NetworkChainIds | null => {
   switch (network) {
     case Network.POLKADOT:
@@ -53,12 +54,16 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
         relayChain: chains.westend.chainId,
         coretimeChain: chains.westendCoretime.chainId,
       };
+    case Network.PEOPLE_POLKADOT:
+      return {
+        relayChain: chains.people.chainId,
+        coretimeChain: chains.polkadotCoretime.chainId, // fallback coretime
+      };
     default:
       return null;
   }
 };
 
-// Returns the coretime indexer url.
 export const getNetworkCoretimeIndexer = (network: Network): string => {
   switch (network) {
     case Network.POLKADOT:
@@ -95,6 +100,11 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: wnd,
         coretimeChain: wnd_coretime,
+      };
+    case Network.PEOPLE_POLKADOT:
+      return {
+        relayChain: dot_people,
+        coretimeChain: dot_coretime, // fallback coretime
       };
     default:
       return null;
