@@ -80,6 +80,7 @@ function App({ Component, pageProps }: AppProps) {
     if (!selectedAccount) return;
     getAccountData({ account: selectedAccount.address, connections, network });
   }, [connections, network, selectedAccount]);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);

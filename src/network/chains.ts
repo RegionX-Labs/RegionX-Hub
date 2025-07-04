@@ -51,7 +51,6 @@ export const chains = {
       { url: 'wss://westend-rpc.polkadot.io' },
     ],
   },
-
   polkadotCoretime: {
     chainId: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4' as ChainId,
     name: 'Polkadot Coretime',
@@ -85,9 +84,9 @@ export const chains = {
     ],
   },
 
-  people: {
+  peoplePolkadot: {
     chainId: '0x7fcbe7b0a942f4087c8978f984ac09fae7199463c430b1d4dcd9c1a03265e455' as ChainId,
-    name: 'People',
+    name: 'People Polkadot',
     nodes: [
       { url: 'wss://rpc.ibp.network/people-polkadot' },
       { url: 'wss://people-rpc.polkadotters.network' },

@@ -4,6 +4,5 @@ export enum Network {
   PASEO = 'paseo',
   ROCOCO = 'rococo',
   WESTEND = 'westend',
-  PEOPLE_POLKADOT = 'people-polkadot',
   NONE = 'none',
 }
