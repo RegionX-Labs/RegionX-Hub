@@ -161,7 +161,7 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
     const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
-         toast.loading(
+        toast.loading(
           <span>
             Transaction submitted:&nbsp;
             <a
