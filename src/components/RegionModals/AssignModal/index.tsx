@@ -10,6 +10,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
 import { RegionId } from '@/utils';
 import { Enum } from 'polkadot-api';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
 type Finality = Enum<{
   Provisional: undefined;
@@ -120,21 +121,37 @@ const AssignModal: React.FC<AssignModalProps> = ({ isOpen, regionId, onClose }) 
       },
       task: Number(taskId),
     });
+
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
             const err: any = ev.dispatchError;
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
             console.log(err);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );

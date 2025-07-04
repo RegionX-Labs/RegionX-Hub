@@ -156,7 +156,6 @@ export default function CorePurchaseCard({ view }: Props) {
           </span>,
           { id: toastId }
         );
-        console.log(ev.txHash);
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
             toast.error('Transaction failed', { id: toastId });
