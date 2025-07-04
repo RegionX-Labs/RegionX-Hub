@@ -47,22 +47,6 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const testPeoplePolkadot = () => {
-      const { getNetworkMetadata, getNetworkChainIds } = require('@/network');
-      const { Network } = require('@/types');
-
-      const metadata = getNetworkMetadata(Network.PEOPLE_POLKADOT);
-      const chainIds = getNetworkChainIds(Network.PEOPLE_POLKADOT);
-
-      console.log('TEST: PEOPLE_POLKADOT METADATA:', metadata);
-      console.log('TEST: PEOPLE_POLKADOT CHAIN IDS:', chainIds);
-    };
-
-    testPeoplePolkadot();
-  }, [router.isReady]);
 
   useEffect(() => {
     if (!router.isReady) return;
