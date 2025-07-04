@@ -23,11 +23,18 @@ type TableData = {
   searchKey?: string;
 };
 
-const SUBSCAN_CORETIME_URL: Record<string, string> = {
+export const SUBSCAN_RELAY_URL: Record<string, string> = {
+  polkadot: 'https://polkadot.subscan.io',
+  kusama: 'https://kusama.subscan.io',
+  paseo: 'https://paseo.subscan.io',
+  westend: 'https://westend.subscan.io',
+  none: '',
+};
+
+export const SUBSCAN_CORETIME_URL: Record<string, string> = {
   polkadot: 'https://coretime-polkadot.subscan.io',
   kusama: 'https://coretime-kusama.subscan.io',
   paseo: 'https://coretime-paseo.subscan.io',
-  rococo: 'https://coretime-rococo.subscan.io',
   westend: 'https://coretime-westend.subscan.io',
   none: '',
 };
