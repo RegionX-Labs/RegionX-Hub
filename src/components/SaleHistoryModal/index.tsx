@@ -46,7 +46,7 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
       const chainIds = getNetworkChainIds(network);
       if (!chainIds) return null;
       const connection =
-        network === Network.WESTEND
+        network === Network.WESTEND || network === Network.KUSAMA
           ? connections[chainIds.relayChain]
           : connections[chainIds.coretimeChain];
       if (!connection) return null;
@@ -57,7 +57,9 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
       const saleStartDate = await blockToTimestamp(
         sale.saleStart,
         connection,
-        network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
+        network === Network.WESTEND || network === Network.KUSAMA
+          ? metadata.relayChain
+          : metadata.coretimeChain,
         network
       );
 
