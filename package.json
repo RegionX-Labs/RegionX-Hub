@@ -13,6 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mimirdev/apps-inject": "^3.2.0",
     "@mui/material": "^6.4.8",
     "@polkadot-api/descriptors": "file:.papi/descriptors",
     "@polkadot/util": "^13.4.4",
