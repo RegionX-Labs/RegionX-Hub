@@ -6,7 +6,6 @@ import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 import {
   blockToTimestamp,
   coretimeChainBlockTime,
-  KUSAMA_SALE_CYCLE_WITH_UPDATE,
   RELAY_CHAIN_BLOCK_TIME,
   TIMESLICE_PERIOD,
   usesRelayChainBlocks,
@@ -128,18 +127,17 @@ const getSalePhaseEndpointsFx = createEffect(
     if (!metadata) return null;
 
     let saleStartTimestamp;
-    console.log(saleInfo.saleCycle)
-    if (usesRelayChainBlocks(network, saleInfo) && saleInfo.saleCycle > KUSAMA_SALE_CYCLE_WITH_UPDATE) {
+    if (network == Network.WESTEND) {
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
       saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, network)
+        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
       );
     } else {
       const connection = connections[chainIds.coretimeChain];
       if (!connection) return null;
       saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, network)
+        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain)
       );
     }
 
