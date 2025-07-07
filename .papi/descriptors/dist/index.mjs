@@ -1,27 +1,27 @@
+// .papi/descriptors/src/common.ts
+var table = new Uint8Array(128);
+for (let i = 0; i < 64; i++)
+  table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
+var toBinary = (base64) => {
+  const n = base64.length,
+    bytes = new Uint8Array(
+      (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
+    );
+  for (let i2 = 0, j = 0; i2 < n; ) {
+    const c0 = table[base64.charCodeAt(i2++)],
+      c1 = table[base64.charCodeAt(i2++)];
+    const c2 = table[base64.charCodeAt(i2++)],
+      c3 = table[base64.charCodeAt(i2++)];
+    bytes[j++] = (c0 << 2) | (c1 >> 4);
+    bytes[j++] = (c1 << 4) | (c2 >> 2);
+    bytes[j++] = (c2 << 6) | c3;
+  }
+  return bytes;
+};
+
 // .papi/descriptors/src/dot.ts
-var toBinary = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues = import('./descriptors-VFISNSLX.mjs').then((module) => module['Dot']);
-var metadataTypes = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
+var descriptorValues = import('./descriptors-PDVWMZJQ.mjs').then((module) => module['Dot']);
+var metadataTypes = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
   toBinary('default' in module ? module.default : module)
 );
 var asset = {};
@@ -34,37 +34,16 @@ var _allDescriptors = { descriptors: descriptorValues, metadataTypes, asset, get
 var dot_default = _allDescriptors;
 
 // .papi/descriptors/src/dot_coretime.ts
-var toBinary2 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues2 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues2 = import('./descriptors-PDVWMZJQ.mjs').then(
   (module) => module['Dot_coretime']
 );
-var metadataTypes2 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary2('default' in module ? module.default : module)
+var metadataTypes2 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset2 = {};
 var getMetadata2 = () =>
   import('./dot_coretime_metadata-4RNVDXBT.mjs').then((module) =>
-    toBinary2('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis2 = '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4';
 var _allDescriptors2 = {
@@ -77,37 +56,16 @@ var _allDescriptors2 = {
 var dot_coretime_default = _allDescriptors2;
 
 // .papi/descriptors/src/ksm_coretime.ts
-var toBinary3 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues3 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues3 = import('./descriptors-PDVWMZJQ.mjs').then(
   (module) => module['Ksm_coretime']
 );
-var metadataTypes3 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary3('default' in module ? module.default : module)
+var metadataTypes3 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset3 = {};
 var getMetadata3 = () =>
   import('./ksm_coretime_metadata-CERKK3E5.mjs').then((module) =>
-    toBinary3('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis3 = '0x638cd2b9af4b3bb54b8c1f0d22711fc89924ca93300f0caf25a580432b29d050';
 var _allDescriptors3 = {
@@ -120,35 +78,14 @@ var _allDescriptors3 = {
 var ksm_coretime_default = _allDescriptors3;
 
 // .papi/descriptors/src/ksm.ts
-var toBinary4 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues4 = import('./descriptors-VFISNSLX.mjs').then((module) => module['Ksm']);
-var metadataTypes4 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary4('default' in module ? module.default : module)
+var descriptorValues4 = import('./descriptors-PDVWMZJQ.mjs').then((module) => module['Ksm']);
+var metadataTypes4 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset4 = {};
 var getMetadata4 = () =>
   import('./ksm_metadata-IWGM6FM5.mjs').then((module) =>
-    toBinary4('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis4 = '0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe';
 var _allDescriptors4 = {
@@ -161,35 +98,14 @@ var _allDescriptors4 = {
 var ksm_default = _allDescriptors4;
 
 // .papi/descriptors/src/pas.ts
-var toBinary5 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues5 = import('./descriptors-VFISNSLX.mjs').then((module) => module['Pas']);
-var metadataTypes5 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary5('default' in module ? module.default : module)
+var descriptorValues5 = import('./descriptors-PDVWMZJQ.mjs').then((module) => module['Pas']);
+var metadataTypes5 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset5 = {};
 var getMetadata5 = () =>
   import('./pas_metadata-AD6H57TI.mjs').then((module) =>
-    toBinary5('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis5 = '0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f';
 var _allDescriptors5 = {
@@ -202,37 +118,16 @@ var _allDescriptors5 = {
 var pas_default = _allDescriptors5;
 
 // .papi/descriptors/src/pas_coretime.ts
-var toBinary6 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues6 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues6 = import('./descriptors-PDVWMZJQ.mjs').then(
   (module) => module['Pas_coretime']
 );
-var metadataTypes6 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary6('default' in module ? module.default : module)
+var metadataTypes6 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset6 = {};
 var getMetadata6 = () =>
   import('./pas_coretime_metadata-6QIQVJXN.mjs').then((module) =>
-    toBinary6('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis6 = '0xc806038cc1d06766f23074ade7c5511326be41646deabc259970ff280c82a464';
 var _allDescriptors6 = {
@@ -245,35 +140,14 @@ var _allDescriptors6 = {
 var pas_coretime_default = _allDescriptors6;
 
 // .papi/descriptors/src/wnd.ts
-var toBinary7 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues7 = import('./descriptors-VFISNSLX.mjs').then((module) => module['Wnd']);
-var metadataTypes7 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary7('default' in module ? module.default : module)
+var descriptorValues7 = import('./descriptors-PDVWMZJQ.mjs').then((module) => module['Wnd']);
+var metadataTypes7 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset7 = {};
 var getMetadata7 = () =>
   import('./wnd_metadata-CG4TFWZR.mjs').then((module) =>
-    toBinary7('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis7 = '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e';
 var _allDescriptors7 = {
@@ -286,37 +160,16 @@ var _allDescriptors7 = {
 var wnd_default = _allDescriptors7;
 
 // .papi/descriptors/src/wnd_coretime.ts
-var toBinary8 = (() => {
-  const table = new Uint8Array(128);
-  for (let i = 0; i < 64; i++)
-    table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
-  return (base64) => {
-    const n = base64.length,
-      bytes = new Uint8Array(
-        (((n - Number(base64[n - 1] === '=') - Number(base64[n - 2] === '=')) * 3) / 4) | 0
-      );
-    for (let i2 = 0, j = 0; i2 < n; ) {
-      const c0 = table[base64.charCodeAt(i2++)],
-        c1 = table[base64.charCodeAt(i2++)];
-      const c2 = table[base64.charCodeAt(i2++)],
-        c3 = table[base64.charCodeAt(i2++)];
-      bytes[j++] = (c0 << 2) | (c1 >> 4);
-      bytes[j++] = (c1 << 4) | (c2 >> 2);
-      bytes[j++] = (c2 << 6) | c3;
-    }
-    return bytes;
-  };
-})();
-var descriptorValues8 = import('./descriptors-VFISNSLX.mjs').then(
+var descriptorValues8 = import('./descriptors-PDVWMZJQ.mjs').then(
   (module) => module['Wnd_coretime']
 );
-var metadataTypes8 = import('./metadataTypes-PSPGKQAQ.mjs').then((module) =>
-  toBinary8('default' in module ? module.default : module)
+var metadataTypes8 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
 );
 var asset8 = {};
 var getMetadata8 = () =>
   import('./wnd_coretime_metadata-QFSCAUZK.mjs').then((module) =>
-    toBinary8('default' in module ? module.default : module)
+    toBinary('default' in module ? module.default : module)
   );
 var genesis8 = '0xf938510edee7c23efa6e9db74f227c827a1b518bffe92e2f6c9842dc53d38840';
 var _allDescriptors8 = {
@@ -327,6 +180,92 @@ var _allDescriptors8 = {
   genesis: genesis8,
 };
 var wnd_coretime_default = _allDescriptors8;
+
+// .papi/descriptors/src/ksm_people.ts
+var descriptorValues9 = import('./descriptors-PDVWMZJQ.mjs').then((module) => module['Ksm_people']);
+var metadataTypes9 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
+);
+var asset9 = {};
+var getMetadata9 = () =>
+  import('./ksm_people_metadata-IK7V5HUQ.mjs').then((module) =>
+    toBinary('default' in module ? module.default : module)
+  );
+var genesis9 = '0xc1af4cb4eb3918e5db15086c0cc5ec17fb334f728b7c65dd44bfe1e174ff8b3f';
+var _allDescriptors9 = {
+  descriptors: descriptorValues9,
+  metadataTypes: metadataTypes9,
+  asset: asset9,
+  getMetadata: getMetadata9,
+  genesis: genesis9,
+};
+var ksm_people_default = _allDescriptors9;
+
+// .papi/descriptors/src/pas_people.ts
+var descriptorValues10 = import('./descriptors-PDVWMZJQ.mjs').then(
+  (module) => module['Pas_people']
+);
+var metadataTypes10 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
+);
+var asset10 = {};
+var getMetadata10 = () =>
+  import('./pas_people_metadata-JZCYGFBU.mjs').then((module) =>
+    toBinary('default' in module ? module.default : module)
+  );
+var genesis10 = '0xe6c30d6e148f250b887105237bcaa5cb9f16dd203bf7b5b9d4f1da7387cb86ec';
+var _allDescriptors10 = {
+  descriptors: descriptorValues10,
+  metadataTypes: metadataTypes10,
+  asset: asset10,
+  getMetadata: getMetadata10,
+  genesis: genesis10,
+};
+var pas_people_default = _allDescriptors10;
+
+// .papi/descriptors/src/wnd_people.ts
+var descriptorValues11 = import('./descriptors-PDVWMZJQ.mjs').then(
+  (module) => module['Wnd_people']
+);
+var metadataTypes11 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
+);
+var asset11 = {};
+var getMetadata11 = () =>
+  import('./wnd_people_metadata-QTDQA2PC.mjs').then((module) =>
+    toBinary('default' in module ? module.default : module)
+  );
+var genesis11 = '0x1eb6fb0ba5187434de017a70cb84d4f47142df1d571d0ef9e7e1407f2b80b93c';
+var _allDescriptors11 = {
+  descriptors: descriptorValues11,
+  metadataTypes: metadataTypes11,
+  asset: asset11,
+  getMetadata: getMetadata11,
+  genesis: genesis11,
+};
+var wnd_people_default = _allDescriptors11;
+
+// .papi/descriptors/src/dot_people.ts
+var descriptorValues12 = import('./descriptors-PDVWMZJQ.mjs').then(
+  (module) => module['Dot_people']
+);
+var metadataTypes12 = import('./metadataTypes-SNBZR3KU.mjs').then((module) =>
+  toBinary('default' in module ? module.default : module)
+);
+var asset12 = {};
+var getMetadata12 = () =>
+  import('./dot_people_metadata-3SRNLWRO.mjs').then((module) =>
+    toBinary('default' in module ? module.default : module)
+  );
+var genesis12 = '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008';
+var _allDescriptors12 = {
+  descriptors: descriptorValues12,
+  metadataTypes: metadataTypes12,
+  asset: asset12,
+  getMetadata: getMetadata12,
+  genesis: genesis12,
+};
+var dot_people_default = _allDescriptors12;
 
 // .papi/descriptors/src/common-types.ts
 import { _Enum } from 'polkadot-api';
@@ -494,6 +433,20 @@ var XcmVersionedAssetId = _Enum;
 var XcmVersionedXcm = _Enum;
 var PolkadotRuntimeCommonAssignedSlotsSlotLeasePeriodStart = _Enum;
 var XcmVersionedAsset = _Enum;
+
+// .papi/descriptors/src/index.ts
+var metadatas = {
+  ['0xc897696af11fac9547bdd053b5ef06ee2c5fb4d9465e5be1f6955770b1f2d082']: ksm_people_default,
+  ['0x08900cf7113b3e152f7887796b5311f01a6eda32684425c0d2794b542c9dd739']: pas_people_default,
+  ['0x016408470c90ed6aec5fa1eed13a82ee686e7d0d32bd5677018eedea6b5ffb9f']: wnd_people_default,
+  ['0x5ad90a21b395a16a6d720983bb9fdd096577710beea33c7882bb61a7518dbb79']: dot_people_default,
+};
+var getMetadata13 = async (codeHash) => {
+  try {
+    return await metadatas[codeHash].getMetadata();
+  } catch {}
+  return null;
+};
 export {
   ArithmeticError,
   AssetRateEvent,
@@ -661,10 +614,15 @@ export {
   XcmVersionedXcm,
   dot_default as dot,
   dot_coretime_default as dot_coretime,
+  dot_people_default as dot_people,
+  getMetadata13 as getMetadata,
   ksm_default as ksm,
   ksm_coretime_default as ksm_coretime,
+  ksm_people_default as ksm_people,
   pas_default as pas,
   pas_coretime_default as pas_coretime,
+  pas_people_default as pas_people,
   wnd_default as wnd,
   wnd_coretime_default as wnd_coretime,
+  wnd_people_default as wnd_people,
 };

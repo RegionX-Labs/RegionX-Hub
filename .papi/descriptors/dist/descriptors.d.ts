@@ -6,3 +6,7 @@ export declare const Pas: Record<string, object>;
 export declare const Pas_coretime: Record<string, object>;
 export declare const Wnd: Record<string, object>;
 export declare const Wnd_coretime: Record<string, object>;
+export declare const Ksm_people: Record<string, object>;
+export declare const Pas_people: Record<string, object>;
+export declare const Wnd_people: Record<string, object>;
+export declare const Dot_people: Record<string, object>;

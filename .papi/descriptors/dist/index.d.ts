@@ -1,19 +1,39 @@
-export { default as dot, DotCallData } from './dot';
+import { default as dot } from './dot';
+export { dot };
 export type * from './dot';
-export { default as dot_coretime, Dot_coretimeCallData } from './dot_coretime';
+import { default as dot_coretime } from './dot_coretime';
+export { dot_coretime };
 export type * from './dot_coretime';
-export { default as ksm_coretime, Ksm_coretimeCallData } from './ksm_coretime';
+import { default as ksm_coretime } from './ksm_coretime';
+export { ksm_coretime };
 export type * from './ksm_coretime';
-export { default as ksm, KsmCallData } from './ksm';
+import { default as ksm } from './ksm';
+export { ksm };
 export type * from './ksm';
-export { default as pas, PasCallData } from './pas';
+import { default as pas } from './pas';
+export { pas };
 export type * from './pas';
-export { default as pas_coretime, Pas_coretimeCallData } from './pas_coretime';
+import { default as pas_coretime } from './pas_coretime';
+export { pas_coretime };
 export type * from './pas_coretime';
-export { default as wnd, WndCallData } from './wnd';
+import { default as wnd } from './wnd';
+export { wnd };
 export type * from './wnd';
-export { default as wnd_coretime, Wnd_coretimeCallData } from './wnd_coretime';
+import { default as wnd_coretime } from './wnd_coretime';
+export { wnd_coretime };
 export type * from './wnd_coretime';
+import { default as ksm_people } from './ksm_people';
+export { ksm_people };
+export type * from './ksm_people';
+import { default as pas_people } from './pas_people';
+export { pas_people };
+export type * from './pas_people';
+import { default as wnd_people } from './wnd_people';
+export { wnd_people };
+export type * from './wnd_people';
+import { default as dot_people } from './dot_people';
+export { dot_people };
+export type * from './dot_people';
 export {
   DigestItem,
   Phase,
@@ -180,3 +200,4 @@ export {
   PolkadotRuntimeCommonAssignedSlotsSlotLeasePeriodStart,
   XcmVersionedAsset,
 } from './common-types';
+export declare const getMetadata: (codeHash: string) => Promise<Uint8Array | null>;

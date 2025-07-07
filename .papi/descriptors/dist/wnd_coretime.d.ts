@@ -4,11 +4,13 @@ import {
   TxDescriptor,
   RuntimeDescriptor,
   Enum,
+  ApisFromDef,
   QueryFromPalletsDef,
   TxFromPalletsDef,
   EventsFromPalletsDef,
   ErrorsFromPalletsDef,
   ConstFromPalletsDef,
+  ViewFnsFromPalletsDef,
   SS58String,
   FixedSizeBinary,
   Binary,
@@ -614,9 +616,9 @@ type IStorage = {
      * # Example
      *
      * ```nocompile
-     *  impl pallet_balances::Config for Runtime {
-     *    type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
-     *  }
+     * impl pallet_balances::Config for Runtime {
+     * type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
+     * }
      * ```
      *
      * You can also store the balance of an account in the `System` pallet.
@@ -624,9 +626,9 @@ type IStorage = {
      * # Example
      *
      * ```nocompile
-     *  impl pallet_balances::Config for Runtime {
-     *   type AccountStore = System
-     *  }
+     * impl pallet_balances::Config for Runtime {
+     * type AccountStore = System
+     * }
      * ```
      *
      * But this comes with tradeoffs, storing account balances in the system pallet stores
@@ -1022,87 +1024,87 @@ type IStorage = {
 type ICalls = {
   System: {
     /**
-     *Make some on-chain remark.
+     * Make some on-chain remark.
      *
-     *Can be executed by every `origin`.
+     * Can be executed by every `origin`.
      */
     remark: TxDescriptor<Anonymize<I8ofcg5rbj0g2c>>;
     /**
-     *Set the number of pages in the WebAssembly environment's heap.
+     * Set the number of pages in the WebAssembly environment's heap.
      */
     set_heap_pages: TxDescriptor<Anonymize<I4adgbll7gku4i>>;
     /**
-     *Set the new runtime code.
+     * Set the new runtime code.
      */
     set_code: TxDescriptor<Anonymize<I6pjjpfvhvcfru>>;
     /**
-     *Set the new runtime code without doing any checks of the given `code`.
+     * Set the new runtime code without doing any checks of the given `code`.
      *
-     *Note that runtime upgrades will not run if this is called with a not-increasing spec
-     *version!
+     * Note that runtime upgrades will not run if this is called with a not-increasing spec
+     * version!
      */
     set_code_without_checks: TxDescriptor<Anonymize<I6pjjpfvhvcfru>>;
     /**
-     *Set some items of storage.
+     * Set some items of storage.
      */
     set_storage: TxDescriptor<Anonymize<I9pj91mj79qekl>>;
     /**
-     *Kill some items from storage.
+     * Kill some items from storage.
      */
     kill_storage: TxDescriptor<Anonymize<I39uah9nss64h9>>;
     /**
-     *Kill all storage items with a key that starts with the given prefix.
+     * Kill all storage items with a key that starts with the given prefix.
      *
-     ***NOTE:** We rely on the Root origin to provide us the number of subkeys under
-     *the prefix we are removing to accurately calculate the weight of this function.
+     * **NOTE:** We rely on the Root origin to provide us the number of subkeys under
+     * the prefix we are removing to accurately calculate the weight of this function.
      */
     kill_prefix: TxDescriptor<Anonymize<Ik64dknsq7k08>>;
     /**
-     *Make some on-chain remark and emit event.
+     * Make some on-chain remark and emit event.
      */
     remark_with_event: TxDescriptor<Anonymize<I8ofcg5rbj0g2c>>;
     /**
-     *Authorize an upgrade to a given `code_hash` for the runtime. The runtime can be supplied
-     *later.
+     * Authorize an upgrade to a given `code_hash` for the runtime. The runtime can be supplied
+     * later.
      *
-     *This call requires Root origin.
+     * This call requires Root origin.
      */
     authorize_upgrade: TxDescriptor<Anonymize<Ib51vk42m1po4n>>;
     /**
-     *Authorize an upgrade to a given `code_hash` for the runtime. The runtime can be supplied
-     *later.
+     * Authorize an upgrade to a given `code_hash` for the runtime. The runtime can be supplied
+     * later.
      *
-     *WARNING: This authorizes an upgrade that will take place without any safety checks, for
-     *example that the spec name remains the same and that the version number increases. Not
-     *recommended for normal use. Use `authorize_upgrade` instead.
+     * WARNING: This authorizes an upgrade that will take place without any safety checks, for
+     * example that the spec name remains the same and that the version number increases. Not
+     * recommended for normal use. Use `authorize_upgrade` instead.
      *
-     *This call requires Root origin.
+     * This call requires Root origin.
      */
     authorize_upgrade_without_checks: TxDescriptor<Anonymize<Ib51vk42m1po4n>>;
     /**
-     *Provide the preimage (runtime binary) `code` for an upgrade that has been authorized.
+     * Provide the preimage (runtime binary) `code` for an upgrade that has been authorized.
      *
-     *If the authorization required a version check, this call will ensure the spec name
-     *remains unchanged and that the spec version has increased.
+     * If the authorization required a version check, this call will ensure the spec name
+     * remains unchanged and that the spec version has increased.
      *
-     *Depending on the runtime's `OnSetCode` configuration, this function may directly apply
-     *the new `code` in the same block or attempt to schedule the upgrade.
+     * Depending on the runtime's `OnSetCode` configuration, this function may directly apply
+     * the new `code` in the same block or attempt to schedule the upgrade.
      *
-     *All origins are allowed.
+     * All origins are allowed.
      */
     apply_authorized_upgrade: TxDescriptor<Anonymize<I6pjjpfvhvcfru>>;
   };
   ParachainSystem: {
     /**
-     *Set the current validation data.
+     * Set the current validation data.
      *
-     *This should be invoked exactly once per block. It will panic at the finalization
-     *phase if the call was not invoked.
+     * This should be invoked exactly once per block. It will panic at the finalization
+     * phase if the call was not invoked.
      *
-     *The dispatch origin for this call must be `Inherent`
+     * The dispatch origin for this call must be `Inherent`
      *
-     *As a side effect, this function upgrades the current validation function
-     *if the appropriate time has come.
+     * As a side effect, this function upgrades the current validation function
+     * if the appropriate time has come.
      */
     set_validation_data: TxDescriptor<Anonymize<I60v7bikk54tpu>>;
     /**
@@ -1112,264 +1114,264 @@ type ICalls = {
   };
   Timestamp: {
     /**
-     *Set the current time.
+     * Set the current time.
      *
-     *This call should be invoked exactly once per block. It will panic at the finalization
-     *phase, if this call hasn't been invoked by that time.
+     * This call should be invoked exactly once per block. It will panic at the finalization
+     * phase, if this call hasn't been invoked by that time.
      *
-     *The timestamp should be greater than the previous one by the amount specified by
-     *[`Config::MinimumPeriod`].
+     * The timestamp should be greater than the previous one by the amount specified by
+     * [`Config::MinimumPeriod`].
      *
-     *The dispatch origin for this call must be _None_.
+     * The dispatch origin for this call must be _None_.
      *
-     *This dispatch class is _Mandatory_ to ensure it gets executed in the block. Be aware
-     *that changing the complexity of this call could result exhausting the resources in a
-     *block to execute any other calls.
+     * This dispatch class is _Mandatory_ to ensure it gets executed in the block. Be aware
+     * that changing the complexity of this call could result exhausting the resources in a
+     * block to execute any other calls.
      *
-     *## Complexity
-     *- `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
-     *- 1 storage read and 1 storage mutation (codec `O(1)` because of `DidUpdate::take` in
-     *  `on_finalize`)
-     *- 1 event handler `on_timestamp_set`. Must be `O(1)`.
+     * ## Complexity
+     * - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
+     * - 1 storage read and 1 storage mutation (codec `O(1)` because of `DidUpdate::take` in
+     * `on_finalize`)
+     * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
      */
     set: TxDescriptor<Anonymize<Idcr6u6361oad9>>;
   };
   Balances: {
     /**
-     *Transfer some liquid free balance to another account.
+     * Transfer some liquid free balance to another account.
      *
-     *`transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
-     *If the sender's account is below the existential deposit as a result
-     *of the transfer, the account will be reaped.
+     * `transfer_allow_death` will set the `FreeBalance` of the sender and receiver.
+     * If the sender's account is below the existential deposit as a result
+     * of the transfer, the account will be reaped.
      *
-     *The dispatch origin for this call must be `Signed` by the transactor.
+     * The dispatch origin for this call must be `Signed` by the transactor.
      */
     transfer_allow_death: TxDescriptor<Anonymize<I4ktuaksf5i1gk>>;
     /**
-     *Exactly as `transfer_allow_death`, except the origin must be root and the source account
-     *may be specified.
+     * Exactly as `transfer_allow_death`, except the origin must be root and the source account
+     * may be specified.
      */
     force_transfer: TxDescriptor<Anonymize<I9bqtpv2ii35mp>>;
     /**
-     *Same as the [`transfer_allow_death`] call, but with a check that the transfer will not
-     *kill the origin account.
+     * Same as the [`transfer_allow_death`] call, but with a check that the transfer will not
+     * kill the origin account.
      *
-     *99% of the time you want [`transfer_allow_death`] instead.
+     * 99% of the time you want [`transfer_allow_death`] instead.
      *
-     *[`transfer_allow_death`]: struct.Pallet.html#method.transfer
+     * [`transfer_allow_death`]: struct.Pallet.html#method.transfer
      */
     transfer_keep_alive: TxDescriptor<Anonymize<I4ktuaksf5i1gk>>;
     /**
-     *Transfer the entire transferable balance from the caller account.
+     * Transfer the entire transferable balance from the caller account.
      *
-     *NOTE: This function only attempts to transfer _transferable_ balances. This means that
-     *any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
-     *transferred by this function. To ensure that this function results in a killed account,
-     *you might need to prepare the account by removing any reference counters, storage
-     *deposits, etc...
+     * NOTE: This function only attempts to transfer _transferable_ balances. This means that
+     * any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
+     * transferred by this function. To ensure that this function results in a killed account,
+     * you might need to prepare the account by removing any reference counters, storage
+     * deposits, etc...
      *
-     *The dispatch origin of this call must be Signed.
+     * The dispatch origin of this call must be Signed.
      *
-     *- `dest`: The recipient of the transfer.
-     *- `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
-     *  of the funds the account has, causing the sender account to be killed (false), or
-     *  transfer everything except at least the existential deposit, which will guarantee to
-     *  keep the sender account alive (true).
+     * - `dest`: The recipient of the transfer.
+     * - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
+     * of the funds the account has, causing the sender account to be killed (false), or
+     * transfer everything except at least the existential deposit, which will guarantee to
+     * keep the sender account alive (true).
      */
     transfer_all: TxDescriptor<Anonymize<I9j7pagd6d4bda>>;
     /**
-     *Unreserve some balance from a user by force.
+     * Unreserve some balance from a user by force.
      *
-     *Can only be called by ROOT.
+     * Can only be called by ROOT.
      */
     force_unreserve: TxDescriptor<Anonymize<I2h9pmio37r7fb>>;
     /**
-     *Upgrade a specified account.
+     * Upgrade a specified account.
      *
-     *- `origin`: Must be `Signed`.
-     *- `who`: The account to be upgraded.
+     * - `origin`: Must be `Signed`.
+     * - `who`: The account to be upgraded.
      *
-     *This will waive the transaction fee if at least all but 10% of the accounts needed to
-     *be upgraded. (We let some not have to be upgraded just in order to allow for the
-     *possibility of churn).
+     * This will waive the transaction fee if at least all but 10% of the accounts needed to
+     * be upgraded. (We let some not have to be upgraded just in order to allow for the
+     * possibility of churn).
      */
     upgrade_accounts: TxDescriptor<Anonymize<Ibmr18suc9ikh9>>;
     /**
-     *Set the regular balance of a given account.
+     * Set the regular balance of a given account.
      *
-     *The dispatch origin for this call is `root`.
+     * The dispatch origin for this call is `root`.
      */
     force_set_balance: TxDescriptor<Anonymize<I9iq22t0burs89>>;
     /**
-     *Adjust the total issuance in a saturating way.
+     * Adjust the total issuance in a saturating way.
      *
-     *Can only be called by root and always needs a positive `delta`.
+     * Can only be called by root and always needs a positive `delta`.
      *
-     *# Example
+     * # Example
      */
     force_adjust_total_issuance: TxDescriptor<Anonymize<I5u8olqbbvfnvf>>;
     /**
-     *Burn the specified liquid free balance from the origin account.
+     * Burn the specified liquid free balance from the origin account.
      *
-     *If the origin's account ends up below the existential deposit as a result
-     *of the burn and `keep_alive` is false, the account will be reaped.
+     * If the origin's account ends up below the existential deposit as a result
+     * of the burn and `keep_alive` is false, the account will be reaped.
      *
-     *Unlike sending funds to a _burn_ address, which merely makes the funds inaccessible,
-     *this `burn` operation will reduce total issuance by the amount _burned_.
+     * Unlike sending funds to a _burn_ address, which merely makes the funds inaccessible,
+     * this `burn` operation will reduce total issuance by the amount _burned_.
      */
     burn: TxDescriptor<Anonymize<I5utcetro501ir>>;
   };
   CollatorSelection: {
     /**
-     *Set the list of invulnerable (fixed) collators. These collators must do some
-     *preparation, namely to have registered session keys.
+     * Set the list of invulnerable (fixed) collators. These collators must do some
+     * preparation, namely to have registered session keys.
      *
-     *The call will remove any accounts that have not registered keys from the set. That is,
-     *it is non-atomic; the caller accepts all `AccountId`s passed in `new` _individually_ as
-     *acceptable Invulnerables, and is not proposing a _set_ of new Invulnerables.
+     * The call will remove any accounts that have not registered keys from the set. That is,
+     * it is non-atomic; the caller accepts all `AccountId`s passed in `new` _individually_ as
+     * acceptable Invulnerables, and is not proposing a _set_ of new Invulnerables.
      *
-     *This call does not maintain mutual exclusivity of `Invulnerables` and `Candidates`. It
-     *is recommended to use a batch of `add_invulnerable` and `remove_invulnerable` instead. A
-     *`batch_all` can also be used to enforce atomicity. If any candidates are included in
-     *`new`, they should be removed with `remove_invulnerable_candidate` after execution.
+     * This call does not maintain mutual exclusivity of `Invulnerables` and `Candidates`. It
+     * is recommended to use a batch of `add_invulnerable` and `remove_invulnerable` instead. A
+     * `batch_all` can also be used to enforce atomicity. If any candidates are included in
+     * `new`, they should be removed with `remove_invulnerable_candidate` after execution.
      *
-     *Must be called by the `UpdateOrigin`.
+     * Must be called by the `UpdateOrigin`.
      */
     set_invulnerables: TxDescriptor<Anonymize<Ifccifqltb5obi>>;
     /**
-     *Set the ideal number of non-invulnerable collators. If lowering this number, then the
-     *number of running collators could be higher than this figure. Aside from that edge case,
-     *there should be no other way to have more candidates than the desired number.
+     * Set the ideal number of non-invulnerable collators. If lowering this number, then the
+     * number of running collators could be higher than this figure. Aside from that edge case,
+     * there should be no other way to have more candidates than the desired number.
      *
-     *The origin for this call must be the `UpdateOrigin`.
+     * The origin for this call must be the `UpdateOrigin`.
      */
     set_desired_candidates: TxDescriptor<Anonymize<Iadtsfv699cq8b>>;
     /**
-     *Set the candidacy bond amount.
+     * Set the candidacy bond amount.
      *
-     *If the candidacy bond is increased by this call, all current candidates which have a
-     *deposit lower than the new bond will be kicked from the list and get their deposits
-     *back.
+     * If the candidacy bond is increased by this call, all current candidates which have a
+     * deposit lower than the new bond will be kicked from the list and get their deposits
+     * back.
      *
-     *The origin for this call must be the `UpdateOrigin`.
+     * The origin for this call must be the `UpdateOrigin`.
      */
     set_candidacy_bond: TxDescriptor<Anonymize<Ialpmgmhr3gk5r>>;
     /**
-     *Register this account as a collator candidate. The account must (a) already have
-     *registered session keys and (b) be able to reserve the `CandidacyBond`.
+     * Register this account as a collator candidate. The account must (a) already have
+     * registered session keys and (b) be able to reserve the `CandidacyBond`.
      *
-     *This call is not available to `Invulnerable` collators.
+     * This call is not available to `Invulnerable` collators.
      */
     register_as_candidate: TxDescriptor<undefined>;
     /**
-     *Deregister `origin` as a collator candidate. Note that the collator can only leave on
-     *session change. The `CandidacyBond` will be unreserved immediately.
+     * Deregister `origin` as a collator candidate. Note that the collator can only leave on
+     * session change. The `CandidacyBond` will be unreserved immediately.
      *
-     *This call will fail if the total number of candidates would drop below
-     *`MinEligibleCollators`.
+     * This call will fail if the total number of candidates would drop below
+     * `MinEligibleCollators`.
      */
     leave_intent: TxDescriptor<undefined>;
     /**
-     *Add a new account `who` to the list of `Invulnerables` collators. `who` must have
-     *registered session keys. If `who` is a candidate, they will be removed.
+     * Add a new account `who` to the list of `Invulnerables` collators. `who` must have
+     * registered session keys. If `who` is a candidate, they will be removed.
      *
-     *The origin for this call must be the `UpdateOrigin`.
+     * The origin for this call must be the `UpdateOrigin`.
      */
     add_invulnerable: TxDescriptor<Anonymize<I4cbvqmqadhrea>>;
     /**
-     *Remove an account `who` from the list of `Invulnerables` collators. `Invulnerables` must
-     *be sorted.
+     * Remove an account `who` from the list of `Invulnerables` collators. `Invulnerables` must
+     * be sorted.
      *
-     *The origin for this call must be the `UpdateOrigin`.
+     * The origin for this call must be the `UpdateOrigin`.
      */
     remove_invulnerable: TxDescriptor<Anonymize<I4cbvqmqadhrea>>;
     /**
-     *Update the candidacy bond of collator candidate `origin` to a new amount `new_deposit`.
+     * Update the candidacy bond of collator candidate `origin` to a new amount `new_deposit`.
      *
-     *Setting a `new_deposit` that is lower than the current deposit while `origin` is
-     *occupying a top-`DesiredCandidates` slot is not allowed.
+     * Setting a `new_deposit` that is lower than the current deposit while `origin` is
+     * occupying a top-`DesiredCandidates` slot is not allowed.
      *
-     *This call will fail if `origin` is not a collator candidate, the updated bond is lower
-     *than the minimum candidacy bond, and/or the amount cannot be reserved.
+     * This call will fail if `origin` is not a collator candidate, the updated bond is lower
+     * than the minimum candidacy bond, and/or the amount cannot be reserved.
      */
     update_bond: TxDescriptor<Anonymize<I3sdol54kg5jaq>>;
     /**
-     *The caller `origin` replaces a candidate `target` in the collator candidate list by
-     *reserving `deposit`. The amount `deposit` reserved by the caller must be greater than
-     *the existing bond of the target it is trying to replace.
+     * The caller `origin` replaces a candidate `target` in the collator candidate list by
+     * reserving `deposit`. The amount `deposit` reserved by the caller must be greater than
+     * the existing bond of the target it is trying to replace.
      *
-     *This call will fail if the caller is already a collator candidate or invulnerable, the
-     *caller does not have registered session keys, the target is not a collator candidate,
-     *and/or the `deposit` amount cannot be reserved.
+     * This call will fail if the caller is already a collator candidate or invulnerable, the
+     * caller does not have registered session keys, the target is not a collator candidate,
+     * and/or the `deposit` amount cannot be reserved.
      */
     take_candidate_slot: TxDescriptor<Anonymize<I8fougodaj6di6>>;
   };
   Session: {
     /**
-     *Sets the session key(s) of the function caller to `keys`.
-     *Allows an account to set its session key prior to becoming a validator.
-     *This doesn't take effect until the next session.
+     * Sets the session key(s) of the function caller to `keys`.
+     * Allows an account to set its session key prior to becoming a validator.
+     * This doesn't take effect until the next session.
      *
-     *The dispatch origin of this function must be signed.
+     * The dispatch origin of this function must be signed.
      *
-     *## Complexity
-     *- `O(1)`. Actual cost depends on the number of length of `T::Keys::key_ids()` which is
-     *  fixed.
+     * ## Complexity
+     * - `O(1)`. Actual cost depends on the number of length of `T::Keys::key_ids()` which is
+     * fixed.
      */
     set_keys: TxDescriptor<Anonymize<I81vt5eq60l4b6>>;
     /**
-     *Removes any session key(s) of the function caller.
+     * Removes any session key(s) of the function caller.
      *
-     *This doesn't take effect until the next session.
+     * This doesn't take effect until the next session.
      *
-     *The dispatch origin of this function must be Signed and the account must be either be
-     *convertible to a validator ID using the chain's typical addressing system (this usually
-     *means being a controller account) or directly convertible into a validator ID (which
-     *usually means being a stash account).
+     * The dispatch origin of this function must be Signed and the account must be either be
+     * convertible to a validator ID using the chain's typical addressing system (this usually
+     * means being a controller account) or directly convertible into a validator ID (which
+     * usually means being a stash account).
      *
-     *## Complexity
-     *- `O(1)` in number of key types. Actual cost depends on the number of length of
-     *  `T::Keys::key_ids()` which is fixed.
+     * ## Complexity
+     * - `O(1)` in number of key types. Actual cost depends on the number of length of
+     * `T::Keys::key_ids()` which is fixed.
      */
     purge_keys: TxDescriptor<undefined>;
   };
   XcmpQueue: {
     /**
-     *Suspends all XCM executions for the XCMP queue, regardless of the sender's origin.
+     * Suspends all XCM executions for the XCMP queue, regardless of the sender's origin.
      *
-     *- `origin`: Must pass `ControllerOrigin`.
+     * - `origin`: Must pass `ControllerOrigin`.
      */
     suspend_xcm_execution: TxDescriptor<undefined>;
     /**
-     *Resumes all XCM executions for the XCMP queue.
+     * Resumes all XCM executions for the XCMP queue.
      *
-     *Note that this function doesn't change the status of the in/out bound channels.
+     * Note that this function doesn't change the status of the in/out bound channels.
      *
-     *- `origin`: Must pass `ControllerOrigin`.
+     * - `origin`: Must pass `ControllerOrigin`.
      */
     resume_xcm_execution: TxDescriptor<undefined>;
     /**
-     *Overwrites the number of pages which must be in the queue for the other side to be
-     *told to suspend their sending.
+     * Overwrites the number of pages which must be in the queue for the other side to be
+     * told to suspend their sending.
      *
-     *- `origin`: Must pass `Root`.
-     *- `new`: Desired value for `QueueConfigData.suspend_value`
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.suspend_value`
      */
     update_suspend_threshold: TxDescriptor<Anonymize<I3vh014cqgmrfd>>;
     /**
-     *Overwrites the number of pages which must be in the queue after which we drop any
-     *further messages from the channel.
+     * Overwrites the number of pages which must be in the queue after which we drop any
+     * further messages from the channel.
      *
-     *- `origin`: Must pass `Root`.
-     *- `new`: Desired value for `QueueConfigData.drop_threshold`
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.drop_threshold`
      */
     update_drop_threshold: TxDescriptor<Anonymize<I3vh014cqgmrfd>>;
     /**
-     *Overwrites the number of pages which the queue must be reduced to before it signals
-     *that message sending may recommence after it has been suspended.
+     * Overwrites the number of pages which the queue must be reduced to before it signals
+     * that message sending may recommence after it has been suspended.
      *
-     *- `origin`: Must pass `Root`.
-     *- `new`: Desired value for `QueueConfigData.resume_threshold`
+     * - `origin`: Must pass `Root`.
+     * - `new`: Desired value for `QueueConfigData.resume_threshold`
      */
     update_resume_threshold: TxDescriptor<Anonymize<I3vh014cqgmrfd>>;
   };
@@ -1379,835 +1381,835 @@ type ICalls = {
          */
     send: TxDescriptor<Anonymize<Ia5cotcvi888ln>>;
     /**
-     *Teleport some assets from the local chain to some destination chain.
+     * Teleport some assets from the local chain to some destination chain.
      *
-     ***This function is deprecated: Use `limited_teleport_assets` instead.**
+     * **This function is deprecated: Use `limited_teleport_assets` instead.**
      *
-     *Fee payment on the destination side is made from the asset in the `assets` vector of
-     *index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
-     *with all fees taken as needed from the asset.
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
      *
-     *- `origin`: Must be capable of withdrawing the `assets` and executing XCM.
-     *- `dest`: Destination context for the assets. Will typically be `[Parent,
-     *  Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
-     *  relay to parachain.
-     *- `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
-     *  generally be an `AccountId32` value.
-     *- `assets`: The assets to be withdrawn. This should include the assets used to pay the
-     *  fee on the `dest` chain.
-     *- `fee_asset_item`: The index into `assets` of the item which should be used to pay
-     *  fees.
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `[Parent,
+     * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+     * relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+     * generally be an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+     * fee on the `dest` chain.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     * fees.
      */
     teleport_assets: TxDescriptor<Anonymize<I21jsa919m88fd>>;
     /**
-     *Transfer some assets from the local chain to the destination chain through their local,
-     *destination or remote reserve.
+     * Transfer some assets from the local chain to the destination chain through their local,
+     * destination or remote reserve.
      *
-     *`assets` must have same reserve location and may not be teleportable to `dest`.
+     * `assets` must have same reserve location and may not be teleportable to `dest`.
      * - `assets` have local reserve: transfer assets to sovereign account of destination
-     *   chain and forward a notification XCM to `dest` to mint and deposit reserve-based
-     *   assets to `beneficiary`.
+     * chain and forward a notification XCM to `dest` to mint and deposit reserve-based
+     * assets to `beneficiary`.
      * - `assets` have destination reserve: burn local assets and forward a notification to
-     *   `dest` chain to withdraw the reserve assets from this chain's sovereign account and
-     *   deposit them to `beneficiary`.
+     * `dest` chain to withdraw the reserve assets from this chain's sovereign account and
+     * deposit them to `beneficiary`.
      * - `assets` have remote reserve: burn local assets, forward XCM to reserve chain to move
-     *   reserves from this chain's SA to `dest` chain's SA, and forward another XCM to `dest`
-     *   to mint and deposit reserve-based assets to `beneficiary`.
+     * reserves from this chain's SA to `dest` chain's SA, and forward another XCM to `dest`
+     * to mint and deposit reserve-based assets to `beneficiary`.
      *
-     ***This function is deprecated: Use `limited_reserve_transfer_assets` instead.**
+     * **This function is deprecated: Use `limited_reserve_transfer_assets` instead.**
      *
-     *Fee payment on the destination side is made from the asset in the `assets` vector of
-     *index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
-     *with all fees taken as needed from the asset.
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+     * with all fees taken as needed from the asset.
      *
-     *- `origin`: Must be capable of withdrawing the `assets` and executing XCM.
-     *- `dest`: Destination context for the assets. Will typically be `[Parent,
-     *  Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
-     *  relay to parachain.
-     *- `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
-     *  generally be an `AccountId32` value.
-     *- `assets`: The assets to be withdrawn. This should include the assets used to pay the
-     *  fee on the `dest` (and possibly reserve) chains.
-     *- `fee_asset_item`: The index into `assets` of the item which should be used to pay
-     *  fees.
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `[Parent,
+     * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+     * relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+     * generally be an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+     * fee on the `dest` (and possibly reserve) chains.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     * fees.
      */
     reserve_transfer_assets: TxDescriptor<Anonymize<I21jsa919m88fd>>;
     /**
-     *Execute an XCM message from a local, signed, origin.
+     * Execute an XCM message from a local, signed, origin.
      *
-     *An event is deposited indicating whether `msg` could be executed completely or only
-     *partially.
+     * An event is deposited indicating whether `msg` could be executed completely or only
+     * partially.
      *
-     *No more than `max_weight` will be used in its attempted execution. If this is less than
-     *the maximum amount of weight that the message could take to be executed, then no
-     *execution attempt will be made.
+     * No more than `max_weight` will be used in its attempted execution. If this is less than
+     * the maximum amount of weight that the message could take to be executed, then no
+     * execution attempt will be made.
      */
     execute: TxDescriptor<Anonymize<Iegif7m3upfe1k>>;
     /**
-     *Extoll that a particular destination can be communicated with through a particular
-     *version of XCM.
+     * Extoll that a particular destination can be communicated with through a particular
+     * version of XCM.
      *
-     *- `origin`: Must be an origin specified by AdminOrigin.
-     *- `location`: The destination that is being described.
-     *- `xcm_version`: The latest version of XCM that `location` supports.
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `location`: The destination that is being described.
+     * - `xcm_version`: The latest version of XCM that `location` supports.
      */
     force_xcm_version: TxDescriptor<Anonymize<I9kt8c221c83ln>>;
     /**
-     *Set a safe XCM version (the version that XCM should be encoded with if the most recent
-     *version a destination can accept is unknown).
+     * Set a safe XCM version (the version that XCM should be encoded with if the most recent
+     * version a destination can accept is unknown).
      *
-     *- `origin`: Must be an origin specified by AdminOrigin.
-     *- `maybe_xcm_version`: The default XCM encoding version, or `None` to disable.
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `maybe_xcm_version`: The default XCM encoding version, or `None` to disable.
      */
     force_default_xcm_version: TxDescriptor<Anonymize<Ic76kfh5ebqkpl>>;
     /**
-     *Ask a location to notify us regarding their XCM version and any changes to it.
+     * Ask a location to notify us regarding their XCM version and any changes to it.
      *
-     *- `origin`: Must be an origin specified by AdminOrigin.
-     *- `location`: The location to which we should subscribe for XCM version notifications.
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `location`: The location to which we should subscribe for XCM version notifications.
      */
     force_subscribe_version_notify: TxDescriptor<Anonymize<Icscpmubum33bq>>;
     /**
-     *Require that a particular destination should no longer notify us regarding any XCM
-     *version changes.
+     * Require that a particular destination should no longer notify us regarding any XCM
+     * version changes.
      *
-     *- `origin`: Must be an origin specified by AdminOrigin.
-     *- `location`: The location to which we are currently subscribed for XCM version
-     *  notifications which we no longer desire.
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `location`: The location to which we are currently subscribed for XCM version
+     * notifications which we no longer desire.
      */
     force_unsubscribe_version_notify: TxDescriptor<Anonymize<Icscpmubum33bq>>;
     /**
-     *Transfer some assets from the local chain to the destination chain through their local,
-     *destination or remote reserve.
+     * Transfer some assets from the local chain to the destination chain through their local,
+     * destination or remote reserve.
      *
-     *`assets` must have same reserve location and may not be teleportable to `dest`.
+     * `assets` must have same reserve location and may not be teleportable to `dest`.
      * - `assets` have local reserve: transfer assets to sovereign account of destination
-     *   chain and forward a notification XCM to `dest` to mint and deposit reserve-based
-     *   assets to `beneficiary`.
+     * chain and forward a notification XCM to `dest` to mint and deposit reserve-based
+     * assets to `beneficiary`.
      * - `assets` have destination reserve: burn local assets and forward a notification to
-     *   `dest` chain to withdraw the reserve assets from this chain's sovereign account and
-     *   deposit them to `beneficiary`.
+     * `dest` chain to withdraw the reserve assets from this chain's sovereign account and
+     * deposit them to `beneficiary`.
      * - `assets` have remote reserve: burn local assets, forward XCM to reserve chain to move
-     *   reserves from this chain's SA to `dest` chain's SA, and forward another XCM to `dest`
-     *   to mint and deposit reserve-based assets to `beneficiary`.
+     * reserves from this chain's SA to `dest` chain's SA, and forward another XCM to `dest`
+     * to mint and deposit reserve-based assets to `beneficiary`.
      *
-     *Fee payment on the destination side is made from the asset in the `assets` vector of
-     *index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
-     *is needed than `weight_limit`, then the operation will fail and the sent assets may be
-     *at risk.
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the sent assets may be
+     * at risk.
      *
-     *- `origin`: Must be capable of withdrawing the `assets` and executing XCM.
-     *- `dest`: Destination context for the assets. Will typically be `[Parent,
-     *  Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
-     *  relay to parachain.
-     *- `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
-     *  generally be an `AccountId32` value.
-     *- `assets`: The assets to be withdrawn. This should include the assets used to pay the
-     *  fee on the `dest` (and possibly reserve) chains.
-     *- `fee_asset_item`: The index into `assets` of the item which should be used to pay
-     *  fees.
-     *- `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `[Parent,
+     * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+     * relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+     * generally be an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+     * fee on the `dest` (and possibly reserve) chains.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     * fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
     limited_reserve_transfer_assets: TxDescriptor<Anonymize<I21d2olof7eb60>>;
     /**
-     *Teleport some assets from the local chain to some destination chain.
+     * Teleport some assets from the local chain to some destination chain.
      *
-     *Fee payment on the destination side is made from the asset in the `assets` vector of
-     *index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
-     *is needed than `weight_limit`, then the operation will fail and the sent assets may be
-     *at risk.
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the sent assets may be
+     * at risk.
      *
-     *- `origin`: Must be capable of withdrawing the `assets` and executing XCM.
-     *- `dest`: Destination context for the assets. Will typically be `[Parent,
-     *  Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
-     *  relay to parachain.
-     *- `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
-     *  generally be an `AccountId32` value.
-     *- `assets`: The assets to be withdrawn. This should include the assets used to pay the
-     *  fee on the `dest` chain.
-     *- `fee_asset_item`: The index into `assets` of the item which should be used to pay
-     *  fees.
-     *- `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `[Parent,
+     * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+     * relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+     * generally be an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+     * fee on the `dest` chain.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     * fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
     limited_teleport_assets: TxDescriptor<Anonymize<I21d2olof7eb60>>;
     /**
-     *Set or unset the global suspension state of the XCM executor.
+     * Set or unset the global suspension state of the XCM executor.
      *
-     *- `origin`: Must be an origin specified by AdminOrigin.
-     *- `suspended`: `true` to suspend, `false` to resume.
+     * - `origin`: Must be an origin specified by AdminOrigin.
+     * - `suspended`: `true` to suspend, `false` to resume.
      */
     force_suspension: TxDescriptor<Anonymize<Ibgm4rnf22lal1>>;
     /**
-     *Transfer some assets from the local chain to the destination chain through their local,
-     *destination or remote reserve, or through teleports.
+     * Transfer some assets from the local chain to the destination chain through their local,
+     * destination or remote reserve, or through teleports.
      *
-     *Fee payment on the destination side is made from the asset in the `assets` vector of
-     *index `fee_asset_item` (hence referred to as `fees`), up to enough to pay for
-     *`weight_limit` of weight. If more weight is needed than `weight_limit`, then the
-     *operation will fail and the sent assets may be at risk.
+     * Fee payment on the destination side is made from the asset in the `assets` vector of
+     * index `fee_asset_item` (hence referred to as `fees`), up to enough to pay for
+     * `weight_limit` of weight. If more weight is needed than `weight_limit`, then the
+     * operation will fail and the sent assets may be at risk.
      *
-     *`assets` (excluding `fees`) must have same reserve location or otherwise be teleportable
-     *to `dest`, no limitations imposed on `fees`.
+     * `assets` (excluding `fees`) must have same reserve location or otherwise be teleportable
+     * to `dest`, no limitations imposed on `fees`.
      * - for local reserve: transfer assets to sovereign account of destination chain and
-     *   forward a notification XCM to `dest` to mint and deposit reserve-based assets to
-     *   `beneficiary`.
+     * forward a notification XCM to `dest` to mint and deposit reserve-based assets to
+     * `beneficiary`.
      * - for destination reserve: burn local assets and forward a notification to `dest` chain
-     *   to withdraw the reserve assets from this chain's sovereign account and deposit them
-     *   to `beneficiary`.
+     * to withdraw the reserve assets from this chain's sovereign account and deposit them
+     * to `beneficiary`.
      * - for remote reserve: burn local assets, forward XCM to reserve chain to move reserves
-     *   from this chain's SA to `dest` chain's SA, and forward another XCM to `dest` to mint
-     *   and deposit reserve-based assets to `beneficiary`.
+     * from this chain's SA to `dest` chain's SA, and forward another XCM to `dest` to mint
+     * and deposit reserve-based assets to `beneficiary`.
      * - for teleports: burn local assets and forward XCM to `dest` chain to mint/teleport
-     *   assets and deposit them to `beneficiary`.
+     * assets and deposit them to `beneficiary`.
      *
-     *- `origin`: Must be capable of withdrawing the `assets` and executing XCM.
-     *- `dest`: Destination context for the assets. Will typically be `X2(Parent,
-     *  Parachain(..))` to send from parachain to parachain, or `X1(Parachain(..))` to send
-     *  from relay to parachain.
-     *- `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
-     *  generally be an `AccountId32` value.
-     *- `assets`: The assets to be withdrawn. This should include the assets used to pay the
-     *  fee on the `dest` (and possibly reserve) chains.
-     *- `fee_asset_item`: The index into `assets` of the item which should be used to pay
-     *  fees.
-     *- `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `X2(Parent,
+     * Parachain(..))` to send from parachain to parachain, or `X1(Parachain(..))` to send
+     * from relay to parachain.
+     * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+     * generally be an `AccountId32` value.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+     * fee on the `dest` (and possibly reserve) chains.
+     * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+     * fees.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
     transfer_assets: TxDescriptor<Anonymize<I21d2olof7eb60>>;
     /**
-     *Claims assets trapped on this pallet because of leftover assets during XCM execution.
+     * Claims assets trapped on this pallet because of leftover assets during XCM execution.
      *
-     *- `origin`: Anyone can call this extrinsic.
-     *- `assets`: The exact assets that were trapped. Use the version to specify what version
-     *was the latest when they were trapped.
-     *- `beneficiary`: The location/account where the claimed assets will be deposited.
+     * - `origin`: Anyone can call this extrinsic.
+     * - `assets`: The exact assets that were trapped. Use the version to specify what version
+     * was the latest when they were trapped.
+     * - `beneficiary`: The location/account where the claimed assets will be deposited.
      */
     claim_assets: TxDescriptor<Anonymize<Ie68np0vpihith>>;
     /**
-     *Transfer assets from the local chain to the destination chain using explicit transfer
-     *types for assets and fees.
+     * Transfer assets from the local chain to the destination chain using explicit transfer
+     * types for assets and fees.
      *
-     *`assets` must have same reserve location or may be teleportable to `dest`. Caller must
-     *provide the `assets_transfer_type` to be used for `assets`:
+     * `assets` must have same reserve location or may be teleportable to `dest`. Caller must
+     * provide the `assets_transfer_type` to be used for `assets`:
      * - `TransferType::LocalReserve`: transfer assets to sovereign account of destination
-     *   chain and forward a notification XCM to `dest` to mint and deposit reserve-based
-     *   assets to `beneficiary`.
+     * chain and forward a notification XCM to `dest` to mint and deposit reserve-based
+     * assets to `beneficiary`.
      * - `TransferType::DestinationReserve`: burn local assets and forward a notification to
-     *   `dest` chain to withdraw the reserve assets from this chain's sovereign account and
-     *   deposit them to `beneficiary`.
+     * `dest` chain to withdraw the reserve assets from this chain's sovereign account and
+     * deposit them to `beneficiary`.
      * - `TransferType::RemoteReserve(reserve)`: burn local assets, forward XCM to `reserve`
-     *   chain to move reserves from this chain's SA to `dest` chain's SA, and forward another
-     *   XCM to `dest` to mint and deposit reserve-based assets to `beneficiary`. Typically
-     *   the remote `reserve` is Asset Hub.
+     * chain to move reserves from this chain's SA to `dest` chain's SA, and forward another
+     * XCM to `dest` to mint and deposit reserve-based assets to `beneficiary`. Typically
+     * the remote `reserve` is Asset Hub.
      * - `TransferType::Teleport`: burn local assets and forward XCM to `dest` chain to
-     *   mint/teleport assets and deposit them to `beneficiary`.
+     * mint/teleport assets and deposit them to `beneficiary`.
      *
-     *On the destination chain, as well as any intermediary hops, `BuyExecution` is used to
-     *buy execution using transferred `assets` identified by `remote_fees_id`.
-     *Make sure enough of the specified `remote_fees_id` asset is included in the given list
-     *of `assets`. `remote_fees_id` should be enough to pay for `weight_limit`. If more weight
-     *is needed than `weight_limit`, then the operation will fail and the sent assets may be
-     *at risk.
+     * On the destination chain, as well as any intermediary hops, `BuyExecution` is used to
+     * buy execution using transferred `assets` identified by `remote_fees_id`.
+     * Make sure enough of the specified `remote_fees_id` asset is included in the given list
+     * of `assets`. `remote_fees_id` should be enough to pay for `weight_limit`. If more weight
+     * is needed than `weight_limit`, then the operation will fail and the sent assets may be
+     * at risk.
      *
-     *`remote_fees_id` may use different transfer type than rest of `assets` and can be
-     *specified through `fees_transfer_type`.
+     * `remote_fees_id` may use different transfer type than rest of `assets` and can be
+     * specified through `fees_transfer_type`.
      *
-     *The caller needs to specify what should happen to the transferred assets once they reach
-     *the `dest` chain. This is done through the `custom_xcm_on_dest` parameter, which
-     *contains the instructions to execute on `dest` as a final step.
-     *  This is usually as simple as:
-     *  `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`,
-     *  but could be something more exotic like sending the `assets` even further.
+     * The caller needs to specify what should happen to the transferred assets once they reach
+     * the `dest` chain. This is done through the `custom_xcm_on_dest` parameter, which
+     * contains the instructions to execute on `dest` as a final step.
+     * This is usually as simple as:
+     * `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`,
+     * but could be something more exotic like sending the `assets` even further.
      *
-     *- `origin`: Must be capable of withdrawing the `assets` and executing XCM.
-     *- `dest`: Destination context for the assets. Will typically be `[Parent,
-     *  Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
-     *  relay to parachain, or `(parents: 2, (GlobalConsensus(..), ..))` to send from
-     *  parachain across a bridge to another ecosystem destination.
-     *- `assets`: The assets to be withdrawn. This should include the assets used to pay the
-     *  fee on the `dest` (and possibly reserve) chains.
-     *- `assets_transfer_type`: The XCM `TransferType` used to transfer the `assets`.
-     *- `remote_fees_id`: One of the included `assets` to be used to pay fees.
-     *- `fees_transfer_type`: The XCM `TransferType` used to transfer the `fees` assets.
-     *- `custom_xcm_on_dest`: The XCM to be executed on `dest` chain as the last step of the
-     *  transfer, which also determines what happens to the assets on the destination chain.
-     *- `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+     * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+     * - `dest`: Destination context for the assets. Will typically be `[Parent,
+     * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+     * relay to parachain, or `(parents: 2, (GlobalConsensus(..), ..))` to send from
+     * parachain across a bridge to another ecosystem destination.
+     * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+     * fee on the `dest` (and possibly reserve) chains.
+     * - `assets_transfer_type`: The XCM `TransferType` used to transfer the `assets`.
+     * - `remote_fees_id`: One of the included `assets` to be used to pay fees.
+     * - `fees_transfer_type`: The XCM `TransferType` used to transfer the `fees` assets.
+     * - `custom_xcm_on_dest`: The XCM to be executed on `dest` chain as the last step of the
+     * transfer, which also determines what happens to the assets on the destination chain.
+     * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
     transfer_assets_using_type_and_then: TxDescriptor<Anonymize<I9bnv6lu0crf1q>>;
   };
   MessageQueue: {
     /**
-     *Remove a page which has no more messages remaining to be processed or is stale.
+     * Remove a page which has no more messages remaining to be processed or is stale.
      */
     reap_page: TxDescriptor<Anonymize<I40pqum1mu8qg3>>;
     /**
-     *Execute an overweight message.
+     * Execute an overweight message.
      *
-     *Temporary processing errors will be propagated whereas permanent errors are treated
-     *as success condition.
+     * Temporary processing errors will be propagated whereas permanent errors are treated
+     * as success condition.
      *
-     *- `origin`: Must be `Signed`.
-     *- `message_origin`: The origin from which the message to be executed arrived.
-     *- `page`: The page in the queue in which the message to be executed is sitting.
-     *- `index`: The index into the queue of the message to be executed.
-     *- `weight_limit`: The maximum amount of weight allowed to be consumed in the execution
-     *  of the message.
+     * - `origin`: Must be `Signed`.
+     * - `message_origin`: The origin from which the message to be executed arrived.
+     * - `page`: The page in the queue in which the message to be executed is sitting.
+     * - `index`: The index into the queue of the message to be executed.
+     * - `weight_limit`: The maximum amount of weight allowed to be consumed in the execution
+     * of the message.
      *
-     *Benchmark complexity considerations: O(index + weight_limit).
+     * Benchmark complexity considerations: O(index + weight_limit).
      */
     execute_overweight: TxDescriptor<Anonymize<I1r4c2ghbtvjuc>>;
   };
   Utility: {
     /**
-     *Send a batch of dispatch calls.
+     * Send a batch of dispatch calls.
      *
-     *May be called from any origin except `None`.
+     * May be called from any origin except `None`.
      *
-     *- `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *  exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     * exceed the constant: `batched_calls_limit` (available in constant metadata).
      *
-     *If origin is root then the calls are dispatched without checking origin filter. (This
-     *includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
      *
-     *## Complexity
-     *- O(C) where C is the number of calls to be batched.
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
      *
-     *This will return `Ok` in all circumstances. To determine the success of the batch, an
-     *event is deposited. If a call failed and the batch was interrupted, then the
-     *`BatchInterrupted` event is deposited, along with the number of successful calls made
-     *and the error of the failed call. If all were successful, then the `BatchCompleted`
-     *event is deposited.
+     * This will return `Ok` in all circumstances. To determine the success of the batch, an
+     * event is deposited. If a call failed and the batch was interrupted, then the
+     * `BatchInterrupted` event is deposited, along with the number of successful calls made
+     * and the error of the failed call. If all were successful, then the `BatchCompleted`
+     * event is deposited.
      */
     batch: TxDescriptor<Anonymize<Iab5ch65e9t8if>>;
     /**
-     *Send a call through an indexed pseudonym of the sender.
+     * Send a call through an indexed pseudonym of the sender.
      *
-     *Filter from origin are passed along. The call will be dispatched with an origin which
-     *use the same filter as the origin of this call.
+     * Filter from origin are passed along. The call will be dispatched with an origin which
+     * use the same filter as the origin of this call.
      *
-     *NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
-     *because you expect `proxy` to have been used prior in the call stack and you do not want
-     *the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
-     *in the Multisig pallet instead.
+     * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+     * because you expect `proxy` to have been used prior in the call stack and you do not want
+     * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+     * in the Multisig pallet instead.
      *
-     *NOTE: Prior to version *12, this was called `as_limited_sub`.
+     * NOTE: Prior to version *12, this was called `as_limited_sub`.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      */
     as_derivative: TxDescriptor<Anonymize<Ieggrs6fm59n6v>>;
     /**
-     *Send a batch of dispatch calls and atomically execute them.
-     *The whole transaction will rollback and fail if any of the calls failed.
+     * Send a batch of dispatch calls and atomically execute them.
+     * The whole transaction will rollback and fail if any of the calls failed.
      *
-     *May be called from any origin except `None`.
+     * May be called from any origin except `None`.
      *
-     *- `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *  exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     * exceed the constant: `batched_calls_limit` (available in constant metadata).
      *
-     *If origin is root then the calls are dispatched without checking origin filter. (This
-     *includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then the calls are dispatched without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
      *
-     *## Complexity
-     *- O(C) where C is the number of calls to be batched.
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
      */
     batch_all: TxDescriptor<Anonymize<Iab5ch65e9t8if>>;
     /**
-     *Dispatches a function call with a provided origin.
+     * Dispatches a function call with a provided origin.
      *
-     *The dispatch origin for this call must be _Root_.
+     * The dispatch origin for this call must be _Root_.
      *
-     *## Complexity
-     *- O(1).
+     * ## Complexity
+     * - O(1).
      */
     dispatch_as: TxDescriptor<Anonymize<I9e472bkveqvpa>>;
     /**
-     *Send a batch of dispatch calls.
-     *Unlike `batch`, it allows errors and won't interrupt.
+     * Send a batch of dispatch calls.
+     * Unlike `batch`, it allows errors and won't interrupt.
      *
-     *May be called from any origin except `None`.
+     * May be called from any origin except `None`.
      *
-     *- `calls`: The calls to be dispatched from the same origin. The number of call must not
-     *  exceed the constant: `batched_calls_limit` (available in constant metadata).
+     * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+     * exceed the constant: `batched_calls_limit` (available in constant metadata).
      *
-     *If origin is root then the calls are dispatch without checking origin filter. (This
-     *includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then the calls are dispatch without checking origin filter. (This
+     * includes bypassing `frame_system::Config::BaseCallFilter`).
      *
-     *## Complexity
-     *- O(C) where C is the number of calls to be batched.
+     * ## Complexity
+     * - O(C) where C is the number of calls to be batched.
      */
     force_batch: TxDescriptor<Anonymize<Iab5ch65e9t8if>>;
     /**
-     *Dispatch a function call with a specified weight.
+     * Dispatch a function call with a specified weight.
      *
-     *This function does not check the weight of the call, and instead allows the
-     *Root origin to specify the weight of the call.
+     * This function does not check the weight of the call, and instead allows the
+     * Root origin to specify the weight of the call.
      *
-     *The dispatch origin for this call must be _Root_.
+     * The dispatch origin for this call must be _Root_.
      */
     with_weight: TxDescriptor<Anonymize<I2jaf3os28070l>>;
     /**
-     *Dispatch a fallback call in the event the main call fails to execute.
-     *May be called from any origin except `None`.
+     * Dispatch a fallback call in the event the main call fails to execute.
+     * May be called from any origin except `None`.
      *
-     *This function first attempts to dispatch the `main` call.
-     *If the `main` call fails, the `fallback` is attemted.
-     *if the fallback is successfully dispatched, the weights of both calls
-     *are accumulated and an event containing the main call error is deposited.
+     * This function first attempts to dispatch the `main` call.
+     * If the `main` call fails, the `fallback` is attemted.
+     * if the fallback is successfully dispatched, the weights of both calls
+     * are accumulated and an event containing the main call error is deposited.
      *
-     *In the event of a fallback failure the whole call fails
-     *with the weights returned.
+     * In the event of a fallback failure the whole call fails
+     * with the weights returned.
      *
-     *- `main`: The main call to be dispatched. This is the primary action to execute.
-     *- `fallback`: The fallback call to be dispatched in case the `main` call fails.
+     * - `main`: The main call to be dispatched. This is the primary action to execute.
+     * - `fallback`: The fallback call to be dispatched in case the `main` call fails.
      *
-     *## Dispatch Logic
-     *- If the origin is `root`, both the main and fallback calls are executed without
-     *  applying any origin filters.
-     *- If the origin is not `root`, the origin filter is applied to both the `main` and
-     *  `fallback` calls.
+     * ## Dispatch Logic
+     * - If the origin is `root`, both the main and fallback calls are executed without
+     * applying any origin filters.
+     * - If the origin is not `root`, the origin filter is applied to both the `main` and
+     * `fallback` calls.
      *
-     *## Use Case
-     *- Some use cases might involve submitting a `batch` type call in either main, fallback
-     *  or both.
+     * ## Use Case
+     * - Some use cases might involve submitting a `batch` type call in either main, fallback
+     * or both.
      */
     if_else: TxDescriptor<Anonymize<I81b64cu0fv5pn>>;
     /**
-     *Dispatches a function call with a provided origin.
+     * Dispatches a function call with a provided origin.
      *
-     *Almost the same as [`Pallet::dispatch_as`] but forwards any error of the inner call.
+     * Almost the same as [`Pallet::dispatch_as`] but forwards any error of the inner call.
      *
-     *The dispatch origin for this call must be _Root_.
+     * The dispatch origin for this call must be _Root_.
      */
     dispatch_as_fallible: TxDescriptor<Anonymize<I9e472bkveqvpa>>;
   };
   Multisig: {
     /**
-     *Immediately dispatch a multi-signature call using a single approval from the caller.
+     * Immediately dispatch a multi-signature call using a single approval from the caller.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *- `other_signatories`: The accounts (other than the sender) who are part of the
-     *multi-signature, but do not participate in the approval process.
-     *- `call`: The call to be executed.
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multi-signature, but do not participate in the approval process.
+     * - `call`: The call to be executed.
      *
-     *Result is equivalent to the dispatched result.
+     * Result is equivalent to the dispatched result.
      *
-     *## Complexity
-     *O(Z + C) where Z is the length of the call and C its execution weight.
+     * ## Complexity
+     * O(Z + C) where Z is the length of the call and C its execution weight.
      */
     as_multi_threshold_1: TxDescriptor<Anonymize<I2t49oj8ahrqom>>;
     /**
-     *Register approval for a dispatch to be made from a deterministic composite account if
-     *approved by a total of `threshold - 1` of `other_signatories`.
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
      *
-     *If there are enough, then dispatch the call.
+     * If there are enough, then dispatch the call.
      *
-     *Payment: `DepositBase` will be reserved if this is the first approval, plus
-     *`threshold` times `DepositFactor`. It is returned once this dispatch happens or
-     *is cancelled.
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *- `threshold`: The total number of approvals for this dispatch before it is executed.
-     *- `other_signatories`: The accounts (other than the sender) who can approve this
-     *dispatch. May not be empty.
-     *- `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-     *not the first approval, then it must be `Some`, with the timepoint (block number and
-     *transaction index) of the first approval transaction.
-     *- `call`: The call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call`: The call to be executed.
      *
-     *NOTE: Unless this is the final approval, you will generally want to use
-     *`approve_as_multi` instead, since it only requires a hash of the call.
+     * NOTE: Unless this is the final approval, you will generally want to use
+     * `approve_as_multi` instead, since it only requires a hash of the call.
      *
-     *Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-     *on success, result is `Ok` and the result from the interior call, if it was executed,
-     *may be found in the deposited `MultisigExecuted` event.
+     * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+     * on success, result is `Ok` and the result from the interior call, if it was executed,
+     * may be found in the deposited `MultisigExecuted` event.
      *
-     *## Complexity
-     *- `O(S + Z + Call)`.
-     *- Up to one balance-reserve or unreserve operation.
-     *- One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *  signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *- One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-     *- One encode & hash, both of complexity `O(S)`.
-     *- Up to one binary search and insert (`O(logS + S)`).
-     *- I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-     *- One event.
-     *- The weight of the `call`.
-     *- Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
-     *  taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * ## Complexity
+     * - `O(S + Z + Call)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - The weight of the `call`.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
      */
     as_multi: TxDescriptor<Anonymize<I4i0pr8j3g0bde>>;
     /**
-     *Register approval for a dispatch to be made from a deterministic composite account if
-     *approved by a total of `threshold - 1` of `other_signatories`.
+     * Register approval for a dispatch to be made from a deterministic composite account if
+     * approved by a total of `threshold - 1` of `other_signatories`.
      *
-     *Payment: `DepositBase` will be reserved if this is the first approval, plus
-     *`threshold` times `DepositFactor`. It is returned once this dispatch happens or
-     *is cancelled.
+     * Payment: `DepositBase` will be reserved if this is the first approval, plus
+     * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+     * is cancelled.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *- `threshold`: The total number of approvals for this dispatch before it is executed.
-     *- `other_signatories`: The accounts (other than the sender) who can approve this
-     *dispatch. May not be empty.
-     *- `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-     *not the first approval, then it must be `Some`, with the timepoint (block number and
-     *transaction index) of the first approval transaction.
-     *- `call_hash`: The hash of the call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+     * not the first approval, then it must be `Some`, with the timepoint (block number and
+     * transaction index) of the first approval transaction.
+     * - `call_hash`: The hash of the call to be executed.
      *
-     *NOTE: If this is the final approval, you will want to use `as_multi` instead.
+     * NOTE: If this is the final approval, you will want to use `as_multi` instead.
      *
-     *## Complexity
-     *- `O(S)`.
-     *- Up to one balance-reserve or unreserve operation.
-     *- One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *  signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *- One encode & hash, both of complexity `O(S)`.
-     *- Up to one binary search and insert (`O(logS + S)`).
-     *- I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-     *- One event.
-     *- Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
-     *  taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+     * ## Complexity
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - Up to one binary search and insert (`O(logS + S)`).
+     * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+     * - One event.
+     * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+     * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
      */
     approve_as_multi: TxDescriptor<Anonymize<Ideaemvoneh309>>;
     /**
-     *Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
-     *for this operation will be unreserved on success.
+     * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+     * for this operation will be unreserved on success.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *- `threshold`: The total number of approvals for this dispatch before it is executed.
-     *- `other_signatories`: The accounts (other than the sender) who can approve this
-     *dispatch. May not be empty.
-     *- `timepoint`: The timepoint (block number and transaction index) of the first approval
-     *transaction for this dispatch.
-     *- `call_hash`: The hash of the call to be executed.
+     * - `threshold`: The total number of approvals for this dispatch before it is executed.
+     * - `other_signatories`: The accounts (other than the sender) who can approve this
+     * dispatch. May not be empty.
+     * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+     * transaction for this dispatch.
+     * - `call_hash`: The hash of the call to be executed.
      *
-     *## Complexity
-     *- `O(S)`.
-     *- Up to one balance-reserve or unreserve operation.
-     *- One passthrough operation, one insert, both `O(S)` where `S` is the number of
-     *  signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-     *- One encode & hash, both of complexity `O(S)`.
-     *- One event.
-     *- I/O: 1 read `O(S)`, one remove.
-     *- Storage: removes one item.
+     * ## Complexity
+     * - `O(S)`.
+     * - Up to one balance-reserve or unreserve operation.
+     * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+     * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+     * - One encode & hash, both of complexity `O(S)`.
+     * - One event.
+     * - I/O: 1 read `O(S)`, one remove.
+     * - Storage: removes one item.
      */
     cancel_as_multi: TxDescriptor<Anonymize<I3d9o9d7epp66v>>;
   };
   Proxy: {
     /**
-     *Dispatch the given `call` from an account that the sender is authorised for through
-     *`add_proxy`.
+     * Dispatch the given `call` from an account that the sender is authorised for through
+     * `add_proxy`.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *Parameters:
-     *- `real`: The account that the proxy will make a call on behalf of.
-     *- `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     *- `call`: The call to be made by the `real` account.
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
      */
     proxy: TxDescriptor<Anonymize<I5s2omctljip30>>;
     /**
-     *Register a proxy account for the sender that is able to make calls on its behalf.
+     * Register a proxy account for the sender that is able to make calls on its behalf.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *Parameters:
-     *- `proxy`: The account that the `caller` would like to make a proxy.
-     *- `proxy_type`: The permissions allowed for this proxy account.
-     *- `delay`: The announcement period required of the initial proxy. Will generally be
-     *zero.
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to make a proxy.
+     * - `proxy_type`: The permissions allowed for this proxy account.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
      */
     add_proxy: TxDescriptor<Anonymize<I83oifkl5gf7v7>>;
     /**
-     *Unregister a proxy account for the sender.
+     * Unregister a proxy account for the sender.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *Parameters:
-     *- `proxy`: The account that the `caller` would like to remove as a proxy.
-     *- `proxy_type`: The permissions currently enabled for the removed proxy account.
+     * Parameters:
+     * - `proxy`: The account that the `caller` would like to remove as a proxy.
+     * - `proxy_type`: The permissions currently enabled for the removed proxy account.
      */
     remove_proxy: TxDescriptor<Anonymize<I83oifkl5gf7v7>>;
     /**
-     *Unregister all proxy accounts for the sender.
+     * Unregister all proxy accounts for the sender.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *WARNING: This may be called on accounts created by `pure`, however if done, then
-     *the unreserved fees will be inaccessible. **All access to this account will be lost.**
+     * WARNING: This may be called on accounts created by `pure`, however if done, then
+     * the unreserved fees will be inaccessible. **All access to this account will be lost.**
      */
     remove_proxies: TxDescriptor<undefined>;
     /**
-     *Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
-     *initialize it with a proxy of `proxy_type` for `origin` sender.
+     * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+     * initialize it with a proxy of `proxy_type` for `origin` sender.
      *
-     *Requires a `Signed` origin.
+     * Requires a `Signed` origin.
      *
-     *- `proxy_type`: The type of the proxy that the sender will be registered as over the
-     *new account. This will almost always be the most permissive `ProxyType` possible to
-     *allow for maximum flexibility.
-     *- `index`: A disambiguation index, in case this is called multiple times in the same
-     *transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
-     *want to use `0`.
-     *- `delay`: The announcement period required of the initial proxy. Will generally be
-     *zero.
+     * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+     * new account. This will almost always be the most permissive `ProxyType` possible to
+     * allow for maximum flexibility.
+     * - `index`: A disambiguation index, in case this is called multiple times in the same
+     * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+     * want to use `0`.
+     * - `delay`: The announcement period required of the initial proxy. Will generally be
+     * zero.
      *
-     *Fails with `Duplicate` if this has already been called in this transaction, from the
-     *same sender, with the same parameters.
+     * Fails with `Duplicate` if this has already been called in this transaction, from the
+     * same sender, with the same parameters.
      *
-     *Fails if there are insufficient funds to pay for deposit.
+     * Fails if there are insufficient funds to pay for deposit.
      */
     create_pure: TxDescriptor<Anonymize<Iad1o67krgn48a>>;
     /**
-     *Removes a previously spawned pure proxy.
+     * Removes a previously spawned pure proxy.
      *
-     *WARNING: **All access to this account will be lost.** Any funds held in it will be
-     *inaccessible.
+     * WARNING: **All access to this account will be lost.** Any funds held in it will be
+     * inaccessible.
      *
-     *Requires a `Signed` origin, and the sender account must have been created by a call to
-     *`pure` with corresponding parameters.
+     * Requires a `Signed` origin, and the sender account must have been created by a call to
+     * `pure` with corresponding parameters.
      *
-     *- `spawner`: The account that originally called `pure` to create this account.
-     *- `index`: The disambiguation index originally passed to `pure`. Probably `0`.
-     *- `proxy_type`: The proxy type originally passed to `pure`.
-     *- `height`: The height of the chain when the call to `pure` was processed.
-     *- `ext_index`: The extrinsic index in which the call to `pure` was processed.
+     * - `spawner`: The account that originally called `pure` to create this account.
+     * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+     * - `proxy_type`: The proxy type originally passed to `pure`.
+     * - `height`: The height of the chain when the call to `pure` was processed.
+     * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
      *
-     *Fails with `NoPermission` in case the caller is not a previously created pure
-     *account whose `pure` call has corresponding parameters.
+     * Fails with `NoPermission` in case the caller is not a previously created pure
+     * account whose `pure` call has corresponding parameters.
      */
     kill_pure: TxDescriptor<Anonymize<I20693ttkj61v9>>;
     /**
-     *Publish the hash of a proxy-call that will be made in the future.
+     * Publish the hash of a proxy-call that will be made in the future.
      *
-     *This must be called some number of blocks before the corresponding `proxy` is attempted
-     *if the delay associated with the proxy relationship is greater than zero.
+     * This must be called some number of blocks before the corresponding `proxy` is attempted
+     * if the delay associated with the proxy relationship is greater than zero.
      *
-     *No more than `MaxPending` announcements may be made at any one time.
+     * No more than `MaxPending` announcements may be made at any one time.
      *
-     *This will take a deposit of `AnnouncementDepositFactor` as well as
-     *`AnnouncementDepositBase` if there are no other pending announcements.
+     * This will take a deposit of `AnnouncementDepositFactor` as well as
+     * `AnnouncementDepositBase` if there are no other pending announcements.
      *
-     *The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+     * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
      *
-     *Parameters:
-     *- `real`: The account that the proxy will make a call on behalf of.
-     *- `call_hash`: The hash of the call to be made by the `real` account.
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `call_hash`: The hash of the call to be made by the `real` account.
      */
     announce: TxDescriptor<Anonymize<I2eb501t8s6hsq>>;
     /**
-     *Remove a given announcement.
+     * Remove a given announcement.
      *
-     *May be called by a proxy account to remove a call they previously announced and return
-     *the deposit.
+     * May be called by a proxy account to remove a call they previously announced and return
+     * the deposit.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *Parameters:
-     *- `real`: The account that the proxy will make a call on behalf of.
-     *- `call_hash`: The hash of the call to be made by the `real` account.
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `call_hash`: The hash of the call to be made by the `real` account.
      */
     remove_announcement: TxDescriptor<Anonymize<I2eb501t8s6hsq>>;
     /**
-     *Remove the given announcement of a delegate.
+     * Remove the given announcement of a delegate.
      *
-     *May be called by a target (proxied) account to remove a call that one of their delegates
-     *(`delegate`) has announced they want to execute. The deposit is returned.
+     * May be called by a target (proxied) account to remove a call that one of their delegates
+     * (`delegate`) has announced they want to execute. The deposit is returned.
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *Parameters:
-     *- `delegate`: The account that previously announced the call.
-     *- `call_hash`: The hash of the call to be made.
+     * Parameters:
+     * - `delegate`: The account that previously announced the call.
+     * - `call_hash`: The hash of the call to be made.
      */
     reject_announcement: TxDescriptor<Anonymize<Ianmuoljk2sk1u>>;
     /**
-     *Dispatch the given `call` from an account that the sender is authorized for through
-     *`add_proxy`.
+     * Dispatch the given `call` from an account that the sender is authorized for through
+     * `add_proxy`.
      *
-     *Removes any corresponding announcement(s).
+     * Removes any corresponding announcement(s).
      *
-     *The dispatch origin for this call must be _Signed_.
+     * The dispatch origin for this call must be _Signed_.
      *
-     *Parameters:
-     *- `real`: The account that the proxy will make a call on behalf of.
-     *- `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-     *- `call`: The call to be made by the `real` account.
+     * Parameters:
+     * - `real`: The account that the proxy will make a call on behalf of.
+     * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+     * - `call`: The call to be made by the `real` account.
      */
     proxy_announced: TxDescriptor<Anonymize<I9poch3db3qlld>>;
   };
   Broker: {
     /**
-     *Configure the pallet.
+     * Configure the pallet.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `config`: The configuration for this pallet.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `config`: The configuration for this pallet.
      */
     configure: TxDescriptor<Anonymize<I4v4jc8ak5c8j7>>;
     /**
-     *Reserve a core for a workload.
+     * Reserve a core for a workload.
      *
-     *The workload will be given a reservation, but two sale period boundaries must pass
-     *before the core is actually assigned.
+     * The workload will be given a reservation, but two sale period boundaries must pass
+     * before the core is actually assigned.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `workload`: The workload which should be permanently placed on a core.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `workload`: The workload which should be permanently placed on a core.
      */
     reserve: TxDescriptor<Anonymize<Ieifvmse8ekofd>>;
     /**
-     *Cancel a reservation for a workload.
+     * Cancel a reservation for a workload.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `item_index`: The index of the reservation. Usually this will also be the index of the
-     *  core on which the reservation has been scheduled. However, it is possible that if
-     *  other cores are reserved or unreserved in the same sale rotation that they won't
-     *  correspond, so it's better to look up the core properly in the `Reservations` storage.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `item_index`: The index of the reservation. Usually this will also be the index of the
+     * core on which the reservation has been scheduled. However, it is possible that if
+     * other cores are reserved or unreserved in the same sale rotation that they won't
+     * correspond, so it's better to look up the core properly in the `Reservations` storage.
      */
     unreserve: TxDescriptor<Anonymize<Iepja8rcbuaao2>>;
     /**
-     *Reserve a core for a single task workload for a limited period.
+     * Reserve a core for a single task workload for a limited period.
      *
-     *In the interlude and sale period where Bulk Coretime is sold for the period immediately
-     *after `until`, then the same workload may be renewed.
+     * In the interlude and sale period where Bulk Coretime is sold for the period immediately
+     * after `until`, then the same workload may be renewed.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `task`: The workload which should be placed on a core.
-     *- `until`: The timeslice now earlier than which `task` should be placed as a workload on
-     *  a core.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `task`: The workload which should be placed on a core.
+     * - `until`: The timeslice now earlier than which `task` should be placed as a workload on
+     * a core.
      */
     set_lease: TxDescriptor<Anonymize<I10gda06ia6n74>>;
     /**
-     *Begin the Bulk Coretime sales rotation.
+     * Begin the Bulk Coretime sales rotation.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `end_price`: The price after the leadin period of Bulk Coretime in the first sale.
-     *- `extra_cores`: Number of extra cores that should be requested on top of the cores
-     *  required for `Reservations` and `Leases`.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `end_price`: The price after the leadin period of Bulk Coretime in the first sale.
+     * - `extra_cores`: Number of extra cores that should be requested on top of the cores
+     * required for `Reservations` and `Leases`.
      *
-     *This will call [`Self::request_core_count`] internally to set the correct core count on
-     *the relay chain.
+     * This will call [`Self::request_core_count`] internally to set the correct core count on
+     * the relay chain.
      */
     start_sales: TxDescriptor<Anonymize<I6bqnueuk5semj>>;
     /**
-     *Purchase Bulk Coretime in the ongoing Sale.
+     * Purchase Bulk Coretime in the ongoing Sale.
      *
-     *- `origin`: Must be a Signed origin with at least enough funds to pay the current price
-     *  of Bulk Coretime.
-     *- `price_limit`: An amount no more than which should be paid.
+     * - `origin`: Must be a Signed origin with at least enough funds to pay the current price
+     * of Bulk Coretime.
+     * - `price_limit`: An amount no more than which should be paid.
      */
     purchase: TxDescriptor<Anonymize<I268qbbcqfpqi0>>;
     /**
-     *Renew Bulk Coretime in the ongoing Sale or its prior Interlude Period.
+     * Renew Bulk Coretime in the ongoing Sale or its prior Interlude Period.
      *
-     *- `origin`: Must be a Signed origin with at least enough funds to pay the renewal price
-     *  of the core.
-     *- `core`: The core which should be renewed.
+     * - `origin`: Must be a Signed origin with at least enough funds to pay the renewal price
+     * of the core.
+     * - `core`: The core which should be renewed.
      */
     renew: TxDescriptor<Anonymize<Iaiqv5prlisjkg>>;
     /**
-     *Transfer a Bulk Coretime Region to a new owner.
+     * Transfer a Bulk Coretime Region to a new owner.
      *
-     *- `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-     *- `region_id`: The Region whose ownership should change.
-     *- `new_owner`: The new owner for the Region.
+     * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+     * - `region_id`: The Region whose ownership should change.
+     * - `new_owner`: The new owner for the Region.
      */
     transfer: TxDescriptor<Anonymize<Ia3ebg5qshpkmr>>;
     /**
-     *Split a Bulk Coretime Region into two non-overlapping Regions at a particular time into
-     *the region.
+     * Split a Bulk Coretime Region into two non-overlapping Regions at a particular time into
+     * the region.
      *
-     *- `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-     *- `region_id`: The Region which should be partitioned into two non-overlapping Regions.
-     *- `pivot`: The offset in time into the Region at which to make the split.
+     * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+     * - `region_id`: The Region which should be partitioned into two non-overlapping Regions.
+     * - `pivot`: The offset in time into the Region at which to make the split.
      */
     partition: TxDescriptor<Anonymize<Iagnp6gsiemekd>>;
     /**
-     *Split a Bulk Coretime Region into two wholly-overlapping Regions with complementary
-     *interlace masks which together make up the original Region's interlace mask.
+     * Split a Bulk Coretime Region into two wholly-overlapping Regions with complementary
+     * interlace masks which together make up the original Region's interlace mask.
      *
-     *- `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-     *- `region_id`: The Region which should become two interlaced Regions of incomplete
-     *  regularity.
-     *- `pivot`: The interlace mask of one of the two new regions (the other is its partial
-     *  complement).
+     * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+     * - `region_id`: The Region which should become two interlaced Regions of incomplete
+     * regularity.
+     * - `pivot`: The interlace mask of one of the two new regions (the other is its partial
+     * complement).
      */
     interlace: TxDescriptor<Anonymize<I2uc90glvkisre>>;
     /**
-     *Assign a Bulk Coretime Region to a task.
+     * Assign a Bulk Coretime Region to a task.
      *
-     *- `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-     *- `region_id`: The Region which should be assigned to the task.
-     *- `task`: The task to assign.
-     *- `finality`: Indication of whether this assignment is final (in which case it may be
-     *  eligible for renewal) or provisional (in which case it may be manipulated and/or
-     *reassigned at a later stage).
+     * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+     * - `region_id`: The Region which should be assigned to the task.
+     * - `task`: The task to assign.
+     * - `finality`: Indication of whether this assignment is final (in which case it may be
+     * eligible for renewal) or provisional (in which case it may be manipulated and/or
+     * reassigned at a later stage).
      */
     assign: TxDescriptor<Anonymize<I7tcaqpipfe64i>>;
     /**
-     *Place a Bulk Coretime Region into the Instantaneous Coretime Pool.
+     * Place a Bulk Coretime Region into the Instantaneous Coretime Pool.
      *
-     *- `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-     *- `region_id`: The Region which should be assigned to the Pool.
-     *- `payee`: The account which is able to collect any revenue due for the usage of this
-     *  Coretime.
+     * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+     * - `region_id`: The Region which should be assigned to the Pool.
+     * - `payee`: The account which is able to collect any revenue due for the usage of this
+     * Coretime.
      */
     pool: TxDescriptor<Anonymize<I6eqlfpqd4sp3a>>;
     /**
-     *Claim the revenue owed from inclusion in the Instantaneous Coretime Pool.
+     * Claim the revenue owed from inclusion in the Instantaneous Coretime Pool.
      *
-     *- `origin`: Must be a Signed origin.
-     *- `region_id`: The Region which was assigned to the Pool.
-     *- `max_timeslices`: The maximum number of timeslices which should be processed. This
-     *  must be greater than 0. This may affect the weight of the call but should be ideally
-     *  made equivalent to the length of the Region `region_id`. If less, further dispatches
-     *  will be required with the same `region_id` to claim revenue for the remainder.
+     * - `origin`: Must be a Signed origin.
+     * - `region_id`: The Region which was assigned to the Pool.
+     * - `max_timeslices`: The maximum number of timeslices which should be processed. This
+     * must be greater than 0. This may affect the weight of the call but should be ideally
+     * made equivalent to the length of the Region `region_id`. If less, further dispatches
+     * will be required with the same `region_id` to claim revenue for the remainder.
      */
     claim_revenue: TxDescriptor<Anonymize<Ib2n01qni7h5uk>>;
     /**
-     *Purchase credit for use in the Instantaneous Coretime Pool.
+     * Purchase credit for use in the Instantaneous Coretime Pool.
      *
-     *- `origin`: Must be a Signed origin able to pay at least `amount`.
-     *- `amount`: The amount of credit to purchase.
-     *- `beneficiary`: The account on the Relay-chain which controls the credit (generally
-     *  this will be the collator's hot wallet).
+     * - `origin`: Must be a Signed origin able to pay at least `amount`.
+     * - `amount`: The amount of credit to purchase.
+     * - `beneficiary`: The account on the Relay-chain which controls the credit (generally
+     * this will be the collator's hot wallet).
      */
     purchase_credit: TxDescriptor<Anonymize<Idscf6boak49q1>>;
     /**
-     *Drop an expired Region from the chain.
+     * Drop an expired Region from the chain.
      *
-     *- `origin`: Can be any kind of origin.
-     *- `region_id`: The Region which has expired.
+     * - `origin`: Can be any kind of origin.
+     * - `region_id`: The Region which has expired.
      */
     drop_region: TxDescriptor<Anonymize<I4s60s3v5pfj6u>>;
     /**
-     *Drop an expired Instantaneous Pool Contribution record from the chain.
+     * Drop an expired Instantaneous Pool Contribution record from the chain.
      *
-     *- `origin`: Can be any kind of origin.
-     *- `region_id`: The Region identifying the Pool Contribution which has expired.
+     * - `origin`: Can be any kind of origin.
+     * - `region_id`: The Region identifying the Pool Contribution which has expired.
      */
     drop_contribution: TxDescriptor<Anonymize<I4s60s3v5pfj6u>>;
     /**
-     *Drop an expired Instantaneous Pool History record from the chain.
+     * Drop an expired Instantaneous Pool History record from the chain.
      *
-     *- `origin`: Can be any kind of origin.
-     *- `region_id`: The time of the Pool History record which has expired.
+     * - `origin`: Can be any kind of origin.
+     * - `region_id`: The time of the Pool History record which has expired.
      */
     drop_history: TxDescriptor<Anonymize<Ibtsa3docbr9el>>;
     /**
-     *Drop an expired Allowed Renewal record from the chain.
+     * Drop an expired Allowed Renewal record from the chain.
      *
-     *- `origin`: Can be any kind of origin.
-     *- `core`: The core to which the expired renewal refers.
-     *- `when`: The timeslice to which the expired renewal refers. This must have passed.
+     * - `origin`: Can be any kind of origin.
+     * - `core`: The core to which the expired renewal refers.
+     * - `when`: The timeslice to which the expired renewal refers. This must have passed.
      */
     drop_renewal: TxDescriptor<Anonymize<I3blejcb10m5c9>>;
     /**
-     *Request a change to the number of cores available for scheduling work.
+     * Request a change to the number of cores available for scheduling work.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `core_count`: The desired number of cores to be made available.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `core_count`: The desired number of cores to be made available.
      */
     request_core_count: TxDescriptor<Anonymize<I629ak383ovl28>>;
     /**
@@ -2219,42 +2221,42 @@ type ICalls = {
          */
     notify_revenue: TxDescriptor<Anonymize<I5cuv5a5cclsfd>>;
     /**
-     *Extrinsic for enabling auto renewal.
+     * Extrinsic for enabling auto renewal.
      *
-     *Callable by the sovereign account of the task on the specified core. This account
-     *will be charged at the start of every bulk period for renewing core time.
+     * Callable by the sovereign account of the task on the specified core. This account
+     * will be charged at the start of every bulk period for renewing core time.
      *
-     *- `origin`: Must be the sovereign account of the task
-     *- `core`: The core to which the task to be renewed is currently assigned.
-     *- `task`: The task for which we want to enable auto renewal.
-     *- `workload_end_hint`: should be used when enabling auto-renewal for a core that is not
-     *  expiring in the upcoming bulk period (e.g., due to holding a lease) since it would be
-     *  inefficient to look up when the core expires to schedule the next renewal.
+     * - `origin`: Must be the sovereign account of the task
+     * - `core`: The core to which the task to be renewed is currently assigned.
+     * - `task`: The task for which we want to enable auto renewal.
+     * - `workload_end_hint`: should be used when enabling auto-renewal for a core that is not
+     * expiring in the upcoming bulk period (e.g., due to holding a lease) since it would be
+     * inefficient to look up when the core expires to schedule the next renewal.
      */
     enable_auto_renew: TxDescriptor<Anonymize<Ie3qk84fi8j51k>>;
     /**
-     *Extrinsic for disabling auto renewal.
+     * Extrinsic for disabling auto renewal.
      *
-     *Callable by the sovereign account of the task on the specified core.
+     * Callable by the sovereign account of the task on the specified core.
      *
-     *- `origin`: Must be the sovereign account of the task.
-     *- `core`: The core for which we want to disable auto renewal.
-     *- `task`: The task for which we want to disable auto renewal.
+     * - `origin`: Must be the sovereign account of the task.
+     * - `core`: The core for which we want to disable auto renewal.
+     * - `task`: The task for which we want to disable auto renewal.
      */
     disable_auto_renew: TxDescriptor<Anonymize<I6td68h84ru5u7>>;
     /**
-     *Reserve a core for a workload immediately.
+     * Reserve a core for a workload immediately.
      *
-     *- `origin`: Must be Root or pass `AdminOrigin`.
-     *- `workload`: The workload which should be permanently placed on a core starting
-     *  immediately.
-     *- `core`: The core to which the assignment should be made until the reservation takes
-     *  effect. It is left to the caller to either add this new core or reassign any other
-     *  tasks to this existing core.
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `workload`: The workload which should be permanently placed on a core starting
+     * immediately.
+     * - `core`: The core to which the assignment should be made until the reservation takes
+     * effect. It is left to the caller to either add this new core or reassign any other
+     * tasks to this existing core.
      *
-     *This reserves the workload and then injects the workload into the Workplan for the next
-     *two sale periods. This overwrites any existing assignments for this core at the start of
-     *the next sale period.
+     * This reserves the workload and then injects the workload into the Workplan for the next
+     * two sale periods. This overwrites any existing assignments for this core at the start of
+     * the next sale period.
      */
     force_reserve: TxDescriptor<Anonymize<Ickqtr6vqgluk1>>;
     /**
@@ -2266,576 +2268,576 @@ type ICalls = {
 type IEvent = {
   System: {
     /**
-     *An extrinsic completed successfully.
+     * An extrinsic completed successfully.
      */
     ExtrinsicSuccess: PlainDescriptor<Anonymize<Ia82mnkmeo2rhc>>;
     /**
-     *An extrinsic failed.
+     * An extrinsic failed.
      */
     ExtrinsicFailed: PlainDescriptor<Anonymize<I78n7o8vn3hpc0>>;
     /**
-     *`:code` was updated.
+     * `:code` was updated.
      */
     CodeUpdated: PlainDescriptor<undefined>;
     /**
-     *A new account was created.
+     * A new account was created.
      */
     NewAccount: PlainDescriptor<Anonymize<Icbccs0ug47ilf>>;
     /**
-     *An account was reaped.
+     * An account was reaped.
      */
     KilledAccount: PlainDescriptor<Anonymize<Icbccs0ug47ilf>>;
     /**
-     *On on-chain remark happened.
+     * On on-chain remark happened.
      */
     Remarked: PlainDescriptor<Anonymize<I855j4i3kr8ko1>>;
     /**
-     *An upgrade was authorized.
+     * An upgrade was authorized.
      */
     UpgradeAuthorized: PlainDescriptor<Anonymize<Ibgl04rn6nbfm6>>;
   };
   ParachainSystem: {
     /**
-     *The validation function has been scheduled to apply.
+     * The validation function has been scheduled to apply.
      */
     ValidationFunctionStored: PlainDescriptor<undefined>;
     /**
-     *The validation function was applied as of the contained relay chain block number.
+     * The validation function was applied as of the contained relay chain block number.
      */
     ValidationFunctionApplied: PlainDescriptor<Anonymize<Idd7hd99u0ho0n>>;
     /**
-     *The relay-chain aborted the upgrade process.
+     * The relay-chain aborted the upgrade process.
      */
     ValidationFunctionDiscarded: PlainDescriptor<undefined>;
     /**
-     *Some downward messages have been received and will be processed.
+     * Some downward messages have been received and will be processed.
      */
     DownwardMessagesReceived: PlainDescriptor<Anonymize<Iafscmv8tjf0ou>>;
     /**
-     *Downward messages were processed using the given weight.
+     * Downward messages were processed using the given weight.
      */
     DownwardMessagesProcessed: PlainDescriptor<Anonymize<I100l07kaehdlp>>;
     /**
-     *An upward message was sent to the relay chain.
+     * An upward message was sent to the relay chain.
      */
     UpwardMessageSent: PlainDescriptor<Anonymize<I6gnbnvip5vvdi>>;
   };
   Balances: {
     /**
-     *An account was created with some free balance.
+     * An account was created with some free balance.
      */
     Endowed: PlainDescriptor<Anonymize<Icv68aq8841478>>;
     /**
-     *An account was removed whose balance was non-zero but below ExistentialDeposit,
-     *resulting in an outright loss.
+     * An account was removed whose balance was non-zero but below ExistentialDeposit,
+     * resulting in an outright loss.
      */
     DustLost: PlainDescriptor<Anonymize<Ic262ibdoec56a>>;
     /**
-     *Transfer succeeded.
+     * Transfer succeeded.
      */
     Transfer: PlainDescriptor<Anonymize<Iflcfm9b6nlmdd>>;
     /**
-     *A balance was set by root.
+     * A balance was set by root.
      */
     BalanceSet: PlainDescriptor<Anonymize<Ijrsf4mnp3eka>>;
     /**
-     *Some balance was reserved (moved from free to reserved).
+     * Some balance was reserved (moved from free to reserved).
      */
     Reserved: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some balance was unreserved (moved from reserved to free).
+     * Some balance was unreserved (moved from reserved to free).
      */
     Unreserved: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some balance was moved from the reserve of the first account to the second account.
-     *Final argument indicates the destination balance type.
+     * Some balance was moved from the reserve of the first account to the second account.
+     * Final argument indicates the destination balance type.
      */
     ReserveRepatriated: PlainDescriptor<Anonymize<I8tjvj9uq4b7hi>>;
     /**
-     *Some amount was deposited (e.g. for transaction fees).
+     * Some amount was deposited (e.g. for transaction fees).
      */
     Deposit: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some amount was withdrawn from the account (e.g. for transaction fees).
+     * Some amount was withdrawn from the account (e.g. for transaction fees).
      */
     Withdraw: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some amount was removed from the account (e.g. for misbehavior).
+     * Some amount was removed from the account (e.g. for misbehavior).
      */
     Slashed: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some amount was minted into an account.
+     * Some amount was minted into an account.
      */
     Minted: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some amount was burned from an account.
+     * Some amount was burned from an account.
      */
     Burned: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some amount was suspended from an account (it can be restored later).
+     * Some amount was suspended from an account (it can be restored later).
      */
     Suspended: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some amount was restored into an account.
+     * Some amount was restored into an account.
      */
     Restored: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *An account was upgraded.
+     * An account was upgraded.
      */
     Upgraded: PlainDescriptor<Anonymize<I4cbvqmqadhrea>>;
     /**
-     *Total issuance was increased by `amount`, creating a credit to be balanced.
+     * Total issuance was increased by `amount`, creating a credit to be balanced.
      */
     Issued: PlainDescriptor<Anonymize<I3qt1hgg4djhgb>>;
     /**
-     *Total issuance was decreased by `amount`, creating a debt to be balanced.
+     * Total issuance was decreased by `amount`, creating a debt to be balanced.
      */
     Rescinded: PlainDescriptor<Anonymize<I3qt1hgg4djhgb>>;
     /**
-     *Some balance was locked.
+     * Some balance was locked.
      */
     Locked: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some balance was unlocked.
+     * Some balance was unlocked.
      */
     Unlocked: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some balance was frozen.
+     * Some balance was frozen.
      */
     Frozen: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *Some balance was thawed.
+     * Some balance was thawed.
      */
     Thawed: PlainDescriptor<Anonymize<Id5fm4p8lj5qgi>>;
     /**
-     *The `TotalIssuance` was forcefully changed.
+     * The `TotalIssuance` was forcefully changed.
      */
     TotalIssuanceForced: PlainDescriptor<Anonymize<I4fooe9dun9o0t>>;
   };
   TransactionPayment: {
     /**
-     *A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,
-     *has been paid by `who`.
+     * A transaction fee `actual_fee`, of which `tip` was added to the minimum inclusion fee,
+     * has been paid by `who`.
      */
     TransactionFeePaid: PlainDescriptor<Anonymize<Ier2cke86dqbr2>>;
   };
   CollatorSelection: {
     /**
-     *New Invulnerables were set.
+     * New Invulnerables were set.
      */
     NewInvulnerables: PlainDescriptor<Anonymize<I39t01nnod9109>>;
     /**
-     *A new Invulnerable was added.
+     * A new Invulnerable was added.
      */
     InvulnerableAdded: PlainDescriptor<Anonymize<I6v8sm60vvkmk7>>;
     /**
-     *An Invulnerable was removed.
+     * An Invulnerable was removed.
      */
     InvulnerableRemoved: PlainDescriptor<Anonymize<I6v8sm60vvkmk7>>;
     /**
-     *The number of desired candidates was set.
+     * The number of desired candidates was set.
      */
     NewDesiredCandidates: PlainDescriptor<Anonymize<I1qmtmbe5so8r3>>;
     /**
-     *The candidacy bond was set.
+     * The candidacy bond was set.
      */
     NewCandidacyBond: PlainDescriptor<Anonymize<Ih99m6ehpcar7>>;
     /**
-     *A new candidate joined.
+     * A new candidate joined.
      */
     CandidateAdded: PlainDescriptor<Anonymize<Idgorhsbgdq2ap>>;
     /**
-     *Bond of a candidate updated.
+     * Bond of a candidate updated.
      */
     CandidateBondUpdated: PlainDescriptor<Anonymize<Idgorhsbgdq2ap>>;
     /**
-     *A candidate was removed.
+     * A candidate was removed.
      */
     CandidateRemoved: PlainDescriptor<Anonymize<I6v8sm60vvkmk7>>;
     /**
-     *An account was replaced in the candidate list by another one.
+     * An account was replaced in the candidate list by another one.
      */
     CandidateReplaced: PlainDescriptor<Anonymize<I9ubb2kqevnu6t>>;
     /**
-     *An account was unable to be added to the Invulnerables because they did not have keys
-     *registered. Other Invulnerables may have been set.
+     * An account was unable to be added to the Invulnerables because they did not have keys
+     * registered. Other Invulnerables may have been set.
      */
     InvalidInvulnerableSkipped: PlainDescriptor<Anonymize<I6v8sm60vvkmk7>>;
   };
   Session: {
     /**
-     *New session has happened. Note that the argument is the session index, not the
-     *block number as the type might suggest.
+     * New session has happened. Note that the argument is the session index, not the
+     * block number as the type might suggest.
      */
     NewSession: PlainDescriptor<Anonymize<I2hq50pu2kdjpo>>;
     /**
-     *Validator has been disabled.
+     * Validator has been disabled.
      */
     ValidatorDisabled: PlainDescriptor<Anonymize<I9acqruh7322g2>>;
     /**
-     *Validator has been re-enabled.
+     * Validator has been re-enabled.
      */
     ValidatorReenabled: PlainDescriptor<Anonymize<I9acqruh7322g2>>;
   };
   XcmpQueue: {
     /**
-     *An HRMP message was sent to a sibling parachain.
+     * An HRMP message was sent to a sibling parachain.
      */
     XcmpMessageSent: PlainDescriptor<Anonymize<I137t1cld92pod>>;
   };
   PolkadotXcm: {
     /**
-     *Execution of an XCM message was attempted.
+     * Execution of an XCM message was attempted.
      */
     Attempted: PlainDescriptor<Anonymize<Ia72eet39sf8j9>>;
     /**
-     *A XCM message was sent.
+     * A XCM message was sent.
      */
     Sent: PlainDescriptor<Anonymize<If8u5kl4h8070m>>;
     /**
-     *Query response received which does not match a registered query. This may be because a
-     *matching query was never registered, it may be because it is a duplicate response, or
-     *because the query timed out.
+     * Query response received which does not match a registered query. This may be because a
+     * matching query was never registered, it may be because it is a duplicate response, or
+     * because the query timed out.
      */
     UnexpectedResponse: PlainDescriptor<Anonymize<Icl7nl1rfeog3i>>;
     /**
-     *Query response has been received and is ready for taking with `take_response`. There is
-     *no registered notification call.
+     * Query response has been received and is ready for taking with `take_response`. There is
+     * no registered notification call.
      */
     ResponseReady: PlainDescriptor<Anonymize<Iasr6pj6shs0fl>>;
     /**
-     *Query response has been received and query is removed. The registered notification has
-     *been dispatched and executed successfully.
+     * Query response has been received and query is removed. The registered notification has
+     * been dispatched and executed successfully.
      */
     Notified: PlainDescriptor<Anonymize<I2uqmls7kcdnii>>;
     /**
-     *Query response has been received and query is removed. The registered notification
-     *could not be dispatched because the dispatch weight is greater than the maximum weight
-     *originally budgeted by this runtime for the query result.
+     * Query response has been received and query is removed. The registered notification
+     * could not be dispatched because the dispatch weight is greater than the maximum weight
+     * originally budgeted by this runtime for the query result.
      */
     NotifyOverweight: PlainDescriptor<Anonymize<Idg69klialbkb8>>;
     /**
-     *Query response has been received and query is removed. There was a general error with
-     *dispatching the notification call.
+     * Query response has been received and query is removed. There was a general error with
+     * dispatching the notification call.
      */
     NotifyDispatchError: PlainDescriptor<Anonymize<I2uqmls7kcdnii>>;
     /**
-     *Query response has been received and query is removed. The dispatch was unable to be
-     *decoded into a `Call`; this might be due to dispatch function having a signature which
-     *is not `(origin, QueryId, Response)`.
+     * Query response has been received and query is removed. The dispatch was unable to be
+     * decoded into a `Call`; this might be due to dispatch function having a signature which
+     * is not `(origin, QueryId, Response)`.
      */
     NotifyDecodeFailed: PlainDescriptor<Anonymize<I2uqmls7kcdnii>>;
     /**
-     *Expected query response has been received but the origin location of the response does
-     *not match that expected. The query remains registered for a later, valid, response to
-     *be received and acted upon.
+     * Expected query response has been received but the origin location of the response does
+     * not match that expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
      */
     InvalidResponder: PlainDescriptor<Anonymize<I7r6b7145022pp>>;
     /**
-     *Expected query response has been received but the expected origin location placed in
-     *storage by this runtime previously cannot be decoded. The query remains registered.
+     * Expected query response has been received but the expected origin location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
      *
-     *This is unexpected (since a location placed in storage in a previously executing
-     *runtime should be readable prior to query timeout) and dangerous since the possibly
-     *valid response will be dropped. Manual governance intervention is probably going to be
-     *needed.
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
      */
     InvalidResponderVersion: PlainDescriptor<Anonymize<Icl7nl1rfeog3i>>;
     /**
-     *Received query response has been read and removed.
+     * Received query response has been read and removed.
      */
     ResponseTaken: PlainDescriptor<Anonymize<I30pg328m00nr3>>;
     /**
-     *Some assets have been placed in an asset trap.
+     * Some assets have been placed in an asset trap.
      */
     AssetsTrapped: PlainDescriptor<Anonymize<Icmrn7bogp28cs>>;
     /**
-     *An XCM version change notification message has been attempted to be sent.
+     * An XCM version change notification message has been attempted to be sent.
      *
-     *The cost of sending it (borne by the chain) is included.
+     * The cost of sending it (borne by the chain) is included.
      */
     VersionChangeNotified: PlainDescriptor<Anonymize<I7m9b5plj4h5ot>>;
     /**
-     *The supported version of a location has been changed. This might be through an
-     *automatic notification or a manual intervention.
+     * The supported version of a location has been changed. This might be through an
+     * automatic notification or a manual intervention.
      */
     SupportedVersionChanged: PlainDescriptor<Anonymize<I9kt8c221c83ln>>;
     /**
-     *A given location which had a version change subscription was dropped owing to an error
-     *sending the notification to it.
+     * A given location which had a version change subscription was dropped owing to an error
+     * sending the notification to it.
      */
     NotifyTargetSendFail: PlainDescriptor<Anonymize<I9onhk772nfs4f>>;
     /**
-     *A given location which had a version change subscription was dropped owing to an error
-     *migrating the location to our new XCM format.
+     * A given location which had a version change subscription was dropped owing to an error
+     * migrating the location to our new XCM format.
      */
     NotifyTargetMigrationFail: PlainDescriptor<Anonymize<I3l6bnksrmt56r>>;
     /**
-     *Expected query response has been received but the expected querier location placed in
-     *storage by this runtime previously cannot be decoded. The query remains registered.
+     * Expected query response has been received but the expected querier location placed in
+     * storage by this runtime previously cannot be decoded. The query remains registered.
      *
-     *This is unexpected (since a location placed in storage in a previously executing
-     *runtime should be readable prior to query timeout) and dangerous since the possibly
-     *valid response will be dropped. Manual governance intervention is probably going to be
-     *needed.
+     * This is unexpected (since a location placed in storage in a previously executing
+     * runtime should be readable prior to query timeout) and dangerous since the possibly
+     * valid response will be dropped. Manual governance intervention is probably going to be
+     * needed.
      */
     InvalidQuerierVersion: PlainDescriptor<Anonymize<Icl7nl1rfeog3i>>;
     /**
-     *Expected query response has been received but the querier location of the response does
-     *not match the expected. The query remains registered for a later, valid, response to
-     *be received and acted upon.
+     * Expected query response has been received but the querier location of the response does
+     * not match the expected. The query remains registered for a later, valid, response to
+     * be received and acted upon.
      */
     InvalidQuerier: PlainDescriptor<Anonymize<Idh09k0l2pmdcg>>;
     /**
-     *A remote has requested XCM version change notification from us and we have honored it.
-     *A version information message is sent to them and its cost is included.
+     * A remote has requested XCM version change notification from us and we have honored it.
+     * A version information message is sent to them and its cost is included.
      */
     VersionNotifyStarted: PlainDescriptor<Anonymize<I7uoiphbm0tj4r>>;
     /**
-     *We have requested that a remote chain send us XCM version change notifications.
+     * We have requested that a remote chain send us XCM version change notifications.
      */
     VersionNotifyRequested: PlainDescriptor<Anonymize<I7uoiphbm0tj4r>>;
     /**
-     *We have requested that a remote chain stops sending us XCM version change
-     *notifications.
+     * We have requested that a remote chain stops sending us XCM version change
+     * notifications.
      */
     VersionNotifyUnrequested: PlainDescriptor<Anonymize<I7uoiphbm0tj4r>>;
     /**
-     *Fees were paid from a location for an operation (often for using `SendXcm`).
+     * Fees were paid from a location for an operation (often for using `SendXcm`).
      */
     FeesPaid: PlainDescriptor<Anonymize<I512p1n7qt24l8>>;
     /**
-     *Some assets have been claimed from an asset trap
+     * Some assets have been claimed from an asset trap
      */
     AssetsClaimed: PlainDescriptor<Anonymize<Icmrn7bogp28cs>>;
     /**
-     *A XCM version migration finished.
+     * A XCM version migration finished.
      */
     VersionMigrationFinished: PlainDescriptor<Anonymize<I6s1nbislhk619>>;
   };
   CumulusXcm: {
     /**
-     *Downward message is invalid XCM.
-     *\[ id \]
+     * Downward message is invalid XCM.
+     * \[ id \]
      */
     InvalidFormat: PlainDescriptor<FixedSizeBinary<32>>;
     /**
-     *Downward message is unsupported version of XCM.
-     *\[ id \]
+     * Downward message is unsupported version of XCM.
+     * \[ id \]
      */
     UnsupportedVersion: PlainDescriptor<FixedSizeBinary<32>>;
     /**
-     *Downward message executed with the given outcome.
-     *\[ id, outcome \]
+     * Downward message executed with the given outcome.
+     * \[ id, outcome \]
      */
     ExecutedDownward: PlainDescriptor<Anonymize<Ibeto40kl3r5j7>>;
   };
   MessageQueue: {
     /**
-     *Message discarded due to an error in the `MessageProcessor` (usually a format error).
+     * Message discarded due to an error in the `MessageProcessor` (usually a format error).
      */
     ProcessingFailed: PlainDescriptor<Anonymize<I1rvj4ubaplho0>>;
     /**
-     *Message is processed.
+     * Message is processed.
      */
     Processed: PlainDescriptor<Anonymize<Ia3uu7lqcc1q1i>>;
     /**
-     *Message placed in overweight queue.
+     * Message placed in overweight queue.
      */
     OverweightEnqueued: PlainDescriptor<Anonymize<I7crucfnonitkn>>;
     /**
-     *This page was reaped.
+     * This page was reaped.
      */
     PageReaped: PlainDescriptor<Anonymize<I7tmrp94r9sq4n>>;
   };
   Utility: {
     /**
-     *Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-     *well as the error.
+     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+     * well as the error.
      */
     BatchInterrupted: PlainDescriptor<Anonymize<Ic9pelrvlqk2r4>>;
     /**
-     *Batch of dispatches completed fully with no error.
+     * Batch of dispatches completed fully with no error.
      */
     BatchCompleted: PlainDescriptor<undefined>;
     /**
-     *Batch of dispatches completed but has errors.
+     * Batch of dispatches completed but has errors.
      */
     BatchCompletedWithErrors: PlainDescriptor<undefined>;
     /**
-     *A single item within a Batch of dispatches has completed with no error.
+     * A single item within a Batch of dispatches has completed with no error.
      */
     ItemCompleted: PlainDescriptor<undefined>;
     /**
-     *A single item within a Batch of dispatches has completed with error.
+     * A single item within a Batch of dispatches has completed with error.
      */
     ItemFailed: PlainDescriptor<Anonymize<Ifqvh7jdcvrlsq>>;
     /**
-     *A call was dispatched.
+     * A call was dispatched.
      */
     DispatchedAs: PlainDescriptor<Anonymize<Iehhd73bkq6t61>>;
     /**
-     *Main call was dispatched.
+     * Main call was dispatched.
      */
     IfElseMainSuccess: PlainDescriptor<undefined>;
     /**
-     *The fallback call was dispatched.
+     * The fallback call was dispatched.
      */
     IfElseFallbackCalled: PlainDescriptor<Anonymize<I4rmmrchq1fvg8>>;
   };
   Multisig: {
     /**
-     *A new multisig operation has begun.
+     * A new multisig operation has begun.
      */
     NewMultisig: PlainDescriptor<Anonymize<Iep27ialq4a7o7>>;
     /**
-     *A multisig operation has been approved by someone.
+     * A multisig operation has been approved by someone.
      */
     MultisigApproval: PlainDescriptor<Anonymize<Iasu5jvoqr43mv>>;
     /**
-     *A multisig operation has been executed.
+     * A multisig operation has been executed.
      */
     MultisigExecuted: PlainDescriptor<Anonymize<I9b4ugfe5g5bpm>>;
     /**
-     *A multisig operation has been cancelled.
+     * A multisig operation has been cancelled.
      */
     MultisigCancelled: PlainDescriptor<Anonymize<I5qolde99acmd1>>;
   };
   Proxy: {
     /**
-     *A proxy was executed correctly, with the given.
+     * A proxy was executed correctly, with the given.
      */
     ProxyExecuted: PlainDescriptor<Anonymize<Iehhd73bkq6t61>>;
     /**
-     *A pure account has been created by new proxy with given
-     *disambiguation index and proxy type.
+     * A pure account has been created by new proxy with given
+     * disambiguation index and proxy type.
      */
     PureCreated: PlainDescriptor<Anonymize<I4sa5jshkufeug>>;
     /**
-     *An announcement was placed to make a call in the future.
+     * An announcement was placed to make a call in the future.
      */
     Announced: PlainDescriptor<Anonymize<I2ur0oeqg495j8>>;
     /**
-     *A proxy was added.
+     * A proxy was added.
      */
     ProxyAdded: PlainDescriptor<Anonymize<Idf02iigou8dpt>>;
     /**
-     *A proxy was removed.
+     * A proxy was removed.
      */
     ProxyRemoved: PlainDescriptor<Anonymize<Idf02iigou8dpt>>;
   };
   Broker: {
     /**
-     *A Region of Bulk Coretime has been purchased.
+     * A Region of Bulk Coretime has been purchased.
      */
     Purchased: PlainDescriptor<Anonymize<Iaf2rbm5li8ck4>>;
     /**
-     *The workload of a core has become renewable.
+     * The workload of a core has become renewable.
      */
     Renewable: PlainDescriptor<Anonymize<Ib118uuss8au5p>>;
     /**
-     *A workload has been renewed.
+     * A workload has been renewed.
      */
     Renewed: PlainDescriptor<Anonymize<Idfdoi7vpo971s>>;
     /**
-     *Ownership of a Region has been transferred.
+     * Ownership of a Region has been transferred.
      */
     Transferred: PlainDescriptor<Anonymize<Icjdv7ehtt4mjk>>;
     /**
-     *A Region has been split into two non-overlapping Regions.
+     * A Region has been split into two non-overlapping Regions.
      */
     Partitioned: PlainDescriptor<Anonymize<I7fa966sr93enr>>;
     /**
-     *A Region has been converted into two overlapping Regions each of lesser regularity.
+     * A Region has been converted into two overlapping Regions each of lesser regularity.
      */
     Interlaced: PlainDescriptor<Anonymize<I7fa966sr93enr>>;
     /**
-     *A Region has been assigned to a particular task.
+     * A Region has been assigned to a particular task.
      */
     Assigned: PlainDescriptor<Anonymize<Icinrphfs7c1gh>>;
     /**
-     *A Region has been added to the Instantaneous Coretime Pool.
+     * A Region has been added to the Instantaneous Coretime Pool.
      */
     Pooled: PlainDescriptor<Anonymize<Ib27rtfpnn4vta>>;
     /**
-     *A new number of cores has been requested.
+     * A new number of cores has been requested.
      */
     CoreCountRequested: PlainDescriptor<Anonymize<I629ak383ovl28>>;
     /**
-     *The number of cores available for scheduling has changed.
+     * The number of cores available for scheduling has changed.
      */
     CoreCountChanged: PlainDescriptor<Anonymize<I629ak383ovl28>>;
     /**
-     *There is a new reservation for a workload.
+     * There is a new reservation for a workload.
      */
     ReservationMade: PlainDescriptor<Anonymize<If5j64blk6vsus>>;
     /**
-     *A reservation for a workload has been cancelled.
+     * A reservation for a workload has been cancelled.
      */
     ReservationCancelled: PlainDescriptor<Anonymize<If5j64blk6vsus>>;
     /**
-     *A new sale has been initialized.
+     * A new sale has been initialized.
      */
     SaleInitialized: PlainDescriptor<Anonymize<Ie7jbpif7cf5o3>>;
     /**
-     *A new lease has been created.
+     * A new lease has been created.
      */
     Leased: PlainDescriptor<Anonymize<I10gda06ia6n74>>;
     /**
-     *A lease is about to end.
+     * A lease is about to end.
      */
     LeaseEnding: PlainDescriptor<Anonymize<Idj7j1g3t3rr57>>;
     /**
-     *The sale rotation has been started and a new sale is imminent.
+     * The sale rotation has been started and a new sale is imminent.
      */
     SalesStarted: PlainDescriptor<Anonymize<Ickukqupg34u5t>>;
     /**
-     *The act of claiming revenue has begun.
+     * The act of claiming revenue has begun.
      */
     RevenueClaimBegun: PlainDescriptor<Anonymize<I9l243q1j0e2us>>;
     /**
-     *A particular timeslice has a non-zero claim.
+     * A particular timeslice has a non-zero claim.
      */
     RevenueClaimItem: PlainDescriptor<Anonymize<I44ckreh9i933v>>;
     /**
-     *A revenue claim has (possibly only in part) been paid.
+     * A revenue claim has (possibly only in part) been paid.
      */
     RevenueClaimPaid: PlainDescriptor<Anonymize<I2o3evaj5726u9>>;
     /**
-     *Some Instantaneous Coretime Pool credit has been purchased.
+     * Some Instantaneous Coretime Pool credit has been purchased.
      */
     CreditPurchased: PlainDescriptor<Anonymize<I201plm6irk5mk>>;
     /**
-     *A Region has been dropped due to being out of date.
+     * A Region has been dropped due to being out of date.
      */
     RegionDropped: PlainDescriptor<Anonymize<Ib27rtfpnn4vta>>;
     /**
-     *Some historical Instantaneous Core Pool contribution record has been dropped.
+     * Some historical Instantaneous Core Pool contribution record has been dropped.
      */
     ContributionDropped: PlainDescriptor<Anonymize<I4s60s3v5pfj6u>>;
     /**
-     *Some historical Instantaneous Core Pool payment record has been initialized.
+     * Some historical Instantaneous Core Pool payment record has been initialized.
      */
     HistoryInitialized: PlainDescriptor<Anonymize<I7dkrdcvab1juf>>;
     /**
-     *Some historical Instantaneous Core Pool payment record has been dropped.
+     * Some historical Instantaneous Core Pool payment record has been dropped.
      */
     HistoryDropped: PlainDescriptor<Anonymize<If5tfto9lepmm8>>;
     /**
-     *Some historical Instantaneous Core Pool payment record has been ignored because the
-     *timeslice was already known. Governance may need to intervene.
+     * Some historical Instantaneous Core Pool payment record has been ignored because the
+     * timeslice was already known. Governance may need to intervene.
      */
     HistoryIgnored: PlainDescriptor<Anonymize<If5tfto9lepmm8>>;
     /**
-     *Some historical Instantaneous Core Pool Revenue is ready for payout claims.
+     * Some historical Instantaneous Core Pool Revenue is ready for payout claims.
      */
     ClaimsReady: PlainDescriptor<Anonymize<Ifla9c8bp7r3l9>>;
     /**
-     *A Core has been assigned to one or more tasks and/or the Pool on the Relay-chain.
+     * A Core has been assigned to one or more tasks and/or the Pool on the Relay-chain.
      */
     CoreAssigned: PlainDescriptor<Anonymize<Im8dpq6bqg07f>>;
     /**
-     *Some historical Instantaneous Core Pool payment record has been dropped.
+     * Some historical Instantaneous Core Pool payment record has been dropped.
      */
     PotentialRenewalDropped: PlainDescriptor<Anonymize<I3blejcb10m5c9>>;
     /**
@@ -2847,15 +2849,15 @@ type IEvent = {
          */
     AutoRenewalDisabled: PlainDescriptor<Anonymize<I6td68h84ru5u7>>;
     /**
-     *Failed to auto-renew a core, likely due to the payer account not being sufficiently
-     *funded.
+     * Failed to auto-renew a core, likely due to the payer account not being sufficiently
+     * funded.
      */
     AutoRenewalFailed: PlainDescriptor<Anonymize<I5mulkk8c7che3>>;
     /**
-     *The auto-renewal limit has been reached upon renewing cores.
+     * The auto-renewal limit has been reached upon renewing cores.
      *
-     *This should never happen, given that enable_auto_renew checks for this before enabling
-     *auto-renewal.
+     * This should never happen, given that enable_auto_renew checks for this before enabling
+     * auto-renewal.
      */
     AutoRenewalLimitReached: PlainDescriptor<undefined>;
   };
@@ -2863,631 +2865,631 @@ type IEvent = {
 type IError = {
   System: {
     /**
-     *The name of specification does not match between the current runtime
-     *and the new runtime.
+     * The name of specification does not match between the current runtime
+     * and the new runtime.
      */
     InvalidSpecName: PlainDescriptor<undefined>;
     /**
-     *The specification version is not allowed to decrease between the current runtime
-     *and the new runtime.
+     * The specification version is not allowed to decrease between the current runtime
+     * and the new runtime.
      */
     SpecVersionNeedsToIncrease: PlainDescriptor<undefined>;
     /**
-     *Failed to extract the runtime version from the new runtime.
+     * Failed to extract the runtime version from the new runtime.
      *
-     *Either calling `Core_version` or decoding `RuntimeVersion` failed.
+     * Either calling `Core_version` or decoding `RuntimeVersion` failed.
      */
     FailedToExtractRuntimeVersion: PlainDescriptor<undefined>;
     /**
-     *Suicide called when the account has non-default composite data.
+     * Suicide called when the account has non-default composite data.
      */
     NonDefaultComposite: PlainDescriptor<undefined>;
     /**
-     *There is a non-zero reference count preventing the account from being purged.
+     * There is a non-zero reference count preventing the account from being purged.
      */
     NonZeroRefCount: PlainDescriptor<undefined>;
     /**
-     *The origin filter prevent the call to be dispatched.
+     * The origin filter prevent the call to be dispatched.
      */
     CallFiltered: PlainDescriptor<undefined>;
     /**
-     *A multi-block migration is ongoing and prevents the current code from being replaced.
+     * A multi-block migration is ongoing and prevents the current code from being replaced.
      */
     MultiBlockMigrationsOngoing: PlainDescriptor<undefined>;
     /**
-     *No upgrade authorized.
+     * No upgrade authorized.
      */
     NothingAuthorized: PlainDescriptor<undefined>;
     /**
-     *The submitted code is not authorized.
+     * The submitted code is not authorized.
      */
     Unauthorized: PlainDescriptor<undefined>;
   };
   ParachainSystem: {
     /**
-     *Attempt to upgrade validation function while existing upgrade pending.
+     * Attempt to upgrade validation function while existing upgrade pending.
      */
     OverlappingUpgrades: PlainDescriptor<undefined>;
     /**
-     *Polkadot currently prohibits this parachain from upgrading its validation function.
+     * Polkadot currently prohibits this parachain from upgrading its validation function.
      */
     ProhibitedByPolkadot: PlainDescriptor<undefined>;
     /**
-     *The supplied validation function has compiled into a blob larger than Polkadot is
-     *willing to run.
+     * The supplied validation function has compiled into a blob larger than Polkadot is
+     * willing to run.
      */
     TooBig: PlainDescriptor<undefined>;
     /**
-     *The inherent which supplies the validation data did not run this block.
+     * The inherent which supplies the validation data did not run this block.
      */
     ValidationDataNotAvailable: PlainDescriptor<undefined>;
     /**
-     *The inherent which supplies the host configuration did not run this block.
+     * The inherent which supplies the host configuration did not run this block.
      */
     HostConfigurationNotAvailable: PlainDescriptor<undefined>;
     /**
-     *No validation function upgrade is currently scheduled.
+     * No validation function upgrade is currently scheduled.
      */
     NotScheduled: PlainDescriptor<undefined>;
     /**
-     *No code upgrade has been authorized.
+     * No code upgrade has been authorized.
      */
     NothingAuthorized: PlainDescriptor<undefined>;
     /**
-     *The given code upgrade has not been authorized.
+     * The given code upgrade has not been authorized.
      */
     Unauthorized: PlainDescriptor<undefined>;
   };
   Balances: {
     /**
-     *Vesting balance too high to send value.
+     * Vesting balance too high to send value.
      */
     VestingBalance: PlainDescriptor<undefined>;
     /**
-     *Account liquidity restrictions prevent withdrawal.
+     * Account liquidity restrictions prevent withdrawal.
      */
     LiquidityRestrictions: PlainDescriptor<undefined>;
     /**
-     *Balance too low to send value.
+     * Balance too low to send value.
      */
     InsufficientBalance: PlainDescriptor<undefined>;
     /**
-     *Value too low to create account due to existential deposit.
+     * Value too low to create account due to existential deposit.
      */
     ExistentialDeposit: PlainDescriptor<undefined>;
     /**
-     *Transfer/payment would kill account.
+     * Transfer/payment would kill account.
      */
     Expendability: PlainDescriptor<undefined>;
     /**
-     *A vesting schedule already exists for this account.
+     * A vesting schedule already exists for this account.
      */
     ExistingVestingSchedule: PlainDescriptor<undefined>;
     /**
-     *Beneficiary account must pre-exist.
+     * Beneficiary account must pre-exist.
      */
     DeadAccount: PlainDescriptor<undefined>;
     /**
-     *Number of named reserves exceed `MaxReserves`.
+     * Number of named reserves exceed `MaxReserves`.
      */
     TooManyReserves: PlainDescriptor<undefined>;
     /**
-     *Number of holds exceed `VariantCountOf<T::RuntimeHoldReason>`.
+     * Number of holds exceed `VariantCountOf<T::RuntimeHoldReason>`.
      */
     TooManyHolds: PlainDescriptor<undefined>;
     /**
-     *Number of freezes exceed `MaxFreezes`.
+     * Number of freezes exceed `MaxFreezes`.
      */
     TooManyFreezes: PlainDescriptor<undefined>;
     /**
-     *The issuance cannot be modified since it is already deactivated.
+     * The issuance cannot be modified since it is already deactivated.
      */
     IssuanceDeactivated: PlainDescriptor<undefined>;
     /**
-     *The delta cannot be zero.
+     * The delta cannot be zero.
      */
     DeltaZero: PlainDescriptor<undefined>;
   };
   CollatorSelection: {
     /**
-     *The pallet has too many candidates.
+     * The pallet has too many candidates.
      */
     TooManyCandidates: PlainDescriptor<undefined>;
     /**
-     *Leaving would result in too few candidates.
+     * Leaving would result in too few candidates.
      */
     TooFewEligibleCollators: PlainDescriptor<undefined>;
     /**
-     *Account is already a candidate.
+     * Account is already a candidate.
      */
     AlreadyCandidate: PlainDescriptor<undefined>;
     /**
-     *Account is not a candidate.
+     * Account is not a candidate.
      */
     NotCandidate: PlainDescriptor<undefined>;
     /**
-     *There are too many Invulnerables.
+     * There are too many Invulnerables.
      */
     TooManyInvulnerables: PlainDescriptor<undefined>;
     /**
-     *Account is already an Invulnerable.
+     * Account is already an Invulnerable.
      */
     AlreadyInvulnerable: PlainDescriptor<undefined>;
     /**
-     *Account is not an Invulnerable.
+     * Account is not an Invulnerable.
      */
     NotInvulnerable: PlainDescriptor<undefined>;
     /**
-     *Account has no associated validator ID.
+     * Account has no associated validator ID.
      */
     NoAssociatedValidatorId: PlainDescriptor<undefined>;
     /**
-     *Validator ID is not yet registered.
+     * Validator ID is not yet registered.
      */
     ValidatorNotRegistered: PlainDescriptor<undefined>;
     /**
-     *Could not insert in the candidate list.
+     * Could not insert in the candidate list.
      */
     InsertToCandidateListFailed: PlainDescriptor<undefined>;
     /**
-     *Could not remove from the candidate list.
+     * Could not remove from the candidate list.
      */
     RemoveFromCandidateListFailed: PlainDescriptor<undefined>;
     /**
-     *New deposit amount would be below the minimum candidacy bond.
+     * New deposit amount would be below the minimum candidacy bond.
      */
     DepositTooLow: PlainDescriptor<undefined>;
     /**
-     *Could not update the candidate list.
+     * Could not update the candidate list.
      */
     UpdateCandidateListFailed: PlainDescriptor<undefined>;
     /**
-     *Deposit amount is too low to take the target's slot in the candidate list.
+     * Deposit amount is too low to take the target's slot in the candidate list.
      */
     InsufficientBond: PlainDescriptor<undefined>;
     /**
-     *The target account to be replaced in the candidate list is not a candidate.
+     * The target account to be replaced in the candidate list is not a candidate.
      */
     TargetIsNotCandidate: PlainDescriptor<undefined>;
     /**
-     *The updated deposit amount is equal to the amount already reserved.
+     * The updated deposit amount is equal to the amount already reserved.
      */
     IdenticalDeposit: PlainDescriptor<undefined>;
     /**
-     *Cannot lower candidacy bond while occupying a future collator slot in the list.
+     * Cannot lower candidacy bond while occupying a future collator slot in the list.
      */
     InvalidUnreserve: PlainDescriptor<undefined>;
   };
   Session: {
     /**
-     *Invalid ownership proof.
+     * Invalid ownership proof.
      */
     InvalidProof: PlainDescriptor<undefined>;
     /**
-     *No associated validator ID for account.
+     * No associated validator ID for account.
      */
     NoAssociatedValidatorId: PlainDescriptor<undefined>;
     /**
-     *Registered duplicate key.
+     * Registered duplicate key.
      */
     DuplicatedKey: PlainDescriptor<undefined>;
     /**
-     *No keys are associated with this account.
+     * No keys are associated with this account.
      */
     NoKeys: PlainDescriptor<undefined>;
     /**
-     *Key setting account is not live, so it's impossible to associate keys.
+     * Key setting account is not live, so it's impossible to associate keys.
      */
     NoAccount: PlainDescriptor<undefined>;
   };
   XcmpQueue: {
     /**
-     *Setting the queue config failed since one of its values was invalid.
+     * Setting the queue config failed since one of its values was invalid.
      */
     BadQueueConfig: PlainDescriptor<undefined>;
     /**
-     *The execution is already suspended.
+     * The execution is already suspended.
      */
     AlreadySuspended: PlainDescriptor<undefined>;
     /**
-     *The execution is already resumed.
+     * The execution is already resumed.
      */
     AlreadyResumed: PlainDescriptor<undefined>;
     /**
-     *There are too many active outbound channels.
+     * There are too many active outbound channels.
      */
     TooManyActiveOutboundChannels: PlainDescriptor<undefined>;
     /**
-     *The message is too big.
+     * The message is too big.
      */
     TooBig: PlainDescriptor<undefined>;
   };
   PolkadotXcm: {
     /**
-     *The desired destination was unreachable, generally because there is a no way of routing
-     *to it.
+     * The desired destination was unreachable, generally because there is a no way of routing
+     * to it.
      */
     Unreachable: PlainDescriptor<undefined>;
     /**
-     *There was some other issue (i.e. not to do with routing) in sending the message.
-     *Perhaps a lack of space for buffering the message.
+     * There was some other issue (i.e. not to do with routing) in sending the message.
+     * Perhaps a lack of space for buffering the message.
      */
     SendFailure: PlainDescriptor<undefined>;
     /**
-     *The message execution fails the filter.
+     * The message execution fails the filter.
      */
     Filtered: PlainDescriptor<undefined>;
     /**
-     *The message's weight could not be determined.
+     * The message's weight could not be determined.
      */
     UnweighableMessage: PlainDescriptor<undefined>;
     /**
-     *The destination `Location` provided cannot be inverted.
+     * The destination `Location` provided cannot be inverted.
      */
     DestinationNotInvertible: PlainDescriptor<undefined>;
     /**
-     *The assets to be sent are empty.
+     * The assets to be sent are empty.
      */
     Empty: PlainDescriptor<undefined>;
     /**
-     *Could not re-anchor the assets to declare the fees for the destination chain.
+     * Could not re-anchor the assets to declare the fees for the destination chain.
      */
     CannotReanchor: PlainDescriptor<undefined>;
     /**
-     *Too many assets have been attempted for transfer.
+     * Too many assets have been attempted for transfer.
      */
     TooManyAssets: PlainDescriptor<undefined>;
     /**
-     *Origin is invalid for sending.
+     * Origin is invalid for sending.
      */
     InvalidOrigin: PlainDescriptor<undefined>;
     /**
-     *The version of the `Versioned` value used is not able to be interpreted.
+     * The version of the `Versioned` value used is not able to be interpreted.
      */
     BadVersion: PlainDescriptor<undefined>;
     /**
-     *The given location could not be used (e.g. because it cannot be expressed in the
-     *desired version of XCM).
+     * The given location could not be used (e.g. because it cannot be expressed in the
+     * desired version of XCM).
      */
     BadLocation: PlainDescriptor<undefined>;
     /**
-     *The referenced subscription could not be found.
+     * The referenced subscription could not be found.
      */
     NoSubscription: PlainDescriptor<undefined>;
     /**
-     *The location is invalid since it already has a subscription from us.
+     * The location is invalid since it already has a subscription from us.
      */
     AlreadySubscribed: PlainDescriptor<undefined>;
     /**
-     *Could not check-out the assets for teleportation to the destination chain.
+     * Could not check-out the assets for teleportation to the destination chain.
      */
     CannotCheckOutTeleport: PlainDescriptor<undefined>;
     /**
-     *The owner does not own (all) of the asset that they wish to do the operation on.
+     * The owner does not own (all) of the asset that they wish to do the operation on.
      */
     LowBalance: PlainDescriptor<undefined>;
     /**
-     *The asset owner has too many locks on the asset.
+     * The asset owner has too many locks on the asset.
      */
     TooManyLocks: PlainDescriptor<undefined>;
     /**
-     *The given account is not an identifiable sovereign account for any location.
+     * The given account is not an identifiable sovereign account for any location.
      */
     AccountNotSovereign: PlainDescriptor<undefined>;
     /**
-     *The operation required fees to be paid which the initiator could not meet.
+     * The operation required fees to be paid which the initiator could not meet.
      */
     FeesNotMet: PlainDescriptor<undefined>;
     /**
-     *A remote lock with the corresponding data could not be found.
+     * A remote lock with the corresponding data could not be found.
      */
     LockNotFound: PlainDescriptor<undefined>;
     /**
-     *The unlock operation cannot succeed because there are still consumers of the lock.
+     * The unlock operation cannot succeed because there are still consumers of the lock.
      */
     InUse: PlainDescriptor<undefined>;
     /**
-     *Invalid asset, reserve chain could not be determined for it.
+     * Invalid asset, reserve chain could not be determined for it.
      */
     InvalidAssetUnknownReserve: PlainDescriptor<undefined>;
     /**
-     *Invalid asset, do not support remote asset reserves with different fees reserves.
+     * Invalid asset, do not support remote asset reserves with different fees reserves.
      */
     InvalidAssetUnsupportedReserve: PlainDescriptor<undefined>;
     /**
-     *Too many assets with different reserve locations have been attempted for transfer.
+     * Too many assets with different reserve locations have been attempted for transfer.
      */
     TooManyReserves: PlainDescriptor<undefined>;
     /**
-     *Local XCM execution incomplete.
+     * Local XCM execution incomplete.
      */
     LocalExecutionIncomplete: PlainDescriptor<undefined>;
   };
   MessageQueue: {
     /**
-     *Page is not reapable because it has items remaining to be processed and is not old
-     *enough.
+     * Page is not reapable because it has items remaining to be processed and is not old
+     * enough.
      */
     NotReapable: PlainDescriptor<undefined>;
     /**
-     *Page to be reaped does not exist.
+     * Page to be reaped does not exist.
      */
     NoPage: PlainDescriptor<undefined>;
     /**
-     *The referenced message could not be found.
+     * The referenced message could not be found.
      */
     NoMessage: PlainDescriptor<undefined>;
     /**
-     *The message was already processed and cannot be processed again.
+     * The message was already processed and cannot be processed again.
      */
     AlreadyProcessed: PlainDescriptor<undefined>;
     /**
-     *The message is queued for future execution.
+     * The message is queued for future execution.
      */
     Queued: PlainDescriptor<undefined>;
     /**
-     *There is temporarily not enough weight to continue servicing messages.
+     * There is temporarily not enough weight to continue servicing messages.
      */
     InsufficientWeight: PlainDescriptor<undefined>;
     /**
-     *This message is temporarily unprocessable.
+     * This message is temporarily unprocessable.
      *
-     *Such errors are expected, but not guaranteed, to resolve themselves eventually through
-     *retrying.
+     * Such errors are expected, but not guaranteed, to resolve themselves eventually through
+     * retrying.
      */
     TemporarilyUnprocessable: PlainDescriptor<undefined>;
     /**
-     *The queue is paused and no message can be executed from it.
+     * The queue is paused and no message can be executed from it.
      *
-     *This can change at any time and may resolve in the future by re-trying.
+     * This can change at any time and may resolve in the future by re-trying.
      */
     QueuePaused: PlainDescriptor<undefined>;
     /**
-     *Another call is in progress and needs to finish before this call can happen.
+     * Another call is in progress and needs to finish before this call can happen.
      */
     RecursiveDisallowed: PlainDescriptor<undefined>;
   };
   Utility: {
     /**
-     *Too many calls batched.
+     * Too many calls batched.
      */
     TooManyCalls: PlainDescriptor<undefined>;
   };
   Multisig: {
     /**
-     *Threshold must be 2 or greater.
+     * Threshold must be 2 or greater.
      */
     MinimumThreshold: PlainDescriptor<undefined>;
     /**
-     *Call is already approved by this signatory.
+     * Call is already approved by this signatory.
      */
     AlreadyApproved: PlainDescriptor<undefined>;
     /**
-     *Call doesn't need any (more) approvals.
+     * Call doesn't need any (more) approvals.
      */
     NoApprovalsNeeded: PlainDescriptor<undefined>;
     /**
-     *There are too few signatories in the list.
+     * There are too few signatories in the list.
      */
     TooFewSignatories: PlainDescriptor<undefined>;
     /**
-     *There are too many signatories in the list.
+     * There are too many signatories in the list.
      */
     TooManySignatories: PlainDescriptor<undefined>;
     /**
-     *The signatories were provided out of order; they should be ordered.
+     * The signatories were provided out of order; they should be ordered.
      */
     SignatoriesOutOfOrder: PlainDescriptor<undefined>;
     /**
-     *The sender was contained in the other signatories; it shouldn't be.
+     * The sender was contained in the other signatories; it shouldn't be.
      */
     SenderInSignatories: PlainDescriptor<undefined>;
     /**
-     *Multisig operation not found when attempting to cancel.
+     * Multisig operation not found when attempting to cancel.
      */
     NotFound: PlainDescriptor<undefined>;
     /**
-     *Only the account that originally created the multisig is able to cancel it.
+     * Only the account that originally created the multisig is able to cancel it.
      */
     NotOwner: PlainDescriptor<undefined>;
     /**
-     *No timepoint was given, yet the multisig operation is already underway.
+     * No timepoint was given, yet the multisig operation is already underway.
      */
     NoTimepoint: PlainDescriptor<undefined>;
     /**
-     *A different timepoint was given to the multisig operation that is underway.
+     * A different timepoint was given to the multisig operation that is underway.
      */
     WrongTimepoint: PlainDescriptor<undefined>;
     /**
-     *A timepoint was given, yet no multisig operation is underway.
+     * A timepoint was given, yet no multisig operation is underway.
      */
     UnexpectedTimepoint: PlainDescriptor<undefined>;
     /**
-     *The maximum weight information provided was too low.
+     * The maximum weight information provided was too low.
      */
     MaxWeightTooLow: PlainDescriptor<undefined>;
     /**
-     *The data to be stored is already stored.
+     * The data to be stored is already stored.
      */
     AlreadyStored: PlainDescriptor<undefined>;
   };
   Proxy: {
     /**
-     *There are too many proxies registered or too many announcements pending.
+     * There are too many proxies registered or too many announcements pending.
      */
     TooMany: PlainDescriptor<undefined>;
     /**
-     *Proxy registration not found.
+     * Proxy registration not found.
      */
     NotFound: PlainDescriptor<undefined>;
     /**
-     *Sender is not a proxy of the account to be proxied.
+     * Sender is not a proxy of the account to be proxied.
      */
     NotProxy: PlainDescriptor<undefined>;
     /**
-     *A call which is incompatible with the proxy type's filter was attempted.
+     * A call which is incompatible with the proxy type's filter was attempted.
      */
     Unproxyable: PlainDescriptor<undefined>;
     /**
-     *Account is already a proxy.
+     * Account is already a proxy.
      */
     Duplicate: PlainDescriptor<undefined>;
     /**
-     *Call may not be made by proxy because it may escalate its privileges.
+     * Call may not be made by proxy because it may escalate its privileges.
      */
     NoPermission: PlainDescriptor<undefined>;
     /**
-     *Announcement, if made at all, was made too recently.
+     * Announcement, if made at all, was made too recently.
      */
     Unannounced: PlainDescriptor<undefined>;
     /**
-     *Cannot add self as proxy.
+     * Cannot add self as proxy.
      */
     NoSelfProxy: PlainDescriptor<undefined>;
   };
   Broker: {
     /**
-     *The given region identity is not known.
+     * The given region identity is not known.
      */
     UnknownRegion: PlainDescriptor<undefined>;
     /**
-     *The owner of the region is not the origin.
+     * The owner of the region is not the origin.
      */
     NotOwner: PlainDescriptor<undefined>;
     /**
-     *The pivot point of the partition at or after the end of the region.
+     * The pivot point of the partition at or after the end of the region.
      */
     PivotTooLate: PlainDescriptor<undefined>;
     /**
-     *The pivot point of the partition at the beginning of the region.
+     * The pivot point of the partition at the beginning of the region.
      */
     PivotTooEarly: PlainDescriptor<undefined>;
     /**
-     *The pivot mask for the interlacing is not contained within the region's interlace mask.
+     * The pivot mask for the interlacing is not contained within the region's interlace mask.
      */
     ExteriorPivot: PlainDescriptor<undefined>;
     /**
-     *The pivot mask for the interlacing is void (and therefore unschedulable).
+     * The pivot mask for the interlacing is void (and therefore unschedulable).
      */
     VoidPivot: PlainDescriptor<undefined>;
     /**
-     *The pivot mask for the interlacing is complete (and therefore not a strict subset).
+     * The pivot mask for the interlacing is complete (and therefore not a strict subset).
      */
     CompletePivot: PlainDescriptor<undefined>;
     /**
-     *The workplan of the pallet's state is invalid. This indicates a state corruption.
+     * The workplan of the pallet's state is invalid. This indicates a state corruption.
      */
     CorruptWorkplan: PlainDescriptor<undefined>;
     /**
-     *There is no sale happening currently.
+     * There is no sale happening currently.
      */
     NoSales: PlainDescriptor<undefined>;
     /**
-     *The price limit is exceeded.
+     * The price limit is exceeded.
      */
     Overpriced: PlainDescriptor<undefined>;
     /**
-     *There are no cores available.
+     * There are no cores available.
      */
     Unavailable: PlainDescriptor<undefined>;
     /**
-     *The sale limit has been reached.
+     * The sale limit has been reached.
      */
     SoldOut: PlainDescriptor<undefined>;
     /**
-     *The renewal operation is not valid at the current time (it may become valid in the next
-     *sale).
+     * The renewal operation is not valid at the current time (it may become valid in the next
+     * sale).
      */
     WrongTime: PlainDescriptor<undefined>;
     /**
-     *Invalid attempt to renew.
+     * Invalid attempt to renew.
      */
     NotAllowed: PlainDescriptor<undefined>;
     /**
-     *This pallet has not yet been initialized.
+     * This pallet has not yet been initialized.
      */
     Uninitialized: PlainDescriptor<undefined>;
     /**
-     *The purchase cannot happen yet as the sale period is yet to begin.
+     * The purchase cannot happen yet as the sale period is yet to begin.
      */
     TooEarly: PlainDescriptor<undefined>;
     /**
-     *There is no work to be done.
+     * There is no work to be done.
      */
     NothingToDo: PlainDescriptor<undefined>;
     /**
-     *The maximum amount of reservations has already been reached.
+     * The maximum amount of reservations has already been reached.
      */
     TooManyReservations: PlainDescriptor<undefined>;
     /**
-     *The maximum amount of leases has already been reached.
+     * The maximum amount of leases has already been reached.
      */
     TooManyLeases: PlainDescriptor<undefined>;
     /**
-     *The revenue for the Instantaneous Core Sales of this period is not (yet) known and thus
-     *this operation cannot proceed.
+     * The revenue for the Instantaneous Core Sales of this period is not (yet) known and thus
+     * this operation cannot proceed.
      */
     UnknownRevenue: PlainDescriptor<undefined>;
     /**
-     *The identified contribution to the Instantaneous Core Pool is unknown.
+     * The identified contribution to the Instantaneous Core Pool is unknown.
      */
     UnknownContribution: PlainDescriptor<undefined>;
     /**
-     *The workload assigned for renewal is incomplete. This is unexpected and indicates a
-     *logic error.
+     * The workload assigned for renewal is incomplete. This is unexpected and indicates a
+     * logic error.
      */
     IncompleteAssignment: PlainDescriptor<undefined>;
     /**
-     *An item cannot be dropped because it is still valid.
+     * An item cannot be dropped because it is still valid.
      */
     StillValid: PlainDescriptor<undefined>;
     /**
-     *The history item does not exist.
+     * The history item does not exist.
      */
     NoHistory: PlainDescriptor<undefined>;
     /**
-     *No reservation of the given index exists.
+     * No reservation of the given index exists.
      */
     UnknownReservation: PlainDescriptor<undefined>;
     /**
-     *The renewal record cannot be found.
+     * The renewal record cannot be found.
      */
     UnknownRenewal: PlainDescriptor<undefined>;
     /**
-     *The lease expiry time has already passed.
+     * The lease expiry time has already passed.
      */
     AlreadyExpired: PlainDescriptor<undefined>;
     /**
-     *The configuration could not be applied because it is invalid.
+     * The configuration could not be applied because it is invalid.
      */
     InvalidConfig: PlainDescriptor<undefined>;
     /**
-     *The revenue must be claimed for 1 or more timeslices.
+     * The revenue must be claimed for 1 or more timeslices.
      */
     NoClaimTimeslices: PlainDescriptor<undefined>;
     /**
-     *The caller doesn't have the permission to enable or disable auto-renewal.
+     * The caller doesn't have the permission to enable or disable auto-renewal.
      */
     NoPermission: PlainDescriptor<undefined>;
     /**
-     *We reached the limit for auto-renewals.
+     * We reached the limit for auto-renewals.
      */
     TooManyAutoRenewals: PlainDescriptor<undefined>;
     /**
-     *Only cores which are assigned to a task can be auto-renewed.
+     * Only cores which are assigned to a task can be auto-renewed.
      */
     NonTaskAutoRenewal: PlainDescriptor<undefined>;
     /**
-     *Failed to get the sovereign account of a task.
+     * Failed to get the sovereign account of a task.
      */
     SovereignAccountNotFound: PlainDescriptor<undefined>;
     /**
-     *Attempted to disable auto-renewal for a core that didn't have it enabled.
+     * Attempted to disable auto-renewal for a core that didn't have it enabled.
      */
     AutoRenewalNotEnabled: PlainDescriptor<undefined>;
     /**
-     *Needed to prevent spam attacks.The amount of credits the user attempted to purchase is
-     *below `T::MinimumCreditPurchase`.
+     * Needed to prevent spam attacks.The amount of credits the user attempted to purchase is
+     * below `T::MinimumCreditPurchase`.
      */
     CreditPurchaseTooSmall: PlainDescriptor<undefined>;
   };
@@ -3792,6 +3794,7 @@ type IConstants = {
     MinimumCreditPurchase: PlainDescriptor<bigint>;
   };
 };
+type IViewFns = {};
 type IRuntimeCalls = {
   /**
    * API necessary for block authorship with aura.
@@ -4077,9 +4080,9 @@ type IRuntimeCalls = {
      *
      * # Arguments
      * * `message`: The message that'll be sent, necessary because most delivery fees are based on the
-     *   size of the message.
+     * size of the message.
      * * `destination`: The destination to send the message to. Different destinations may use
-     *   different senders that charge different fees.
+     * different senders that charge different fees.
      */
     query_delivery_fees: RuntimeDescriptor<
       [destination: XcmVersionedLocation, message: XcmVersionedXcm],
@@ -4231,6 +4234,7 @@ type PalletsTypedef = {
   __event: IEvent;
   __error: IError;
   __const: IConstants;
+  __view: IViewFns;
 };
 type IDescriptors = {
   descriptors: {
@@ -4244,11 +4248,13 @@ type IDescriptors = {
 };
 declare const _allDescriptors: IDescriptors;
 export default _allDescriptors;
+export type Wnd_coretimeApis = ApisFromDef<IRuntimeCalls>;
 export type Wnd_coretimeQueries = QueryFromPalletsDef<PalletsTypedef>;
 export type Wnd_coretimeCalls = TxFromPalletsDef<PalletsTypedef>;
 export type Wnd_coretimeEvents = EventsFromPalletsDef<PalletsTypedef>;
 export type Wnd_coretimeErrors = ErrorsFromPalletsDef<PalletsTypedef>;
 export type Wnd_coretimeConstants = ConstFromPalletsDef<PalletsTypedef>;
+export type Wnd_coretimeViewFns = ViewFnsFromPalletsDef<PalletsTypedef>;
 export type Wnd_coretimeCallData = Anonymize<Iap7tiv560me91> & {
   value: {
     type: string;
@@ -4261,8 +4267,10 @@ export type Wnd_coretimeWhitelistEntry =
   | `tx.${NestedKey<PalletsTypedef['__tx']>}`
   | `event.${NestedKey<PalletsTypedef['__event']>}`
   | `error.${NestedKey<PalletsTypedef['__error']>}`
-  | `const.${NestedKey<PalletsTypedef['__const']>}`;
-type PalletKey = `*.${keyof (IStorage & ICalls & IEvent & IError & IConstants & IRuntimeCalls)}`;
+  | `const.${NestedKey<PalletsTypedef['__const']>}`
+  | `view.${NestedKey<PalletsTypedef['__view']>}`;
+type PalletKey =
+  `*.${keyof (IStorage & ICalls & IEvent & IError & IConstants & IRuntimeCalls & IViewFns)}`;
 type NestedKey<D extends Record<string, Record<string, any>>> =
   | '*'
   | {
