@@ -146,10 +146,9 @@ const getSalePhaseEndpointsFx = createEffect(
     if (!config) return null;
 
     // In the new release everything is defined in relay chain blocks.
-    const blockTime =
-      usesRelayChainBlocks(network, saleInfo)
-        ? RELAY_CHAIN_BLOCK_TIME
-        : coretimeChainBlockTime(network);
+    const blockTime = usesRelayChainBlocks(network, saleInfo)
+      ? RELAY_CHAIN_BLOCK_TIME
+      : coretimeChainBlockTime(network);
 
     const saleEndTimestamp =
       saleStartTimestamp -

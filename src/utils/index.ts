@@ -146,7 +146,7 @@ export const timestampToTimeslice = async (
 export const blockToTimestamp = async (
   blockNumber: number,
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata,
+  metadata: RelayMetadata | CoretimeMetadata
 ): Promise<bigint | null> => {
   if (!connection.client || connection.status !== 'connected') return null;
 
@@ -156,7 +156,7 @@ export const blockToTimestamp = async (
   const typedApi = client.getTypedApi(metadata);
   const currentBlockNumber = await typedApi.query.System.Number.getValue();
   const timestamp = await typedApi.query.Timestamp.Now.getValue();
-  let blockTime = ((await typedApi.constants.Timestamp.MinimumPeriod()) * BigInt(2));
+  let blockTime = (await typedApi.constants.Timestamp.MinimumPeriod()) * BigInt(2);
 
   blockTime = blockTime === BigInt(0) ? BigInt(6000) : blockTime;
 
@@ -239,8 +239,9 @@ export const KUSAMA_SALE_CYCLE_WITH_UPDATE = 17;
 
 // Returns whether the coretime chain has switched to using relay chain blocks.
 export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): boolean => {
-  if(network === Network.WESTEND) return true;
-  if(network === Network.KUSAMA && saleInfo.saleCycle >= KUSAMA_SALE_CYCLE_WITH_UPDATE) return true;
+  if (network === Network.WESTEND) return true;
+  if (network === Network.KUSAMA && saleInfo.saleCycle >= KUSAMA_SALE_CYCLE_WITH_UPDATE)
+    return true;
 
   return false;
-}
+};

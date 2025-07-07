@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { TableComponent } from '../elements/TableComponent';
 import styles from './sale-history-modal.module.scss';
-import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted, usesRelayChainBlocks } from '@/utils';
+import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
 import { $network, $connections } from '@/api/connection';
 import { type SaleInfo as Sale } from '@/coretime/saleInfo';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
@@ -54,11 +54,7 @@ const SaleHistoryModal: React.FC<SaleHistoryModalProps> = ({
       if (!metadata) return;
 
       const regionBeginDate = await timesliceToTimestamp(sale.regionBegin, network, connections);
-      const saleStartDate = await blockToTimestamp(
-        sale.saleStart,
-        connection,
-        metadata.relayChain,
-      );
+      const saleStartDate = await blockToTimestamp(sale.saleStart, connection, metadata.relayChain);
 
       setRegionBegin(regionBeginDate ? new Date(Number(regionBeginDate)).toLocaleString() : '-');
       setLength((sale.regionEnd - sale.regionBegin).toString());

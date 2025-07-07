@@ -98,13 +98,13 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            metadata.relayChain,
+            metadata.relayChain
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                metadata.relayChain                
+                metadata.relayChain
               )
             : null;
 
