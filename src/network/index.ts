@@ -10,12 +10,15 @@ import {
   wnd,
   wnd_coretime,
   dot_people,
+  ksm_people,
+  wnd_people,
+  pas_people,
 } from '@polkadot-api/descriptors';
 
 type NetworkChainIds = {
   relayChain: ChainId;
   coretimeChain: ChainId;
-  regionxChain: ChainId;
+  peopleChain: ChainId;
 };
 
 export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd;
@@ -30,44 +33,40 @@ export type PolkadotPeople = typeof dot_people;
 export type NetworkMetadata = {
   relayChain: RelayMetadata;
   coretimeChain: CoretimeMetadata;
-  regionxChain: PolkadotPeople;
+  peopleChain: PolkadotPeople;
 };
 
-// Get all the relevant chain ids of a network.
-//
-// This will be the coretime chain, relay chain and the regionx chain.
 export const getNetworkChainIds = (network: Network): NetworkChainIds | null => {
   switch (network) {
     case Network.POLKADOT:
       return {
         relayChain: chains.polkadot.chainId,
         coretimeChain: chains.polkadotCoretime.chainId,
-        regionxChain: chains.polkadotPeople.chainId, // TODO
+        peopleChain: chains.polkadotPeople.chainId,
       };
     case Network.KUSAMA:
       return {
         relayChain: chains.kusama.chainId,
         coretimeChain: chains.kusamaCoretime.chainId,
-        regionxChain: chains.polkadotPeople.chainId,
+        peopleChain: chains.peopleKusama.chainId,
       };
     case Network.PASEO:
       return {
         relayChain: chains.paseo.chainId,
         coretimeChain: chains.paseoCoretime.chainId,
-        regionxChain: chains.polkadotPeople.chainId, // TODO
+        peopleChain: chains.peoplePaseo.chainId,
       };
     case Network.WESTEND:
       return {
         relayChain: chains.westend.chainId,
         coretimeChain: chains.westendCoretime.chainId,
-        regionxChain: chains.polkadotPeople.chainId, // TODO
+        peopleChain: chains.peopleWestend.chainId,
       };
     default:
       return null;
   }
 };
 
-// Returns the coretime indexer url.
 export const getNetworkCoretimeIndexer = (network: Network): string => {
   switch (network) {
     case Network.POLKADOT:
@@ -89,25 +88,25 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: dot,
         coretimeChain: dot_coretime,
-        regionxChain: dot_people, // TODO
+        peopleChain: dot_people,
       };
     case Network.KUSAMA:
       return {
         relayChain: ksm,
         coretimeChain: ksm_coretime,
-        regionxChain: dot_people,
+        peopleChain: ksm_people,
       };
     case Network.PASEO:
       return {
         relayChain: pas,
         coretimeChain: pas_coretime,
-        regionxChain: dot_people, // TODO
+        peopleChain: pas_people,
       };
     case Network.WESTEND:
       return {
         relayChain: wnd,
         coretimeChain: wnd_coretime,
-        regionxChain: dot_people, // TODO
+        peopleChain: wnd_people,
       };
     default:
       return null;

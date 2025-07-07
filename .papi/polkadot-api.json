@@ -46,6 +46,21 @@
       "wsUrl": "wss://sys.ibp.network/people-polkadot",
       "metadata": ".papi/metadata/dot_people.scale",
       "genesis": "0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008"
+    },
+    "ksm_people": {
+      "wsUrl": "wss://sys.ibp.network/people-kusama",
+      "metadata": ".papi/metadata/ksm_people.scale",
+      "genesis": "0xc1af4cb4eb3918e5db15086c0cc5ec17fb334f728b7c65dd44bfe1e174ff8b3f"
+    },
+    "wnd_people": {
+      "wsUrl": "wss://sys.ibp.network/people-westend",
+      "metadata": ".papi/metadata/wnd_people.scale",
+      "genesis": "0x1eb6fb0ba5187434de017a70cb84d4f47142df1d571d0ef9e7e1407f2b80b93c"
+    },
+    "pas_people": {
+      "wsUrl": "wss://sys.ibp.network/people-paseo",
+      "metadata": ".papi/metadata/pas_people.scale",
+      "genesis": "0xe6c30d6e148f250b887105237bcaa5cb9f16dd203bf7b5b9d4f1da7387cb86ec"
     }
   }
 }
