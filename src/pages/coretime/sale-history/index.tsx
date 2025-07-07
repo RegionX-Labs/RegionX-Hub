@@ -12,7 +12,7 @@ import {
   PurchaseHistoryItem,
 } from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
-import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
+import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted, usesRelayChainBlocks, KUSAMA_SALE_CYCLE_WITH_UPDATE } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
 
@@ -74,16 +74,17 @@ const SaleHistoryPage = () => {
 
       const chainIds = getNetworkChainIds(network);
       if (!chainIds) return;
-      const connection =
-        network === Network.WESTEND || network === Network.KUSAMA
-          ? connections[chainIds.relayChain]
-          : connections[chainIds.coretimeChain];
-      if (!connection) return;
-      const metadata = getNetworkMetadata(network);
-      if (!metadata) return;
-
       const processed = await Promise.all(
         saleInfo.map(async (sale: Sale) => {
+          const connection =
+            usesRelayChainBlocks(network, sale)
+              ? connections[chainIds.relayChain]
+              : connections[chainIds.coretimeChain];
+
+          if (!connection) return;
+          const metadata = getNetworkMetadata(network);
+          if (!metadata) return;
+
           const regionBeginTimestamp = await timesliceToTimestamp(
             sale.regionBegin,
             network,
@@ -98,7 +99,7 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            network === Network.WESTEND || network === Network.KUSAMA
+            network === Network.WESTEND || (network === Network.KUSAMA && sale.saleCycle > KUSAMA_SALE_CYCLE_WITH_UPDATE)
               ? metadata.relayChain
               : metadata.coretimeChain,
             network
@@ -107,7 +108,7 @@ const SaleHistoryPage = () => {
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                network === Network.WESTEND || network === Network.KUSAMA
+                usesRelayChainBlocks(network, sale)
                   ? metadata.relayChain
                   : metadata.coretimeChain,
                 network
