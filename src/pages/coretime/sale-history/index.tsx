@@ -75,7 +75,7 @@ const SaleHistoryPage = () => {
       const chainIds = getNetworkChainIds(network);
       if (!chainIds) return;
       const connection =
-        network === Network.WESTEND || network === Network.KUSAMA
+        network === Network.WESTEND
           ? connections[chainIds.relayChain]
           : connections[chainIds.coretimeChain];
       if (!connection) return;
@@ -98,19 +98,13 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            network === Network.WESTEND || network === Network.KUSAMA
-              ? metadata.relayChain
-              : metadata.coretimeChain,
-            network
+            metadata.relayChain
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                network === Network.WESTEND || network === Network.KUSAMA
-                  ? metadata.relayChain
-                  : metadata.coretimeChain,
-                network
+                metadata.relayChain
               )
             : null;
 
