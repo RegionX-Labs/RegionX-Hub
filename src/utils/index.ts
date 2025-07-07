@@ -156,7 +156,9 @@ export const blockToTimestamp = async (
   const typedApi = client.getTypedApi(metadata);
   const currentBlockNumber = await typedApi.query.System.Number.getValue();
   const timestamp = await typedApi.query.Timestamp.Now.getValue();
-  const blockTime = await typedApi.constants.Timestamp.MinimumPeriod() ?? 6000;
+  let blockTime = ((await typedApi.constants.Timestamp.MinimumPeriod()) * BigInt(2));
+
+  blockTime = blockTime === BigInt(0) ? BigInt(6000) : blockTime;
 
   const estimatedTimestamp =
     timestamp + BigInt((BigInt(blockNumber) - BigInt(currentBlockNumber)) * blockTime);
