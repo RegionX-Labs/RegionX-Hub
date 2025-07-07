@@ -6,7 +6,7 @@ import {
   getNetworkChainIds,
   getNetworkMetadata,
 } from '@/network';
-import { PolkadotPeople } from '@/network';
+import { PeopleMetadata } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
@@ -103,7 +103,7 @@ export const getAccountDataFx = createEffect(
 
 const fetchAccountData = async (
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata | PolkadotPeople,
+  metadata: RelayMetadata | CoretimeMetadata | PeopleMetadata,
   account: string
 ): Promise<AccountData | null> => {
   const client = connection.client;

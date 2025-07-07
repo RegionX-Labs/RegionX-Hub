@@ -28,12 +28,16 @@ export type CoretimeMetadata =
   | typeof pas_coretime
   | typeof wnd_coretime;
 
-export type PolkadotPeople = typeof dot_people;
+export type PeopleMetadata =
+  | typeof dot_people
+  | typeof ksm_people
+  | typeof wnd_people
+  | typeof pas_people;
 
 export type NetworkMetadata = {
   relayChain: RelayMetadata;
   coretimeChain: CoretimeMetadata;
-  peopleChain: PolkadotPeople;
+  peopleChain: PeopleMetadata;
 };
 
 // Get all the relevant chain ids of a network.
