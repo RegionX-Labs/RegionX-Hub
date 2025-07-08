@@ -146,7 +146,7 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
 
       if (!isOriginChainValid) onChange(filteredNetworks[0].value);
     }
-  }, [network]);
+  }, [filteredNetworks, selectedValue, onChange]);
 
   return (
     <Select<ChainId>
