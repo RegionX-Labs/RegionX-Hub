@@ -23,7 +23,15 @@ export const getAccountIdentitiesFx = createEffect(async () => {
 
   for (const { address } of accounts) {
     const identityOpt = await api.query.Identity.IdentityOf.getValue(address);
-    const name = identityOpt?.info?.display?.toHuman?.() ?? null;
+    const name =
+      identityOpt &&
+      'info' in identityOpt &&
+      identityOpt.info &&
+      'display' in identityOpt.info &&
+      identityOpt.info.display &&
+      typeof identityOpt.info.display.toHuman === 'function'
+        ? identityOpt.info.display.toHuman()
+        : null;
     if (name) identities[address] = name;
   }
 
