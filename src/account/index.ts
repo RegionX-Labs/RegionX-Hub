@@ -6,7 +6,6 @@ import {
   getNetworkChainIds,
   getNetworkMetadata,
 } from '@/network';
-import { PeopleMetadata } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
@@ -22,7 +21,6 @@ export type MultiChainAccountData = {
   account: string;
   relayChainData: AccountData;
   coretimeChainData: AccountData;
-  peopleChainData: AccountData;
 };
 
 type AccountData = {
@@ -34,76 +32,52 @@ type AccountData = {
 
 export const $accountData = createStore<Record<string, MultiChainAccountData | null>>({});
 
-export const getAccountDataFx = createEffect(
+const getAccountDataFx = createEffect(
   async (payload: DataRequestPayload): Promise<MultiChainAccountData | null> => {
     const { account, network, connections } = payload;
 
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) {
-      console.error('[Account Fetch] Network chain IDs not found');
-      return null;
+      throw new Error('Network chain IDs not found');
     }
 
     const relayConnection = connections[networkChainIds.relayChain];
     const coretimeConnection = connections[networkChainIds.coretimeChain];
-    const peopleConnection = connections[networkChainIds.peopleChain];
-
     if (
       !relayConnection ||
-      !relayConnection.client ||
-      relayConnection.status !== 'connected' ||
       !coretimeConnection ||
-      !coretimeConnection.client ||
-      coretimeConnection.status !== 'connected' ||
-      !peopleConnection ||
-      !peopleConnection.client ||
-      peopleConnection.status !== 'connected'
+      !relayConnection.client ||
+      !coretimeConnection ||
+      relayConnection.status !== 'connected' ||
+      coretimeConnection.status !== 'connected'
     ) {
-      console.error('[Account Fetch] One or more chain connections are unavailable', {
-        relay: relayConnection?.status,
-        coretime: coretimeConnection?.status,
-        people: peopleConnection?.status,
-      });
-      return null;
+      throw new Error('Connection not available');
     }
-
     const metadata = getNetworkMetadata(network);
     if (!metadata) {
-      console.error('[Account Fetch] Network metadata not found');
-      return null;
+      throw new Error('Network metadata not found');
     }
 
-    const [relayData, coretimeData, peopleData] = await Promise.all([
-      fetchAccountData(relayConnection, metadata.relayChain, account),
-      fetchAccountData(coretimeConnection, metadata.coretimeChain, account),
-      fetchAccountData(peopleConnection, metadata.peopleChain, account),
-    ]);
+    const _relayData = await fetchAccountData(relayConnection, metadata.relayChain, account);
+    const _coretimeData = await fetchAccountData(
+      coretimeConnection,
+      metadata.coretimeChain,
+      account
+    );
 
-    if (!relayData || !coretimeData || !peopleData) {
-      console.warn('[Account Fetch] Some data could not be fetched', {
-        relayData,
-        coretimeData,
-        peopleData,
-      });
-      return null;
-    }
-
-    console.log('[Account Fetch] Relay chain data:', relayData);
-    console.log('[Account Fetch] Coretime chain data:', coretimeData);
-    console.log('[Account Fetch] People chain data:', peopleData);
+    if (!_relayData || !_coretimeData) return null;
 
     return {
       account,
-      relayChainData: relayData,
-      coretimeChainData: coretimeData,
-      peopleChainData: peopleData,
+      coretimeChainData: _coretimeData,
+      relayChainData: _relayData,
     };
   }
 );
 
 const fetchAccountData = async (
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata | PeopleMetadata,
+  metadata: RelayMetadata | CoretimeMetadata,
   account: string
 ): Promise<AccountData | null> => {
   const client = connection.client;
@@ -112,6 +86,7 @@ const fetchAccountData = async (
   }
 
   const res = await client.getTypedApi(metadata).query.System.Account.getValue(account);
+
   return res.data;
 };
 
