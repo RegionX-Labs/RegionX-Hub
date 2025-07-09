@@ -29,7 +29,9 @@ export const getAccountIdentitiesFx = createEffect(async (payload: Payload) => {
   const identities: Record<string, string> = {};
 
   for (const { address } of accounts) {
-    const identityOpt = await api.query.Identity.IdentityOf.getValue('126X27SbhrV19mBFawys3ovkyBS87SGfYwtwa8J2FjHrtbmA');
+    const identityOpt = await api.query.Identity.IdentityOf.getValue(
+      '126X27SbhrV19mBFawys3ovkyBS87SGfYwtwa8J2FjHrtbmA'
+    );
     const name = identityOpt?.info?.display.value
       ? ((identityOpt.info.display.value as any)?.asText?.() ?? null)
       : null;

@@ -1,6 +1,8 @@
-// src/components/AccountSelector/index.tsx
+'use client';
+
 import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
+import Image from 'next/image';
 import styles from './account.module.scss';
 import Select from '../elements/Select';
 import {
@@ -38,15 +40,25 @@ const AccountSelector = () => {
   const options = accounts.map((account) => {
     const identityName = identities[account.address];
     const hasIdentity = !!identityName;
-    const display = `${identityName || account.name || 'Unknown'}${hasIdentity ? ' ✅' : ''}`;
+
+    const label = `${identityName || account.name || 'Unknown'} (${formatAddress(account.address)})`;
 
     return {
       key: account.address,
       value: account.address,
-      label: `${display} (${formatAddress(account.address)})`,
+      label,
       icon: (
         <div className={styles.icon}>
           <Identicon value={account.address} size={24} theme='polkadot' />
+          {hasIdentity && (
+            <Image
+              src='/verified.png'
+              alt='Verified'
+              width={16}
+              height={16}
+              className={styles.verifiedIcon}
+            />
+          )}
         </div>
       ),
     };

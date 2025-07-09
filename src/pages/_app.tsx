@@ -90,7 +90,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [theme]);
 
   useEffect(() => {
-    identityRequested({accounts: loadedAccounts, network, connections})
+    identityRequested({ accounts: loadedAccounts, network, connections });
   }, [connections, network, loadedAccounts]);
 
   useEffect(() => {

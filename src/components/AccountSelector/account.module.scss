@@ -1,6 +1,7 @@
 .selectWrapper {
   width: 270px;
   white-space: nowrap;
+
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -9,5 +10,28 @@
 .icon {
   display: flex;
   align-items: center;
+  gap: 6px; // space between identicon and verified icon
   margin-right: 8px;
+}
+
+.optionContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.addressLine {
+  font-size: 12px;
+  color: #888;
+}
+
+.verifiedIcon {
+  width: 16px;
+  height: 16px;
 }
