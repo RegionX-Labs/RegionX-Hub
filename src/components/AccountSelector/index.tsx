@@ -48,14 +48,19 @@ const AccountSelector = () => {
       value: account.address,
       label,
       icon: (
-        <div className={styles.icon}>
-          <Identicon value={account.address} size={24} theme='polkadot' />
+        <div className={styles.iconWrapper}>
+          <Identicon
+            value={account.address}
+            size={24}
+            theme='polkadot'
+            className={styles.identicon}
+          />
           {hasIdentity && (
             <Image
               src='/verified.png'
               alt='Verified'
-              width={16}
-              height={16}
+              width={100}
+              height={100}
               className={styles.verifiedIcon}
             />
           )}

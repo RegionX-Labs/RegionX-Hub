@@ -7,11 +7,19 @@
   }
 }
 
-.icon {
+.iconWrapper {
   display: flex;
   align-items: center;
-  gap: 6px; // space between identicon and verified icon
+}
+
+.identicon {
   margin-right: 8px;
+}
+
+.verifiedIcon {
+  width: 24px;
+  height: 24px;
+  margin-left: -5px;
 }
 
 .optionContent {
@@ -32,6 +40,6 @@
 }
 
 .verifiedIcon {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
 }
