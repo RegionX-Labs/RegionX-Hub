@@ -1,14 +1,21 @@
-import { createEffect, createStore, sample } from 'effector';
-import { $connections, $network } from '@/api/connection';
-import { $loadedAccounts } from '@/wallet';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { createEffect, createEvent, createStore, sample } from 'effector';
+import { Connection } from '@/api/connection';
+import { ChainId, getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { InjectedPolkadotAccount } from 'polkadot-api/pjs-signer';
+import { Network } from '@/types';
+import { PolkadotClient, TypedApi } from 'polkadot-api';
+
+type Payload = {
+  accounts: InjectedPolkadotAccount[];
+  network: Network;
+  connections: Record<ChainId, Connection>;
+};
+export const identityRequested = createEvent<Payload>();
 
 export const $accountIdentities = createStore<Record<string, string>>({});
 
-export const getAccountIdentitiesFx = createEffect(async () => {
-  const network = $network.getState();
-  const connections = $connections.getState();
-  const accounts = $loadedAccounts.getState();
+export const getAccountIdentitiesFx = createEffect(async (payload: Payload) => {
+  const { network, accounts, connections } = payload;
 
   const chainIds = getNetworkChainIds(network);
   const metadata = getNetworkMetadata(network);
@@ -22,9 +29,9 @@ export const getAccountIdentitiesFx = createEffect(async () => {
   const identities: Record<string, string> = {};
 
   for (const { address } of accounts) {
-    const identityOpt = await api.query.Identity.IdentityOf.getValue(address);
-    const name = identityOpt?.info?.display
-      ? ((identityOpt.info.display as any)?.toHuman?.() ?? null)
+    const identityOpt = await api.query.Identity.IdentityOf.getValue('126X27SbhrV19mBFawys3ovkyBS87SGfYwtwa8J2FjHrtbmA');
+    const name = identityOpt?.info?.display.value
+      ? ((identityOpt.info.display.value as any)?.asText?.() ?? null)
       : null;
 
     if (name) identities[address] = name;
@@ -34,11 +41,12 @@ export const getAccountIdentitiesFx = createEffect(async () => {
 });
 
 sample({
-  clock: $loadedAccounts.updates,
+  clock: identityRequested,
   target: getAccountIdentitiesFx,
 });
 
 sample({
   clock: getAccountIdentitiesFx.doneData,
+  fn: (identities) => identities,
   target: $accountIdentities,
 });
