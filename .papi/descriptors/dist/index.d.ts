@@ -22,6 +22,18 @@ export type * from './wnd';
 import { default as wnd_coretime } from './wnd_coretime';
 export { wnd_coretime };
 export type * from './wnd_coretime';
+import { default as ksm_people } from './ksm_people';
+export { ksm_people };
+export type * from './ksm_people';
+import { default as pas_people } from './pas_people';
+export { pas_people };
+export type * from './pas_people';
+import { default as wnd_people } from './wnd_people';
+export { wnd_people };
+export type * from './wnd_people';
+import { default as dot_people } from './dot_people';
+export { dot_people };
+export type * from './dot_people';
 export {
   DigestItem,
   Phase,

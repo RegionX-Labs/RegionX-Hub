@@ -15,12 +15,14 @@ import {
   walletSelected,
   restoreSelectedAccount,
   $selectedAccount,
+  $loadedAccounts,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
 import Head from 'next/head';
+import { identityRequested } from '@/account/accountIdentity';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -31,6 +33,7 @@ function App({ Component, pageProps }: AppProps) {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
+  const loadedAccounts = useUnit($loadedAccounts);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
 
@@ -85,6 +88,10 @@ function App({ Component, pageProps }: AppProps) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    identityRequested({ accounts: loadedAccounts, network, connections });
+  }, [connections, network, loadedAccounts]);
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {

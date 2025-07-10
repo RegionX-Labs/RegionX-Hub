@@ -21397,10 +21397,11 @@ export type I70u6ma6po0va2 = AnonymousEnum<{
   Waiting: undefined;
 }>;
 export type I4ftk0glls7946 = {
-  judgements: Array<[number, IdentityJudgement]>;
+  judgements: Anonymize<I5lbssihti472g>;
   deposit: bigint;
   info: Anonymize<I1o57snqt6f4v5>;
 };
+export type I5lbssihti472g = Array<[number, IdentityJudgement]>;
 export type IdentityJudgement = Enum<{
   Unknown: undefined;
   FeePaid: bigint;
@@ -21418,7 +21419,7 @@ export type I1o57snqt6f4v5 = {
   web: IdentityData;
   riot: IdentityData;
   email: IdentityData;
-  pgp_fingerprint?: FixedSizeBinary<20> | undefined;
+  pgp_fingerprint?: Anonymize<If7b8240vgt2q5>;
   image: IdentityData;
   twitter: IdentityData;
 };
@@ -21463,6 +21464,7 @@ export type IdentityData = Enum<{
   ShaThree256: FixedSizeBinary<32>;
 }>;
 export declare const IdentityData: GetEnum<IdentityData>;
+export type If7b8240vgt2q5 = FixedSizeBinary<20> | undefined;
 export type I910puuahutflf = [SS58String, IdentityData];
 export type I4nfjdef0ibh44 = [bigint, Anonymize<Ia2lhg7l2hilo3>];
 export type I74af64m08r6as = Array<
@@ -25464,6 +25466,2257 @@ export type I7bh77bdc58m4f = ResultPayload<
   {
     execution_result: Anonymize<I6uq5gb4s805s7>;
     emitted_events: Anonymize<Iq5j4c5t8k4mv>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type Iftdsra7kkk2o6 = Array<{
+  phase: Phase;
+  event: Anonymize<Ibtlpf85s9r8bt>;
+  topics: Anonymize<Ic5m5lp1oioo8r>;
+}>;
+export type Ibtlpf85s9r8bt = AnonymousEnum<{
+  System: Anonymize<I5ejtf3ir303ml>;
+  ParachainSystem: Anonymize<Icbsekf57miplo>;
+  MultiBlockMigrations: Anonymize<I94co7vj7h6bo>;
+  Balances: Anonymize<Iao8h4hv7atnq3>;
+  TransactionPayment: TransactionPaymentEvent;
+  CollatorSelection: Anonymize<I4srakrmf0fspo>;
+  Session: SessionEvent;
+  XcmpQueue: Anonymize<Idsqc7mhp6nnle>;
+  PolkadotXcm: Anonymize<Iel5f66clbekc3>;
+  CumulusXcm: Anonymize<Ihpdgvt7vs2cb>;
+  MessageQueue: Anonymize<I2kosejppk3jon>;
+  Utility: Anonymize<I1jkklr80fu98c>;
+  Multisig: Anonymize<I4pto8b66e54jg>;
+  Proxy: Anonymize<Idt015j3h7eif5>;
+  Identity: Anonymize<I2au2or9cskfoi>;
+}>;
+export type I5ejtf3ir303ml = AnonymousEnum<{
+  /**
+   * An extrinsic completed successfully.
+   */
+  ExtrinsicSuccess: Anonymize<Ia82mnkmeo2rhc>;
+  /**
+   * An extrinsic failed.
+   */
+  ExtrinsicFailed: Anonymize<I5qc7341tuh6m0>;
+  /**
+   * `:code` was updated.
+   */
+  CodeUpdated: undefined;
+  /**
+   * A new account was created.
+   */
+  NewAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * An account was reaped.
+   */
+  KilledAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * On on-chain remark happened.
+   */
+  Remarked: Anonymize<I855j4i3kr8ko1>;
+  /**
+   * An upgrade was authorized.
+   */
+  UpgradeAuthorized: Anonymize<Ibgl04rn6nbfm6>;
+}>;
+export type I5qc7341tuh6m0 = {
+  dispatch_error: Anonymize<I2ip01vbaro6bh>;
+  dispatch_info: Anonymize<Ic9s8f85vjtncc>;
+};
+export type I2ip01vbaro6bh = AnonymousEnum<{
+  Other: undefined;
+  CannotLookup: undefined;
+  BadOrigin: undefined;
+  Module: Enum<{
+    System: Anonymize<I5o0s7c8q1cc9b>;
+    ParachainSystem: Anonymize<I9p95gln24a0rn>;
+    Timestamp: undefined;
+    ParachainInfo: undefined;
+    MultiBlockMigrations: Anonymize<Iaaqq5jevtahm8>;
+    Balances: Anonymize<Idj13i7adlomht>;
+    TransactionPayment: undefined;
+    Authorship: undefined;
+    CollatorSelection: Anonymize<I36bcffk2387dv>;
+    Session: Anonymize<I1e07dgbaqd1sq>;
+    Aura: undefined;
+    AuraExt: undefined;
+    XcmpQueue: Anonymize<Idnnbndsjjeqqs>;
+    PolkadotXcm: Anonymize<I87j95aq93d7dq>;
+    CumulusXcm: undefined;
+    MessageQueue: Anonymize<I5iupade5ag2dp>;
+    Utility: Anonymize<I8dt2g2hcrgh36>;
+    Multisig: Anonymize<Ia76qmhhg4jvb9>;
+    Proxy: Anonymize<Iuvt54ei4cehc>;
+    Identity: Anonymize<Ib8gja1crqq8kd>;
+  }>;
+  ConsumerRemaining: undefined;
+  NoProviders: undefined;
+  TooManyConsumers: undefined;
+  Token: TokenError;
+  Arithmetic: ArithmeticError;
+  Transactional: TransactionalError;
+  Exhausted: undefined;
+  Corruption: undefined;
+  Unavailable: undefined;
+  RootNotAllowed: undefined;
+  Trie: Anonymize<Idh4cj79bvroj8>;
+}>;
+export type I1jkklr80fu98c = AnonymousEnum<{
+  /**
+   * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+   * well as the error.
+   */
+  BatchInterrupted: Anonymize<I34b0nakvfcmte>;
+  /**
+   * Batch of dispatches completed fully with no error.
+   */
+  BatchCompleted: undefined;
+  /**
+   * Batch of dispatches completed but has errors.
+   */
+  BatchCompletedWithErrors: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with no error.
+   */
+  ItemCompleted: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with error.
+   */
+  ItemFailed: Anonymize<Ib720hthqtt8kt>;
+  /**
+   * A call was dispatched.
+   */
+  DispatchedAs: Anonymize<I9j3sgj1c9kjkp>;
+}>;
+export type I34b0nakvfcmte = {
+  index: number;
+  error: Anonymize<I2ip01vbaro6bh>;
+};
+export type Ib720hthqtt8kt = {
+  error: Anonymize<I2ip01vbaro6bh>;
+};
+export type I9j3sgj1c9kjkp = {
+  result: Anonymize<I1cknglbnit9er>;
+};
+export type I1cknglbnit9er = ResultPayload<undefined, Anonymize<I2ip01vbaro6bh>>;
+export type I4pto8b66e54jg = AnonymousEnum<{
+  /**
+   * A new multisig operation has begun.
+   */
+  NewMultisig: Anonymize<Iep27ialq4a7o7>;
+  /**
+   * A multisig operation has been approved by someone.
+   */
+  MultisigApproval: Anonymize<Iasu5jvoqr43mv>;
+  /**
+   * A multisig operation has been executed.
+   */
+  MultisigExecuted: Anonymize<I25gao91mt74g2>;
+  /**
+   * A multisig operation has been cancelled.
+   */
+  MultisigCancelled: Anonymize<I5qolde99acmd1>;
+}>;
+export type I25gao91mt74g2 = {
+  approving: SS58String;
+  timepoint: Anonymize<Itvprrpb0nm3o>;
+  multisig: SS58String;
+  call_hash: FixedSizeBinary<32>;
+  result: Anonymize<I1cknglbnit9er>;
+};
+export type Idt015j3h7eif5 = AnonymousEnum<{
+  /**
+   * A proxy was executed correctly, with the given.
+   */
+  ProxyExecuted: Anonymize<I9j3sgj1c9kjkp>;
+  /**
+   * A pure account has been created by new proxy with given
+   * disambiguation index and proxy type.
+   */
+  PureCreated: Anonymize<I7ntcg8dtn6d9g>;
+  /**
+   * An announcement was placed to make a call in the future.
+   */
+  Announced: Anonymize<I2ur0oeqg495j8>;
+  /**
+   * A proxy was added.
+   */
+  ProxyAdded: Anonymize<I8v2su1f60qoae>;
+  /**
+   * A proxy was removed.
+   */
+  ProxyRemoved: Anonymize<I8v2su1f60qoae>;
+}>;
+export type I7ntcg8dtn6d9g = {
+  pure: SS58String;
+  who: SS58String;
+  proxy_type: Anonymize<Ieuemnllefri8h>;
+  disambiguation_index: number;
+};
+export type Ieuemnllefri8h = AnonymousEnum<{
+  Any: undefined;
+  NonTransfer: undefined;
+  CancelProxy: undefined;
+  Identity: undefined;
+  IdentityJudgement: undefined;
+  Collator: undefined;
+}>;
+export type I8v2su1f60qoae = {
+  delegator: SS58String;
+  delegatee: SS58String;
+  proxy_type: Anonymize<Ieuemnllefri8h>;
+  delay: number;
+};
+export type I48e2fe747rjco = [
+  Array<{
+    delegate: SS58String;
+    proxy_type: Anonymize<Ieuemnllefri8h>;
+    delay: number;
+  }>,
+  bigint,
+];
+export type Ib1i64ek701lf6 = {
+  judgements: Anonymize<I5lbssihti472g>;
+  deposit: bigint;
+  info: Anonymize<Ibr5qtvptt8691>;
+};
+export type Ibr5qtvptt8691 = {
+  display: IdentityData;
+  legal: IdentityData;
+  web: IdentityData;
+  matrix: IdentityData;
+  email: IdentityData;
+  pgp_fingerprint?: Anonymize<If7b8240vgt2q5>;
+  image: IdentityData;
+  twitter: IdentityData;
+  github: IdentityData;
+  discord: IdentityData;
+};
+export type I6h67tss5tpebe = AnonymousEnum<{
+  /**
+   * Send a batch of dispatch calls.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   *
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  batch: Anonymize<I2r7egdt2s4kg>;
+  /**
+   * Send a call through an indexed pseudonym of the sender.
+   *
+   * Filter from origin are passed along. The call will be dispatched with an origin which
+   * use the same filter as the origin of this call.
+   *
+   * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+   * because you expect `proxy` to have been used prior in the call stack and you do not want
+   * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+   * in the Multisig pallet instead.
+   *
+   * NOTE: Prior to version *12, this was called `as_limited_sub`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  as_derivative: Anonymize<Iaia299t3qcdln>;
+  /**
+   * Send a batch of dispatch calls and atomically execute them.
+   * The whole transaction will rollback and fail if any of the calls failed.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  batch_all: Anonymize<I2r7egdt2s4kg>;
+  /**
+   * Dispatches a function call with a provided origin.
+   *
+   * The dispatch origin for this call must be _Root_.
+   *
+   * ## Complexity
+   * - O(1).
+   */
+  dispatch_as: Anonymize<I7bet1m8alsl5v>;
+  /**
+   * Send a batch of dispatch calls.
+   * Unlike `batch`, it allows errors and won't interrupt.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatch without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  force_batch: Anonymize<I2r7egdt2s4kg>;
+  /**
+   * Dispatch a function call with a specified weight.
+   *
+   * This function does not check the weight of the call, and instead allows the
+   * Root origin to specify the weight of the call.
+   *
+   * The dispatch origin for this call must be _Root_.
+   */
+  with_weight: Anonymize<I9sbcntook53q2>;
+}>;
+export type I2r7egdt2s4kg = {
+  calls: Array<TxCallData>;
+};
+export type Iaia299t3qcdln = {
+  index: number;
+  call: TxCallData;
+};
+export type I7bet1m8alsl5v = {
+  as_origin: Anonymize<I42ficri7uep20>;
+  call: TxCallData;
+};
+export type I9sbcntook53q2 = {
+  call: TxCallData;
+  weight: Anonymize<I4q39t5hn830vp>;
+};
+export type If7p4fh6k2vd1d = AnonymousEnum<{
+  /**
+   * Immediately dispatch a multi-signature call using a single approval from the caller.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `other_signatories`: The accounts (other than the sender) who are part of the
+   * multi-signature, but do not participate in the approval process.
+   * - `call`: The call to be executed.
+   *
+   * Result is equivalent to the dispatched result.
+   *
+   * ## Complexity
+   * O(Z + C) where Z is the length of the call and C its execution weight.
+   */
+  as_multi_threshold_1: Anonymize<I7tp6ue1dd65h2>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * If there are enough, then dispatch the call.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   *
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   *
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   *
+   * ## Complexity
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  as_multi: Anonymize<I7dc4d1c216env>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * NOTE: If this is the final approval, you will want to use `as_multi` instead.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  approve_as_multi: Anonymize<Ideaemvoneh309>;
+  /**
+   * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+   * for this operation will be unreserved on success.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+   * transaction for this dispatch.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - One event.
+   * - I/O: 1 read `O(S)`, one remove.
+   * - Storage: removes one item.
+   */
+  cancel_as_multi: Anonymize<I3d9o9d7epp66v>;
+}>;
+export type I7tp6ue1dd65h2 = {
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  call: TxCallData;
+};
+export type I7dc4d1c216env = {
+  threshold: number;
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  maybe_timepoint?: Anonymize<I95jfd8j5cr5eh>;
+  call: TxCallData;
+  max_weight: Anonymize<I4q39t5hn830vp>;
+};
+export type I1e4dfujrs5462 = AnonymousEnum<{
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy: Anonymize<I221t08g3aeu51>;
+  /**
+   * Register a proxy account for the sender that is able to make calls on its behalf.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to make a proxy.
+   * - `proxy_type`: The permissions allowed for this proxy account.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   */
+  add_proxy: Anonymize<I6hk7temg1mga7>;
+  /**
+   * Unregister a proxy account for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to remove as a proxy.
+   * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+   */
+  remove_proxy: Anonymize<I6hk7temg1mga7>;
+  /**
+   * Unregister all proxy accounts for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * WARNING: This may be called on accounts created by `pure`, however if done, then
+   * the unreserved fees will be inaccessible. **All access to this account will be lost.**
+   */
+  remove_proxies: undefined;
+  /**
+   * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+   * initialize it with a proxy of `proxy_type` for `origin` sender.
+   *
+   * Requires a `Signed` origin.
+   *
+   * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+   * new account. This will almost always be the most permissive `ProxyType` possible to
+   * allow for maximum flexibility.
+   * - `index`: A disambiguation index, in case this is called multiple times in the same
+   * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+   * want to use `0`.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   *
+   * Fails with `Duplicate` if this has already been called in this transaction, from the
+   * same sender, with the same parameters.
+   *
+   * Fails if there are insufficient funds to pay for deposit.
+   */
+  create_pure: Anonymize<I2lbmfajhc5gdu>;
+  /**
+   * Removes a previously spawned pure proxy.
+   *
+   * WARNING: **All access to this account will be lost.** Any funds held in it will be
+   * inaccessible.
+   *
+   * Requires a `Signed` origin, and the sender account must have been created by a call to
+   * `pure` with corresponding parameters.
+   *
+   * - `spawner`: The account that originally called `pure` to create this account.
+   * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+   * - `proxy_type`: The proxy type originally passed to `pure`.
+   * - `height`: The height of the chain when the call to `pure` was processed.
+   * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+   *
+   * Fails with `NoPermission` in case the caller is not a previously created pure
+   * account whose `pure` call has corresponding parameters.
+   */
+  kill_pure: Anonymize<I2siheq6f2djrd>;
+  /**
+   * Publish the hash of a proxy-call that will be made in the future.
+   *
+   * This must be called some number of blocks before the corresponding `proxy` is attempted
+   * if the delay associated with the proxy relationship is greater than zero.
+   *
+   * No more than `MaxPending` announcements may be made at any one time.
+   *
+   * This will take a deposit of `AnnouncementDepositFactor` as well as
+   * `AnnouncementDepositBase` if there are no other pending announcements.
+   *
+   * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  announce: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove a given announcement.
+   *
+   * May be called by a proxy account to remove a call they previously announced and return
+   * the deposit.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  remove_announcement: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove the given announcement of a delegate.
+   *
+   * May be called by a target (proxied) account to remove a call that one of their delegates
+   * (`delegate`) has announced they want to execute. The deposit is returned.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `delegate`: The account that previously announced the call.
+   * - `call_hash`: The hash of the call to be made.
+   */
+  reject_announcement: Anonymize<Ianmuoljk2sk1u>;
+  /**
+   * Dispatch the given `call` from an account that the sender is authorized for through
+   * `add_proxy`.
+   *
+   * Removes any corresponding announcement(s).
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy_announced: Anonymize<I175gn9t0t5bhb>;
+}>;
+export type I221t08g3aeu51 = {
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<Icdvjlkfnoshag>;
+  call: TxCallData;
+};
+export type Icdvjlkfnoshag = Anonymize<Ieuemnllefri8h> | undefined;
+export type I6hk7temg1mga7 = {
+  delegate: MultiAddress;
+  proxy_type: Anonymize<Ieuemnllefri8h>;
+  delay: number;
+};
+export type I2lbmfajhc5gdu = {
+  proxy_type: Anonymize<Ieuemnllefri8h>;
+  delay: number;
+  index: number;
+};
+export type I2siheq6f2djrd = {
+  spawner: MultiAddress;
+  proxy_type: Anonymize<Ieuemnllefri8h>;
+  index: number;
+  height: number;
+  ext_index: number;
+};
+export type I175gn9t0t5bhb = {
+  delegate: MultiAddress;
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<Icdvjlkfnoshag>;
+  call: TxCallData;
+};
+export type Iaijjeqvjbi23p = AnonymousEnum<{
+  /**
+   * Add a registrar to the system.
+   *
+   * The dispatch origin for this call must be `T::RegistrarOrigin`.
+   *
+   * - `account`: the account of the registrar.
+   *
+   * Emits `RegistrarAdded` if successful.
+   */
+  add_registrar: Anonymize<Ic6cqd9g0t65v0>;
+  /**
+   * Set an account's identity information and reserve the appropriate deposit.
+   *
+   * If the account already has identity information, the deposit is taken as part payment
+   * for the new deposit.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `info`: The identity information.
+   *
+   * Emits `IdentitySet` if successful.
+   */
+  set_identity: Anonymize<I5sv83ib1q5mod>;
+  /**
+   * Set the sub-accounts of the sender.
+   *
+   * Payment: Any aggregate balance reserved by previous `set_subs` calls will be returned
+   * and an amount `SubAccountDeposit` will be reserved for each item in `subs`.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a registered
+   * identity.
+   *
+   * - `subs`: The identity's (new) sub-accounts.
+   */
+  set_subs: Anonymize<Ia9mkdf6l44shb>;
+  /**
+   * Clear an account's identity info and all sub-accounts and return all deposits.
+   *
+   * Payment: All reserved balances on the account are returned.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a registered
+   * identity.
+   *
+   * Emits `IdentityCleared` if successful.
+   */
+  clear_identity: undefined;
+  /**
+   * Request a judgement from a registrar.
+   *
+   * Payment: At most `max_fee` will be reserved for payment to the registrar if judgement
+   * given.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a
+   * registered identity.
+   *
+   * - `reg_index`: The index of the registrar whose judgement is requested.
+   * - `max_fee`: The maximum fee that may be paid. This should just be auto-populated as:
+   *
+   * ```nocompile
+   * Registrars::<T>::get().get(reg_index).unwrap().fee
+   * ```
+   *
+   * Emits `JudgementRequested` if successful.
+   */
+  request_judgement: Anonymize<I9l2s4klu0831o>;
+  /**
+   * Cancel a previous request.
+   *
+   * Payment: A previously reserved deposit is returned on success.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a
+   * registered identity.
+   *
+   * - `reg_index`: The index of the registrar whose judgement is no longer requested.
+   *
+   * Emits `JudgementUnrequested` if successful.
+   */
+  cancel_request: Anonymize<I2ctrt5nqb8o7c>;
+  /**
+   * Set the fee required for a judgement to be requested from a registrar.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must be the account
+   * of the registrar whose index is `index`.
+   *
+   * - `index`: the index of the registrar whose fee is to be set.
+   * - `fee`: the new fee.
+   */
+  set_fee: Anonymize<I711qahikocb1c>;
+  /**
+   * Change the account associated with a registrar.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must be the account
+   * of the registrar whose index is `index`.
+   *
+   * - `index`: the index of the registrar whose fee is to be set.
+   * - `new`: the new account ID.
+   */
+  set_account_id: Anonymize<I6o1er683vod1j>;
+  /**
+   * Set the field information for a registrar.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must be the account
+   * of the registrar whose index is `index`.
+   *
+   * - `index`: the index of the registrar whose fee is to be set.
+   * - `fields`: the fields that the registrar concerns themselves with.
+   */
+  set_fields: Anonymize<Id6gojh30v9ib2>;
+  /**
+   * Provide a judgement for an account's identity.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must be the account
+   * of the registrar whose index is `reg_index`.
+   *
+   * - `reg_index`: the index of the registrar whose judgement is being made.
+   * - `target`: the account whose identity the judgement is upon. This must be an account
+   * with a registered identity.
+   * - `judgement`: the judgement of the registrar of index `reg_index` about `target`.
+   * - `identity`: The hash of the [`IdentityInformationProvider`] for that the judgement is
+   * provided.
+   *
+   * Note: Judgements do not apply to a username.
+   *
+   * Emits `JudgementGiven` if successful.
+   */
+  provide_judgement: Anonymize<Ide1bahhh47lj9>;
+  /**
+   * Remove an account's identity and sub-account information and slash the deposits.
+   *
+   * Payment: Reserved balances from `set_subs` and `set_identity` are slashed and handled by
+   * `Slash`. Verification request deposits are not returned; they should be cancelled
+   * manually using `cancel_request`.
+   *
+   * The dispatch origin for this call must match `T::ForceOrigin`.
+   *
+   * - `target`: the account whose identity the judgement is upon. This must be an account
+   * with a registered identity.
+   *
+   * Emits `IdentityKilled` if successful.
+   */
+  kill_identity: Anonymize<Id9uqtigc0il3v>;
+  /**
+   * Add the given account to the sender's subs.
+   *
+   * Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
+   * to the sender.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a registered
+   * sub identity of `sub`.
+   */
+  add_sub: Anonymize<Ic68lsi7chpv5k>;
+  /**
+   * Alter the associated name of the given sub-account.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a registered
+   * sub identity of `sub`.
+   */
+  rename_sub: Anonymize<Ic68lsi7chpv5k>;
+  /**
+   * Remove the given account from the sender's subs.
+   *
+   * Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
+   * to the sender.
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a registered
+   * sub identity of `sub`.
+   */
+  remove_sub: Anonymize<Iek0boln8pgnko>;
+  /**
+   * Remove the sender as a sub-account.
+   *
+   * Payment: Balance reserved by a previous `set_subs` call for one sub will be repatriated
+   * to the sender (*not* the original depositor).
+   *
+   * The dispatch origin for this call must be _Signed_ and the sender must have a registered
+   * super-identity.
+   *
+   * NOTE: This should not normally be used, but is provided in the case that the non-
+   * controller of an account is maliciously registered as a sub-account.
+   */
+  quit_sub: undefined;
+  /**
+   * Add an `AccountId` with permission to grant usernames with a given `suffix` appended.
+   *
+   * The authority can grant up to `allocation` usernames. To top up the allocation or
+   * change the account used to grant usernames, this call can be used with the updated
+   * parameters to overwrite the existing configuration.
+   */
+  add_username_authority: Anonymize<I452bkd71b385t>;
+  /**
+   * Remove `authority` from the username authorities.
+   */
+  remove_username_authority: Anonymize<Ie83f0p0ke1f4u>;
+  /**
+   * Set the username for `who`. Must be called by a username authority.
+   *
+   * If `use_allocation` is set, the authority must have a username allocation available to
+   * spend. Otherwise, the authority will need to put up a deposit for registering the
+   * username.
+   *
+   * Users can either pre-sign their usernames or
+   * accept them later.
+   *
+   * Usernames must:
+   * - Only contain lowercase ASCII characters or digits.
+   * - When combined with the suffix of the issuing authority be _less than_ the
+   * `MaxUsernameLength`.
+   */
+  set_username_for: Anonymize<I93hi4ed10h5sc>;
+  /**
+   * Accept a given username that an `authority` granted. The call must include the full
+   * username, as in `username.suffix`.
+   */
+  accept_username: Anonymize<Ie5l999tf7t2te>;
+  /**
+   * Remove an expired username approval. The username was approved by an authority but never
+   * accepted by the user and must now be beyond its expiration. The call must include the
+   * full username, as in `username.suffix`.
+   */
+  remove_expired_approval: Anonymize<Ie5l999tf7t2te>;
+  /**
+   * Set a given username as the primary. The username should include the suffix.
+   */
+  set_primary_username: Anonymize<Ie5l999tf7t2te>;
+  /**
+   * Start the process of removing a username by placing it in the unbinding usernames map.
+   * Once the grace period has passed, the username can be deleted by calling
+   * [remove_username](crate::Call::remove_username).
+   */
+  unbind_username: Anonymize<Ie5l999tf7t2te>;
+  /**
+   * Permanently delete a username which has been unbinding for longer than the grace period.
+   * Caller is refunded the fee if the username expired and the removal was successful.
+   */
+  remove_username: Anonymize<Ie5l999tf7t2te>;
+  /**
+   * Call with [ForceOrigin](crate::Config::ForceOrigin) privileges which deletes a username
+   * and slashes any deposit associated with it.
+   */
+  kill_username: Anonymize<Ie5l999tf7t2te>;
+}>;
+export type I5sv83ib1q5mod = {
+  info: Anonymize<Ibr5qtvptt8691>;
+};
+export type Ic1526nmfn29nv = ResultPayload<Anonymize<I1cknglbnit9er>, Anonymize<I5nrjkj9qumobs>>;
+export type I88ntqk88m9l9d = AnonymousEnum<{
+  System: Anonymize<Iekve0i6djpd9f>;
+  ParachainSystem: Anonymize<I5kev21p7u6ajb>;
+  Timestamp: Anonymize<I7d75gqfg6jh9c>;
+  ParachainInfo: undefined;
+  MultiBlockMigrations: Anonymize<I4oqb168b2d4er>;
+  Balances: Anonymize<I9svldsp29mh87>;
+  CollatorSelection: Anonymize<I9dpq5287dur8b>;
+  Session: Anonymize<I77dda7hps0u37>;
+  XcmpQueue: Anonymize<Ib7tahn20bvsep>;
+  PolkadotXcm: Anonymize<I4up31a3q8cjhp>;
+  CumulusXcm: undefined;
+  MessageQueue: Anonymize<Ic2uoe7jdksosp>;
+  Utility: Anonymize<I6h67tss5tpebe>;
+  Multisig: Anonymize<If7p4fh6k2vd1d>;
+  Proxy: Anonymize<I1e4dfujrs5462>;
+  Identity: Anonymize<Iaijjeqvjbi23p>;
+}>;
+export type I2sbif08sgijmm = ResultPayload<
+  {
+    execution_result: ResultPayload<
+      Anonymize<Ia1u1r3n74r13c>,
+      {
+        post_info: Anonymize<Ia1u1r3n74r13c>;
+        error: Anonymize<I2ip01vbaro6bh>;
+      }
+    >;
+    emitted_events: Anonymize<Ifov95umpch5u2>;
+    local_xcm?: Anonymize<Ieqgqma27vbupd>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type Ifov95umpch5u2 = Array<Anonymize<Ibtlpf85s9r8bt>>;
+export type Iekqh9il260t0r = ResultPayload<
+  {
+    execution_result: Anonymize<I6uq5gb4s805s7>;
+    emitted_events: Anonymize<Ifov95umpch5u2>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type Idnmnq6dud8moj = Array<{
+  phase: Phase;
+  event: Anonymize<I4f27fq9fds04l>;
+  topics: Anonymize<Ic5m5lp1oioo8r>;
+}>;
+export type I4f27fq9fds04l = AnonymousEnum<{
+  System: Anonymize<Ic8l076op7rbd7>;
+  ParachainSystem: Anonymize<Icbsekf57miplo>;
+  MultiBlockMigrations: Anonymize<I94co7vj7h6bo>;
+  Balances: Anonymize<Iao8h4hv7atnq3>;
+  TransactionPayment: TransactionPaymentEvent;
+  CollatorSelection: Anonymize<I4srakrmf0fspo>;
+  Session: SessionEvent;
+  XcmpQueue: Anonymize<Idsqc7mhp6nnle>;
+  PolkadotXcm: Anonymize<Iel5f66clbekc3>;
+  CumulusXcm: Anonymize<Ihpdgvt7vs2cb>;
+  MessageQueue: Anonymize<I2kosejppk3jon>;
+  Utility: Anonymize<I7md3bun5vekep>;
+  Multisig: Anonymize<I9fde1sp0s746q>;
+  Proxy: Anonymize<Ida63khro12vk8>;
+  Identity: Anonymize<I2au2or9cskfoi>;
+  Sudo: Anonymize<Ids7e2pk9npo9s>;
+}>;
+export type Ic8l076op7rbd7 = AnonymousEnum<{
+  /**
+   * An extrinsic completed successfully.
+   */
+  ExtrinsicSuccess: Anonymize<Ia82mnkmeo2rhc>;
+  /**
+   * An extrinsic failed.
+   */
+  ExtrinsicFailed: Anonymize<Icpe9p35n6c9ir>;
+  /**
+   * `:code` was updated.
+   */
+  CodeUpdated: undefined;
+  /**
+   * A new account was created.
+   */
+  NewAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * An account was reaped.
+   */
+  KilledAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * On on-chain remark happened.
+   */
+  Remarked: Anonymize<I855j4i3kr8ko1>;
+  /**
+   * An upgrade was authorized.
+   */
+  UpgradeAuthorized: Anonymize<Ibgl04rn6nbfm6>;
+}>;
+export type Icpe9p35n6c9ir = {
+  dispatch_error: Anonymize<I2ac5ca2ttepv9>;
+  dispatch_info: Anonymize<Ic9s8f85vjtncc>;
+};
+export type I2ac5ca2ttepv9 = AnonymousEnum<{
+  Other: undefined;
+  CannotLookup: undefined;
+  BadOrigin: undefined;
+  Module: Enum<{
+    System: Anonymize<I5o0s7c8q1cc9b>;
+    ParachainSystem: Anonymize<I9p95gln24a0rn>;
+    Timestamp: undefined;
+    ParachainInfo: undefined;
+    MultiBlockMigrations: Anonymize<Iaaqq5jevtahm8>;
+    Balances: Anonymize<Idj13i7adlomht>;
+    TransactionPayment: undefined;
+    Authorship: undefined;
+    CollatorSelection: Anonymize<I36bcffk2387dv>;
+    Session: Anonymize<I1e07dgbaqd1sq>;
+    Aura: undefined;
+    AuraExt: undefined;
+    XcmpQueue: Anonymize<Idnnbndsjjeqqs>;
+    PolkadotXcm: Anonymize<I87j95aq93d7dq>;
+    CumulusXcm: undefined;
+    MessageQueue: Anonymize<I5iupade5ag2dp>;
+    Utility: Anonymize<I8dt2g2hcrgh36>;
+    Multisig: Anonymize<Ia76qmhhg4jvb9>;
+    Proxy: Anonymize<Iuvt54ei4cehc>;
+    Identity: Anonymize<Ib8gja1crqq8kd>;
+    Sudo: Anonymize<Iaug04qjhbli00>;
+  }>;
+  ConsumerRemaining: undefined;
+  NoProviders: undefined;
+  TooManyConsumers: undefined;
+  Token: TokenError;
+  Arithmetic: ArithmeticError;
+  Transactional: TransactionalError;
+  Exhausted: undefined;
+  Corruption: undefined;
+  Unavailable: undefined;
+  RootNotAllowed: undefined;
+  Trie: Anonymize<Idh4cj79bvroj8>;
+}>;
+export type I7md3bun5vekep = AnonymousEnum<{
+  /**
+   * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+   * well as the error.
+   */
+  BatchInterrupted: Anonymize<Ibgstak3nip2np>;
+  /**
+   * Batch of dispatches completed fully with no error.
+   */
+  BatchCompleted: undefined;
+  /**
+   * Batch of dispatches completed but has errors.
+   */
+  BatchCompletedWithErrors: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with no error.
+   */
+  ItemCompleted: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with error.
+   */
+  ItemFailed: Anonymize<I9f9t5p3hibct5>;
+  /**
+   * A call was dispatched.
+   */
+  DispatchedAs: Anonymize<I6el8fnuvscrss>;
+}>;
+export type Ibgstak3nip2np = {
+  index: number;
+  error: Anonymize<I2ac5ca2ttepv9>;
+};
+export type I9f9t5p3hibct5 = {
+  error: Anonymize<I2ac5ca2ttepv9>;
+};
+export type I6el8fnuvscrss = {
+  result: Anonymize<I6irh2m5298hj2>;
+};
+export type I6irh2m5298hj2 = ResultPayload<undefined, Anonymize<I2ac5ca2ttepv9>>;
+export type I9fde1sp0s746q = AnonymousEnum<{
+  /**
+   * A new multisig operation has begun.
+   */
+  NewMultisig: Anonymize<Iep27ialq4a7o7>;
+  /**
+   * A multisig operation has been approved by someone.
+   */
+  MultisigApproval: Anonymize<Iasu5jvoqr43mv>;
+  /**
+   * A multisig operation has been executed.
+   */
+  MultisigExecuted: Anonymize<Icmcrqc779898n>;
+  /**
+   * A multisig operation has been cancelled.
+   */
+  MultisigCancelled: Anonymize<I5qolde99acmd1>;
+}>;
+export type Icmcrqc779898n = {
+  approving: SS58String;
+  timepoint: Anonymize<Itvprrpb0nm3o>;
+  multisig: SS58String;
+  call_hash: FixedSizeBinary<32>;
+  result: Anonymize<I6irh2m5298hj2>;
+};
+export type Ida63khro12vk8 = AnonymousEnum<{
+  /**
+   * A proxy was executed correctly, with the given.
+   */
+  ProxyExecuted: Anonymize<I6el8fnuvscrss>;
+  /**
+   * A pure account has been created by new proxy with given
+   * disambiguation index and proxy type.
+   */
+  PureCreated: Anonymize<I7ntcg8dtn6d9g>;
+  /**
+   * An announcement was placed to make a call in the future.
+   */
+  Announced: Anonymize<I2ur0oeqg495j8>;
+  /**
+   * A proxy was added.
+   */
+  ProxyAdded: Anonymize<I8v2su1f60qoae>;
+  /**
+   * A proxy was removed.
+   */
+  ProxyRemoved: Anonymize<I8v2su1f60qoae>;
+}>;
+export type Ids7e2pk9npo9s = AnonymousEnum<{
+  /**
+   * A sudo call just took place.
+   */
+  Sudid: Anonymize<I2eqbuutpv48u7>;
+  /**
+   * The sudo key has been updated.
+   */
+  KeyChanged: Anonymize<I5rtkmhm2dng4u>;
+  /**
+   * The key was permanently removed.
+   */
+  KeyRemoved: undefined;
+  /**
+   * A [sudo_as](Pallet::sudo_as) call just took place.
+   */
+  SudoAsDone: Anonymize<I2eqbuutpv48u7>;
+}>;
+export type I2eqbuutpv48u7 = {
+  /**
+   * The result of the call made by the sudo user.
+   */
+  sudo_result: Anonymize<I6irh2m5298hj2>;
+};
+export type I61pb8h9sboof1 = AnonymousEnum<{
+  /**
+   * Send a batch of dispatch calls.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   *
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  batch: Anonymize<I7ng4nqvoc0qmf>;
+  /**
+   * Send a call through an indexed pseudonym of the sender.
+   *
+   * Filter from origin are passed along. The call will be dispatched with an origin which
+   * use the same filter as the origin of this call.
+   *
+   * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+   * because you expect `proxy` to have been used prior in the call stack and you do not want
+   * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+   * in the Multisig pallet instead.
+   *
+   * NOTE: Prior to version *12, this was called `as_limited_sub`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  as_derivative: Anonymize<Idh8mh2ng3cbun>;
+  /**
+   * Send a batch of dispatch calls and atomically execute them.
+   * The whole transaction will rollback and fail if any of the calls failed.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  batch_all: Anonymize<I7ng4nqvoc0qmf>;
+  /**
+   * Dispatches a function call with a provided origin.
+   *
+   * The dispatch origin for this call must be _Root_.
+   *
+   * ## Complexity
+   * - O(1).
+   */
+  dispatch_as: Anonymize<I3eh5r9uj7evp0>;
+  /**
+   * Send a batch of dispatch calls.
+   * Unlike `batch`, it allows errors and won't interrupt.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatch without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  force_batch: Anonymize<I7ng4nqvoc0qmf>;
+  /**
+   * Dispatch a function call with a specified weight.
+   *
+   * This function does not check the weight of the call, and instead allows the
+   * Root origin to specify the weight of the call.
+   *
+   * The dispatch origin for this call must be _Root_.
+   */
+  with_weight: Anonymize<I41o3d1a031odn>;
+}>;
+export type I7ng4nqvoc0qmf = {
+  calls: Array<TxCallData>;
+};
+export type Idh8mh2ng3cbun = {
+  index: number;
+  call: TxCallData;
+};
+export type I3eh5r9uj7evp0 = {
+  as_origin: Anonymize<I42ficri7uep20>;
+  call: TxCallData;
+};
+export type I41o3d1a031odn = {
+  call: TxCallData;
+  weight: Anonymize<I4q39t5hn830vp>;
+};
+export type I7g01gt9r8pvon = AnonymousEnum<{
+  /**
+   * Immediately dispatch a multi-signature call using a single approval from the caller.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `other_signatories`: The accounts (other than the sender) who are part of the
+   * multi-signature, but do not participate in the approval process.
+   * - `call`: The call to be executed.
+   *
+   * Result is equivalent to the dispatched result.
+   *
+   * ## Complexity
+   * O(Z + C) where Z is the length of the call and C its execution weight.
+   */
+  as_multi_threshold_1: Anonymize<I7kai1f957ut>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * If there are enough, then dispatch the call.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   *
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   *
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   *
+   * ## Complexity
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  as_multi: Anonymize<I5kria4n4fblv8>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * NOTE: If this is the final approval, you will want to use `as_multi` instead.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  approve_as_multi: Anonymize<Ideaemvoneh309>;
+  /**
+   * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+   * for this operation will be unreserved on success.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+   * transaction for this dispatch.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - One event.
+   * - I/O: 1 read `O(S)`, one remove.
+   * - Storage: removes one item.
+   */
+  cancel_as_multi: Anonymize<I3d9o9d7epp66v>;
+}>;
+export type I7kai1f957ut = {
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  call: TxCallData;
+};
+export type I5kria4n4fblv8 = {
+  threshold: number;
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  maybe_timepoint?: Anonymize<I95jfd8j5cr5eh>;
+  call: TxCallData;
+  max_weight: Anonymize<I4q39t5hn830vp>;
+};
+export type Iectnchg5aukar = AnonymousEnum<{
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy: Anonymize<I76288me3d4v9q>;
+  /**
+   * Register a proxy account for the sender that is able to make calls on its behalf.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to make a proxy.
+   * - `proxy_type`: The permissions allowed for this proxy account.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   */
+  add_proxy: Anonymize<I6hk7temg1mga7>;
+  /**
+   * Unregister a proxy account for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to remove as a proxy.
+   * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+   */
+  remove_proxy: Anonymize<I6hk7temg1mga7>;
+  /**
+   * Unregister all proxy accounts for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * WARNING: This may be called on accounts created by `pure`, however if done, then
+   * the unreserved fees will be inaccessible. **All access to this account will be lost.**
+   */
+  remove_proxies: undefined;
+  /**
+   * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+   * initialize it with a proxy of `proxy_type` for `origin` sender.
+   *
+   * Requires a `Signed` origin.
+   *
+   * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+   * new account. This will almost always be the most permissive `ProxyType` possible to
+   * allow for maximum flexibility.
+   * - `index`: A disambiguation index, in case this is called multiple times in the same
+   * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+   * want to use `0`.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   *
+   * Fails with `Duplicate` if this has already been called in this transaction, from the
+   * same sender, with the same parameters.
+   *
+   * Fails if there are insufficient funds to pay for deposit.
+   */
+  create_pure: Anonymize<I2lbmfajhc5gdu>;
+  /**
+   * Removes a previously spawned pure proxy.
+   *
+   * WARNING: **All access to this account will be lost.** Any funds held in it will be
+   * inaccessible.
+   *
+   * Requires a `Signed` origin, and the sender account must have been created by a call to
+   * `pure` with corresponding parameters.
+   *
+   * - `spawner`: The account that originally called `pure` to create this account.
+   * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+   * - `proxy_type`: The proxy type originally passed to `pure`.
+   * - `height`: The height of the chain when the call to `pure` was processed.
+   * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+   *
+   * Fails with `NoPermission` in case the caller is not a previously created pure
+   * account whose `pure` call has corresponding parameters.
+   */
+  kill_pure: Anonymize<I2siheq6f2djrd>;
+  /**
+   * Publish the hash of a proxy-call that will be made in the future.
+   *
+   * This must be called some number of blocks before the corresponding `proxy` is attempted
+   * if the delay associated with the proxy relationship is greater than zero.
+   *
+   * No more than `MaxPending` announcements may be made at any one time.
+   *
+   * This will take a deposit of `AnnouncementDepositFactor` as well as
+   * `AnnouncementDepositBase` if there are no other pending announcements.
+   *
+   * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  announce: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove a given announcement.
+   *
+   * May be called by a proxy account to remove a call they previously announced and return
+   * the deposit.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  remove_announcement: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove the given announcement of a delegate.
+   *
+   * May be called by a target (proxied) account to remove a call that one of their delegates
+   * (`delegate`) has announced they want to execute. The deposit is returned.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `delegate`: The account that previously announced the call.
+   * - `call_hash`: The hash of the call to be made.
+   */
+  reject_announcement: Anonymize<Ianmuoljk2sk1u>;
+  /**
+   * Dispatch the given `call` from an account that the sender is authorized for through
+   * `add_proxy`.
+   *
+   * Removes any corresponding announcement(s).
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy_announced: Anonymize<I96c2mctqt2esi>;
+}>;
+export type I76288me3d4v9q = {
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<Icdvjlkfnoshag>;
+  call: TxCallData;
+};
+export type I96c2mctqt2esi = {
+  delegate: MultiAddress;
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<Icdvjlkfnoshag>;
+  call: TxCallData;
+};
+export type I6ei68b10bitab = AnonymousEnum<{
+  /**
+   * Authenticates the sudo key and dispatches a function call with `Root` origin.
+   */
+  sudo: Anonymize<If32i8e3k1l3t1>;
+  /**
+   * Authenticates the sudo key and dispatches a function call with `Root` origin.
+   * This function does not check the weight of the call, and instead allows the
+   * Sudo user to specify the weight of the call.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  sudo_unchecked_weight: Anonymize<I41o3d1a031odn>;
+  /**
+   * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
+   * key.
+   */
+  set_key: Anonymize<I8k3rnvpeeh4hv>;
+  /**
+   * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+   * a given account.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  sudo_as: Anonymize<Iapcctk4va8fs9>;
+  /**
+   * Permanently removes the sudo key.
+   *
+   * **This cannot be un-done.**
+   */
+  remove_key: undefined;
+}>;
+export type If32i8e3k1l3t1 = {
+  call: TxCallData;
+};
+export type Iapcctk4va8fs9 = {
+  who: MultiAddress;
+  call: TxCallData;
+};
+export type Iatb6k28o0mqqn = ResultPayload<Anonymize<I6irh2m5298hj2>, Anonymize<I5nrjkj9qumobs>>;
+export type Icih4jla0h88nh = AnonymousEnum<{
+  System: Anonymize<Iekve0i6djpd9f>;
+  ParachainSystem: Anonymize<I5kev21p7u6ajb>;
+  Timestamp: Anonymize<I7d75gqfg6jh9c>;
+  ParachainInfo: undefined;
+  MultiBlockMigrations: Anonymize<I4oqb168b2d4er>;
+  Balances: Anonymize<I9svldsp29mh87>;
+  CollatorSelection: Anonymize<I9dpq5287dur8b>;
+  Session: Anonymize<I77dda7hps0u37>;
+  XcmpQueue: Anonymize<Ib7tahn20bvsep>;
+  PolkadotXcm: Anonymize<I4up31a3q8cjhp>;
+  CumulusXcm: undefined;
+  MessageQueue: Anonymize<Ic2uoe7jdksosp>;
+  Utility: Anonymize<I61pb8h9sboof1>;
+  Multisig: Anonymize<I7g01gt9r8pvon>;
+  Proxy: Anonymize<Iectnchg5aukar>;
+  Identity: Anonymize<Iaijjeqvjbi23p>;
+  Sudo: Anonymize<I6ei68b10bitab>;
+}>;
+export type If3gv4vsdch1kj = ResultPayload<
+  {
+    execution_result: ResultPayload<
+      Anonymize<Ia1u1r3n74r13c>,
+      {
+        post_info: Anonymize<Ia1u1r3n74r13c>;
+        error: Anonymize<I2ac5ca2ttepv9>;
+      }
+    >;
+    emitted_events: Anonymize<Id39gdna5847t3>;
+    local_xcm?: Anonymize<Ieqgqma27vbupd>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type Id39gdna5847t3 = Array<Anonymize<I4f27fq9fds04l>>;
+export type Ibf9el31249od7 = ResultPayload<
+  {
+    execution_result: Anonymize<I6uq5gb4s805s7>;
+    emitted_events: Anonymize<Id39gdna5847t3>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type I87l184mmb4r6r = Array<{
+  phase: Phase;
+  event: Anonymize<Ib37uo14mhcdg4>;
+  topics: Anonymize<Ic5m5lp1oioo8r>;
+}>;
+export type Ib37uo14mhcdg4 = AnonymousEnum<{
+  System: Anonymize<Ia5g60a3t6i3n6>;
+  ParachainSystem: Anonymize<Icbsekf57miplo>;
+  Balances: Anonymize<Iao8h4hv7atnq3>;
+  TransactionPayment: TransactionPaymentEvent;
+  CollatorSelection: Anonymize<I4srakrmf0fspo>;
+  Session: Anonymize<I4co4bgsti676q>;
+  XcmpQueue: Anonymize<Idsqc7mhp6nnle>;
+  PolkadotXcm: Anonymize<Iel5f66clbekc3>;
+  CumulusXcm: Anonymize<Ihpdgvt7vs2cb>;
+  MessageQueue: Anonymize<I2kosejppk3jon>;
+  Utility: Anonymize<I70kgro1me14s8>;
+  Multisig: Anonymize<I2rr8r6bkhk2l>;
+  Proxy: Anonymize<I4mcmtfjko2us6>;
+  Identity: Anonymize<I2au2or9cskfoi>;
+  MultiBlockMigrations: Anonymize<I94co7vj7h6bo>;
+  IdentityMigrator: PolkadotRuntimeCommonIdentityMigratorEvent;
+}>;
+export type Ia5g60a3t6i3n6 = AnonymousEnum<{
+  /**
+   * An extrinsic completed successfully.
+   */
+  ExtrinsicSuccess: Anonymize<Ia82mnkmeo2rhc>;
+  /**
+   * An extrinsic failed.
+   */
+  ExtrinsicFailed: Anonymize<I8fmrt75oddmsr>;
+  /**
+   * `:code` was updated.
+   */
+  CodeUpdated: undefined;
+  /**
+   * A new account was created.
+   */
+  NewAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * An account was reaped.
+   */
+  KilledAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * On on-chain remark happened.
+   */
+  Remarked: Anonymize<I855j4i3kr8ko1>;
+  /**
+   * An upgrade was authorized.
+   */
+  UpgradeAuthorized: Anonymize<Ibgl04rn6nbfm6>;
+}>;
+export type I8fmrt75oddmsr = {
+  dispatch_error: Anonymize<Ivklblfpiktda>;
+  dispatch_info: Anonymize<Ic9s8f85vjtncc>;
+};
+export type Ivklblfpiktda = AnonymousEnum<{
+  Other: undefined;
+  CannotLookup: undefined;
+  BadOrigin: undefined;
+  Module: Enum<{
+    System: Anonymize<I5o0s7c8q1cc9b>;
+    ParachainSystem: Anonymize<I9p95gln24a0rn>;
+    Timestamp: undefined;
+    ParachainInfo: undefined;
+    WeightReclaim: undefined;
+    Balances: Anonymize<Idj13i7adlomht>;
+    TransactionPayment: undefined;
+    Authorship: undefined;
+    CollatorSelection: Anonymize<I36bcffk2387dv>;
+    Session: Anonymize<I1e07dgbaqd1sq>;
+    Aura: undefined;
+    AuraExt: undefined;
+    XcmpQueue: Anonymize<Idnnbndsjjeqqs>;
+    PolkadotXcm: Anonymize<I87j95aq93d7dq>;
+    CumulusXcm: undefined;
+    MessageQueue: Anonymize<I5iupade5ag2dp>;
+    Utility: Anonymize<I8dt2g2hcrgh36>;
+    Multisig: Anonymize<Ia76qmhhg4jvb9>;
+    Proxy: Anonymize<Iuvt54ei4cehc>;
+    Identity: Anonymize<Ib8gja1crqq8kd>;
+    MultiBlockMigrations: Anonymize<Iaaqq5jevtahm8>;
+    IdentityMigrator: undefined;
+  }>;
+  ConsumerRemaining: undefined;
+  NoProviders: undefined;
+  TooManyConsumers: undefined;
+  Token: TokenError;
+  Arithmetic: ArithmeticError;
+  Transactional: TransactionalError;
+  Exhausted: undefined;
+  Corruption: undefined;
+  Unavailable: undefined;
+  RootNotAllowed: undefined;
+  Trie: Anonymize<Idh4cj79bvroj8>;
+}>;
+export type I70kgro1me14s8 = AnonymousEnum<{
+  /**
+   * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+   * well as the error.
+   */
+  BatchInterrupted: Anonymize<Ie7pv4iqb63249>;
+  /**
+   * Batch of dispatches completed fully with no error.
+   */
+  BatchCompleted: undefined;
+  /**
+   * Batch of dispatches completed but has errors.
+   */
+  BatchCompletedWithErrors: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with no error.
+   */
+  ItemCompleted: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with error.
+   */
+  ItemFailed: Anonymize<In603jg9qdmc5>;
+  /**
+   * A call was dispatched.
+   */
+  DispatchedAs: Anonymize<Iarm91noo6auk9>;
+  /**
+   * Main call was dispatched.
+   */
+  IfElseMainSuccess: undefined;
+  /**
+   * The fallback call was dispatched.
+   */
+  IfElseFallbackCalled: Anonymize<Iaju18uf2en8qn>;
+}>;
+export type Ie7pv4iqb63249 = {
+  index: number;
+  error: Anonymize<Ivklblfpiktda>;
+};
+export type In603jg9qdmc5 = {
+  error: Anonymize<Ivklblfpiktda>;
+};
+export type Iarm91noo6auk9 = {
+  result: Anonymize<Ibj688s0dm44f5>;
+};
+export type Ibj688s0dm44f5 = ResultPayload<undefined, Anonymize<Ivklblfpiktda>>;
+export type Iaju18uf2en8qn = {
+  main_error: Anonymize<Ivklblfpiktda>;
+};
+export type I2rr8r6bkhk2l = AnonymousEnum<{
+  /**
+   * A new multisig operation has begun.
+   */
+  NewMultisig: Anonymize<Iep27ialq4a7o7>;
+  /**
+   * A multisig operation has been approved by someone.
+   */
+  MultisigApproval: Anonymize<Iasu5jvoqr43mv>;
+  /**
+   * A multisig operation has been executed.
+   */
+  MultisigExecuted: Anonymize<I82vm2gfc32inh>;
+  /**
+   * A multisig operation has been cancelled.
+   */
+  MultisigCancelled: Anonymize<I5qolde99acmd1>;
+}>;
+export type I82vm2gfc32inh = {
+  approving: SS58String;
+  timepoint: Anonymize<Itvprrpb0nm3o>;
+  multisig: SS58String;
+  call_hash: FixedSizeBinary<32>;
+  result: Anonymize<Ibj688s0dm44f5>;
+};
+export type I4mcmtfjko2us6 = AnonymousEnum<{
+  /**
+   * A proxy was executed correctly, with the given.
+   */
+  ProxyExecuted: Anonymize<Iarm91noo6auk9>;
+  /**
+   * A pure account has been created by new proxy with given
+   * disambiguation index and proxy type.
+   */
+  PureCreated: Anonymize<I7ntcg8dtn6d9g>;
+  /**
+   * An announcement was placed to make a call in the future.
+   */
+  Announced: Anonymize<I2ur0oeqg495j8>;
+  /**
+   * A proxy was added.
+   */
+  ProxyAdded: Anonymize<I8v2su1f60qoae>;
+  /**
+   * A proxy was removed.
+   */
+  ProxyRemoved: Anonymize<I8v2su1f60qoae>;
+}>;
+export type I6tj5vjl4lqfhk = AnonymousEnum<{
+  /**
+   * Send a batch of dispatch calls.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   *
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  batch: Anonymize<Iapf0k20mh5jpo>;
+  /**
+   * Send a call through an indexed pseudonym of the sender.
+   *
+   * Filter from origin are passed along. The call will be dispatched with an origin which
+   * use the same filter as the origin of this call.
+   *
+   * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+   * because you expect `proxy` to have been used prior in the call stack and you do not want
+   * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+   * in the Multisig pallet instead.
+   *
+   * NOTE: Prior to version *12, this was called `as_limited_sub`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  as_derivative: Anonymize<Ida1n9ht1e9jui>;
+  /**
+   * Send a batch of dispatch calls and atomically execute them.
+   * The whole transaction will rollback and fail if any of the calls failed.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  batch_all: Anonymize<Iapf0k20mh5jpo>;
+  /**
+   * Dispatches a function call with a provided origin.
+   *
+   * The dispatch origin for this call must be _Root_.
+   *
+   * ## Complexity
+   * - O(1).
+   */
+  dispatch_as: Anonymize<I6bm4cuin8t4m4>;
+  /**
+   * Send a batch of dispatch calls.
+   * Unlike `batch`, it allows errors and won't interrupt.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatch without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  force_batch: Anonymize<Iapf0k20mh5jpo>;
+  /**
+   * Dispatch a function call with a specified weight.
+   *
+   * This function does not check the weight of the call, and instead allows the
+   * Root origin to specify the weight of the call.
+   *
+   * The dispatch origin for this call must be _Root_.
+   */
+  with_weight: Anonymize<I14mrphr1e89ue>;
+  /**
+   * Dispatch a fallback call in the event the main call fails to execute.
+   * May be called from any origin except `None`.
+   *
+   * This function first attempts to dispatch the `main` call.
+   * If the `main` call fails, the `fallback` is attemted.
+   * if the fallback is successfully dispatched, the weights of both calls
+   * are accumulated and an event containing the main call error is deposited.
+   *
+   * In the event of a fallback failure the whole call fails
+   * with the weights returned.
+   *
+   * - `main`: The main call to be dispatched. This is the primary action to execute.
+   * - `fallback`: The fallback call to be dispatched in case the `main` call fails.
+   *
+   * ## Dispatch Logic
+   * - If the origin is `root`, both the main and fallback calls are executed without
+   * applying any origin filters.
+   * - If the origin is not `root`, the origin filter is applied to both the `main` and
+   * `fallback` calls.
+   *
+   * ## Use Case
+   * - Some use cases might involve submitting a `batch` type call in either main, fallback
+   * or both.
+   */
+  if_else: Anonymize<I6tv3qlpjaum7t>;
+  /**
+   * Dispatches a function call with a provided origin.
+   *
+   * Almost the same as [`Pallet::dispatch_as`] but forwards any error of the inner call.
+   *
+   * The dispatch origin for this call must be _Root_.
+   */
+  dispatch_as_fallible: Anonymize<I6bm4cuin8t4m4>;
+}>;
+export type Iapf0k20mh5jpo = {
+  calls: Array<TxCallData>;
+};
+export type Ida1n9ht1e9jui = {
+  index: number;
+  call: TxCallData;
+};
+export type I6bm4cuin8t4m4 = {
+  as_origin: Anonymize<I42ficri7uep20>;
+  call: TxCallData;
+};
+export type I14mrphr1e89ue = {
+  call: TxCallData;
+  weight: Anonymize<I4q39t5hn830vp>;
+};
+export type I6tv3qlpjaum7t = {
+  main: TxCallData;
+  fallback: TxCallData;
+};
+export type Ictdie4f9nl2uc = AnonymousEnum<{
+  /**
+   * Immediately dispatch a multi-signature call using a single approval from the caller.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `other_signatories`: The accounts (other than the sender) who are part of the
+   * multi-signature, but do not participate in the approval process.
+   * - `call`: The call to be executed.
+   *
+   * Result is equivalent to the dispatched result.
+   *
+   * ## Complexity
+   * O(Z + C) where Z is the length of the call and C its execution weight.
+   */
+  as_multi_threshold_1: Anonymize<I6h0tguqjntips>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * If there are enough, then dispatch the call.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   *
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   *
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   *
+   * ## Complexity
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  as_multi: Anonymize<If9lslhp43acka>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * NOTE: If this is the final approval, you will want to use `as_multi` instead.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  approve_as_multi: Anonymize<Ideaemvoneh309>;
+  /**
+   * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+   * for this operation will be unreserved on success.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+   * transaction for this dispatch.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - One event.
+   * - I/O: 1 read `O(S)`, one remove.
+   * - Storage: removes one item.
+   */
+  cancel_as_multi: Anonymize<I3d9o9d7epp66v>;
+}>;
+export type I6h0tguqjntips = {
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  call: TxCallData;
+};
+export type If9lslhp43acka = {
+  threshold: number;
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  maybe_timepoint?: Anonymize<I95jfd8j5cr5eh>;
+  call: TxCallData;
+  max_weight: Anonymize<I4q39t5hn830vp>;
+};
+export type I4hvahqj0lg76c = AnonymousEnum<{
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy: Anonymize<I2atk8mf6epmar>;
+  /**
+   * Register a proxy account for the sender that is able to make calls on its behalf.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to make a proxy.
+   * - `proxy_type`: The permissions allowed for this proxy account.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   */
+  add_proxy: Anonymize<I6hk7temg1mga7>;
+  /**
+   * Unregister a proxy account for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to remove as a proxy.
+   * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+   */
+  remove_proxy: Anonymize<I6hk7temg1mga7>;
+  /**
+   * Unregister all proxy accounts for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * WARNING: This may be called on accounts created by `pure`, however if done, then
+   * the unreserved fees will be inaccessible. **All access to this account will be lost.**
+   */
+  remove_proxies: undefined;
+  /**
+   * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+   * initialize it with a proxy of `proxy_type` for `origin` sender.
+   *
+   * Requires a `Signed` origin.
+   *
+   * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+   * new account. This will almost always be the most permissive `ProxyType` possible to
+   * allow for maximum flexibility.
+   * - `index`: A disambiguation index, in case this is called multiple times in the same
+   * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+   * want to use `0`.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   *
+   * Fails with `Duplicate` if this has already been called in this transaction, from the
+   * same sender, with the same parameters.
+   *
+   * Fails if there are insufficient funds to pay for deposit.
+   */
+  create_pure: Anonymize<I2lbmfajhc5gdu>;
+  /**
+   * Removes a previously spawned pure proxy.
+   *
+   * WARNING: **All access to this account will be lost.** Any funds held in it will be
+   * inaccessible.
+   *
+   * Requires a `Signed` origin, and the sender account must have been created by a call to
+   * `pure` with corresponding parameters.
+   *
+   * - `spawner`: The account that originally called `pure` to create this account.
+   * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+   * - `proxy_type`: The proxy type originally passed to `pure`.
+   * - `height`: The height of the chain when the call to `pure` was processed.
+   * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+   *
+   * Fails with `NoPermission` in case the caller is not a previously created pure
+   * account whose `pure` call has corresponding parameters.
+   */
+  kill_pure: Anonymize<I2siheq6f2djrd>;
+  /**
+   * Publish the hash of a proxy-call that will be made in the future.
+   *
+   * This must be called some number of blocks before the corresponding `proxy` is attempted
+   * if the delay associated with the proxy relationship is greater than zero.
+   *
+   * No more than `MaxPending` announcements may be made at any one time.
+   *
+   * This will take a deposit of `AnnouncementDepositFactor` as well as
+   * `AnnouncementDepositBase` if there are no other pending announcements.
+   *
+   * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  announce: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove a given announcement.
+   *
+   * May be called by a proxy account to remove a call they previously announced and return
+   * the deposit.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  remove_announcement: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove the given announcement of a delegate.
+   *
+   * May be called by a target (proxied) account to remove a call that one of their delegates
+   * (`delegate`) has announced they want to execute. The deposit is returned.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `delegate`: The account that previously announced the call.
+   * - `call_hash`: The hash of the call to be made.
+   */
+  reject_announcement: Anonymize<Ianmuoljk2sk1u>;
+  /**
+   * Dispatch the given `call` from an account that the sender is authorized for through
+   * `add_proxy`.
+   *
+   * Removes any corresponding announcement(s).
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy_announced: Anonymize<I9r7nkeh96rrda>;
+}>;
+export type I2atk8mf6epmar = {
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<Icdvjlkfnoshag>;
+  call: TxCallData;
+};
+export type I9r7nkeh96rrda = {
+  delegate: MultiAddress;
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<Icdvjlkfnoshag>;
+  call: TxCallData;
+};
+export type Ia7h1dr5qtt776 = ResultPayload<Anonymize<Ibj688s0dm44f5>, Anonymize<I5nrjkj9qumobs>>;
+export type I45fs67nfa490o = AnonymousEnum<{
+  System: Anonymize<Iekve0i6djpd9f>;
+  ParachainSystem: Anonymize<I5kev21p7u6ajb>;
+  Timestamp: Anonymize<I7d75gqfg6jh9c>;
+  ParachainInfo: undefined;
+  Balances: Anonymize<I9svldsp29mh87>;
+  CollatorSelection: Anonymize<I9dpq5287dur8b>;
+  Session: Anonymize<I77dda7hps0u37>;
+  XcmpQueue: Anonymize<Ib7tahn20bvsep>;
+  PolkadotXcm: Anonymize<I4up31a3q8cjhp>;
+  CumulusXcm: undefined;
+  MessageQueue: Anonymize<Ic2uoe7jdksosp>;
+  Utility: Anonymize<I6tj5vjl4lqfhk>;
+  Multisig: Anonymize<Ictdie4f9nl2uc>;
+  Proxy: Anonymize<I4hvahqj0lg76c>;
+  Identity: Anonymize<Iaijjeqvjbi23p>;
+  MultiBlockMigrations: Anonymize<I4oqb168b2d4er>;
+  IdentityMigrator: Anonymize<I67t4bps9r5c4k>;
+}>;
+export type Ieu6bl1lsgl0ob = ResultPayload<
+  {
+    execution_result: ResultPayload<
+      Anonymize<Ia1u1r3n74r13c>,
+      {
+        post_info: Anonymize<Ia1u1r3n74r13c>;
+        error: Anonymize<Ivklblfpiktda>;
+      }
+    >;
+    emitted_events: Anonymize<I422m49ti1qeph>;
+    local_xcm?: Anonymize<Ieqgqma27vbupd>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type I422m49ti1qeph = Array<Anonymize<Ib37uo14mhcdg4>>;
+export type Icfg52tq78dtm2 = ResultPayload<
+  {
+    execution_result: Anonymize<I6uq5gb4s805s7>;
+    emitted_events: Anonymize<I422m49ti1qeph>;
     forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
   },
   Anonymize<I55ku9c5gk50hb>
