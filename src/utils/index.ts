@@ -175,9 +175,9 @@ export const leadinFactorAt = (when: number) => {
 };
 
 const getMinEndPrice = (network: Network): bigint => {
-  switch(network) {
+  switch (network) {
     case Network.POLKADOT:
-      return fromUnit(network, 10); 
+      return fromUnit(network, 10);
     case Network.KUSAMA:
       return fromUnit(network, 1);
     case Network.PASEO:
@@ -187,7 +187,7 @@ const getMinEndPrice = (network: Network): bigint => {
     default:
       return BigInt(0);
   }
-}
+};
 
 // The price of a core at a specific block number
 export const getCorePriceAt = (_now: number, saleInfo: SaleInfo, network: Network): number => {
@@ -200,7 +200,7 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo, network: Networ
   const price = leadinFactorAt(through) * Number(endPrice);
 
   const minPrice = getMinEndPrice(network);
-  if(price < minPrice) {
+  if (price < minPrice) {
     return Number(minPrice);
   }
 
