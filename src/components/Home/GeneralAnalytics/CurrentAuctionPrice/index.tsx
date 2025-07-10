@@ -35,7 +35,7 @@ const CurrentCorePrice: React.FC = () => {
         const api = connection.client.getTypedApi(metadata.coretimeChain);
         const blockNumber: number = await api.query.System.Number.getValue();
 
-        const rawPrice = getCorePriceAt(blockNumber, saleInfo);
+        const rawPrice = getCorePriceAt(blockNumber, saleInfo, network);
         const formatted = toUnitFormatted(network, BigInt(rawPrice));
         setPrice(formatted);
       } catch (err) {

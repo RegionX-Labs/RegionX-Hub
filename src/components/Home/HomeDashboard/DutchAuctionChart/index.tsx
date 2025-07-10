@@ -59,7 +59,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
       value: toUnit(
         network,
         phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo))
+          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
           : BigInt(0)
       ),
       phase: SalePhase.Leadin,
@@ -130,7 +130,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
       max: toUnit(
         network,
         phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo))
+          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
           : BigInt(0)
       ),
       labels: {

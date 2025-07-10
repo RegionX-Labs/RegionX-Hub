@@ -174,13 +174,23 @@ export const leadinFactorAt = (when: number) => {
   }
 };
 
-// The price of a core at a specific block number
-export const getCorePriceAt = (_now: number, saleInfo: SaleInfo): number => {
-  /* NOTE: the runtime api is not implemented for Kusama.
-  const salePrice = await coretimeApi.rpc.state.call('BrokerApi_sale_price', '');
-  const price = coretimeApi.createType('Option<u128>', salePrice);
-  */
+const getMinEndPrice = (network: Network): bigint => {
+  switch(network) {
+    case Network.POLKADOT:
+      return fromUnit(network, 10); 
+    case Network.KUSAMA:
+      return fromUnit(network, 1);
+    case Network.PASEO:
+      return fromUnit(network, 10);
+    case Network.WESTEND:
+      return fromUnit(network, 1);
+    default:
+      return BigInt(0);
+  }
+}
 
+// The price of a core at a specific block number
+export const getCorePriceAt = (_now: number, saleInfo: SaleInfo, network: Network): number => {
   const { saleStart, leadinLength, endPrice } = saleInfo;
   const now = _now < saleStart ? saleStart : _now;
 
@@ -188,6 +198,12 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo): number => {
   const through = num / leadinLength;
 
   const price = leadinFactorAt(through) * Number(endPrice);
+
+  const minPrice = getMinEndPrice(network);
+  if(price < minPrice) {
+    return Number(minPrice);
+  }
+
   return Number(price.toFixed());
 };
 

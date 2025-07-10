@@ -40,9 +40,9 @@ export default function AuctionPriceOverview() {
         .getTypedApi(metadata.coretimeChain)
         .query.System.Number.getValue();
 
-      const initial = BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo));
+      const initial = BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network));
       const end = BigInt(saleInfo.endPrice || '0');
-      const current = BigInt(getCorePriceAt(currentBlock, saleInfo));
+      const current = BigInt(getCorePriceAt(currentBlock, saleInfo, network));
 
       const initialNum = Number(toUnit(network, initial));
       const endNum = Number(toUnit(network, end));
