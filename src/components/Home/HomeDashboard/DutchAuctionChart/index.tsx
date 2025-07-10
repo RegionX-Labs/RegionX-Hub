@@ -12,7 +12,7 @@ import {
 } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
+import { getCorePriceAt, getMinEndPrice, getTokenSymbol, toUnit } from '@/utils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -38,50 +38,58 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
     })();
   }, [network, connections]);
 
+  // Returns min price if price is below it.
+  const priceOrMin = (price: bigint): bigint => {
+    const minPrice = getMinEndPrice(network);
+    return price < minPrice ? minPrice : price;
+  };
+
   const data = [
     {
       timestamp: phaseEndpoints?.interlude.start,
-      value: toUnit(network, renewalPrice),
+      value: toUnit(network, priceOrMin(renewalPrice)),
       phase: SalePhase.Interlude,
     },
     {
       timestamp: phaseEndpoints?.interlude.end,
-      value: toUnit(network, renewalPrice),
+      value: toUnit(network, priceOrMin(renewalPrice)),
       phase: SalePhase.Interlude,
     },
     {
       timestamp: phaseEndpoints?.interlude.end,
-      value: toUnit(network, renewalPrice),
+      value: toUnit(network, priceOrMin(renewalPrice)),
       phase: SalePhase.Leadin,
     },
     {
       timestamp: phaseEndpoints?.leadin.start,
       value: toUnit(
         network,
-        phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
-          : BigInt(0)
+        priceOrMin(
+          phaseEndpoints && saleInfo
+            ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
+            : BigInt(0)
+        )
       ),
       phase: SalePhase.Leadin,
     },
     {
       timestamp: phaseEndpoints && (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
+      value: toUnit(network, priceOrMin(BigInt(saleInfo?.endPrice || '0') * BigInt(10))),
       phase: SalePhase.Leadin,
     },
     {
       timestamp: phaseEndpoints?.leadin.end,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+      value: toUnit(network, priceOrMin(BigInt(saleInfo?.endPrice || '0'))),
       phase: SalePhase.Leadin,
     },
     {
       timestamp: phaseEndpoints?.fixed.start,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+      value: toUnit(network, priceOrMin(BigInt(saleInfo?.endPrice || '0'))),
       phase: SalePhase.FixedPrice,
     },
     {
       timestamp: phaseEndpoints?.fixed.end,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+      value: toUnit(network, priceOrMin(BigInt(saleInfo?.endPrice || '0'))),
       phase: SalePhase.FixedPrice,
     },
   ];

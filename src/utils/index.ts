@@ -174,7 +174,7 @@ export const leadinFactorAt = (when: number) => {
   }
 };
 
-const getMinEndPrice = (network: Network): bigint => {
+export const getMinEndPrice = (network: Network): bigint => {
   switch (network) {
     case Network.POLKADOT:
       return fromUnit(network, 10);
@@ -199,12 +199,10 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo, network: Networ
 
   const price = leadinFactorAt(through) * Number(endPrice);
 
-  const minPrice = getMinEndPrice(network);
-  if (price < minPrice) {
-    return Number(minPrice);
-  }
+  const minPrice = Number(getMinEndPrice(network));
+  const finalPrice = Math.max(price, minPrice);
 
-  return Number(price.toFixed());
+  return Number(finalPrice.toFixed()); // rounded to 0 decimal places
 };
 
 export const coretimeChainBlockTime = (network: Network) => {
