@@ -65,6 +65,11 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
       phase: SalePhase.Leadin,
     },
     {
+      timestamp: phaseEndpoints && ((phaseEndpoints.leadin.start) + (phaseEndpoints.leadin.end)) / 2,
+      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
+      phase: SalePhase.Leadin,
+    },
+    {
       timestamp: phaseEndpoints?.leadin.end,
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.Leadin,
@@ -78,11 +83,6 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
       timestamp: phaseEndpoints?.fixed.end,
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
       phase: SalePhase.FixedPrice,
-    },
-    {
-      timestamp: ((phaseEndpoints?.leadin.start || 0) + (phaseEndpoints?.leadin.end || 0)) / 2,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
-      phase: SalePhase.Leadin,
     },
   ];
 
