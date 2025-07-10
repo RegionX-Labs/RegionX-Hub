@@ -237,10 +237,16 @@ export function bitStringToUint8Array(bits: string): Uint8Array {
 // The sale cycle in which kusama switched to using relay chain blocks.
 export const KUSAMA_SALE_CYCLE_WITH_UPDATE = 17;
 
+// The sale cycle in which kusama switched to using relay chain blocks.
+export const POLKADOT_SALE_CYCLE_WITH_UPDATE = 11;
+
 // Returns whether the coretime chain has switched to using relay chain blocks.
 export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): boolean => {
   if (network === Network.WESTEND) return true;
   if (network === Network.KUSAMA && saleInfo.saleCycle >= KUSAMA_SALE_CYCLE_WITH_UPDATE)
+    return true;
+
+  if (network === Network.POLKADOT && saleInfo.saleCycle >= POLKADOT_SALE_CYCLE_WITH_UPDATE)
     return true;
 
   return false;
