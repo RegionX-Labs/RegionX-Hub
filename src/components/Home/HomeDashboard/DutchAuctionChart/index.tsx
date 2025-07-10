@@ -65,7 +65,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
       phase: SalePhase.Leadin,
     },
     {
-      timestamp: phaseEndpoints && ((phaseEndpoints.leadin.start) + (phaseEndpoints.leadin.end)) / 2,
+      timestamp: phaseEndpoints && (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
       value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
       phase: SalePhase.Leadin,
     },
