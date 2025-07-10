@@ -180,35 +180,41 @@ export default function RenewableCores({ view }: Props) {
         view === 'Deploying a new project' ? styles.compact : ''
       }`}
     >
-      <p className={styles.title}>Renewable Cores</p>
+      <div className={styles.content}>
+        <p className={styles.title}>Renewable Cores</p>
 
-      <div className={styles.selectBox}>
-        {options.length > 0 ? (
-          <Select
-            options={options}
-            selectedValue={selected}
-            onChange={setSelected}
-            variant='secondary'
-          />
-        ) : (
-          <p className={styles.noDataMessage}>
-            All cores have been renewed. Nothing left to renew!
-          </p>
-        )}
+        <div className={styles.selectBox}>
+          {options.length > 0 ? (
+            <Select
+              options={options}
+              selectedValue={selected}
+              onChange={setSelected}
+              variant='secondary'
+            />
+          ) : (
+            <p className={styles.noDataMessage}>
+              All cores have been renewed. Nothing left to renew!
+            </p>
+          )}
+        </div>
+
+        <div className={styles.details}>
+          <div className={styles.detailBlock}>
+            <p className={styles.label}>Renewal Price</p>
+            <p className={styles.value}>
+              {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
+            </p>
+          </div>
+          <div className={styles.detailBlock}>
+            <p className={styles.label}>Renewal deadline</p>
+            <p className={styles.value}>{selectedDeadline}</p>
+          </div>
+        </div>
       </div>
 
-      <div className={styles.details}>
-        <div className={styles.detailBlock}>
-          <p className={styles.label}>Renewal Price</p>
-          <p className={styles.value}>
-            {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
-          </p>
-        </div>
-        <div className={styles.detailBlock}>
-          <p className={styles.label}>Renewal deadline</p>
-          <p className={styles.value}>{selectedDeadline}</p>
-        </div>
-      </div>
+      <button className={styles.renewButton} onClick={openModal}>
+        Renew Now
+      </button>
 
       {selectedAccount && accountData[selectedAccount.address] !== null && (
         <TransactionModal
@@ -218,10 +224,6 @@ export default function RenewableCores({ view }: Props) {
           onConfirm={onModalConfirm}
         />
       )}
-
-      <button className={styles.renewButton} onClick={openModal}>
-        Renew Now
-      </button>
       <Toaster />
     </div>
   );

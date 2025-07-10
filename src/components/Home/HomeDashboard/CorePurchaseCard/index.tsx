@@ -32,18 +32,20 @@ export default function CorePurchaseCard({ view }: Props) {
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [buyMultiple, setBuyMultiple] = useState(false);
+  const [numCores, setNumCores] = useState<number>(1);
 
   useEffect(() => {
     if (network && saleInfo) {
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
-        if (!networkChainIds) return null;
+        if (!networkChainIds) return;
         const connection = connections[networkChainIds.coretimeChain];
-        if (!connection || !connection.client || connection.status !== 'connected') return null;
+        if (!connection?.client || connection.status !== 'connected') return;
 
         const client = connection.client;
         const metadata = getNetworkMetadata(network);
-        if (!metadata) return null;
+        if (!metadata) return;
 
         purchaseHistoryRequested({
           network,
@@ -68,7 +70,7 @@ export default function CorePurchaseCard({ view }: Props) {
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
       const connection = connections[networkChainIds.coretimeChain];
-      if (!connection || !connection.client || connection.status !== 'connected') return;
+      if (!connection?.client || connection.status !== 'connected') return;
 
       const client = connection.client;
       const metadata = getNetworkMetadata(network);
@@ -82,18 +84,16 @@ export default function CorePurchaseCard({ view }: Props) {
     })();
   }, [network, saleInfo]);
 
+  const coresOffered = saleInfo?.coresOffered ?? 0;
+  const coresRemaining = coresOffered - coresSold;
+
   const openModal = () => {
-    if (!selectedAccount) {
-      toast.error('Account not selected');
-      return;
-    }
-    if (currentPhase === SalePhase.Interlude) {
-      toast.error('Cannot purchase a core during interlude phase');
-      return;
-    }
-    if (coresSold === saleInfo?.coresOffered) {
-      toast.error('No more cores remaining');
-      return;
+    if (!selectedAccount) return toast.error('Account not selected');
+    if (currentPhase === SalePhase.Interlude)
+      return toast.error('Cannot purchase during interlude');
+    if (coresRemaining === 0) return toast.error('No more cores remaining');
+    if (buyMultiple && (numCores <= 0 || numCores > coresRemaining)) {
+      return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
     }
     setIsModalOpen(true);
   };
@@ -103,74 +103,49 @@ export default function CorePurchaseCard({ view }: Props) {
     setIsModalOpen(false);
   };
 
-  const coresOffered = saleInfo?.coresOffered ?? 0;
-  const coresRemaining = coresOffered - coresSold;
-
   const buyCore = async () => {
-    if (!selectedAccount) {
-      toast.error('Account not selected');
-      return;
-    }
+    if (!selectedAccount) return toast.error('Account not selected');
+    if (!corePrice) return toast.error('Failed to fetch the price of a core');
 
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) {
-      toast.error('Unknown network');
-      return;
-    }
+    if (!networkChainIds) return toast.error('Unknown network');
+
     const connection = connections[networkChainIds.coretimeChain];
-    if (!connection || !connection.client || connection.status !== 'connected') {
-      toast.error('Failed to connect to the API');
-      return;
+    if (!connection?.client || connection.status !== 'connected') {
+      return toast.error('Failed to connect to the API');
     }
 
-    const client = connection.client;
     const metadata = getNetworkMetadata(network);
-    if (!metadata) {
-      toast.error('Failed to find metadata of the chains');
-      return;
-    }
+    if (!metadata) return toast.error('Failed to find metadata');
 
-    if (!corePrice) {
-      toast.error('Failed to fetch the price of a core');
-      return;
-    }
+    const api = connection.client.getTypedApi(metadata.coretimeChain);
+    const times = buyMultiple ? Math.min(numCores, coresRemaining) : 1;
 
-    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.purchase({
-      price_limit: BigInt(corePrice),
-    });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
-        toast.loading(
-          <span>
-            Transaction submitted:&nbsp;
-            <a
-              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ textDecoration: 'underline', color: '#60a5fa' }}
-            >
-              view transaction
-            </a>
-          </span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) {
-            toast.error('Transaction failed', { id: toastId });
-            console.log(ev.dispatchError);
-          } else {
-            toast.success('Transaction succeded!', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
+    for (let i = 0; i < times; i++) {
+      const tx = api.tx.Broker.purchase({ price_limit: BigInt(corePrice) });
+      const toastId = toast.loading(`Submitting tx ${i + 1} of ${times}`);
+      await new Promise<void>((resolve) => {
+        tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+          (ev) => {
+            if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+              if (!ev.ok) {
+                toast.error(`Transaction ${i + 1} failed`, { id: toastId });
+                console.error(ev.dispatchError);
+              } else {
+                toast.success(`Transaction ${i + 1} succeeded!`, { id: toastId });
+                getAccountData({ account: selectedAccount.address, connections, network });
+              }
+              resolve();
+            }
+          },
+          (e) => {
+            toast.error(`Transaction ${i + 1} cancelled`, { id: toastId });
+            console.error(e);
+            resolve();
           }
-        }
-      },
-      (e) => {
-        toast.error('Transaction cancelled', { id: toastId });
-        console.log(e);
-      }
-    );
+        );
+      });
+    }
   };
 
   return (
@@ -193,6 +168,43 @@ export default function CorePurchaseCard({ view }: Props) {
         </span>
       </div>
 
+      <div className={styles.multiCoreWrapper}>
+        <div className={styles.multiCoreRow}>
+          <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((prev) => !prev)}>
+            <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
+            <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
+              Single
+            </div>
+            <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
+              Multiple
+            </div>
+          </div>
+
+          {buyMultiple && (
+            <input
+              type='text'
+              inputMode='numeric'
+              pattern='[0-9]*'
+              className={styles.coreInput}
+              value={isNaN(numCores) ? '' : numCores}
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (/^\d*$/.test(raw)) {
+                  const cleaned = raw.replace(/^0+/, '') || '0';
+                  setNumCores(parseInt(cleaned, 10));
+                }
+              }}
+              onKeyDown={(e) => {
+                if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              placeholder='Amount'
+            />
+          )}
+        </div>
+      </div>
+
       {selectedAccount && accountData[selectedAccount.address] !== null && (
         <TransactionModal
           isOpen={isModalOpen}
@@ -203,8 +215,9 @@ export default function CorePurchaseCard({ view }: Props) {
       )}
 
       <button onClick={openModal} className={styles.buyButton}>
-        Purchase New Core
+        Purchase New Core{buyMultiple && numCores > 1 ? `s (${numCores})` : ''}
       </button>
+
       <Toaster />
     </div>
   );

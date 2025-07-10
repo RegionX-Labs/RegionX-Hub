@@ -12,6 +12,7 @@
   flex-direction: column;
   gap: 20px;
   @include Inter;
+
   @media (min-width: 3000px) {
     width: 32%;
   }
@@ -36,6 +37,7 @@
   @media (max-width: 450px) {
     max-width: 83%;
   }
+
   &.compact {
     @media (min-width: 3000px) {
       width: 32%;
@@ -110,9 +112,104 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-top: auto;
+  margin-bottom: 10px;
   @include Inter;
 
   &:hover {
     background-color: var(--accent-green-hover);
+  }
+}
+
+.multiCoreWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.multiCoreRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coreModeToggle {
+  display: flex;
+  align-items: center;
+  background-color: $darkBackground1;
+  border-radius: 10px;
+  padding: 4px;
+  width: 130px;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  user-select: none;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.coreModeOption {
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  padding: 6px 0;
+  border-radius: 10px;
+  transition: color 0.2s ease;
+}
+
+.coreModeOption.active {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.coreModeSlider {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background-color: $greenPrimary;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.coreModeSlider.multiple {
+  transform: translateX(100%);
+}
+
+.coreInput {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  width: 150px;
+  font-weight: 600;
+  background-color: $darkBackground3;
+  color: var(--text-color);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  outline: none;
+  text-align: right;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  appearance: textfield;
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
+    font-weight: 400;
   }
 }
