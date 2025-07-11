@@ -6,6 +6,10 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
 import { Network } from '@/types';
 import { toUnitFormatted } from '../../utils/index';
+import toast, { Toaster } from 'react-hot-toast';
+import { getAccountData } from '@/account';
+import { $selectedAccount } from '@/wallet';
+import { SUBSCAN_RELAY_URL } from '@/pages/coretime/sale-history';
 
 interface DashboardModalProps {
   isOpen: boolean;
@@ -20,6 +24,7 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
 
   const network = useUnit($network);
   const connections = useUnit($connections);
+  const selectedAccount = useUnit($selectedAccount);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -73,6 +78,67 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const reserveParaId = async () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.relayChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    const tx = client.getTypedApi(metadata.relayChain).tx.Registrar.reserve();
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed', { id: toastId });
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!', { id: toastId });
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
+  };
+
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -102,12 +168,13 @@ const DashboardModal: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
 
         <div className={styles.buttonContainer}>
           <div className={styles.reserveButton}>
-            <Button disabled={isLoading || error !== null}>
+            <Button onClick={reserveParaId} disabled={isLoading || error !== null}>
               {isLoading ? 'Loading...' : 'Reserve'}
             </Button>
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };
