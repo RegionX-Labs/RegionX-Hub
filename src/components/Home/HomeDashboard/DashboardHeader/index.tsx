@@ -5,6 +5,7 @@ import { useUnit } from 'effector-react';
 import styles from './DashboardHeader.module.scss';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { $selectedAccount } from '@/wallet';
+import { $accountIdentities } from '@/account/accountIdentity';
 import HelpCenterModal from './HelpCenterModal';
 
 const dashboards = [
@@ -22,19 +23,23 @@ type Props = {
 export default function DashboardHeader({ selected, setSelected }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const selectedAccount = useUnit($selectedAccount);
+  const [selectedAccount, identities] = useUnit([$selectedAccount, $accountIdentities]);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
   const handleSelect = (item: string, enabled: boolean) => {
     if (!enabled) return;
     setSelected(item);
     setDropdownOpen(false);
   };
 
+  const displayName =
+    identities[selectedAccount?.address ?? ''] || selectedAccount?.name || 'there';
+
   return (
     <div className={styles.headerWrapper}>
       <div className={styles.greetingBlock}>
-        <div className={styles.greeting}>👋 Hi {selectedAccount?.name ?? 'there'}</div>
+        <div className={styles.greeting}>👋 Hi {displayName}</div>
         <div className={styles.subtext}>Welcome back to RegionX Hub</div>
       </div>
 
