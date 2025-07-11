@@ -13,7 +13,7 @@ const dashboards = [
   {
     name: 'Deploy new project',
     key: 'deploying-new-project',
-    description: 'Purchase and configure new cores.',
+    description: 'Purchase a new core for your project',
     enabled: true,
   },
   {
