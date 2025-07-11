@@ -54,7 +54,7 @@ export default function CorePurchaseCard({ view }: Props) {
           .getTypedApi(metadata.coretimeChain)
           .query.System.Number.getValue();
         setCurrentHeight(currentBlockNumber);
-        const price = getCorePriceAt(currentBlockNumber, saleInfo);
+        const price = getCorePriceAt(currentBlockNumber, saleInfo, network);
         setCorePrice(price);
         const sold = await fetchCoresSold(network, connections);
         setCoresSold(sold || 0);
