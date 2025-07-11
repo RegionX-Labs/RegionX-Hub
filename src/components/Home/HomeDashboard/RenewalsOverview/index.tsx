@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import styles from './RenewalsOverview.module.scss';
 import { useUnit } from 'effector-react';
@@ -48,34 +50,34 @@ export default function RenewalsOverview() {
 
   return (
     <div className={styles.card}>
-      <div className={styles.title}>Time Left to Renew</div>
-      <div className={styles.timer}>
-        {timeLeft === null
-          ? '—'
-          : interludeEnded
-            ? 'Interlude phase has ended'
-            : formatTime(timeLeft)}
-      </div>
-      <div className={styles.caption}>
-        {interludeEnded
-          ? 'Renewal is no longer guaranteed — others may purchase your core now.'
-          : 'Renewal is possible after this phase, but it’s not guaranteed — anyone can purchase your core after interlude ends.'}
-      </div>
-
-      {coresRemaining !== null ? (
-        coresRemaining > 0 ? (
-          <div className={styles.coresLeft}>
-            Only <span className={styles.boldNumber}>{coresRemaining}</span> core
-            {coresRemaining !== 1 ? 's' : ''} remaining.
-          </div>
-        ) : (
-          <div className={styles.caption}>
-            All cores have been sold — you are unable to renew if you haven’t already.
-          </div>
-        )
-      ) : (
-        <div className={styles.caption}>Core availability data not available.</div>
+      {coresRemaining !== null && coresRemaining > 0 && (
+        <div className={styles.coreCountWrapper}>
+          <div className={styles.coreLabel}>Cores Remaining</div>
+          <div className={styles.coreNumber}>{coresRemaining}</div>
+        </div>
       )}
+
+      {coresRemaining !== null && coresRemaining === 0 && (
+        <div className={styles.metricWarning}>
+          All cores have been sold — you are unable to renew.
+        </div>
+      )}
+      <div className={styles.header}>Time Left to Renew</div>
+
+      <div className={styles.statusBox}>
+        <div className={styles.statusText}>
+          {timeLeft === null
+            ? '—'
+            : interludeEnded
+              ? 'Interlude phase has ended'
+              : formatTime(timeLeft)}
+        </div>
+        <div className={styles.statusNote}>
+          {interludeEnded
+            ? 'Renewal is no longer guaranteed — others may purchase your core now.'
+            : 'Renewal will no longer be guaranteed after this phase.'}
+        </div>
+      </div>
     </div>
   );
 }
