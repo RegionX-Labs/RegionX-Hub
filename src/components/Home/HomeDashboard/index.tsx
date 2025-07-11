@@ -16,20 +16,23 @@ import CoreRemainingCard from './CoreRemainingCard';
 import RevenueGeneratedCard from './RevenueGeneratedCard';
 import RenewalInfoCard from './RenewalInfoCard';
 import UpcomingRenewalsTable from './UpcomingRenewalsTable';
+import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
 
 const dashboards = [
-  { name: 'Overview', enabled: true },
-  { name: 'Deploying a new project', enabled: true },
-  { name: 'Managing Existing Project', enabled: true },
-  { name: 'Coretime Reseller', enabled: false },
+  { name: 'Overview', key: 'overview', enabled: true },
+  { name: 'Deploying a new project', key: 'deploying-new-project', enabled: true },
+  { name: 'Managing Existing Project', key: 'managing-existing-project', enabled: true },
+  { name: 'Coretime Reseller', key: 'coretime-reseller', enabled: false },
 ];
 
 export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [showInitialModal, setShowInitialModal] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -41,14 +44,29 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
   const [selectedParaId, setSelectedParaId] = useState<string | null>(null);
 
   const selected =
-    dashboards.find((d) => d.name.toLowerCase().replace(/\s+/g, '-') === dashboardParam)?.name ||
+    dashboards.find((d) => d.key === dashboardParam)?.name ||
+    dashboards.find((d) => d.key === localStorage.getItem('dashboardSelection'))?.name ||
     'Overview';
 
   const setSelected = (newSelection: string) => {
     const basePath = newSelection.toLowerCase().replace(/\s+/g, '-');
     const paraPart =
       basePath === 'managing-existing-project' && selectedParaId ? `&paraId=${selectedParaId}` : '';
+    localStorage.setItem('dashboardSelection', basePath);
     router.push(`?dashboard=${basePath}&network=${network}${paraPart}`, { scroll: false });
+  };
+
+  useEffect(() => {
+    const stored = localStorage.getItem('dashboardSelection');
+    if (!stored) {
+      setShowInitialModal(true);
+    }
+  }, []);
+
+  const handleDashboardSelect = (key: string) => {
+    localStorage.setItem('dashboardSelection', key);
+    setShowInitialModal(false);
+    router.push(`?dashboard=${key}&network=${network}`, { scroll: false });
   };
 
   const hasSetInitial = useRef(false);
@@ -76,6 +94,13 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       className={`${styles.dashboardWrapper} ${scrolled ? styles.scrolled : ''}`}
       ref={wrapperRef}
     >
+      {showInitialModal && (
+        <SpecificDashboardModal
+          onSelect={handleDashboardSelect}
+          onClose={() => setShowInitialModal(false)}
+        />
+      )}
+
       <DashboardHeader selected={selected} setSelected={setSelected} />
 
       <div className={styles.dashboard}>
@@ -116,7 +141,6 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
                 );
               }}
             />
-
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
