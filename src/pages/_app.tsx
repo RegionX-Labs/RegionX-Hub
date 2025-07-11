@@ -23,6 +23,7 @@ import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
 import Head from 'next/head';
 import { identityRequested } from '@/account/accountIdentity';
+import { latestSaleRequested } from '@/coretime/saleInfo';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -92,6 +93,10 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     identityRequested({ accounts: loadedAccounts, network, connections });
   }, [connections, network, loadedAccounts]);
+
+  useEffect(() => {
+    latestSaleRequested(network);
+  }, [network, connections]);
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
