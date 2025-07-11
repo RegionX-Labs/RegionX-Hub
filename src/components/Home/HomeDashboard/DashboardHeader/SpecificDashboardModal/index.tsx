@@ -19,7 +19,7 @@ const dashboards = [
   {
     name: 'Manage Existing one',
     key: 'managing-existing-project',
-    description: 'Renew and manage parachain projects.',
+    description: 'Renew and manage existing parachain projects.',
     enabled: true,
   },
   {
