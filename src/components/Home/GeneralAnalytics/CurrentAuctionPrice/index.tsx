@@ -3,7 +3,7 @@ import { useUnit } from 'effector-react';
 import styles from './CurrentAuctionPrice.module.scss';
 
 import { $network, $connections } from '@/api/connection';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { getCorePriceAt, toUnitFormatted, timesliceToTimestamp } from '@/utils';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 import { getRelativeTime } from '@/pages/coretime/my-regions/index';
@@ -15,10 +15,6 @@ const CurrentCorePrice: React.FC = () => {
 
   const [price, setPrice] = useState<string>('');
   const [relativeTime, setRelativeTime] = useState<string>('');
-
-  useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network]);
 
   useEffect(() => {
     const fetchPrice = async () => {
