@@ -7,7 +7,7 @@ const dashboards = [
   {
     name: 'Overview',
     key: 'overview',
-    description: 'Analytics, charts, and project summary.',
+    description: 'High-level summary of all Coretime related activity.',
     enabled: true,
   },
   {
