@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { TableComponent } from '../../../elements/TableComponent';
 import styles from './PurchaseHistory.module.scss';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import {
   $purchaseHistory,
   purchaseHistoryRequested,
@@ -48,10 +48,6 @@ export default function PurchaseHistoryTable() {
   const latestSaleInfo = useUnit($latestSaleInfo);
   const purchaseHistory = useUnit($purchaseHistory);
   const [tableData, setTableData] = useState<Array<Record<string, TableData>>>([]);
-
-  useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network]);
 
   useEffect(() => {
     if (network && latestSaleInfo) {

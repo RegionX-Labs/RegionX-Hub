@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $latestSaleInfo, latestSaleRequested, fetchSelloutPrice } from '@/coretime/saleInfo';
+import { $latestSaleInfo, fetchSelloutPrice } from '@/coretime/saleInfo';
 import { $network, $connections } from '@/api/connection';
 import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
@@ -18,10 +18,6 @@ export default function CoreComparison({ view }: Props) {
 
   const [renewalPrice, setRenewalPrice] = useState<number | null>(null);
   const [corePrice, setCorePrice] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network, connections]);
 
   useEffect(() => {
     if (network && saleInfo) {

@@ -3,7 +3,7 @@ import { useUnit } from 'effector-react';
 import styles from './BulkSaleSummary.module.scss';
 
 import { $network } from '@/api/connection';
-import { latestSaleRequested, $latestSaleInfo, fetchSaleInfoAt } from '@/coretime/saleInfo';
+import { $latestSaleInfo, fetchSaleInfoAt } from '@/coretime/saleInfo';
 import {
   $purchaseHistory,
   purchaseHistoryRequested,
@@ -25,10 +25,6 @@ export default function BulkSaleSummary() {
 
   const [previousBulkRevenue, setPreviousBulkRevenue] = useState<number | null>(null);
   const [previousRenewalRevenue, setPreviousRenewalRevenue] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network]);
 
   useEffect(() => {
     if (network && saleInfo) {
