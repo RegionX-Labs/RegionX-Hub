@@ -130,8 +130,10 @@
 
 .multiCoreRow {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
 
 .coreModeToggle {
@@ -194,9 +196,12 @@
   border-radius: 10px;
   outline: none;
   text-align: right;
+  flex-shrink: 1;
+  min-width: 60px;
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    width 0.2s ease;
 
   appearance: textfield;
   -moz-appearance: textfield;
@@ -211,5 +216,9 @@
     color: var(--text-muted);
     opacity: 0.5;
     font-weight: 400;
+  }
+
+  @media (max-width: 450px) {
+    width: 100px;
   }
 }

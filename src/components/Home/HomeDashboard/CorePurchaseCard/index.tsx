@@ -33,7 +33,7 @@ export default function CorePurchaseCard({ view }: Props) {
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [buyMultiple, setBuyMultiple] = useState(false);
-  const [numCores, setNumCores] = useState<number>(1);
+  const [numCores, setNumCores] = useState<number | null>(null);
 
   useEffect(() => {
     if (network && saleInfo) {
@@ -92,7 +92,7 @@ export default function CorePurchaseCard({ view }: Props) {
     if (currentPhase === SalePhase.Interlude)
       return toast.error('Cannot purchase during interlude');
     if (coresRemaining === 0) return toast.error('No more cores remaining');
-    if (buyMultiple && (numCores <= 0 || numCores > coresRemaining)) {
+    if (buyMultiple && (numCores === null || numCores <= 0 || numCores > coresRemaining)) {
       return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
     }
     setIsModalOpen(true);
@@ -119,7 +119,7 @@ export default function CorePurchaseCard({ view }: Props) {
     if (!metadata) return toast.error('Failed to find metadata');
 
     const api = connection.client.getTypedApi(metadata.coretimeChain);
-    const times = buyMultiple ? Math.min(numCores, coresRemaining) : 1;
+    const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
 
     for (let i = 0; i < times; i++) {
       const tx = api.tx.Broker.purchase({ price_limit: BigInt(corePrice) });
@@ -186,12 +186,11 @@ export default function CorePurchaseCard({ view }: Props) {
               inputMode='numeric'
               pattern='[0-9]*'
               className={styles.coreInput}
-              value={isNaN(numCores) ? '' : numCores}
+              value={numCores === null ? '' : String(numCores)}
               onChange={(e) => {
                 const raw = e.target.value;
                 if (/^\d*$/.test(raw)) {
-                  const cleaned = raw.replace(/^0+/, '') || '0';
-                  setNumCores(parseInt(cleaned, 10));
+                  setNumCores(raw === '' ? null : parseInt(raw, 10));
                 }
               }}
               onKeyDown={(e) => {
@@ -215,7 +214,8 @@ export default function CorePurchaseCard({ view }: Props) {
       )}
 
       <button onClick={openModal} className={styles.buyButton}>
-        Purchase New Core{buyMultiple && numCores > 1 ? `s (${numCores})` : ''}
+        Purchase New Core
+        {buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
       </button>
 
       <Toaster />
