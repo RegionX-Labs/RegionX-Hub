@@ -49,7 +49,8 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
     'Overview';
 
   const setSelected = (newSelection: string) => {
-    const basePath = newSelection.toLowerCase().replace(/\s+/g, '-');
+    const entry = dashboards.find((d) => d.name === newSelection);
+    const basePath = entry?.key || 'overview';
     const paraPart =
       basePath === 'managing-existing-project' && selectedParaId ? `&paraId=${selectedParaId}` : '';
     localStorage.setItem('dashboardSelection', basePath);
