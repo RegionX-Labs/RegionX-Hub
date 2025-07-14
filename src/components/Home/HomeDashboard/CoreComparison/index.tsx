@@ -37,7 +37,7 @@ export default function CoreComparison({ view }: Props) {
           .getTypedApi(metadata.coretimeChain)
           .query.System.Number.getValue();
 
-        const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo });
+        const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo }, network);
 
         setCorePrice(currentPrice);
 
