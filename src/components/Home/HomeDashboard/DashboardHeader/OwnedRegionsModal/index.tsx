@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $regions } from '@/coretime/regions';
+import { $regions, regionsRequested } from '@/coretime/regions';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
@@ -59,6 +59,13 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
   }, [network]);
 
   useEffect(() => {
+    if (!saleInfo) return;
+    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+    const afterTimeslice = saleInfo.regionBegin - regionDuration;
+    regionsRequested({ network, afterTimeslice });
+  }, [network, saleInfo]);
+
+  useEffect(() => {
     const loadDates = async () => {
       const updates: Record<string, RegionDateInfo> = {};
       for (const region of regions) {
@@ -93,9 +100,10 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   const selectOptions: SelectOption<SelectOption<string>>[] = regions
-    .filter(
-      (region) =>
-        encodeAddress(region.owner, 42) === encodeAddress(selectedAccount?.address || '', 42)
+    .filter((region) =>
+      selectedAccount
+        ? encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
+        : false
     )
     .map((region) => {
       const label = `Region #${region.core} (${region.begin} - ${region.end})`;
