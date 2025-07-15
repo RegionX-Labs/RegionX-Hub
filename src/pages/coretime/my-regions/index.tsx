@@ -58,13 +58,6 @@ const MyRegionsPage = () => {
   };
 
   useEffect(() => {
-    if (!saleInfo) return;
-    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
-    const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
-  }, [network, saleInfo]);
-
-  useEffect(() => {
     latestSaleRequested(network);
   }, [connections, network]);
 

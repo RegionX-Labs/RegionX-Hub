@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $regions, regionsRequested } from '@/coretime/regions';
+import { $regions } from '@/coretime/regions';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
@@ -56,13 +56,6 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
   useEffect(() => {
     latestSaleRequested(network);
   }, [network]);
-
-  useEffect(() => {
-    if (!saleInfo) return;
-    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
-    const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
-  }, [network, saleInfo]);
 
   useEffect(() => {
     const loadDates = async () => {
