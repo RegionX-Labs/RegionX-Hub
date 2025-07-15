@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $regions, regionsRequested } from '@/coretime/regions';
+import { $regions } from '@/coretime/regions';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
@@ -46,13 +46,6 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
   }, [network]);
 
   useEffect(() => {
-    if (!saleInfo) return;
-    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
-    const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
-  }, [network, saleInfo]);
-
-  useEffect(() => {
     const loadDates = async () => {
       const updates: Record<string, RegionDateInfo> = {};
       for (const region of regions) {
@@ -62,7 +55,6 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
         if (beginTimestamp && endTimestamp) {
           const beginDate = new Date(Number(beginTimestamp)).toLocaleDateString();
           const endDate = new Date(Number(endTimestamp)).toLocaleDateString();
-
           const durationMs = Number(endTimestamp) - Number(beginTimestamp);
           const durationDays = Math.round(durationMs / (1000 * 60 * 60 * 24));
 
@@ -87,10 +79,10 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   const selectOptions: SelectOption<SelectOption<string>>[] = regions
-    .filter((region) =>
-      selectedAccount
-        ? encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
-        : false
+    .filter(
+      (region) =>
+        selectedAccount &&
+        encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
     )
     .map((region) => {
       const label = `Region #${region.core} (${region.begin} - ${region.end})`;
@@ -170,7 +162,12 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
                 </span>
               </div>
 
-              <button className={styles.buyButton} onClick={() => setAssignOpen(true)}>
+              <button
+                className={styles.buyButton}
+                onClick={() => {
+                  setAssignOpen(true);
+                }}
+              >
                 Assign
               </button>
             </div>
