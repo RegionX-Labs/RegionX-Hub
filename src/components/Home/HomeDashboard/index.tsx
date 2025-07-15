@@ -17,7 +17,6 @@ import RevenueGeneratedCard from './RevenueGeneratedCard';
 import RenewalInfoCard from './RenewalInfoCard';
 import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
-
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }

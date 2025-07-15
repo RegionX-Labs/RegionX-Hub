@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './DashboardHeader.module.scss';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { $selectedAccount } from '@/wallet';
 import { $accountIdentities } from '@/account/accountIdentity';
+import { $regions } from '@/coretime/regions';
 import HelpCenterModal from './HelpCenterModal';
+import OwnedRegionsModal from './OwnedRegionsModal';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 const dashboards = [
   { name: 'Overview', enabled: true },
@@ -23,7 +26,22 @@ type Props = {
 export default function DashboardHeader({ selected, setSelected }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [selectedAccount, identities] = useUnit([$selectedAccount, $accountIdentities]);
+  const [regionsModalOpen, setRegionsModalOpen] = useState(false);
+  const [selectedAccount, identities, allRegions] = useUnit([
+    $selectedAccount,
+    $accountIdentities,
+    $regions,
+  ]);
+
+  const displayName =
+    identities[selectedAccount?.address ?? ''] || selectedAccount?.name || 'there';
+
+  const userHasRegions = useMemo(() => {
+    if (!selectedAccount) return false;
+    return allRegions.some(
+      (region) => encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
+    );
+  }, [allRegions, selectedAccount]);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -32,9 +50,6 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
     setSelected(item);
     setDropdownOpen(false);
   };
-
-  const displayName =
-    identities[selectedAccount?.address ?? ''] || selectedAccount?.name || 'there';
 
   return (
     <div className={styles.headerWrapper}>
@@ -50,6 +65,12 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
             Help Center
           </span>
         </button>
+
+        {userHasRegions && (
+          <button className={styles.orangeAssignBtn} onClick={() => setRegionsModalOpen(true)}>
+            Assign Region
+          </button>
+        )}
 
         <div className={styles.dropdownWrapper}>
           <div className={styles.dropdownHeader} onClick={toggleDropdown}>
@@ -77,6 +98,8 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
         onClose={() => setIsHelpOpen(false)}
         selected={selected}
       />
+
+      <OwnedRegionsModal isOpen={regionsModalOpen} onClose={() => setRegionsModalOpen(false)} />
     </div>
   );
 }
