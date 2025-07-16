@@ -23,7 +23,8 @@ import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
 import Head from 'next/head';
 import { identityRequested } from '@/account/accountIdentity';
-import { latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { regionsRequested } from '@/coretime/regions';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -35,6 +36,7 @@ function App({ Component, pageProps }: AppProps) {
   const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
   const loadedAccounts = useUnit($loadedAccounts);
+  const saleInfo = useUnit($latestSaleInfo);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
 
@@ -97,6 +99,13 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     latestSaleRequested(network);
   }, [network, connections]);
+
+  useEffect(() => {
+    if (!saleInfo) return;
+    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+    const afterTimeslice = saleInfo.regionBegin - regionDuration;
+    regionsRequested({ network, afterTimeslice });
+  }, [network, saleInfo]);
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
