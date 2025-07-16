@@ -199,10 +199,7 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo, network: Networ
 
   const price = leadinFactorAt(through) * Number(endPrice);
 
-  const minPrice = Number(getMinEndPrice(network));
-  const finalPrice = Math.max(price, minPrice);
-
-  return Number(finalPrice.toFixed()); // rounded to 0 decimal places
+  return Number(price.toFixed());
 };
 
 export const coretimeChainBlockTime = (network: Network) => {
