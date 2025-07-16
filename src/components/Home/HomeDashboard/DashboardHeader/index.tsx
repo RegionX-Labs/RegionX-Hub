@@ -34,7 +34,7 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
   ]);
 
   const displayName =
-    identities[selectedAccount?.address ?? ''] || selectedAccount?.name || 'there';
+    identities[selectedAccount?.address ?? '']?.name || selectedAccount?.name || 'there';
 
   const userHasRegions = useMemo(() => {
     if (!selectedAccount) return false;
