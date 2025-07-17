@@ -3,16 +3,18 @@ import { Connection } from '@/api/connection';
 import { ChainId, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { InjectedPolkadotAccount } from 'polkadot-api/pjs-signer';
 import { Network } from '@/types';
-import { PolkadotClient, TypedApi } from 'polkadot-api';
 
 type Payload = {
   accounts: InjectedPolkadotAccount[];
   network: Network;
   connections: Record<ChainId, Connection>;
 };
+
 export const identityRequested = createEvent<Payload>();
 
-export const $accountIdentities = createStore<Record<string, string>>({});
+export const $accountIdentities = createStore<
+  Record<string, { name: string; hasJudgement: boolean }>
+>({});
 
 export const getAccountIdentitiesFx = createEffect(async (payload: Payload) => {
   const { network, accounts, connections } = payload;
@@ -26,18 +28,27 @@ export const getAccountIdentitiesFx = createEffect(async (payload: Payload) => {
 
   const api = peopleConn.client.getTypedApi(metadata.peopleChain);
 
-  const identities: Record<string, string> = {};
+  const result: Record<string, { name: string; hasJudgement: boolean }> = {};
 
   for (const { address } of accounts) {
     const identityOpt = await api.query.Identity.IdentityOf.getValue(address);
-    const name = identityOpt?.info?.display.value
-      ? ((identityOpt.info.display.value as any)?.asText?.() ?? null)
-      : null;
 
-    if (name) identities[address] = name;
+    const name = identityOpt?.info?.display.value
+      ? ((identityOpt.info.display.value as any)?.asText?.() ?? '')
+      : '';
+
+    const hasJudgement =
+      Array.isArray(identityOpt?.judgements) && identityOpt.judgements.length > 0;
+
+    if (name) {
+      result[address] = {
+        name,
+        hasJudgement,
+      };
+    }
   }
 
-  return identities;
+  return result;
 });
 
 sample({

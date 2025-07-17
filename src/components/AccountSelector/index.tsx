@@ -38,34 +38,46 @@ const AccountSelector = () => {
   };
 
   const options = accounts.map((account) => {
-    const identityName = identities[account.address];
-    const hasIdentity = !!identityName;
+    const identity = identities[account.address];
+    const hasIdentity = !!identity;
+    const hasJudgement = identity?.hasJudgement ?? false;
 
-    const label = `${identityName || account.name || 'Unknown'} (${formatAddress(account.address)})`;
+    const label = `${identity?.name || account.name || 'Unknown'} (${formatAddress(account.address)})`;
+
+    const icon = (
+      <div className={styles.iconWrapper}>
+        <Identicon
+          value={account.address}
+          size={24}
+          theme='polkadot'
+          className={styles.identicon}
+        />
+        {hasIdentity && hasJudgement && (
+          <Image
+            src='/verified.png'
+            alt='Verified'
+            width={100}
+            height={100}
+            className={styles.verifiedIcon}
+          />
+        )}
+        {hasIdentity && !hasJudgement && (
+          <Image
+            src='/no-judgement.png'
+            alt='No Judgment'
+            width={100}
+            height={100}
+            className={styles.noJudgement}
+          />
+        )}
+      </div>
+    );
 
     return {
       key: account.address,
       value: account.address,
       label,
-      icon: (
-        <div className={styles.iconWrapper}>
-          <Identicon
-            value={account.address}
-            size={24}
-            theme='polkadot'
-            className={styles.identicon}
-          />
-          {hasIdentity && (
-            <Image
-              src='/verified.png'
-              alt='Verified'
-              width={100}
-              height={100}
-              className={styles.verifiedIcon}
-            />
-          )}
-        </div>
-      ),
+      icon,
     };
   });
 
