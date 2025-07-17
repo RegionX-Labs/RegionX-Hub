@@ -116,8 +116,8 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <RenewalsOverview />
             <CoreRemainingCard view={selected} />
             <RevenueGeneratedCard />
-            <UpcomingRenewalsTable />
             <OwnedRegionsTable />
+            <UpcomingRenewalsTable />
             <PurchaseHistoryTable />
           </>
         )}
