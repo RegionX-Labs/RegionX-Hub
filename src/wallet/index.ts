@@ -13,7 +13,6 @@ export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
 export const accountSelected = createEvent<string>();
 export const restoreSelectedAccount = createEvent();
-import { inject, isMimirReady, MIMIR_REGEXP } from '@mimirdev/apps-inject';
 
 type WalletExtension = {
   name: string;
@@ -23,18 +22,11 @@ export const $walletExtensions = createStore<WalletExtension[]>([]);
 export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
-const getExtensionsFx = createEffect(async (): Promise<WalletExtension[]> => {
+const getExtensionsFx = createEffect((): WalletExtension[] => {
   const extensions: string[] = getInjectedExtensions();
 
-  // Try to connect mimir
-  const origin = await isMimirReady();
-
-  // Verify if the URL matches Mimir's pattern
-  if (origin && MIMIR_REGEXP.test(origin)) {
-    // Inject Mimir into window.injectedWeb3
-    inject();
-    // Now you can use polkadot extension functions
-  }
+  const isMobile =
+    typeof navigator !== 'undefined' && /android|iphone|ipad|mobile/i.test(navigator.userAgent);
 
   const isNova =
     typeof window !== 'undefined' &&
