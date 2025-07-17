@@ -30,7 +30,10 @@ export default function OwnedRegionsTable() {
 
   useEffect(() => {
     const loadTableData = async () => {
-      if (!selectedAccount) return;
+      if (!selectedAccount) {
+        setLoading(false);
+        return;
+      }
 
       const ownedRegions = regions.filter(
         (region) => encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
@@ -94,12 +97,16 @@ export default function OwnedRegionsTable() {
     }
   }, [regions, network, connections, selectedAccount]);
 
-  if (loading || !tableData.length) return null;
+  if (loading) return null;
 
   return (
     <div className={styles.tableWrapper}>
       <h2 className={styles.heading}>My Regions</h2>
-      <TableComponent data={tableData} pageSize={5} />
+      {tableData.length > 0 ? (
+        <TableComponent data={tableData} pageSize={5} />
+      ) : (
+        <div className={styles.noRegions}>You don’t currently own any regions.</div>
+      )}
     </div>
   );
 }
