@@ -100,16 +100,19 @@ const MyRegionsPage = () => {
           {selectedAccount && <h1>My Regions</h1>}
 
           {!loading &&
-          selectedAccount &&
-          regions.length > 0 &&
-          !regions.some(
-            (r) => encodeAddress(r.owner, 42) === encodeAddress(selectedAccount.address, 42)
-          ) ? (
-            <p className={styles.noRegionsMessage}>No regions owned by the selected account.</p>
-          ) : (
-            <p className={styles.subtitle}></p>
+            selectedAccount &&
+            regions.length > 0 &&
+            !regions.some(
+              (r) => encodeAddress(r.owner, 42) === encodeAddress(selectedAccount.address, 42)
+            ) && (
+              <div className={styles.messageNote}>No regions owned by the selected account. </div>
+            )}
+
+          {!loading && regions.length === 0 && (
+            <div className={styles.messageNote}>There are no regions available.</div>
           )}
-          <p className={styles.subtitle}>All regions</p>
+
+          {regions.length > 0 && <p className={styles.subtitle}>All regions</p>}
         </div>
 
         <div className={styles.container}>
