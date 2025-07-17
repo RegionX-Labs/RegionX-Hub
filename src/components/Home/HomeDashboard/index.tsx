@@ -117,8 +117,8 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <CoreRemainingCard view={selected} />
             <RevenueGeneratedCard />
             <UpcomingRenewalsTable />
-            <PurchaseHistoryTable />
             <OwnedRegionsTable />
+            <PurchaseHistoryTable />
           </>
         )}
 
@@ -128,6 +128,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <CorePurchaseCard view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
+            <OwnedRegionsTable />
             <PurchaseHistoryTable />
           </>
         )}
@@ -147,6 +148,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
+            <OwnedRegionsTable />
           </>
         )}
       </div>
