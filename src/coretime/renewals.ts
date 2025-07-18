@@ -67,3 +67,28 @@ sample({
   clock: potentialRenewalsFx.doneData,
   target: $potentialRenewals,
 });
+
+export const fetchAutoRenewals = async (
+  network: Network,
+  connections: any
+): Promise<Map<string, boolean>> => {
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return new Map();
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return new Map();
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return new Map();
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
+
+  const entries = await api.query.Broker.AutoRenewals.getEntries();
+  const map = new Map<string, boolean>();
+  for (const [key, value] of entries) {
+    const paraId = key.args[0].toString();
+    map.set(paraId, value.value.toPrimitive() === true);
+  }
+
+  return map;
+};

@@ -1,0 +1,17 @@
+@use '../../../../styles/variables' as *;
+
+.tableWrapper {
+  border-radius: 12px;
+  background: $darkBackground2;
+  padding: 24px;
+  width: 95%;
+  max-width: unset;
+  border: 1px solid var(--card-border);
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
