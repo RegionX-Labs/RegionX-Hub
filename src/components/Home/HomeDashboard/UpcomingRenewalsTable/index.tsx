@@ -5,12 +5,8 @@ import styles from './UpcomingRenewalsTable.module.scss';
 import { useUnit } from 'effector-react';
 import { $network, $connections } from '@/api/connection';
 import { $parachains, parachainsRequested } from '@/parachains';
-import {
-  $potentialRenewals,
-  potentialRenewalsRequested,
-  RenewalKey,
-  RenewalRecord,
-} from '@/coretime/renewals';
+import { $potentialRenewals, potentialRenewalsRequested } from '@/coretime/renewals';
+import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { chainData } from '@/chaindata';
 import { TableComponent } from '@/components/elements/TableComponent';
 import { TableData } from '@/types/type';
@@ -21,16 +17,23 @@ const UpcomingRenewalsTable = () => {
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
   const potentialRenewals = useUnit($potentialRenewals);
+  const saleInfo = useUnit($latestSaleInfo);
+
   const [tableData, setTableData] = useState<Record<string, TableData>[]>([]);
 
   useEffect(() => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
+    latestSaleRequested(network);
   }, [network, connections]);
 
   useEffect(() => {
+    if (!saleInfo?.regionBegin) return;
+
     const loadTableData = async () => {
-      const entries = Array.from(potentialRenewals.entries());
+      const entries = Array.from(potentialRenewals.entries()).filter(
+        ([key]) => key.when === saleInfo.regionBegin
+      );
 
       const rows: Record<string, TableData>[] = [];
 
@@ -48,7 +51,6 @@ const UpcomingRenewalsTable = () => {
 
         const deadlineTimestamp = Number(deadlineDate);
         const now = Date.now();
-
         if (deadlineTimestamp < now) continue;
 
         const deadline = new Date(deadlineTimestamp).toLocaleString();
@@ -87,7 +89,9 @@ const UpcomingRenewalsTable = () => {
     };
 
     loadTableData();
-  }, [potentialRenewals, network, connections]);
+  }, [potentialRenewals, saleInfo, network, connections]);
+
+  if (!tableData.length) return null;
 
   return (
     <div className={styles.wrapper}>
