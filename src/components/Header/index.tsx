@@ -171,29 +171,29 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
               Connect Wallet
             </button>
           )}
-        </div>
 
-        <div className={styles.mobileRpcButton}>
-          <div className={styles.mobileRpcInner}>
+          <div className={styles.mobileRpcButton}>
             <button
+              className={styles.rpcButton}
+              onClick={() => {
+                setIsMenuOpen(false);
+                openRpcModal();
+              }}
+            >
+              <Image src='/Settings.svg' alt='settings' width={24} height={24} />
+            </button>
+
+            <button
+              className={styles.rpcButton}
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               title='Toggle Theme'
             >
               <Image
                 src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
-                alt='Toggle Theme'
-                width={20}
-                height={20}
+                alt={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                width={24}
+                height={24}
               />
-            </button>
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                openRpcModal();
-              }}
-              title='RPC Settings'
-            >
-              <Image src='/Settings.svg' alt='RPC Settings' width={20} height={20} />
             </button>
           </div>
         </div>
