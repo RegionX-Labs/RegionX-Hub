@@ -162,6 +162,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
           <div className={styles.networkSelector}>
             <NetworkSelector />
           </div>
+
           {accounts.length > 0 ? (
             <div className={styles.accSelector}>
               <AccountSelector />
@@ -186,7 +187,6 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
             <button
               className={styles.rpcButton}
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              title='Toggle Theme'
             >
               <Image
                 src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
