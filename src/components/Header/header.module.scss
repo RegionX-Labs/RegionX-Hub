@@ -220,7 +220,7 @@
     height: 44px;
     padding: 0;
     border-radius: 12px;
-    background-color: var(--dark-background-5);
+    background-color: var(--dark-background-2);
     border: 1px solid var(--dark-background-1);
     display: flex;
     align-items: center;
@@ -486,4 +486,7 @@
   .logo {
     width: 140px;
   }
+}
+.rpcButton img {
+  filter: brightness(0.7);
 }
