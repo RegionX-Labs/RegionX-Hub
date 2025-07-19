@@ -18,7 +18,7 @@ import RenewalInfoCard from './RenewalInfoCard';
 import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
 import OwnedRegionsTable from './OwnedRegionsTable';
-
+import AutoRenewalsTable from './AutoRenewalsTable';
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -108,6 +108,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       <div className={styles.dashboard}>
         {selected === 'Overview' && (
           <>
+            <AutoRenewalsTable />
             <RenewableCores view={selected} />
             <CoreComparison view={selected} />
             <CorePurchaseCard />
