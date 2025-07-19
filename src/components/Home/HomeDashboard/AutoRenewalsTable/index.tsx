@@ -25,20 +25,20 @@ export default function AutoRenewalsTable() {
       if (!network || !connections) return;
 
       setLoading(true);
-      const autoRenewalsMap = await fetchAutoRenewals(network, connections);
+      const autoRenewals = await fetchAutoRenewals(network, connections);
 
-      const formatted = Array.from(autoRenewalsMap.entries()).map(([paraId, isEnabled]) => ({
+      const formatted = Array.from(autoRenewals.map(e => ({
         ParaID: {
           cellType: 'text' as const,
-          data: paraId,
-          searchKey: paraId,
+          data: e.task.toString(),
+          searchKey: e.task.toString(),
         },
-        Status: {
-          cellType: 'text' as const,
-          data: isEnabled ? 'Enabled' : 'Disabled',
-          searchKey: isEnabled ? 'Enabled' : 'Disabled',
-        },
-      }));
+        // Status: {
+        //   cellType: 'text' as const,
+        //   data: isEnabled ? 'Enabled' : 'Disabled',
+        //   searchKey: isEnabled ? 'Enabled' : 'Disabled',
+        // },
+      })));
 
       setTableData(formatted);
       setLoading(false);

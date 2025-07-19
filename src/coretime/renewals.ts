@@ -68,27 +68,28 @@ sample({
   target: $potentialRenewals,
 });
 
+type AutoRenewalRecord = {
+  core: number;
+  next_renewal: number;
+  task: number;
+}
+
 export const fetchAutoRenewals = async (
   network: Network,
   connections: any
-): Promise<Map<string, boolean>> => {
+): Promise<AutoRenewalRecord[]> => {
   const chainIds = getNetworkChainIds(network);
-  if (!chainIds) return new Map();
+  if (!chainIds) return [];
 
   const connection = connections[chainIds.coretimeChain];
-  if (!connection || !connection.client || connection.status !== 'connected') return new Map();
+  if (!connection || !connection.client || connection.status !== 'connected') return [];
 
   const metadata = getNetworkMetadata(network);
-  if (!metadata) return new Map();
+  if (!metadata) return [];
 
   const api = connection.client.getTypedApi(metadata.coretimeChain);
 
-  const entries = await api.query.Broker.AutoRenewals.getEntries();
-  const map = new Map<string, boolean>();
-  for (const [key, value] of entries) {
-    const paraId = key.args[0].toString();
-    map.set(paraId, value.value.toPrimitive() === true);
-  }
+  const entries: Array<AutoRenewalRecord> = await api.query.Broker.AutoRenewals.getValue();
 
-  return map;
+  return entries;
 };
