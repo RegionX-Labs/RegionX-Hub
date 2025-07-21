@@ -262,3 +262,38 @@ export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): bool
 
   return false;
 };
+
+import { stringToU8a, bnToU8a } from '@polkadot/util';
+import { encodeAddress } from '@polkadot/util-crypto';
+
+export enum ParaType {
+  PARAID = 'paraid',
+  PARATYPE = 'paratype',
+}
+
+export const paraIdToAddress = (paraId: number, type: ParaType): string => {
+  const typePrefix = stringToU8a(type);
+  const paraIdBytes = bnToU8a(paraId, { bitLength: 32, isLe: true });
+  const zeroPadding = new Uint8Array(32 - typePrefix.length - paraIdBytes.length);
+
+  const fullBytes = new Uint8Array([...typePrefix, ...paraIdBytes, ...zeroPadding]);
+  return encodeAddress(fullBytes);
+};
+
+export const getParachainBalance = async (typedApi: any, address: string): Promise<bigint> => {
+  try {
+    if (typedApi.query.system?.account) {
+      const { data } = await typedApi.query.system.account(address);
+      return data.free.toBigInt();
+    } else if (typedApi.query['System']?.['Account']) {
+      const { data } = await typedApi.query['System']['Account'](address);
+      return data.free.toBigInt();
+    } else {
+      console.warn('typedApi.query.system.account is not available');
+      return BigInt(0);
+    }
+  } catch (e) {
+    console.error('Error fetching balance for address', address, e);
+    return BigInt(0);
+  }
+};

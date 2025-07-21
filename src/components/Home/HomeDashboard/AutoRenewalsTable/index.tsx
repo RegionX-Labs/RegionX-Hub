@@ -7,7 +7,14 @@ import styles from './AutoRenewalsTable.module.scss';
 import { fetchAutoRenewals } from '@/coretime/renewals';
 import { $connections, $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
-import { timesliceToTimestamp } from '@/utils';
+import {
+  timesliceToTimestamp,
+  paraIdToAddress,
+  getParachainBalance,
+  ParaType,
+  toUnitFormatted,
+} from '@/utils';
+import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 
 type TableData = {
   cellType: 'text' | 'address' | 'jsx';
@@ -39,6 +46,35 @@ export default function AutoRenewalsTable() {
           const formattedDate = nextRenewalTs
             ? new Date(Number(nextRenewalTs)).toLocaleString()
             : 'N/A';
+
+          let balance = '0 ' + network;
+
+          try {
+            const metadata = getNetworkMetadata(network);
+            const chainIds = getNetworkChainIds(network);
+
+            console.log('Metadata:', metadata);
+            console.log('ChainIds:', chainIds);
+
+            if (metadata && chainIds) {
+              const connection = connections[chainIds.relayChain];
+              const client = connection?.client;
+              const typedApi = client?.getTypedApi(metadata.relayChain);
+
+              console.log('typedApi:', typedApi);
+
+              if (typedApi) {
+                const address = paraIdToAddress(entry.task, ParaType.PARAID);
+                console.log('Address for para', entry.task, ':', address);
+
+                const bal = await getParachainBalance(typedApi, address);
+                balance = toUnitFormatted(network, bal);
+                console.log('Balance for para', entry.task, ':', balance);
+              }
+            }
+          } catch (e) {
+            console.error('Balance fetch error for para', entry.task, e);
+          }
 
           return {
             Parachain: {
@@ -77,6 +113,11 @@ export default function AutoRenewalsTable() {
               cellType: 'text',
               data: formattedDate,
               searchKey: formattedDate,
+            },
+            Balance: {
+              cellType: 'text',
+              data: balance,
+              searchKey: balance,
             },
           };
         })
