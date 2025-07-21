@@ -72,7 +72,7 @@ type AutoRenewalRecord = {
   core: number;
   next_renewal: number;
   task: number;
-}
+};
 
 export const fetchAutoRenewals = async (
   network: Network,
