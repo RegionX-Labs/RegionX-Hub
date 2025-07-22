@@ -10,7 +10,6 @@ import { chainData } from '@/chaindata';
 import {
   timesliceToTimestamp,
   paraIdToAddress,
-  getParachainBalance,
   ParaType,
   toUnitFormatted,
 } from '@/utils';
@@ -47,33 +46,24 @@ export default function AutoRenewalsTable() {
             ? new Date(Number(nextRenewalTs)).toLocaleString()
             : 'N/A';
 
-          let balance = '0 ' + network;
+          let balance = '0';
 
-          try {
-            const metadata = getNetworkMetadata(network);
-            const chainIds = getNetworkChainIds(network);
+          const paraAddress = paraIdToAddress(entry.task, ParaType.Sibling);
 
-            console.log('Metadata:', metadata);
-            console.log('ChainIds:', chainIds);
+          const metadata = getNetworkMetadata(network);
+          const chainIds = getNetworkChainIds(network);
 
-            if (metadata && chainIds) {
-              const connection = connections[chainIds.relayChain];
-              const client = connection?.client;
-              const typedApi = client?.getTypedApi(metadata.relayChain);
+          if (metadata && chainIds) {
+            const connection = connections[chainIds.coretimeChain];
+            const client = connection?.client;
+            const typedApi = client?.getTypedApi(metadata.coretimeChain);
 
-              console.log('typedApi:', typedApi);
-
-              if (typedApi) {
-                const address = paraIdToAddress(entry.task, ParaType.PARAID);
-                console.log('Address for para', entry.task, ':', address);
-
-                const bal = await getParachainBalance(typedApi, address);
-                balance = toUnitFormatted(network, bal);
-                console.log('Balance for para', entry.task, ':', balance);
-              }
+            if (typedApi) {
+              console.log(paraAddress);
+              const bal = await getParachainBalance(typedApi, paraAddress);
+              console.log(bal);
+              balance = toUnitFormatted(network, bal);
             }
-          } catch (e) {
-            console.error('Balance fetch error for para', entry.task, e);
           }
 
           return {
@@ -114,6 +104,11 @@ export default function AutoRenewalsTable() {
               data: formattedDate,
               searchKey: formattedDate,
             },
+            Address: {
+              cellType: 'address',
+              data: paraAddress,
+              searchKey: paraAddress,
+            },
             Balance: {
               cellType: 'text',
               data: balance,
@@ -129,6 +124,11 @@ export default function AutoRenewalsTable() {
 
     loadAutoRenewals();
   }, [network, connections]);
+
+  const getParachainBalance = async (typedApi: any, address: string): Promise<bigint> => {
+    const { data } = await typedApi.query.System.Account.getValue(address);
+    return data.free;
+  };
 
   return (
     <div className={styles.tableWrapper}>

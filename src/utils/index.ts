@@ -3,6 +3,8 @@ import { CoretimeMetadata, RelayMetadata, getNetworkChainIds, getNetworkMetadata
 import { SaleInfo } from '@/coretime/saleInfo';
 import { Connection } from '@/api/connection';
 import { FixedSizeBinary } from 'polkadot-api';
+import { stringToU8a, bnToU8a } from '@polkadot/util';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
@@ -263,12 +265,9 @@ export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): bool
   return false;
 };
 
-import { stringToU8a, bnToU8a } from '@polkadot/util';
-import { encodeAddress } from '@polkadot/util-crypto';
-
 export enum ParaType {
-  PARAID = 'paraid',
-  PARATYPE = 'paratype',
+  Sibling = 'sibl',
+  Child = 'para',
 }
 
 export const paraIdToAddress = (paraId: number, type: ParaType): string => {
@@ -278,22 +277,4 @@ export const paraIdToAddress = (paraId: number, type: ParaType): string => {
 
   const fullBytes = new Uint8Array([...typePrefix, ...paraIdBytes, ...zeroPadding]);
   return encodeAddress(fullBytes);
-};
-
-export const getParachainBalance = async (typedApi: any, address: string): Promise<bigint> => {
-  try {
-    if (typedApi.query.system?.account) {
-      const { data } = await typedApi.query.system.account(address);
-      return data.free.toBigInt();
-    } else if (typedApi.query['System']?.['Account']) {
-      const { data } = await typedApi.query['System']['Account'](address);
-      return data.free.toBigInt();
-    } else {
-      console.warn('typedApi.query.system.account is not available');
-      return BigInt(0);
-    }
-  } catch (e) {
-    console.error('Error fetching balance for address', address, e);
-    return BigInt(0);
-  }
 };
