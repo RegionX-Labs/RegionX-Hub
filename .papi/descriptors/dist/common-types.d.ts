@@ -5286,10 +5286,7 @@ export type Idinvj2ldfa0k7 = {
     "pvf_voting_ttl": number;
     "minimum_validation_upgrade_delay": number;
     "minimum_backing_votes": number;
-    "node_features": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
+    "node_features": Array<0 | 1>;
     "approval_voting_params": number;
     "scheduler_params": Anonymize<I555j7pvb27qd5>;
 };
@@ -5341,14 +5338,8 @@ export type Id375uoldedict = Array<{
     "hash": FixedSizeBinary<32>;
     "descriptor": Anonymize<Ic7r865c0luc3k>;
     "commitments": Anonymize<Ic1d4u2opv3fst>;
-    "availability_votes": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
-    "backers": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
+    "availability_votes": Array<0 | 1>;
+    "backers": Array<0 | 1>;
     "relay_parent_number": number;
     "backed_in_number": number;
     "backing_group": number;
@@ -5422,14 +5413,8 @@ export type PolkadotRuntimeParachainsSchedulerCommonAssignment = Enum<{
 export declare const PolkadotRuntimeParachainsSchedulerCommonAssignment: GetEnum<PolkadotRuntimeParachainsSchedulerCommonAssignment>;
 export type Ie18mk3nmrn3nr = Array<[number, Array<Anonymize<Iuf24b6e93i3q>>]>;
 export type I4vk12npmr8ll0 = {
-    "votes_accept": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
-    "votes_reject": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
+    "votes_accept": Array<0 | 1>;
+    "votes_reject": Array<0 | 1>;
     "age": number;
     "created_at": number;
     "causes": Array<Enum<{
@@ -5524,14 +5509,8 @@ export type I9m4rd2a7lc9md = {
     "needed_approvals": number;
 };
 export type I87u7jalc0lhah = {
-    "validators_for": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
-    "validators_against": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
+    "validators_for": Array<0 | 1>;
+    "validators_against": Array<0 | 1>;
     "start": number;
     "concluded_at"?: Anonymize<I4arjljr6dpflb>;
 };
@@ -9234,20 +9213,14 @@ export type Ibbf0j7ol2abrv = {
         "backed_candidates": Array<{
             "candidate": Anonymize<I7t2ron16fup67>;
             "validity_votes": Anonymize<Id0g95rku62vif>;
-            "validator_indices": {
-                bytes: Uint8Array;
-                bitsLen: number;
-            };
+            "validator_indices": Array<0 | 1>;
         }>;
         "disputes": Anonymize<Ibt1op6l47p1r2>;
         "parent_header": Anonymize<Ic952bubvq4k7d>;
     };
 };
 export type Ib0ijj1h4o8bcq = Array<{
-    "payload": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
+    "payload": Array<0 | 1>;
     "validator_index": number;
     "signature": FixedSizeBinary<64>;
 }>;
@@ -10776,10 +10749,7 @@ export type CoreState = Enum<{
         "occupied_since": number;
         "time_out_at": number;
         "next_up_on_time_out"?: Anonymize<I7o5sh7g5s2102>;
-        "availability": {
-            bytes: Uint8Array;
-            bitsLen: number;
-        };
+        "availability": Array<0 | 1>;
         "group_responsible": number;
         "candidate_hash": FixedSizeBinary<32>;
         "candidate_descriptor": Anonymize<Ic7r865c0luc3k>;
@@ -20284,14 +20254,8 @@ export type I91e9aiuocql92 = Array<{
     "hash": FixedSizeBinary<32>;
     "descriptor": Anonymize<Ibnq2mkuf1plno>;
     "commitments": Anonymize<Ic1d4u2opv3fst>;
-    "availability_votes": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
-    "backers": {
-        bytes: Uint8Array;
-        bitsLen: number;
-    };
+    "availability_votes": Array<0 | 1>;
+    "backers": Array<0 | 1>;
     "relay_parent_number": number;
     "backed_in_number": number;
     "backing_group": number;
@@ -22359,10 +22323,7 @@ export type I5m2irgeihn4i4 = {
         "backed_candidates": Array<{
             "candidate": Anonymize<I35p841butcer2>;
             "validity_votes": Anonymize<Id0g95rku62vif>;
-            "validator_indices": {
-                bytes: Uint8Array;
-                bitsLen: number;
-            };
+            "validator_indices": Array<0 | 1>;
         }>;
         "disputes": Anonymize<Ibt1op6l47p1r2>;
         "parent_header": Anonymize<Ic952bubvq4k7d>;
@@ -22976,10 +22937,7 @@ export type I1v2gv5pb5e508 = Array<Enum<{
         "occupied_since": number;
         "time_out_at": number;
         "next_up_on_time_out"?: Anonymize<I7o5sh7g5s2102>;
-        "availability": {
-            bytes: Uint8Array;
-            bitsLen: number;
-        };
+        "availability": Array<0 | 1>;
         "group_responsible": number;
         "candidate_hash": FixedSizeBinary<32>;
         "candidate_descriptor": Anonymize<Ibnq2mkuf1plno>;

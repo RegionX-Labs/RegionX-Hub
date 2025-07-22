@@ -9732,10 +9732,7 @@ type IRuntimeCalls = {
          * Get node features.
          * This is a staging method! Do not use on production runtimes!
          */
-        node_features: RuntimeDescriptor<[], {
-            bytes: Uint8Array;
-            bitsLen: number;
-        }>;
+        node_features: RuntimeDescriptor<[], Array<0 | 1>>;
         /**
          * Approval voting configuration parameters
          */
