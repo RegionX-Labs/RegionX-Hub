@@ -127,7 +127,7 @@ const getSalePhaseEndpointsFx = createEffect(
     if (!metadata) return null;
 
     let saleStartTimestamp;
-    if (network == Network.WESTEND) {
+    if (network == Network.WESTEND || network == Network.KUSAMA) {
       const connection = connections[chainIds.relayChain];
       if (!connection) return null;
       saleStartTimestamp = Number(
