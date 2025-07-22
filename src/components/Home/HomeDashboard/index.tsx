@@ -18,7 +18,7 @@ import RenewalInfoCard from './RenewalInfoCard';
 import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
 import OwnedRegionsTable from './OwnedRegionsTable';
-import AutoRenewalsTable from './AutoRenewalsTable';
+import AutoRenewalTable from './AutoRenewalTable';
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -116,7 +116,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <RenewalsOverview />
             <CoreRemainingCard view={selected} />
             <RevenueGeneratedCard />
-            <AutoRenewalsTable />
+            <AutoRenewalTable />
             <OwnedRegionsTable />
             <UpcomingRenewalsTable />
             <PurchaseHistoryTable />
@@ -149,7 +149,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
-            <AutoRenewalsTable />
+            <AutoRenewalTable />
             <OwnedRegionsTable />
           </>
         )}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { TableComponent } from '@/components/elements/TableComponent';
-import styles from './AutoRenewalsTable.module.scss';
+import styles from './AutoRenewalTable.module.scss';
 import { fetchAutoRenewals } from '@/coretime/renewals';
 import { $connections, $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
@@ -16,7 +16,7 @@ type TableData = {
   searchKey?: string;
 };
 
-export default function AutoRenewalsTable() {
+export default function AutoRenewalTable() {
   const network = useUnit($network);
   const connections = useUnit($connections);
   const [tableData, setTableData] = useState<Record<string, TableData>[]>([]);
@@ -127,7 +127,7 @@ export default function AutoRenewalsTable() {
 
   return (
     <div className={styles.tableWrapper}>
-      <h2 className={styles.heading}>Parachains with Auto Renewals</h2>
+      <h2 className={styles.heading}>Parachains with Auto Renewal</h2>
       {loading ? <div></div> : <TableComponent data={tableData} pageSize={5} />}
     </div>
   );
