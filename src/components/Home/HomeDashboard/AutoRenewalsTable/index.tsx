@@ -7,12 +7,7 @@ import styles from './AutoRenewalsTable.module.scss';
 import { fetchAutoRenewals } from '@/coretime/renewals';
 import { $connections, $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
-import {
-  timesliceToTimestamp,
-  paraIdToAddress,
-  ParaType,
-  toUnitFormatted,
-} from '@/utils';
+import { timesliceToTimestamp, paraIdToAddress, ParaType, toUnitFormatted } from '@/utils';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 
 type TableData = {
