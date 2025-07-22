@@ -1,5 +1,4 @@
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { CoretimeMetadata, RelayMetadata } from '@/network';
+import { getNetworkChainIds, getNetworkMetadata, CoretimeMetadata, RelayMetadata } from '@/network';
 import { Network } from '@/types';
 import { Connection } from '@/api/connection';
 import { TIMESLICE_PERIOD } from './constants';
@@ -24,9 +23,7 @@ export const timesliceToTimestamp = async (
     .query.System.Number.getValue();
   const timestamp = await client.getTypedApi(metadata.relayChain).query.Timestamp.Now.getValue();
 
-  const estimatedTimestamp =
-    timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
-  return estimatedTimestamp;
+  return timestamp - BigInt((currentBlockNumber - associatedRelayChainBlock) * 6000);
 };
 
 export const timestampToTimeslice = async (
@@ -71,4 +68,18 @@ export const blockToTimestamp = async (
   blockTime = blockTime === BigInt(0) ? BigInt(6000) : blockTime;
 
   return timestamp + BigInt((BigInt(blockNumber) - BigInt(currentBlockNumber)) * blockTime);
+};
+
+export const coretimeChainBlockTime = (network: Network): number => {
+  switch (network) {
+    case Network.ROCOCO:
+    case Network.WESTEND:
+      return 6_000;
+    case Network.KUSAMA:
+    case Network.POLKADOT:
+    case Network.PASEO:
+      return 12_000;
+    default:
+      return 0;
+  }
 };
