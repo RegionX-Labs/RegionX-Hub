@@ -108,7 +108,6 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       <div className={styles.dashboard}>
         {selected === 'Overview' && (
           <>
-            <AutoRenewalsTable />
             <RenewableCores view={selected} />
             <CoreComparison view={selected} />
             <CorePurchaseCard />
@@ -117,6 +116,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <RenewalsOverview />
             <CoreRemainingCard view={selected} />
             <RevenueGeneratedCard />
+            <AutoRenewalsTable />
             <OwnedRegionsTable />
             <UpcomingRenewalsTable />
             <PurchaseHistoryTable />
@@ -149,6 +149,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
+            <AutoRenewalsTable />
             <OwnedRegionsTable />
           </>
         )}
