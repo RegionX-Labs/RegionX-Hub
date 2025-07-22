@@ -3,6 +3,8 @@ import { CoretimeMetadata, RelayMetadata, getNetworkChainIds, getNetworkMetadata
 import { SaleInfo } from '@/coretime/saleInfo';
 import { Connection } from '@/api/connection';
 import { FixedSizeBinary } from 'polkadot-api';
+import { stringToU8a, bnToU8a } from '@polkadot/util';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
@@ -261,4 +263,18 @@ export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): bool
     return true;
 
   return false;
+};
+
+export enum ParaType {
+  Sibling = 'sibl',
+  Child = 'para',
+}
+
+export const paraIdToAddress = (paraId: number, type: ParaType): string => {
+  const typePrefix = stringToU8a(type);
+  const paraIdBytes = bnToU8a(paraId, { bitLength: 32, isLe: true });
+  const zeroPadding = new Uint8Array(32 - typePrefix.length - paraIdBytes.length);
+
+  const fullBytes = new Uint8Array([...typePrefix, ...paraIdBytes, ...zeroPadding]);
+  return encodeAddress(fullBytes);
 };
