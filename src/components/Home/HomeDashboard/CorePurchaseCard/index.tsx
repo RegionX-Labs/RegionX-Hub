@@ -121,31 +121,37 @@ export default function CorePurchaseCard({ view }: Props) {
     const api = connection.client.getTypedApi(metadata.coretimeChain);
     const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
 
-    for (let i = 0; i < times; i++) {
-      const tx = api.tx.Broker.purchase({ price_limit: BigInt(corePrice) });
-      const toastId = toast.loading(`Submitting tx ${i + 1} of ${times}`);
-      await new Promise<void>((resolve) => {
-        tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-          (ev) => {
-            if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-              if (!ev.ok) {
-                toast.error(`Transaction ${i + 1} failed`, { id: toastId });
-                console.error(ev.dispatchError);
-              } else {
-                toast.success(`Transaction ${i + 1} succeeded!`, { id: toastId });
-                getAccountData({ account: selectedAccount.address, connections, network });
-              }
-              resolve();
+    const calls = Array.from({ length: times }, () =>
+      api.tx.Broker.purchase({ price_limit: BigInt(corePrice) }).getEncodedData()
+    );
+
+    const tx =
+      times === 1
+        ? api.tx.Broker.purchase({ price_limit: BigInt(corePrice) })
+        : api.tx.Utility.batch({ calls });
+
+    const toastId = toast.loading('Submitting transaction...');
+    await new Promise<void>((resolve) => {
+      tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+        (ev) => {
+          if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+            if (!ev.ok) {
+              toast.error('Transaction failed', { id: toastId });
+              console.error(ev.dispatchError);
+            } else {
+              toast.success('Transaction succeeded!', { id: toastId });
+              getAccountData({ account: selectedAccount.address, connections, network });
             }
-          },
-          (e) => {
-            toast.error(`Transaction ${i + 1} cancelled`, { id: toastId });
-            console.error(e);
             resolve();
           }
-        );
-      });
-    }
+        },
+        (e) => {
+          toast.error('Transaction cancelled', { id: toastId });
+          console.error(e);
+          resolve();
+        }
+      );
+    });
   };
 
   return (
