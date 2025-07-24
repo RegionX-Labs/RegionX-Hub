@@ -239,7 +239,13 @@ export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props
         )}
         {typeof state === 'number' && (
           <div className={styles.stateTooltip}>
-            <ParaStateCard state={state} withTooltip={false} />
+            <ParaStateCard
+              state={state}
+              withTooltip={false}
+              renewalStatus={
+                state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined
+              }
+            />
             <div className={styles.stateText}>{paraStateProperties[state]?.description}</div>
           </div>
         )}
