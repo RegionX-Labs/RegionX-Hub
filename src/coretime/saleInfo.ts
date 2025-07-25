@@ -126,10 +126,9 @@ const getSalePhaseEndpointsFx = createEffect(
     const metadata = getNetworkMetadata(network);
     if (!metadata) return null;
 
-    let saleStartTimestamp;
     const connection = connections[chainIds.relayChain];
     if (!connection) return null;
-    saleStartTimestamp = Number(
+    const saleStartTimestamp = Number(
       await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
     );
 
