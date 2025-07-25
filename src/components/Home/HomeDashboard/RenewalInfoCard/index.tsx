@@ -241,12 +241,31 @@ export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props
           <div className={styles.stateTooltip}>
             <ParaStateCard
               state={state}
-              withTooltip={false}
+              withTooltip={state === ParaState.SYSTEM}
               renewalStatus={
                 state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined
               }
             />
-            <div className={styles.stateText}>{paraStateProperties[state]?.description}</div>
+
+            <div className={styles.stateText}>
+              {(() => {
+                if (state === ParaState.SYSTEM) {
+                  return paraStateProperties[state]?.description;
+                }
+
+                const renewalStatus = renewalEntry ? 'needed' : 'done';
+
+                if (renewalStatus === 'done') {
+                  return 'This parachain has renewed the core on time and doesn’t need to do anything until the beginning of the next sale cycle.';
+                }
+
+                if (renewalStatus === 'needed') {
+                  return 'This parachain needs to renew the core, otherwise it may stop if not renewed on time.';
+                }
+
+                return paraStateProperties[state]?.description;
+              })()}
+            </div>
           </div>
         )}
       </div>
