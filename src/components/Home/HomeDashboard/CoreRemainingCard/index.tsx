@@ -15,7 +15,7 @@ import { $connections, $network } from '@/api/connection';
 import { $latestSaleInfo, fetchCoresSold } from '@/coretime/saleInfo';
 import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getNetworkChainIds } from '@/network';
-import { coretimeChainBlockTime } from '@/utils';
+import { coretimeChainBlockTime } from '@/utils/index';
 
 ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, TimeScale);
 
