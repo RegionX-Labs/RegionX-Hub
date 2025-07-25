@@ -140,12 +140,12 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
               initialParaId={selectedParaId ?? undefined}
               onSelectParaId={(id) => {
                 setSelectedParaId(id);
-                router.push(
-                  `?dashboard=managing-existing-project&network=${network}&paraId=${id}`,
-                  { scroll: false }
-                );
+                const params = new URLSearchParams(window.location.search);
+                params.set('paraId', id);
+                router.push(`?${params.toString()}`, { scroll: false });
               }}
             />
+
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
