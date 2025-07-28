@@ -67,7 +67,7 @@ export default function CorePurchaseCard({ view }: Props) {
       if (!saleInfo) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
-      const connection = connections[networkChainIds.coretimeChain];
+      const connection = connections[networkChainIds.relayChain];
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       const client = connection.client;
@@ -75,7 +75,7 @@ export default function CorePurchaseCard({ view }: Props) {
       if (!metadata) return;
 
       const currentBlockNumber = await client
-        .getTypedApi(metadata.coretimeChain)
+        .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
