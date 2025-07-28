@@ -12,7 +12,7 @@ import {
 } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { getCorePriceAt, getMinEndPrice, getTokenSymbol, toUnit } from '@/utils';
+import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -28,6 +28,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
   const phaseEndpoints = useUnit($phaseEndpoints);
 
   const [renewalPrice, setRenewalPrice] = useState<bigint>(BigInt(0));
+  const [data, setData] = useState<{ timestamp: number; value: number; phase: SalePhase }[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -38,55 +39,87 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
     })();
   }, [network, connections]);
 
-  const data = [
-    {
-      timestamp: phaseEndpoints?.interlude.start,
-      value: toUnit(network, renewalPrice),
-      phase: SalePhase.Interlude,
-    },
-    {
-      timestamp: phaseEndpoints?.interlude.end,
-      value: toUnit(network, renewalPrice),
-      phase: SalePhase.Interlude,
-    },
-    {
-      timestamp: phaseEndpoints?.interlude.end,
-      value: toUnit(network, renewalPrice),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints?.leadin.start,
-      value: toUnit(
-        network,
-        phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
-          : BigInt(0)
-      ),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints && (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints?.leadin.end,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints?.fixed.start,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
-      phase: SalePhase.FixedPrice,
-    },
-    {
-      timestamp: phaseEndpoints?.fixed.end,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
-      phase: SalePhase.FixedPrice,
-    },
-  ];
+  useEffect(() => {
+    if (!phaseEndpoints || !saleInfo) return;
 
-  data.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    const baseData = [
+      {
+        timestamp: phaseEndpoints.interlude.start,
+        value: toUnit(network, renewalPrice),
+        phase: SalePhase.Interlude,
+      },
+      {
+        timestamp: phaseEndpoints.interlude.end,
+        value: toUnit(network, renewalPrice),
+        phase: SalePhase.Interlude,
+      },
+      {
+        timestamp: phaseEndpoints.interlude.end,
+        value: toUnit(network, renewalPrice),
+        phase: SalePhase.Leadin,
+      },
+      {
+        timestamp: phaseEndpoints.leadin.start,
+        value: toUnit(network, BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))),
+        phase: SalePhase.Leadin,
+      },
+      {
+        timestamp: (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
+        phase: SalePhase.Leadin,
+      },
+      {
+        timestamp: phaseEndpoints.leadin.end,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+        phase: SalePhase.Leadin,
+      },
+      {
+        timestamp: phaseEndpoints.fixed.start,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+        phase: SalePhase.FixedPrice,
+      },
+      {
+        timestamp: phaseEndpoints.fixed.end,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+        phase: SalePhase.FixedPrice,
+      },
+    ];
+
+    const oneDay = 41 * 60 * 60 * 1000;
+    const extraPoints: { timestamp: number; value: number; phase: SalePhase }[] = [];
+
+    for (let ts = phaseEndpoints.interlude.start; ts <= phaseEndpoints.fixed.end; ts += oneDay) {
+      let phase: SalePhase | null = null;
+
+      if (ts >= phaseEndpoints.interlude.start && ts <= phaseEndpoints.interlude.end) {
+        phase = SalePhase.Interlude;
+        extraPoints.push({
+          timestamp: ts,
+          value: toUnit(network, renewalPrice),
+          phase,
+        });
+      } else if (ts >= phaseEndpoints.leadin.start && ts <= phaseEndpoints.leadin.end) {
+        phase = SalePhase.Leadin;
+        const price = getCorePriceAt(ts, saleInfo, network);
+        extraPoints.push({
+          timestamp: ts,
+          value: toUnit(network, BigInt(price)),
+          phase,
+        });
+      } else if (ts >= phaseEndpoints.fixed.start && ts <= phaseEndpoints.fixed.end) {
+        phase = SalePhase.FixedPrice;
+        extraPoints.push({
+          timestamp: ts,
+          value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+          phase,
+        });
+      }
+    }
+
+    const combined = [...baseData, ...extraPoints];
+    combined.sort((a, b) => a.timestamp - b.timestamp);
+    setData(combined);
+  }, [phaseEndpoints, saleInfo, network, renewalPrice]);
 
   const series = [
     {
