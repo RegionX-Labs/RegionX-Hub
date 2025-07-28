@@ -11,7 +11,7 @@ export const regionsRequested = createEvent<RegionsRequestPayload>();
 
 export const $regions = createStore<Region[]>([]);
 
-type Region = {
+export type Region = {
   id: string;
   begin: number;
   core: number;
