@@ -77,7 +77,7 @@ const MyRegionsPage = () => {
   const ownedRegions = useMemo(() => {
     if (!selectedAccount) return false;
     return regions.filter(
-      (region) => encodeAddress(region.owner, 42) === encodeAddress(region.owner, 42)
+      (region) => encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
     );
   }, [regions, selectedAccount]);
 
