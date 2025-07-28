@@ -10,6 +10,7 @@ import { $selectedAccount } from '@/wallet';
 import HelpCenterModal from './HelpCenterModal';
 import OwnedRegionsModal from './OwnedRegionsModal';
 import { encodeAddress } from '@polkadot/util-crypto';
+import NextPhaseTimer from './NextPhaseTimer';
 
 const dashboards = [
   { name: 'Overview', enabled: true },
@@ -71,7 +72,9 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
             Assign Region
           </button>
         )}
-
+        <div className={styles.timerBadge}>
+          <NextPhaseTimer />
+        </div>
         <div className={styles.dropdownWrapper}>
           <div className={styles.dropdownHeader} onClick={toggleDropdown}>
             {selected}
