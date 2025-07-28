@@ -26,7 +26,7 @@ export default function CoreComparison({ view }: Props) {
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
         if (!networkChainIds) return null;
-        const connection = connections[networkChainIds.coretimeChain];
+        const connection = connections[networkChainIds.relayChain];
         if (!connection || !connection.client || connection.status !== 'connected') return null;
 
         const client = connection.client;
@@ -34,7 +34,7 @@ export default function CoreComparison({ view }: Props) {
         if (!metadata) return null;
 
         const currentBlockNumber = await client
-          .getTypedApi(metadata.coretimeChain)
+          .getTypedApi(metadata.relayChain)
           .query.System.Number.getValue();
 
         const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo }, network);

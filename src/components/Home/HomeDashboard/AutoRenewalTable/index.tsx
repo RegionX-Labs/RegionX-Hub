@@ -54,9 +54,7 @@ export default function AutoRenewalTable() {
             const typedApi = client?.getTypedApi(metadata.coretimeChain);
 
             if (typedApi) {
-              console.log(paraAddress);
               const bal = await getParachainBalance(typedApi, paraAddress);
-              console.log(bal);
               balance = toUnitFormatted(network, bal);
             }
           }

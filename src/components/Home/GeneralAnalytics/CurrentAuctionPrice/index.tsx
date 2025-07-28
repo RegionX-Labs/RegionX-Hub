@@ -24,11 +24,11 @@ const CurrentCorePrice: React.FC = () => {
       const metadata = getNetworkMetadata(network);
       if (!chainIds || !metadata) return;
 
-      const connection = connections[chainIds.coretimeChain];
+      const connection = connections[chainIds.relayChain];
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       try {
-        const api = connection.client.getTypedApi(metadata.coretimeChain);
+        const api = connection.client.getTypedApi(metadata.relayChain);
         const blockNumber: number = await api.query.System.Number.getValue();
 
         const rawPrice = getCorePriceAt(blockNumber, saleInfo, network);
