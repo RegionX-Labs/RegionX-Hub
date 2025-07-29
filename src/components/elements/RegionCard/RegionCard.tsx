@@ -24,7 +24,6 @@ const RegionCard: React.FC<RegionCardProps> = ({
   selected,
   regionData,
 }) => {
-  console.log('regionData.owner:', regionData.owner);
 
   const storageKey = `regionName-${regionData.regionStart}-${regionData.regionEnd}-${regionData.coreIndex}`;
 
