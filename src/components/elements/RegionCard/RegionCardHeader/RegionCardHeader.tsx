@@ -26,6 +26,7 @@ interface RegionCardHeaderProps {
   onNameChange?: (newName: string) => void;
   regionStartTimeslice: number;
   regionEndTimeslice: number;
+  owner?: string;
 }
 
 const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
@@ -38,6 +39,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   onNameChange,
   regionStartTimeslice,
   regionEndTimeslice,
+  owner,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
   const ss58Address = encodeAddress(publicKey, 42);
@@ -55,6 +57,8 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
   const network = useUnit($network);
   const isKusama = network === 'kusama';
+
+  const [copied, setCopied] = useState(false);
 
   const handleTransferClick = () => {
     setTransferModalOpen(true);
@@ -93,6 +97,13 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
+  function truncateMiddle(address: string, maxStart = 8, endLength = 3): string {
+    if (address.length <= maxStart + endLength + 3) return address;
+    const start = address.slice(0, maxStart);
+    const end = address.slice(-endLength);
+    return `${start}...${end}`;
+  }
+
   return (
     <>
       <div className={styles.regionCardHeaderWrapper}>
@@ -121,41 +132,13 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
             <div className={styles.dropdownMenu}>
-              <div
-                onClick={() => {
-                  setPartitionModalOpen(true);
-                  setShowDropdown(false);
-                }}
-              >
-                Partition
-              </div>
-              <div
-                onClick={() => {
-                  setInterlaceModalOpen(true);
-                  setShowDropdown(false);
-                }}
-              >
-                Interlace
-              </div>
+              <div onClick={() => setPartitionModalOpen(true)}>Partition</div>
+              <div onClick={() => setInterlaceModalOpen(true)}>Interlace</div>
               <div onClick={handleTransferClick}>Transfer</div>
               <div onClick={handleAssignClick}>Assign</div>
-              <div
-                onClick={() => {
-                  setSellModalOpen(true);
-                  setShowDropdown(false);
-                }}
-              >
-                Sell
-              </div>
+              <div onClick={() => setSellModalOpen(true)}>Sell</div>
               {isKusama && (
-                <div
-                  onClick={() => {
-                    setMarketplaceModalOpen(true);
-                    setShowDropdown(false);
-                  }}
-                >
-                  Transfer to RegionX
-                </div>
+                <div onClick={() => setMarketplaceModalOpen(true)}>Transfer to RegionX</div>
               )}
             </div>
           )}
@@ -173,15 +156,15 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         />
         <PartitionModal
           isOpen={isPartitionModalOpen}
-          regionId={regionId}
           onClose={() => setPartitionModalOpen(false)}
+          regionId={regionId}
           regionBeginTimeslice={regionStartTimeslice}
           regionEndTimeslice={regionEndTimeslice}
         />
         <InterlaceModal
           isOpen={isInterlaceModalOpen}
-          regionId={regionId}
           onClose={() => setInterlaceModalOpen(false)}
+          regionId={regionId}
         />
         <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
         <TransferToMarketplaceModal
@@ -191,14 +174,37 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         />
       </div>
 
-      <div className={styles['regionCardHeaderWrapper-labels']}>
+      <div className={styles.labelsRow}>
         <div className={styles.labelWithIcon}>
           <img src='/barcode.png' alt='core index' />
           <span>Core Index: {coreIndex}</span>
         </div>
-        <div className={styles.labelWithIcon}>
-          <img src='/timer.png' alt='duration' />
-          <span>{duration}</span>
+
+        <div className={styles.rightSection}>
+          <div className={styles.labelWithIcon}>
+            <img src='/timer.png' alt='duration' />
+            <span>{duration}</span>
+          </div>
+          {owner && (
+            <div className={styles.ownerWrapper} title={owner}>
+              <img src='/owner.png' alt='Owner' className={styles.ownerIcon} />
+              <span
+                className={styles.ownerAddressWrapper}
+                onClick={() => {
+                  if (owner) {
+                    navigator.clipboard.writeText(owner);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1000);
+                  }
+                }}
+              >
+                <span className={styles.ownerAddress} title={owner}>
+                  {truncateMiddle(owner)}
+                </span>
+                {copied && <span className={styles.copiedTooltip}>Copied!</span>}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </>

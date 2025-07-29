@@ -188,6 +188,7 @@ const RegionsDisplay = ({
             regionEndTimeslice: region.end,
             currentUsage: 0,
             onClick: () => setSelectedRegionId(region.id),
+            owner: encodeAddress(region.owner, 42),
           }}
           task={`Unassigned`}
         />

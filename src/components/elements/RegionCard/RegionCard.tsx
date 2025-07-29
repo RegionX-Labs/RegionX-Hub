@@ -24,6 +24,8 @@ const RegionCard: React.FC<RegionCardProps> = ({
   selected,
   regionData,
 }) => {
+  console.log('regionData.owner:', regionData.owner);
+
   const storageKey = `regionName-${regionData.regionStart}-${regionData.regionEnd}-${regionData.coreIndex}`;
 
   const [regionName, setRegionName] = useState(regionData.name);
@@ -55,6 +57,7 @@ const RegionCard: React.FC<RegionCardProps> = ({
         coreIndex={regionData.coreIndex}
         duration={regionData.duration}
         onNameChange={handleNameChange}
+        owner={regionData.owner}
       />
 
       <RegionCardProperties
