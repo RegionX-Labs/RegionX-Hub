@@ -37,6 +37,7 @@ export interface RegionData {
   onClick?: () => void;
   onUnlist?: () => void;
   onPurchase?: () => void;
+  owner?: string;
 }
 
 export type TableData = {
