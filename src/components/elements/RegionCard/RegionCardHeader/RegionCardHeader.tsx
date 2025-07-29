@@ -187,7 +187,12 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           </div>
           {owner && (
             <div className={styles.ownerWrapper} title={owner}>
-              <img src='/owner.png' alt='Owner' className={styles.ownerIcon} />
+              <Identicon
+                value={owner}
+                size={16}
+                theme='polkadot'
+                className={styles.ownerIdenticon}
+              />
               <span
                 className={styles.ownerAddressWrapper}
                 onClick={() => {
