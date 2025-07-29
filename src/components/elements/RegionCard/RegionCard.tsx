@@ -24,7 +24,6 @@ const RegionCard: React.FC<RegionCardProps> = ({
   selected,
   regionData,
 }) => {
-
   const storageKey = `regionName-${regionData.regionStart}-${regionData.regionEnd}-${regionData.coreIndex}`;
 
   const [regionName, setRegionName] = useState(regionData.name);
