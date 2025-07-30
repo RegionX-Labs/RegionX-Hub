@@ -59,7 +59,7 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
         <div className={styles.subtext}>Welcome back to RegionX Hub</div>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div className={styles.controlsWrapper}>
         <button className={styles.helpButton} onClick={() => setIsHelpOpen(true)}>
           <HelpCircle size={18} />
           <span className={styles.buttonText} style={{ marginLeft: 6 }}>
@@ -72,9 +72,11 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
             Assign Region
           </button>
         )}
+
         <div className={styles.timerBadge}>
           <NextPhaseTimer />
         </div>
+
         <div className={styles.dropdownWrapper}>
           <div className={styles.dropdownHeader} onClick={toggleDropdown}>
             {selected}
