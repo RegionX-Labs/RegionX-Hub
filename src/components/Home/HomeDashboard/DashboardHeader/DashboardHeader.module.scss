@@ -5,10 +5,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0px 30px 0 0px;
-  margin-bottom: 20px;
+  margin: 0px 30px 20px 0px;
   @include Inter;
   color: var(--text-primary);
+
+  @media (max-width: 1284px) and (min-width: 801px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 
   @media (max-width: 800px) {
     flex-direction: column;
@@ -35,6 +40,17 @@
   margin-left: 8px;
 }
 
+.controlsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: 700px) {
+    align-items: flex-start;
+  }
+}
+
 .dropdownWrapper {
   position: relative;
   user-select: none;
@@ -58,6 +74,7 @@
   box-sizing: border-box;
   justify-content: space-between;
 }
+
 .timerBadge {
   background: $darkBackground2;
   color: var(--text-primary);
@@ -83,6 +100,15 @@
   z-index: 10;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   border: 1px solid var(--card-border);
+}
+
+.dropdownContainer {
+  @media (max-width: 1284px) and (min-width: 801px) {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+  }
 }
 
 .dropdownItem {
@@ -122,6 +148,7 @@
     display: none;
   }
 }
+
 .orangeAssignBtn {
   background-color: var(--yellow-dark);
   color: black;
