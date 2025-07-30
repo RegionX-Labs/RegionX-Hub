@@ -107,8 +107,8 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
         },
 
         formatter: (params: any[]) => {
-          const realPoint = params.find(
-            (p) => p.seriesName !== 'Tooltip Tracker' && p.seriesName !== 'Phase Backgrounds'
+          const realPoint = params.find((p) =>
+            ['Interlude', 'Leadin', 'Fixed'].includes(p.seriesName)
           );
           if (!realPoint) return '';
           const date = new Date(realPoint.data[0]).toLocaleDateString();
@@ -174,16 +174,16 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           data: points.filter((p) => p.phase === 'Fixed').map((p) => [p.timestamp, p.value]),
         },
         {
-          name: 'Tooltip Tracker',
+          name: 'Invisible Daily Tracker',
           type: 'line',
           showSymbol: false,
           lineStyle: { opacity: 0 },
           itemStyle: { opacity: 0 },
           emphasis: { disabled: true },
-          tooltip: { show: false },
+          tooltip: { show: true },
           data: (() => {
             const oneDay = 24 * 60 * 60 * 1000;
-            const days: [number, number][] = [];
+            const result: [number, number][] = [];
             for (
               let ts = phaseEndpoints.interlude.start;
               ts <= phaseEndpoints.fixed.end;
@@ -193,16 +193,25 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
                 network,
                 (() => {
                   if (ts <= phaseEndpoints.interlude.end) return renewalPrice;
-                  if (ts <= phaseEndpoints.leadin.end) {
+                  if (ts <= phaseEndpoints.leadin.end)
                     return BigInt(getCorePriceAt(ts, saleInfo, network));
-                  }
                   return BigInt(saleInfo?.endPrice || '0');
                 })()
               );
-              days.push([ts, price]);
+              result.push([ts, price]);
             }
-            return days;
+            return result;
           })(),
+        },
+        {
+          name: 'Tooltip Tracker',
+          type: 'line',
+          showSymbol: false,
+          lineStyle: { opacity: 0 },
+          itemStyle: { opacity: 0 },
+          emphasis: { disabled: true },
+          tooltip: { show: false },
+          data: [],
           markLine: {
             symbol: 'none',
             label: {
@@ -212,11 +221,9 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
               fontWeight: 'bold',
               position: 'insideEndTop',
             },
-
             lineStyle: {
               color: theme === 'dark' ? '#3B82F6' : '#1C64F2',
               type: 'dashed',
-
               width: 1,
             },
             data: [{ xAxis: now }],
@@ -282,6 +289,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           },
         },
       ],
+
       dataZoom: [{ type: 'inside', throttle: 50 }],
     };
 
