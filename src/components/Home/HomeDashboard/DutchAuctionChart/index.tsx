@@ -91,6 +91,13 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
     const ticks = Array.from({ length: tickCount + 1 }, (_, i) => +(i * step).toFixed(3));
 
     const option = {
+      grid: {
+        left: 80,
+        right: 10,
+        top: 40,
+        bottom: 40,
+      },
+
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
@@ -127,11 +134,14 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
         max: Math.max(...ticks),
         interval: step,
         axisLabel: {
+          show: true,
+          hideOverlap: false,
           formatter: (val: number) => `${val.toFixed(2)} ${getTokenSymbol(network)}`,
           fontSize: 10,
           color: theme === 'dark' ? '#aaa' : '#444',
         },
       },
+
       series: [
         {
           name: 'Interlude',
