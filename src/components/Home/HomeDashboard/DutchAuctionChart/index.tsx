@@ -94,8 +94,20 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
-        formatter: (params: any) =>
-          `${new Date(params[0].data[0]).toLocaleDateString()}<br/>Price: ${params[0].data[1]} ${getTokenSymbol(network)}`,
+        axisPointer: {
+          type: 'cross',
+          snap: true,
+        },
+
+        formatter: (params: any[]) => {
+          const realPoint = params.find(
+            (p) => p.seriesName !== 'Tooltip Tracker' && p.seriesName !== 'Phase Backgrounds'
+          );
+          if (!realPoint) return '';
+          const date = new Date(realPoint.data[0]).toLocaleDateString();
+          const price = realPoint.data[1];
+          return `${date}<br/>Price: ${price.toLocaleString()} ${getTokenSymbol(network)}`;
+        },
       },
       xAxis: {
         type: 'time',
@@ -125,6 +137,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           name: 'Interlude',
           type: 'line',
           smooth: false,
+          showSymbol: true,
           symbolSize: 6,
           lineStyle: { width: 2, color: '#00ff9d' },
           itemStyle: { color: '#00ffaa' },
@@ -134,6 +147,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           name: 'Leadin',
           type: 'line',
           smooth: false,
+          showSymbol: true,
           symbolSize: 6,
           lineStyle: { width: 2, color: '#888', type: 'dashed' },
           itemStyle: { color: '#aaa' },
@@ -143,6 +157,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           name: 'Fixed',
           type: 'line',
           smooth: false,
+          showSymbol: true,
           symbolSize: 6,
           lineStyle: { width: 2, color: '#00ff9d' },
           itemStyle: { color: '#00ffaa' },
@@ -155,6 +170,7 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           lineStyle: { opacity: 0 },
           itemStyle: { opacity: 0 },
           emphasis: { disabled: true },
+          tooltip: { show: false },
           data: (() => {
             const oneDay = 24 * 60 * 60 * 1000;
             const days: [number, number][] = [];
@@ -186,9 +202,11 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
               fontWeight: 'bold',
               position: 'insideEndTop',
             },
+
             lineStyle: {
               color: theme === 'dark' ? '#3B82F6' : '#1C64F2',
               type: 'dashed',
+
               width: 1,
             },
             data: [{ xAxis: now }],
