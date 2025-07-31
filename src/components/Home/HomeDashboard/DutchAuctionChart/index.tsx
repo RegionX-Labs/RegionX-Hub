@@ -219,7 +219,8 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
               formatter: 'Now',
               color: '#3B82F6',
               fontWeight: 'bold',
-              position: 'insideEndTop',
+              position: 'insideEndBottom',
+              rotate: 0,
             },
             lineStyle: {
               color: theme === 'dark' ? '#3B82F6' : '#1C64F2',
