@@ -12,7 +12,7 @@
   background: $darkBackground2;
   @include Inter;
   border-radius: 20px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   overflow-x: auto;
 }
 
@@ -68,7 +68,7 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background: color.adjust($white, $lightness: -25%);
+    // background: color.adjust($white, $lightness: -25%);
   }
 }
 
@@ -99,7 +99,7 @@ $gray: #3a3a3a !default;
   }
 
   &:hover {
-    background: color.adjust($grayDark, $lightness: 5%);
+    // background: color.adjust($grayDark, $lightness: 5%);
   }
 }
 

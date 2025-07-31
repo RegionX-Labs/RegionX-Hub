@@ -107,6 +107,18 @@ export default function SecondaryMarketplaceTable() {
       toast.error('Unknown network');
       return;
     }
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    if(!networkChainIds.regionxChain || !metadata.regionxChain) {
+      toast.error(`RegionX doesn't support this network yet`);
+      return; 
+    }
+
     const connection = connections[networkChainIds.regionxChain];
     if (!connection || !connection.client || connection.status !== 'connected') {
       toast.error('Failed to connect to the API');
@@ -114,11 +126,6 @@ export default function SecondaryMarketplaceTable() {
     }
 
     const client = connection.client;
-    const metadata = getNetworkMetadata(network);
-    if (!metadata) {
-      toast.error('Failed to find metadata of the chains');
-      return;
-    }
 
     const tx = client.getTypedApi(metadata.regionxChain).tx.Market.purchase_region({
       max_price: calculatePrice(listing),

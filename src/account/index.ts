@@ -43,6 +43,16 @@ const getAccountDataFx = createEffect(
       throw new Error('Network chain IDs not found');
     }
 
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      throw new Error('Network metadata not found');
+    }
+
+    if(!networkChainIds.regionxChain || !metadata.regionxChain) {
+      throw new Error(`RegionX doesn't support this network yet`);
+    }
+
     const relayConnection = connections[networkChainIds.relayChain];
     const coretimeConnection = connections[networkChainIds.coretimeChain];
     const regionxConnection = connections[networkChainIds.regionxChain];
@@ -56,10 +66,6 @@ const getAccountDataFx = createEffect(
       coretimeConnection.status !== 'connected'
     ) {
       throw new Error('Connection not available');
-    }
-    const metadata = getNetworkMetadata(network);
-    if (!metadata) {
-      throw new Error('Network metadata not found');
     }
 
     const _relayData = await fetchAccountData(relayConnection, metadata.relayChain, account);

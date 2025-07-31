@@ -19,7 +19,7 @@ import {
 type NetworkChainIds = {
   relayChain: ChainId;
   coretimeChain: ChainId;
-  regionxChain: ChainId;
+  regionxChain: ChainId | null;
   peopleChain: ChainId;
 };
 
@@ -40,7 +40,7 @@ export type PeopleMetadata =
 export type NetworkMetadata = {
   relayChain: RelayMetadata;
   coretimeChain: CoretimeMetadata;
-  regionxChain: RegionXMetadata;
+  regionxChain: RegionXMetadata | null;
   peopleChain: PeopleMetadata;
 };
 
@@ -53,7 +53,7 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
       return {
         relayChain: chains.polkadot.chainId,
         coretimeChain: chains.polkadotCoretime.chainId,
-        regionxChain: chains.regionxKusama.chainId, // TODO
+        regionxChain: null,
         peopleChain: chains.polkadotPeople.chainId,
       };
     case Network.KUSAMA:
@@ -67,14 +67,14 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
       return {
         relayChain: chains.paseo.chainId,
         coretimeChain: chains.paseoCoretime.chainId,
-        regionxChain: chains.regionxKusama.chainId, // TODO
+        regionxChain: null,
         peopleChain: chains.peoplePaseo.chainId,
       };
     case Network.WESTEND:
       return {
         relayChain: chains.westend.chainId,
         coretimeChain: chains.westendCoretime.chainId,
-        regionxChain: chains.regionxKusama.chainId, // TODO
+        regionxChain: null,
         peopleChain: chains.peopleWestend.chainId,
       };
     default:

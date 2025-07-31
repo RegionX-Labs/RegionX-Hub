@@ -6,11 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './my-regions.module.scss';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-<<<<<<< HEAD
 import { bitStringToUint8Array, countBits, maskToBin, timesliceToTimestamp } from '@/utils';
-=======
-import { bitStringToUint8Array, maskToBin, RegionId, timesliceToTimestamp } from '@/utils';
->>>>>>> origin/main
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { FixedSizeBinary } from 'polkadot-api';
@@ -144,19 +140,6 @@ const RegionsDisplay = ({
   regionDateInfos,
   setSelectedRegionId,
 }: RegionsDisplayProps) => {
-  const countBits = (regionMask: string) => {
-    let count = 0;
-    // Convert hex to bits and count ones.
-    for (let i = 2; i < regionMask.length; ++i) {
-      let v = parseInt(regionMask.slice(i, i + 1), 16);
-      while (v > 0) {
-        if (v & 1) ++count;
-        v >>= 1;
-      }
-    }
-    return count;
-  };
-
   return regions.map((region) => {
     const regionStart = regionDateInfos?.[region.id]?.beginDate
       ? `Begin: ${regionDateInfos[region.id].beginDate}`

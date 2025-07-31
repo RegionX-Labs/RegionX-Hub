@@ -11,7 +11,7 @@
   @include Inter;
   border-radius: 20px;
   margin-bottom: 45px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
 
   overflow-x: auto;
 }
@@ -46,7 +46,7 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: color.adjust($white, $lightness: -25%);
+    // background-color: color.adjust($white, $lightness: -25%);
   }
 }
 
