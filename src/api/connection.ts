@@ -82,6 +82,7 @@ export const initChainsFx = createEffect((network: Network) => {
   chainConnected(newNetworkChains.relayChain);
   chainConnected(newNetworkChains.coretimeChain);
   chainConnected(newNetworkChains.peopleChain);
+  chainConnected(newNetworkChains.regionxChain);
 
   return network;
 });

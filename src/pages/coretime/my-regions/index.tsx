@@ -6,7 +6,11 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './my-regions.module.scss';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+<<<<<<< HEAD
+import { bitStringToUint8Array, countBits, maskToBin, timesliceToTimestamp } from '@/utils';
+=======
 import { bitStringToUint8Array, maskToBin, RegionId, timesliceToTimestamp } from '@/utils';
+>>>>>>> origin/main
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { FixedSizeBinary } from 'polkadot-api';

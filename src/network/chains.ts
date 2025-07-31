@@ -84,6 +84,11 @@ export const chains = {
       { url: 'wss://sys.ibp.network/coretime-westend' },
     ],
   },
+  regionxKusama: {
+    chainId: '0xd207e177ffab83bf2d9420fac81d7ad7f72184aba6573ccee9c96d6b5f24cfcf' as ChainId,
+    name: 'RegionX Kusama',
+    nodes: [{ url: 'ws://127.0.0.1:8001' }],
+  },
   polkadotPeople: {
     chainId: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008' as ChainId,
     name: 'People Polkadot',
