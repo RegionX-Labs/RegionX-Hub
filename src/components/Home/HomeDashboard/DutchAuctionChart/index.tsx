@@ -1,20 +1,13 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import { ApexOptions } from 'apexcharts';
+import ReactECharts from 'echarts-for-react';
 import styles from './DutchAuctionChart.module.scss';
-import {
-  $latestSaleInfo,
-  $phaseEndpoints,
-  fetchSelloutPrice,
-  SalePhase,
-} from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
-import { $connections, $network } from '@/api/connection';
-import { getCorePriceAt, getMinEndPrice, getTokenSymbol, toUnit } from '@/utils';
 
-const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
+import { $latestSaleInfo, $phaseEndpoints, fetchSelloutPrice } from '@/coretime/saleInfo';
+import { $connections, $network } from '@/api/connection';
+import { getCorePriceAt, toUnit, getTokenSymbol } from '@/utils';
 
 interface DutchAuctionChartProps {
   theme: 'light' | 'dark';
@@ -22,8 +15,8 @@ interface DutchAuctionChartProps {
 }
 
 export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProps) {
-  const connections = useUnit($connections);
   const network = useUnit($network);
+  const connections = useUnit($connections);
   const saleInfo = useUnit($latestSaleInfo);
   const phaseEndpoints = useUnit($phaseEndpoints);
 
@@ -38,166 +31,276 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
     })();
   }, [network, connections]);
 
-  const data = [
-    {
-      timestamp: phaseEndpoints?.interlude.start,
-      value: toUnit(network, renewalPrice),
-      phase: SalePhase.Interlude,
-    },
-    {
-      timestamp: phaseEndpoints?.interlude.end,
-      value: toUnit(network, renewalPrice),
-      phase: SalePhase.Interlude,
-    },
-    {
-      timestamp: phaseEndpoints?.interlude.end,
-      value: toUnit(network, renewalPrice),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints?.leadin.start,
-      value: toUnit(
-        network,
-        phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
-          : BigInt(0)
-      ),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints && (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints?.leadin.end,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
-      phase: SalePhase.Leadin,
-    },
-    {
-      timestamp: phaseEndpoints?.fixed.start,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
-      phase: SalePhase.FixedPrice,
-    },
-    {
-      timestamp: phaseEndpoints?.fixed.end,
-      value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
-      phase: SalePhase.FixedPrice,
-    },
-  ];
+  const now = Date.now();
+  let chartContent: React.ReactNode = <div></div>;
 
-  data.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-  const series = [
-    {
-      name: 'Interlude Period',
-      data: data.map(({ phase, value }) => (phase === SalePhase.Interlude ? value : null)),
-    },
-    {
-      name: 'Leadin Period',
-      data: data.map(({ phase, value }) => (phase === SalePhase.Leadin ? value : null)),
-    },
-    {
-      name: 'Fixed Price Period',
-      data: data.map(({ phase, value }) => (phase === SalePhase.FixedPrice ? value : null)),
-    },
-  ];
-
-  const options: ApexOptions = {
-    chart: {
-      type: 'line',
-      height: 300,
-      background: 'transparent',
-      toolbar: { show: false },
-      zoom: { enabled: false },
-    },
-    stroke: {
-      width: [2, 2],
-      curve: 'straight',
-      dashArray: [0, 7],
-    },
-    markers: { size: 0, strokeWidth: 0 },
-    xaxis: {
-      labels: { show: true },
-      axisTicks: { show: false },
-      axisBorder: { show: false },
-      categories: data.map((v) => v.timestamp),
-      type: 'datetime',
-    },
-    yaxis: {
-      tickAmount: 8,
-      min: 0,
-      max: toUnit(
-        network,
-        phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
-          : BigInt(0)
-      ),
-      labels: {
-        style: { colors: theme === 'dark' ? '#aaa' : '#444' },
-        formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,
+  if (
+    phaseEndpoints &&
+    phaseEndpoints.leadin &&
+    phaseEndpoints.fixed &&
+    phaseEndpoints.interlude &&
+    saleInfo
+  ) {
+    const points = [
+      {
+        timestamp: phaseEndpoints.interlude.start,
+        value: toUnit(network, renewalPrice),
+        phase: 'Interlude',
       },
-    },
-    grid: {
-      show: true,
-      borderColor: theme === 'dark' ? '#828c85' : 'rgba(175, 175, 175, 0.25)',
-      strokeDashArray: 4,
-      xaxis: { lines: { show: false } },
-      yaxis: { lines: { show: true } },
-    },
-    annotations: {
-      xaxis: [
+      {
+        timestamp: phaseEndpoints.interlude.end,
+        value: toUnit(network, renewalPrice),
+        phase: 'Interlude',
+      },
+      {
+        timestamp: phaseEndpoints.interlude.end,
+        value: toUnit(network, renewalPrice),
+        phase: 'Leadin',
+      },
+      {
+        timestamp: phaseEndpoints.leadin.start,
+        value: toUnit(network, BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))),
+        phase: 'Leadin',
+      },
+      {
+        timestamp: (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
+        phase: 'Leadin',
+      },
+      {
+        timestamp: phaseEndpoints.leadin.end,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+        phase: 'Leadin',
+      },
+      {
+        timestamp: phaseEndpoints.fixed.start,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+        phase: 'Fixed',
+      },
+      {
+        timestamp: phaseEndpoints.fixed.end,
+        value: toUnit(network, BigInt(saleInfo?.endPrice || '0')),
+        phase: 'Fixed',
+      },
+    ];
+
+    const values = points.map((p) => p.value);
+    const maxPrice = Math.max(...values);
+    const tickCount = 8;
+    const step = maxPrice / tickCount;
+    const ticks = Array.from({ length: tickCount + 1 }, (_, i) => +(i * step).toFixed(3));
+
+    const option = {
+      grid: {
+        left: 80,
+        right: 10,
+        top: 40,
+        bottom: 40,
+      },
+
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          snap: true,
+        },
+
+        formatter: (params: any[]) => {
+          const realPoint = params.find((p) =>
+            ['Interlude', 'Leadin', 'Fixed'].includes(p.seriesName)
+          );
+          if (!realPoint) return '';
+          const date = new Date(realPoint.data[0]).toLocaleDateString();
+          const price = realPoint.data[1];
+          return `${date}<br/>Price: ${price.toLocaleString()} ${getTokenSymbol(network)}`;
+        },
+      },
+      xAxis: {
+        type: 'time',
+        axisLine: { lineStyle: { color: theme === 'dark' ? '#888' : '#444' } },
+        splitLine: { show: false },
+      },
+      yAxis: {
+        type: 'value',
+        axisLine: { lineStyle: { color: theme === 'dark' ? '#888' : '#444' } },
+        splitLine: {
+          lineStyle: {
+            type: 'dashed',
+            color: theme === 'dark' ? 'rgba(0, 0, 0, 0.49)' : 'rgba(85, 85, 85, 0.28)',
+          },
+        },
+        min: 0,
+        max: Math.max(...ticks),
+        interval: step,
+        axisLabel: {
+          show: true,
+          hideOverlap: false,
+          formatter: (val: number) => `${val.toFixed(2)} ${getTokenSymbol(network)}`,
+          fontSize: 10,
+          color: theme === 'dark' ? '#aaa' : '#444',
+        },
+      },
+
+      series: [
         {
-          x: phaseEndpoints?.interlude.start,
-          x2: phaseEndpoints?.interlude.end,
-          fillColor: theme === 'dark' ? 'rgba(0, 255, 163, 0.10)' : 'rgba(0, 200, 140, 0.12)',
-          opacity: 0.5,
+          name: 'Interlude',
+          type: 'line',
+          smooth: false,
+          showSymbol: true,
+          symbolSize: 6,
+          lineStyle: { width: 2, color: '#00ff9d' },
+          itemStyle: { color: '#00ffaa' },
+          data: points.filter((p) => p.phase === 'Interlude').map((p) => [p.timestamp, p.value]),
         },
         {
-          x: phaseEndpoints?.leadin.start,
-          x2: phaseEndpoints?.leadin.end,
-          fillColor: theme === 'dark' ? 'rgba(0, 17, 255, 0.1)' : 'rgba(50, 80, 255, 0.12)',
-          opacity: 0.5,
+          name: 'Leadin',
+          type: 'line',
+          smooth: false,
+          showSymbol: true,
+          symbolSize: 6,
+          lineStyle: { width: 2, color: '#888', type: 'dashed' },
+          itemStyle: { color: '#aaa' },
+          data: points.filter((p) => p.phase === 'Leadin').map((p) => [p.timestamp, p.value]),
         },
         {
-          x: phaseEndpoints?.fixed.start,
-          x2: phaseEndpoints?.fixed.end,
-          fillColor: theme === 'dark' ? 'rgba(136, 136, 136, 0.05)' : 'rgba(100, 100, 100, 0.06)',
-          opacity: 0.6,
+          name: 'Fixed',
+          type: 'line',
+          smooth: false,
+          showSymbol: true,
+          symbolSize: 6,
+          lineStyle: { width: 2, color: '#00ff9d' },
+          itemStyle: { color: '#00ffaa' },
+          data: points.filter((p) => p.phase === 'Fixed').map((p) => [p.timestamp, p.value]),
         },
         {
-          x: Date.now(),
-          borderColor: theme === 'dark' ? '#3B82F6' : '#1C64F2',
-          strokeDashArray: 4,
-          label: {
-            text: 'Now',
-            style: {
-              color: theme === 'dark' ? '#fff' : '#000',
-              background: theme === 'dark' ? '#3B82F6' : '#B3D4FF',
-              fontWeight: 500,
+          name: 'Invisible Daily Tracker',
+          type: 'line',
+          showSymbol: false,
+          lineStyle: { opacity: 0 },
+          itemStyle: { opacity: 0 },
+          emphasis: { disabled: true },
+          tooltip: { show: true },
+          data: (() => {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const result: [number, number][] = [];
+            for (
+              let ts = phaseEndpoints.interlude.start;
+              ts <= phaseEndpoints.fixed.end;
+              ts += oneDay
+            ) {
+              const price = toUnit(
+                network,
+                (() => {
+                  if (ts <= phaseEndpoints.interlude.end) return renewalPrice;
+                  if (ts <= phaseEndpoints.leadin.end)
+                    return BigInt(getCorePriceAt(ts, saleInfo, network));
+                  return BigInt(saleInfo?.endPrice || '0');
+                })()
+              );
+              result.push([ts, price]);
+            }
+            return result;
+          })(),
+        },
+        {
+          name: 'Tooltip Tracker',
+          type: 'line',
+          showSymbol: false,
+          lineStyle: { opacity: 0 },
+          itemStyle: { opacity: 0 },
+          emphasis: { disabled: true },
+          tooltip: { show: false },
+          data: [],
+          markLine: {
+            symbol: 'none',
+            label: {
+              show: true,
+              formatter: 'Now',
+              color: '#3B82F6',
+              fontWeight: 'bold',
+              position: 'insideEndBottom',
+              rotate: 0,
             },
-            orientation: 'horizontal',
-            offsetY: -10,
+            lineStyle: {
+              color: theme === 'dark' ? '#3B82F6' : '#1C64F2',
+              type: 'dashed',
+              width: 1,
+            },
+            data: [{ xAxis: now }],
+          },
+        },
+        {
+          name: 'Phase Backgrounds',
+          type: 'line',
+          data: [],
+          markArea: {
+            silent: true,
+            itemStyle: { opacity: 0.25 },
+            data: [
+              [
+                {
+                  name: 'Interlude',
+                  xAxis: phaseEndpoints.interlude.start,
+                  itemStyle: {
+                    color: theme === 'dark' ? 'rgba(0, 255, 163, 0.10)' : 'rgba(0, 200, 140, 0.23)',
+                  },
+                  label: {
+                    show: true,
+                    color: '#aaa',
+                    fontWeight: 'bold',
+                    fontSize: 12,
+                  },
+                },
+                { xAxis: phaseEndpoints.interlude.end },
+              ],
+              [
+                {
+                  name: 'Leadin',
+                  xAxis: phaseEndpoints.leadin.start,
+                  itemStyle: {
+                    color: theme === 'dark' ? 'rgba(0, 17, 255, 0.1)' : 'rgba(51, 62, 212, 0.35)',
+                  },
+                  label: {
+                    show: true,
+                    color: '#aaa',
+                    fontWeight: 'bold',
+                    fontSize: 12,
+                  },
+                },
+                { xAxis: phaseEndpoints.leadin.end },
+              ],
+              [
+                {
+                  name: 'Fixed Price',
+                  xAxis: phaseEndpoints.fixed.start,
+                  itemStyle: {
+                    color: theme === 'dark' ? 'rgba(160, 0, 0, 0.05)' : 'rgba(87, 87, 87, 0.27)',
+                  },
+                  label: {
+                    show: true,
+                    color: '#aaa',
+                    fontWeight: 'bold',
+                    fontSize: 12,
+                  },
+                },
+                { xAxis: phaseEndpoints.fixed.end },
+              ],
+            ],
           },
         },
       ],
-    },
-    tooltip: { theme: 'dark', shared: false, intersect: false },
-    legend: { show: false },
-    colors: ['#58bd86', '#888'],
-  };
+    };
+
+    chartContent = <ReactECharts option={option} style={{ height: 300, width: '100%' }} />;
+  }
 
   return (
     <div
       className={`${styles.chartCard} ${view === 'Deploying a new project' ? styles.compact : ''}`}
     >
-      <div className={styles.backgroundLabels}>
-        <span className={styles.interlude}>Interlude</span>
-        <span className={styles.leadin}>Leadin</span>
-        <span className={styles.fixed}>Fixed Price</span>
-      </div>
       <div className={styles.title}>Dutch Auction Chart</div>
-      <ReactApexChart options={options} series={series} type='line' height={300} />
+      {chartContent}
     </div>
   );
 }
