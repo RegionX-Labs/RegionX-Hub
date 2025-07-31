@@ -290,8 +290,6 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
           },
         },
       ],
-
-      dataZoom: [{ type: 'inside', throttle: 50 }],
     };
 
     chartContent = <ReactECharts option={option} style={{ height: 300, width: '100%' }} />;
