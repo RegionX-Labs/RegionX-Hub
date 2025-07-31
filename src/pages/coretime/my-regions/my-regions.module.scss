@@ -178,3 +178,16 @@
   margin-right: auto;
   @include Inter;
 }
+.messageNote {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 24px 50px 32px;
+  max-width: 1380px;
+  line-height: 1.45;
+  font-weight: 500;
+  @include Inter;
+}

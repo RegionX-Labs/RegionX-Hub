@@ -1,9 +1,11 @@
-import '../styles/global.scss';
+'use client';
+
+import { useEffect, useState } from 'react';
+import '@/styles/global.scss';
 import '@region-x/components/dist/style.css';
 import { Analytics } from '@vercel/analytics/next';
 import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
 import { $connections, $network, networkStarted } from '@/api/connection';
@@ -13,13 +15,16 @@ import {
   walletSelected,
   restoreSelectedAccount,
   $selectedAccount,
+  $loadedAccounts,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
-import Image from 'next/image';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
 import Head from 'next/head';
+import { identityRequested } from '@/account/accountIdentity';
+import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { regionsRequested } from '@/coretime/regions';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -30,8 +35,24 @@ function App({ Component, pageProps }: AppProps) {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
+  const loadedAccounts = useUnit($loadedAccounts);
+  const saleInfo = useUnit($latestSaleInfo);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
+
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'dark';
+  });
+
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -44,13 +65,7 @@ function App({ Component, pageProps }: AppProps) {
     else if (networkFromRouter === 'westend') _network = Network.WESTEND;
     else {
       router.push(
-        {
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            network: 'polkadot',
-          },
-        },
+        { pathname: router.pathname, query: { ...router.query, network: 'polkadot' } },
         undefined,
         { shallow: false }
       );
@@ -65,39 +80,153 @@ function App({ Component, pageProps }: AppProps) {
       walletSelected(selectedWallet);
       restoreSelectedAccount();
     }
-  }, [networkFromRouter, router, router.isReady]);
+  }, [networkFromRouter, router]);
 
   useEffect(() => {
     if (!selectedAccount) return;
-
     getAccountData({ account: selectedAccount.address, connections, network });
   }, [connections, network, selectedAccount]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    identityRequested({ accounts: loadedAccounts, network, connections });
+  }, [connections, network, loadedAccounts]);
+
+  useEffect(() => {
+    latestSaleRequested(network);
+  }, [network, connections]);
+
+  useEffect(() => {
+    if (!saleInfo) return;
+    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+    const afterTimeslice = saleInfo.regionBegin - regionDuration;
+    regionsRequested({ network, afterTimeslice });
+  }, [network, saleInfo]);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      const nextUrl = new URL(window.location.origin + url);
+      if (nextUrl.pathname === '/') return;
+
+      nextUrl.searchParams.delete('dashboard');
+      nextUrl.searchParams.delete('paraId');
+
+      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
+      if (newUrl !== window.location.pathname + window.location.search) {
+        window.history.replaceState({}, '', newUrl);
+      }
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router]);
+
+  if (!hasMounted) return null;
 
   return (
     <div className={montserrat.className}>
       <Head>
+        <title>RegionX Hub</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />
         <link
-          href='https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'
+          href='https://fonts.googleapis.com/css2?family=Inter&family=Montserrat&display=swap'
           rel='stylesheet'
         />
-        <title>RegionX Hub</title>
       </Head>
-      <Header />
+
+      <Header theme={theme} setTheme={setTheme} openRpcModal={() => setIsRpcModalOpen(true)} />
+
       <Component {...pageProps} />
-      <div className='globalRpcButton'>
-        <button className='rpcButton' onClick={() => setIsRpcModalOpen(true)}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '30px' }}>
-            <Image src='/Settings.svg' alt='settings' width={24} height={24} />
-          </div>
-        </button>
-      </div>
+
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
+
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          zIndex: 9999,
+          display: 'none',
+        }}
+        className='mobile-theme-buttons'
+      >
+        <div
+          style={{
+            backgroundColor: '#1f1f1f',
+            borderRadius: '30px',
+            padding: '6px 10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+          }}
+        >
+          <button
+            onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+            title='Toggle Theme'
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px 6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <img
+              src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
+              alt={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              width={24}
+              height={24}
+            />
+          </button>
+
+          <button
+            onClick={() => setIsRpcModalOpen(true)}
+            title='RPC Settings'
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'transform 0.2s ease-in-out',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <img src='/Settings.svg' alt='settings' width={24} height={24} />
+          </button>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .mobile-theme-buttons {
+            display: block !important;
+          }
+        }
+      `}</style>
+
       <Analytics />
     </div>
   );

@@ -1,17 +1,17 @@
-@use '@/styles/variables' as *;
 @use '@/styles/_mixins';
 @use 'sass:color';
+@use '@/styles/variables' as *;
 
 .container {
-  background-color: $darkBackground3;
+  background: $darkBackground3;
   padding: 25px;
   border-radius: 12px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
   text-align: center;
 }
 
 .label {
-  color: $gray6;
+  color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -45,7 +45,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: $greenPrimary;
-  color: $darkBackground3;
+  color: var(--black-text);
   font-size: 1.5rem;
   font-weight: bold;
   width: 42px;
@@ -59,17 +59,16 @@
 .price {
   font-size: 1.8rem;
   font-weight: 700;
-  color: $white;
-  margin: 30px 7px;
-  margin-bottom: 10px;
+  color: var(--text-color);
+  margin: 30px 7px 10px;
 }
 
 .unit {
   font-size: 0.875rem;
-  color: $gray6;
+  color: var(--text-muted);
 }
 
 .timer {
   font-size: 0.75rem;
-  color: $gray6;
+  color: var(--text-muted);
 }

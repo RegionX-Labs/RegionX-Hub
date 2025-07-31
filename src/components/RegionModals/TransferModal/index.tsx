@@ -12,6 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { RegionId } from '@/utils';
 import TransactionModal from '@/components/TransactionModal';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
 interface TransferModalProps {
   isOpen: boolean;
@@ -82,21 +83,37 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
       region_id: regionId,
       new_owner: destination,
     });
+
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
             const err: any = ev.dispatchError;
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
             console.log(err);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );

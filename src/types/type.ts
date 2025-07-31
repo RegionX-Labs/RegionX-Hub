@@ -5,6 +5,7 @@ export interface SelectOption<T> {
   value: T;
   label: string;
   icon?: React.ReactElement;
+  extra?: React.ReactNode;
 }
 
 export interface RegionData {
@@ -36,6 +37,7 @@ export interface RegionData {
   onClick?: () => void;
   onUnlist?: () => void;
   onPurchase?: () => void;
+  owner?: string;
 }
 
 export type TableData = {

@@ -13,6 +13,7 @@ export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
 export const accountSelected = createEvent<string>();
 export const restoreSelectedAccount = createEvent();
+import { inject, isMimirReady, MIMIR_REGEXP } from '@mimirdev/apps-inject';
 
 type WalletExtension = {
   name: string;
@@ -22,15 +23,37 @@ export const $walletExtensions = createStore<WalletExtension[]>([]);
 export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
 export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
 
-const getExtensionsFx = createEffect((): WalletExtension[] => {
+const getExtensionsFx = createEffect(async (): Promise<WalletExtension[]> => {
   const extensions: string[] = getInjectedExtensions();
-  return extensions.map((e) => ({ name: e }));
+
+  // Try to connect mimir
+  const origin = await isMimirReady();
+
+  // Verify if the URL matches Mimir's pattern
+  if (origin && MIMIR_REGEXP.test(origin)) {
+    // Inject Mimir into window.injectedWeb3
+    inject();
+    // Now you can use polkadot extension functions
+  }
+
+  const isNova =
+    typeof window !== 'undefined' &&
+    typeof window.walletExtension === 'object' &&
+    window.walletExtension.isNovaWallet === true;
+
+  return extensions.map((extName) => {
+    if (extName === 'polkadot-js' && isNova) {
+      return { name: 'nova' };
+    }
+    return { name: extName };
+  });
 });
 
 const walletSelectedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     if (!extension) return [];
-    const selectedExtension: InjectedExtension = await connectInjectedExtension(extension);
+    const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
+    const selectedExtension: InjectedExtension = await connectInjectedExtension(realExtension);
     return selectedExtension.getAccounts();
   }
 );
@@ -40,7 +63,8 @@ const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount 
   const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
   if (!selectedWallet || !selectedAccount) return null;
 
-  const extension = await connectInjectedExtension(selectedWallet);
+  const realExtension = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
+  const extension = await connectInjectedExtension(realExtension);
   const accounts = await extension.getAccounts();
   return accounts.find((a) => a.address === selectedAccount) || null;
 });

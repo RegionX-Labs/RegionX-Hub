@@ -1,3 +1,5 @@
+'use client';
+
 import { JSX, useEffect, useMemo, useState } from 'react';
 import styles from './AuctionPhaseStatus.module.scss';
 import { useUnit } from 'effector-react';
@@ -15,7 +17,11 @@ import en from 'javascript-time-ago/locale/en';
 
 TimeAgo.addLocale(en);
 
-export default function AuctionPhaseStatus() {
+type Props = {
+  view: string;
+};
+
+export default function AuctionPhaseStatus({ view }: Props) {
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
   const connections = useUnit($connections);
@@ -88,7 +94,7 @@ export default function AuctionPhaseStatus() {
       );
     });
 
-    const progressAngle = Math.max(0, (progressPercent - 0.1) * ARC_TOTAL_WITH_GAPS);
+    const progressAngle = Math.max(0, (progressPercent - 0.04) * ARC_TOTAL_WITH_GAPS);
     let greenAngle = (10 - TOTAL_ARC_ANGLE) / 2;
     let remaining = progressAngle;
     const progressArcs: JSX.Element[] = [];
@@ -145,7 +151,7 @@ export default function AuctionPhaseStatus() {
       if (!saleInfo) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
-      const connection = connections[networkChainIds.coretimeChain];
+      const connection = connections[networkChainIds.relayChain];
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       const client = connection.client;
@@ -153,7 +159,7 @@ export default function AuctionPhaseStatus() {
       if (!metadata) return;
 
       const currentBlockNumber = await client
-        .getTypedApi(metadata.coretimeChain)
+        .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
@@ -174,7 +180,15 @@ export default function AuctionPhaseStatus() {
   }, [phaseEndpoints, currentPhase]);
 
   return (
-    <div className={styles.auctionPhaseCard}>
+    <div
+      className={`${styles.auctionPhaseCard} ${
+        view === 'Deploying a new project'
+          ? styles.compact
+          : view === 'Managing Existing Project'
+            ? styles.extended
+            : ''
+      }`}
+    >
       <div className={styles.header}>Auction Phase Status</div>
       <div className={styles.content}>
         <div className={styles.info}>
@@ -204,10 +218,10 @@ export default function AuctionPhaseStatus() {
           <svg width='200' height='200' viewBox='0 0 200 200'>
             {renderedDots}
             {renderedSegments}
-            <text x='90' y='90' textAnchor='left' fill='#888' fontSize='12'>
+            <text x='90' y='90' textAnchor='left' className={styles.progressLabel}>
               Progress
             </text>
-            <text x='90' y='110' textAnchor='left' fill='#fff' fontSize='15' fontWeight='600'>
+            <text x='90' y='110' textAnchor='left' className={styles.progressValue}>
               {Math.floor(progressPercent * 100)}%
             </text>
           </svg>

@@ -1,5 +1,8 @@
+'use client';
+
 import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
+import Image from 'next/image';
 import styles from './account.module.scss';
 import Select from '../elements/Select';
 import {
@@ -10,10 +13,12 @@ import {
   SELECTED_ACCOUNT_KEY,
   walletSelected,
 } from '@/wallet';
+import { $accountIdentities } from '@/account/accountIdentity';
 
 const AccountSelector = () => {
   const accounts = useUnit($loadedAccounts);
   const selectedAccount = useUnit($selectedAccount);
+  const identities = useUnit($accountIdentities);
 
   const handleChange = (value: string | null) => {
     if (value === 'disconnect') {
@@ -32,16 +37,49 @@ const AccountSelector = () => {
     return `${address.slice(0, 4)}...${address.slice(-6)}`;
   };
 
-  const options = accounts.map((account) => ({
-    key: account.address,
-    value: account.address,
-    label: `${account.name ?? 'Unknown'} (${formatAddress(account.address)})`,
-    icon: (
-      <div className={styles.icon}>
-        <Identicon value={account.address} size={24} theme='polkadot' />
+  const options = accounts.map((account) => {
+    const identity = identities[account.address];
+    const hasIdentity = !!identity;
+    const hasJudgement = identity?.hasJudgement ?? false;
+
+    const label = `${identity?.name || account.name || 'Unknown'} (${formatAddress(account.address)})`;
+
+    const icon = (
+      <div className={styles.iconWrapper}>
+        <Identicon
+          value={account.address}
+          size={24}
+          theme='polkadot'
+          className={styles.identicon}
+        />
+        {hasIdentity && hasJudgement && (
+          <Image
+            src='/verified.png'
+            alt='Verified'
+            width={100}
+            height={100}
+            className={styles.verifiedIcon}
+          />
+        )}
+        {hasIdentity && !hasJudgement && (
+          <Image
+            src='/no-judgement.png'
+            alt='No Judgment'
+            width={100}
+            height={100}
+            className={styles.noJudgement}
+          />
+        )}
       </div>
-    ),
-  }));
+    );
+
+    return {
+      key: account.address,
+      value: account.address,
+      label,
+      icon,
+    };
+  });
 
   options.push({
     key: 'disconnect',

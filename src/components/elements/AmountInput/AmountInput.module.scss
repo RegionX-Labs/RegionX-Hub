@@ -1,72 +1,80 @@
-@use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
 .amountInputWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  border-radius: 10px;
+  align-items: flex-start;
   width: 100%;
-  align-items: self-start;
+  border-radius: 10px;
   justify-content: flex-start;
 
   &-form {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    gap: 8px;
 
     .selectWrapper {
-      max-width: 70px;
-      flex: 1;
-      border: 0;
-      border-radius: 0;
-      margin: 0;
+      width: 100%;
+      height: 48px;
+      flex-shrink: 0;
+
       .selectBox {
+        width: 100%;
+        height: 100%;
         border: none;
-        background-color: $gray3;
-        border-radius: 6px 0 0 6px;
-        height: 48px;
+        background-color: var(--gray-3);
+        border-radius: 6px;
         box-sizing: border-box;
       }
+
       .selectDropdown {
         width: 300px;
       }
     }
 
     .amountInputField {
-      flex: 1;
-      background-color: $darkBackground2;
+      width: 100%;
+      height: 48px;
+      background-color: var(--dark-background-2);
       padding: 10px;
       border: none;
-      margin-left: 5px;
       outline: none;
       font-size: 16px;
       line-height: 24px;
-      max-width: 170px;
       @include Inter;
       text-align: left;
-      border: none;
-      height: 48px;
       box-sizing: border-box;
       border-radius: 10px;
-      color: white;
+      color: var(--white);
+
       &:focus {
         outline: none;
         border: none;
       }
     }
 
-    &.singleInput .amountInputField {
-      flex: 1;
+    @media (max-width: 768px) {
+      flex-direction: column;
+
+      .selectWrapper,
+      .amountInputField {
+        width: 100%;
+        height: 48px;
+      }
+
+      .selectWrapper {
+        margin-bottom: 10px;
+      }
     }
   }
 
   &-label {
     display: block;
     margin-bottom: 8px;
-    font-size: 14px;
-    color: $dark;
-    @include Inter;
     font-size: 16px;
+    color: var(--text-primary);
+    @include Inter;
     line-height: 24px;
     text-align: left;
   }

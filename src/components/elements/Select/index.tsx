@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './select.module.scss';
 import Input from '../AdressInput/AddressInput';
@@ -13,6 +15,8 @@ interface SelectProps<T> {
   disabled?: boolean;
   selectedValue?: T | null;
   showOnlySelectedIcon?: boolean;
+
+  variant?: 'default' | 'secondary';
 }
 
 const Select = <T,>({
@@ -23,6 +27,7 @@ const Select = <T,>({
   disabled = false,
   selectedValue = null,
   showOnlySelectedIcon = false,
+  variant = 'default',
 }: SelectProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState<T | null>(selectedValue);
@@ -30,9 +35,7 @@ const Select = <T,>({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selectedValue) {
-      setSelected(selectedValue);
-    }
+    if (selectedValue) setSelected(selectedValue);
   }, [selectedValue]);
 
   const handleOptionClick = (value: T | null) => {
@@ -55,23 +58,24 @@ const Select = <T,>({
         setIsDropdownOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dropdownRef]);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  const selectClassName = `${styles.selectBox} ${disabled ? styles['selectBox-disabled'] : ''}`;
+  const selectClassName = `
+    ${styles.selectBox}
+    ${disabled ? styles['selectBox-disabled'] : ''}
+    ${styles[`selectBox--${variant}`]}
+  `;
 
   return (
-    <div className={styles['selectWrapper']} ref={dropdownRef}>
+    <div className={styles.selectWrapper} ref={dropdownRef}>
       <div
         className={selectClassName}
         onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
       >
         {selectedOption ? (
-          <div className={styles['selectedOptionDisplay']}>
+          <div className={styles.selectedOptionDisplay}>
             {selectedOption.icon}
             {!showOnlySelectedIcon && <span>{selectedOption.label}</span>}
           </div>
@@ -84,7 +88,7 @@ const Select = <T,>({
       </div>
 
       {isDropdownOpen && !disabled && (
-        <div className={styles['selectDropdown']}>
+        <div className={`${styles.selectDropdown} ${styles[`selectDropdown--${variant}`]}`}>
           {searchable && (
             <Input
               value={searchTerm}
@@ -93,16 +97,29 @@ const Select = <T,>({
               disabled={disabled}
             />
           )}
-
           <ul className={styles['selectDropdown-optionList']}>
             {filteredOptions.map((option) => (
               <li
                 key={option.key}
                 onClick={() => handleOptionClick(option.value)}
-                className={`${styles['selectDropdown-optionList-optionItem']} ${option.value === selected ? styles['selected'] : ''}`}
+                className={`${styles['selectDropdown-optionList-optionItem']} ${
+                  option.value === selected ? styles.selected : ''
+                }`}
               >
-                {option.icon}
-                {option.label}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {option.icon}
+                    <span style={{ marginLeft: 8 }}>{option.label}</span>
+                  </div>
+                  {option.extra && <div style={{ marginLeft: 12 }}>{option.extra}</div>}
+                </div>
               </li>
             ))}
           </ul>

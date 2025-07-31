@@ -16,29 +16,11 @@
   overflow-x: auto;
 }
 
-.secondaryMarketTableInner {
-  margin-top: 30px;
-  width: 97%;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: transparent;
-  border-radius: 10px;
-  overflow-x: auto;
-}
-
-.tableWrapper {
-  border-radius: 12px;
-  background-color: $darkBackground2;
-  padding: 0;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  min-width: 600px;
-}
-
-.marketHeading {
-  font-size: 20px;
-  font-weight: 600;
-  color: white;
+.comingSoonLabel {
+  font-size: 100px;
+  font-weight: 700;
+  color: var(--card-background);
+  text-align: center;
 
   @media (max-width: 768px) {
     text-align: left;

@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, fetchCoresSold, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
@@ -10,8 +12,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
 import TransactionModal from '@/components/TransactionModal';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
-export default function CorePurchaseCard() {
+type Props = {
+  view?: string;
+};
+
+export default function CorePurchaseCard({ view }: Props) {
   const [accountData, connections, network, saleInfo, selectedAccount] = useUnit([
     $accountData,
     $connections,
@@ -31,7 +38,7 @@ export default function CorePurchaseCard() {
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
         if (!networkChainIds) return null;
-        const connection = connections[networkChainIds.coretimeChain];
+        const connection = connections[networkChainIds.relayChain];
         if (!connection || !connection.client || connection.status !== 'connected') return null;
 
         const client = connection.client;
@@ -44,13 +51,13 @@ export default function CorePurchaseCard() {
         });
 
         const currentBlockNumber = await client
-          .getTypedApi(metadata.coretimeChain)
+          .getTypedApi(metadata.relayChain)
           .query.System.Number.getValue();
         setCurrentHeight(currentBlockNumber);
-        const price = getCorePriceAt(currentBlockNumber, saleInfo);
+        const price = getCorePriceAt(currentBlockNumber, saleInfo, network);
         setCorePrice(price);
-        const coresSold = await fetchCoresSold(network, connections);
-        setCoresSold(coresSold || 0);
+        const sold = await fetchCoresSold(network, connections);
+        setCoresSold(sold || 0);
       })();
     }
   }, [saleInfo?.network, connections]);
@@ -60,7 +67,7 @@ export default function CorePurchaseCard() {
       if (!saleInfo) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
-      const connection = connections[networkChainIds.coretimeChain];
+      const connection = connections[networkChainIds.relayChain];
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       const client = connection.client;
@@ -68,7 +75,7 @@ export default function CorePurchaseCard() {
       if (!metadata) return;
 
       const currentBlockNumber = await client
-        .getTypedApi(metadata.coretimeChain)
+        .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
@@ -84,7 +91,7 @@ export default function CorePurchaseCard() {
       toast.error('Cannot purchase a core during interlude phase');
       return;
     }
-    if (coresSold == saleInfo?.coresOffered) {
+    if (coresSold === saleInfo?.coresOffered) {
       toast.error('No more cores remaining');
       return;
     }
@@ -131,28 +138,47 @@ export default function CorePurchaseCard() {
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.purchase({
       price_limit: BigInt(corePrice),
     });
+
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
-            const err: any = ev.dispatchError;
-            toast.error('Transaction failed');
-            console.log(err);
+            toast.error('Transaction failed', { id: toastId });
+            console.log(ev.dispatchError);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );
   };
 
   return (
-    <div className={styles.coreRemainingCard}>
+    <div
+      className={`${styles.coreRemainingCard} ${
+        view === 'Deploying a new project' ? styles.compact : ''
+      }`}
+    >
       <p className={styles.title}>Cores Offered</p>
       <h2 className={styles.value}>{saleInfo ? coresOffered : '—'}</h2>
       <p className={styles.title}>Cores Remaining</p>

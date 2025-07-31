@@ -1,0 +1,169 @@
+@use '@/styles/mixins' as *;
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modalContent {
+  background: var(--dark-background-2);
+  padding: 24px;
+  border-radius: 16px;
+  width: 460px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+
+  h2 {
+    color: var(--green-primary);
+    font-size: 24px;
+    font-weight: 700;
+    margin: 8px 0 24px;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: none;
+  background: transparent;
+  color: var(--slider-disabled);
+  cursor: pointer;
+  padding: 4px;
+
+  &:hover {
+    color: var(--white);
+  }
+}
+
+.gridWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dashboardButton {
+  background: var(--dark-background-4);
+  color: var(--white);
+  padding: 18px 12px 26px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  box-shadow: 0 0 0 transparent;
+  @include Inter;
+
+  &:hover {
+    background: var(--dark-background-3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+}
+
+.title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.description {
+  font-size: 13px;
+  opacity: 0.85;
+  line-height: 1.3;
+  padding: 0 4px;
+}
+
+.comingSoon {
+  position: absolute;
+  bottom: 8px;
+  font-size: 12px;
+  color: var(--green-primary);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.dashboardButton:not(.disabled) {
+  padding-bottom: 18px;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+
+  &:hover {
+    transform: none;
+    background: var(--dark-background-1);
+    box-shadow: none;
+  }
+}
+
+.note {
+  margin-top: 24px;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+@media (max-width: 540px) {
+  .modalContent {
+    width: 85%;
+    padding: 20px 16px 24px;
+  }
+
+  .gridWrapper {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .dashboardButton {
+    padding: 14px 10px 26px;
+    font-size: 14px;
+  }
+
+  .dashboardButton:not(.disabled) {
+    padding-bottom: 18px;
+  }
+
+  .title {
+    font-size: 15px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+
+  .modalContent h2 {
+    font-size: 18px;
+    margin: 0 0 18px;
+  }
+
+  .closeButton {
+    top: 12px;
+    right: 12px;
+  }
+
+  .comingSoon {
+    font-size: 11px;
+    bottom: 4px;
+  }
+
+  .note {
+    font-size: 12px;
+    margin-top: 18px;
+  }
+}

@@ -67,3 +67,29 @@ sample({
   clock: potentialRenewalsFx.doneData,
   target: $potentialRenewals,
 });
+
+type AutoRenewalRecord = {
+  core: number;
+  next_renewal: number;
+  task: number;
+};
+
+export const fetchAutoRenewals = async (
+  network: Network,
+  connections: any
+): Promise<AutoRenewalRecord[]> => {
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return [];
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return [];
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return [];
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
+
+  const entries: Array<AutoRenewalRecord> = await api.query.Broker.AutoRenewals.getValue();
+
+  return entries;
+};

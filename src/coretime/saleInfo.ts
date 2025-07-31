@@ -8,6 +8,7 @@ import {
   coretimeChainBlockTime,
   RELAY_CHAIN_BLOCK_TIME,
   TIMESLICE_PERIOD,
+  usesRelayChainBlocks,
 } from '@/utils';
 import { $connections, $network } from '@/api/connection';
 
@@ -125,28 +126,20 @@ const getSalePhaseEndpointsFx = createEffect(
     const metadata = getNetworkMetadata(network);
     if (!metadata) return null;
 
-    let saleStartTimestamp;
-    if (network === Network.WESTEND) {
-      const connection = connections[chainIds.relayChain];
-      if (!connection) return null;
-      saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain, network)
-      );
-    } else {
-      const connection = connections[chainIds.coretimeChain];
-      if (!connection) return null;
-      saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain, network)
-      );
-    }
+    const connection = connections[chainIds.relayChain];
+    if (!connection) return null;
+    const saleStartTimestamp = Number(
+      await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
+    );
 
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
     const config = await fetchBrokerConfig(network, connections);
     if (!config) return null;
 
     // In the new release everything is defined in relay chain blocks.
-    const blockTime =
-      network === Network.WESTEND ? RELAY_CHAIN_BLOCK_TIME : coretimeChainBlockTime(network);
+    const blockTime = usesRelayChainBlocks(network, saleInfo)
+      ? RELAY_CHAIN_BLOCK_TIME
+      : coretimeChainBlockTime(network);
 
     const saleEndTimestamp =
       saleStartTimestamp -

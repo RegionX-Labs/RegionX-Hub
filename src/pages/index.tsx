@@ -1,9 +1,9 @@
 import Home from './Home/page';
 
-export default function HomePage() {
-  return (
-    <>
-      <Home />
-    </>
-  );
+interface HomePageProps {
+  theme: 'light' | 'dark';
+}
+
+export default function HomePage({ theme }: HomePageProps) {
+  return <Home theme={theme} />;
 }

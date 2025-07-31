@@ -18,8 +18,13 @@ import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $selectedAccount } from '@/wallet';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
-export default function RenewableCores() {
+type Props = {
+  view: string;
+};
+
+export default function RenewableCores({ view }: Props) {
   const accountData = useUnit($accountData);
   const network = useUnit($network);
   const connections = useUnit($connections);
@@ -30,36 +35,48 @@ export default function RenewableCores() {
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
-    potentialRenewals.entries()
-  )
-    .filter((renewal) => renewal[0].when >= (saleInfo?.regionBegin || 0))
-    .map((renewal) => ({
-      key: `${renewal[0].when}-${renewal[0].core}`,
-      label: `Core ${renewal[0].core} | ${chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ?? 'Unknown'}`,
-      value: renewal,
-      icon: (
-        <img
-          style={{ width: 28, borderRadius: '100%', marginRight: '.5rem' }}
-          src={chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo}
-        />
-      ),
-    }))
-    .sort((a, b) => a.key.localeCompare(b.key));
+  const [options, setOptions] = useState<SelectOption<[RenewalKey, RenewalRecord]>[]>([]);
 
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
   }, [network, connections]);
 
-  const getDateFromTimeslice = async (timeslice: number | null) => {
-    setSelectedDeadline('-');
-    if (!timeslice) return;
-    const timestamp = await timesliceToTimestamp(timeslice, network, connections);
-    if (!timestamp) return setSelectedDeadline('-');
+  useEffect(() => {
+    if (!saleInfo) return;
+    const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
+      potentialRenewals.entries()
+    )
+      .filter((renewal) => renewal[0].when === saleInfo.regionBegin)
+      .map((renewal) => ({
+        key: `${renewal[0].when}-${renewal[0].core}`,
+        label: `Core ${renewal[0].core} | ${
+          chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ??
+          'Parachain ' + (renewal[1].completion as any).value[0].assignment.value
+        }`,
+        value: renewal,
+        icon: (
+          <img
+            style={{ width: 28, borderRadius: '100%', marginRight: 8 }}
+            src={
+              chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo
+            }
+          />
+        ),
+      }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+    setOptions(_options);
 
-    setSelectedDeadline(formatDate(timestamp));
-  };
+    if (_options[0]) setSelected(_options[0].value);
+  }, [saleInfo, potentialRenewals]);
+
+  useEffect(() => {
+    (async () => {
+      if (!selected) return setSelectedDeadline('-');
+      const deadline = await timesliceToTimestamp(selected[0].when, network, connections);
+      if (!deadline) return setSelectedDeadline('-');
+      setSelectedDeadline(formatDate(deadline));
+    })();
+  }, [selected]);
 
   const openModal = () => {
     if (!selectedAccount) {
@@ -121,39 +138,63 @@ export default function RenewableCores() {
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({
       core: selected[0].core,
     });
+
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
             const err: any = ev.dispatchError;
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
             console.log(err);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );
   };
 
   return (
-    <div className={styles.renewableCoresCard}>
+    <div
+      className={`${styles.renewableCoresCard} ${
+        view === 'Deploying a new project' ? styles.compact : ''
+      }`}
+    >
       <p className={styles.title}>Renewable Cores</p>
 
       <div className={styles.selectBox}>
-        <Select
-          options={options}
-          selectedValue={selected}
-          onChange={(val) => {
-            setSelected(val);
-            getDateFromTimeslice(val ? val[0].when : null);
-          }}
-        />
+        {options.length > 0 ? (
+          <Select
+            options={options}
+            selectedValue={selected}
+            onChange={setSelected}
+            variant='secondary'
+          />
+        ) : (
+          <p className={styles.noDataMessage}>
+            All cores have been renewed. Nothing left to renew!
+          </p>
+        )}
       </div>
 
       <div className={styles.details}>

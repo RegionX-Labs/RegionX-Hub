@@ -1,6 +1,5 @@
 @use '@/styles/variables' as *;
-@use '@/styles/_mixins' as *;
-@use 'sass:color';
+@use '@/styles/mixins' as *;
 
 .auctionPhaseCard {
   background: $darkBackground2;
@@ -10,9 +9,10 @@
   width: 33%;
   display: flex;
   flex-direction: column;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
   @include Inter;
   gap: 20px;
+
   @media (max-width: 1800px) {
     width: 48%;
   }
@@ -31,9 +31,11 @@
   @media (max-width: 940px) {
     max-width: 88%;
   }
-
   @media (max-width: 900px) {
-    max-width: 90%;
+    max-width: 87%;
+  }
+  @media (max-width: 800px) {
+    max-width: 88%;
   }
   @media (max-width: 750px) {
     max-width: 84%;
@@ -41,26 +43,82 @@
   @media (max-width: 460px) {
     max-width: 80%;
   }
-}
 
-@media (max-width: 533px) {
-  .info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-right: 20px;
+  &.compact {
+    width: 39.5%;
+
+    @media (max-width: 1921px) {
+      width: 30.8%;
+    }
+    @media (max-width: 1800px) {
+      width: 34.5%;
+    }
+    @media (max-width: 1573px) {
+      width: 33.5%;
+    }
+    @media (max-width: 1502px) {
+      width: 92.5%;
+    }
+    @media (max-width: 1390px) {
+      width: 92.5%;
+    }
+    @media (max-width: 1306px) {
+      width: 91.5%;
+    }
+
+    @media (max-width: 1121px) {
+      width: 90%;
+    }
+    @media (max-width: 1000px) {
+      max-width: 88%;
+    }
+    @media (max-width: 940px) {
+      max-width: 88%;
+    }
+    @media (max-width: 900px) {
+      max-width: 87%;
+    }
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+    @media (max-width: 750px) {
+      max-width: 85%;
+    }
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
   }
 
-  .label {
-    font-size: 0.45rem;
-    color: $gray6;
+  &.extended {
+    @media (max-width: 1800px) {
+      width: 93.5%;
+    }
+
+    @media (max-width: 1430px) {
+      width: 91%;
+    }
+
+    @media (max-width: 1000px) {
+      width: 88%;
+    }
+
+    @media (max-width: 800px) {
+      max-width: 88%;
+    }
+
+    @media (max-width: 750px) {
+      max-width: 84%;
+    }
+
+    @media (max-width: 450px) {
+      max-width: 80%;
+    }
   }
 }
 
 .header {
   font-size: 1rem;
-  color: $gray6;
-  font-weight: 600;
+  color: var(--text-color);
 }
 
 .content {
@@ -74,15 +132,17 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 
 .label {
   font-size: 0.85rem;
   color: $gray6;
+
   @media (max-width: 480px) {
     font-size: 0.65rem;
   }
+
   @media (max-width: 410px) {
     font-size: 0.55rem;
   }
@@ -93,13 +153,16 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: $white;
+
   @media (max-width: 480px) {
     font-size: 0.7rem;
   }
+
   @media (max-width: 410px) {
     font-size: 0.6rem;
   }
 }
+
 @media (min-width: 800px) and (max-width: 890px) {
   .label {
     font-size: 0.7rem;
@@ -145,4 +208,29 @@
 
 .foregroundArc {
   transition: stroke-dashoffset 0.6s ease;
+}
+
+.progressLabel {
+  fill: $gray6;
+  font-size: 13px;
+}
+
+.progressValue {
+  fill: var(--text-color);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@media (max-width: 533px) {
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-right: 20px;
+  }
+
+  .label {
+    font-size: 0.45rem;
+    color: $gray6;
+  }
 }

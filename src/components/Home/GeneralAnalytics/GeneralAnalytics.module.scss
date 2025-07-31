@@ -1,16 +1,18 @@
-@use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-@use 'sass:color';
+@use '@/styles/variables' as *;
 
 .analyticsCard {
   background: $darkBackground1;
   border-radius: 15px;
   padding: 22px;
-  color: $white;
+  color: var(--text-color);
   width: 500px;
   margin-top: 100px;
   margin-left: 20px;
-  max-height: 80%;
+  max-height: calc(100vh - 185px);
+
+  display: flex;
+  flex-direction: column;
   @include Inter;
   overflow-y: auto;
 
@@ -28,12 +30,11 @@
 
   @media (max-width: 800px) {
     width: 85%;
-    height: auto;
-    overflow: visible;
     margin-left: auto;
     margin-right: auto;
     margin-top: 140px;
     margin-bottom: 40px;
+    max-height: calc(100vh - 205px);
   }
 }
 
@@ -44,13 +45,13 @@
   }
 
   p {
-    color: $gray6;
+    color: var(--text-muted);
     font-size: 0.875rem;
   }
 }
 
 .tabsWrapper {
-  margin-top: 20px;
+  margin-top: 0px;
 }
 
 .tabs {
@@ -81,7 +82,7 @@
 
   &:hover {
     background-color: $greenPrimary;
-    color: black;
+    color: var(--dark-background-2);
   }
 
   &.active {

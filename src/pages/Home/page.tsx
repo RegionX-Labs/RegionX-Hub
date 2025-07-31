@@ -1,16 +1,19 @@
 'use client';
 import { useEffect, useState } from 'react';
 import styles from './home.module.scss';
-import Header from '@/components/Header';
 import GeneralAnalytics from '@/components/Home/GeneralAnalytics';
 import HomeDashboard from '@/components/Home/HomeDashboard';
 
-export default function Home() {
+interface HomeProps {
+  theme: 'light' | 'dark';
+}
+
+export default function Home({ theme }: HomeProps) {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-
     return () => {
       document.body.style.overflow = '';
     };
@@ -25,8 +28,6 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <Header />
-
       {isMobile && (
         <button
           className={styles.AnalyticsButton}
@@ -36,7 +37,7 @@ export default function Home() {
         </button>
       )}
       {(!isMobile || showAnalytics) && <GeneralAnalytics />}
-      {(!isMobile || !showAnalytics) && <HomeDashboard />}
+      {(!isMobile || !showAnalytics) && <HomeDashboard theme={theme} />}
     </div>
   );
 }

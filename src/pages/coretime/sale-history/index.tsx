@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './sale-history.module.scss';
@@ -19,6 +21,22 @@ type TableData = {
   data: string | React.ReactElement;
   link?: string;
   searchKey?: string;
+};
+
+export const SUBSCAN_RELAY_URL: Record<string, string> = {
+  polkadot: 'https://polkadot.subscan.io',
+  kusama: 'https://kusama.subscan.io',
+  paseo: 'https://paseo.subscan.io',
+  westend: 'https://westend.subscan.io',
+  none: '',
+};
+
+export const SUBSCAN_CORETIME_URL: Record<string, string> = {
+  polkadot: 'https://coretime-polkadot.subscan.io',
+  kusama: 'https://coretime-kusama.subscan.io',
+  paseo: 'https://coretime-paseo.subscan.io',
+  westend: 'https://coretime-westend.subscan.io',
+  none: '',
 };
 
 const formatDate = (timestamp: Date | bigint | null): string => {
@@ -80,20 +98,18 @@ const SaleHistoryPage = () => {
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
-            network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
-            network
+            metadata.relayChain
           );
           const saleEndTimestamp = sale.leadinLength
             ? await blockToTimestamp(
                 sale.saleStart + sale.leadinLength,
                 connection,
-                network === Network.WESTEND ? metadata.relayChain : metadata.coretimeChain,
-                network
+                metadata.relayChain
               )
             : null;
 
           return {
-            SaleId: {
+            SaleID: {
               cellType: 'link' as const,
               data: String(sale.saleCycle),
               link: `/sales/${sale.saleCycle}`,
@@ -149,19 +165,29 @@ const SaleHistoryPage = () => {
   useEffect(() => {
     if (!network) return;
 
+    const baseUrl = SUBSCAN_CORETIME_URL[network] || 'https://subscan.io';
+
     const formatted = purchaseHistory.map((purchase: PurchaseHistoryItem) => ({
       ExtrinsicID: {
-        cellType: 'link' as const,
-        data: purchase.extrinsicId,
-        link: '#',
+        cellType: 'jsx' as const,
+        data: (
+          <a
+            href={`${baseUrl}/extrinsic/${purchase.extrinsicId}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            {purchase.extrinsicId}
+          </a>
+        ),
         searchKey: purchase.extrinsicId,
       },
+
       Account: {
         cellType: 'address' as const,
         data: purchase.address,
         searchKey: purchase.address,
       },
-      Core: {
+      CoreID: {
         cellType: 'text' as const,
         data: String(purchase.core),
         searchKey: String(purchase.core),

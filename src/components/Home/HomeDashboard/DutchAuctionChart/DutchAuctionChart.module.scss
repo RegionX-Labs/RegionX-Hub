@@ -1,41 +1,89 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/_mixins' as *;
-@use 'sass:color';
 
 .chartCard {
   background: $darkBackground2;
   border-radius: 15px;
   padding: 10px;
-  color: $white;
+  color: var(--text-primary);
   width: 58%;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
   position: relative;
+
+  @media (min-width: 3000px) {
+    width: 62.5%;
+  }
   @media (max-width: 1800px) {
     width: 97.5%;
   }
+  @media (max-width: 1800px) {
+    width: 97%;
+  }
   @media (max-width: 1503px) {
-    width: 96%;
+    width: 95.5%;
   }
   @media (max-width: 800px) {
-    max-width: 100%;
+    max-width: 93.5%;
   }
   @media (max-width: 750px) {
-    max-width: 91%;
+    max-width: 90%;
   }
   @media (max-width: 700px) {
-    max-width: 92%;
+    max-width: 90%;
   }
   @media (max-width: 450px) {
     max-width: 90%;
+  }
+
+  &.compact {
+    width: 98.5%;
+    @media (max-width: 3000px) {
+      width: 97%;
+    }
+
+    @media (max-width: 1300px) {
+      width: 97%;
+    }
+    @media (max-width: 1510px) {
+      width: 97%;
+    }
+    @media (max-width: 1500px) {
+      width: 96.5%;
+    }
+    @media (max-width: 1306px) {
+      width: 96.5%;
+    }
+    @media (max-width: 1120px) {
+      width: 95.5%;
+    }
+    @media (max-width: 1000px) {
+      width: 94%;
+    }
+    @media (max-width: 800px) {
+      max-width: 93.5%;
+    }
+    @media (max-width: 750px) {
+      max-width: 91%;
+    }
+
+    @media (max-width: 700px) {
+      max-width: 91%;
+    }
+    @media (max-width: 650px) {
+      max-width: 92%;
+    }
+    @media (max-width: 450px) {
+      max-width: 91%;
+    }
   }
 }
 
 .title {
   font-size: 0.875rem;
-  color: $gray6;
+  color: var(--text-secondary);
   @include Inter;
   margin-left: 20px;
   margin-top: 5px;
@@ -47,13 +95,14 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   pointer-events: none;
   user-select: none;
   z-index: 0;
-  opacity: 0.3;
+  opacity: 0.8;
   @include Inter;
+
   @media (max-width: 600px) {
     font-size: 12px;
     bottom: 50px;
@@ -67,22 +116,23 @@
 }
 
 .interlude {
-  color: #00ffa3;
+  color: var(--text-primary);
   margin-left: 20%;
   margin-bottom: 5%;
+
   @media (max-width: 525px) {
     margin-left: 30%;
   }
 }
 
 .leadin {
-  color: #ffffff;
+  color: var(--text-primary);
   text-align: center;
   flex: 1;
 }
 
 .fixed {
-  color: #888888;
+  color: var(--text-primary);
   margin-right: 10%;
   text-align: right;
 }

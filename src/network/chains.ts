@@ -1,3 +1,4 @@
+export * from './chains';
 export type ChainId = `0x${string}`;
 
 type Node = {
@@ -51,7 +52,6 @@ export const chains = {
       { url: 'wss://westend-rpc.polkadot.io' },
     ],
   },
-
   polkadotCoretime: {
     chainId: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4' as ChainId,
     name: 'Polkadot Coretime',
@@ -73,7 +73,7 @@ export const chains = {
     name: 'Paseo Coretime',
     nodes: [
       { url: 'wss://sys.ibp.network/coretime-paseo' },
-      { url: 'wss://sys.ibp.network/coretime-westend' },
+      { url: 'wss://paseo-coretime.paranodes.io' },
     ],
   },
   westendCoretime: {
@@ -84,10 +84,35 @@ export const chains = {
       { url: 'wss://sys.ibp.network/coretime-westend' },
     ],
   },
-
   regionxKusama: {
     chainId: '0xd207e177ffab83bf2d9420fac81d7ad7f72184aba6573ccee9c96d6b5f24cfcf' as ChainId,
     name: 'RegionX Kusama',
     nodes: [{ url: 'ws://127.0.0.1:8001' }],
+  },
+  polkadotPeople: {
+    chainId: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008' as ChainId,
+    name: 'People Polkadot',
+    nodes: [
+      { url: 'wss://sys.ibp.network/people-polkadot' },
+      { url: 'wss://people-polkadot.dotters.network' },
+    ],
+  },
+  peopleKusama: {
+    chainId: '0xc1af4cb4eb3918e5db15086c0cc5ec17fb334f728b7c65dd44bfe1e174ff8b3f' as ChainId,
+    name: 'People Kusama',
+    nodes: [
+      { url: 'wss://sys.ibp.network/people-kusama' },
+      { url: 'wss://people-kusama.dotters.network' },
+    ],
+  },
+  peopleWestend: {
+    chainId: '0x1eb6fb0ba5187434de017a70cb84d4f47142df1d571d0ef9e7e1407f2b80b93c' as ChainId,
+    name: 'People Westend',
+    nodes: [{ url: 'wss://sys.ibp.network/people-westend' }],
+  },
+  peoplePaseo: {
+    chainId: '0xe6c30d6e148f250b887105237bcaa5cb9f16dd203bf7b5b9d4f1da7387cb86ec' as ChainId,
+    name: 'People Paseo',
+    nodes: [{ url: 'wss://sys.ibp.network/people-paseo' }],
   },
 };

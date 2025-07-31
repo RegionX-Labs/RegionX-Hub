@@ -1,5 +1,5 @@
-@use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
+@use '../../../styles/variables' as *;
 
 .selectWrapper {
   position: relative;
@@ -26,10 +26,10 @@
 
   .selectBox {
     padding: 10px;
-    border: 1px solid $darkBackground1;
+    border: 1px solid var(--dark-background-1);
     border-radius: 10px;
-    background-color: $darkBackground2;
-    color: white;
+    background-color: var(--dark-background-2);
+    color: var(--white);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -48,6 +48,18 @@
     }
   }
 
+  .selectBox--default {
+    background-color: var(--dark-background-2);
+    border-color: var(--dark-background-1);
+    color: var(--white);
+  }
+
+  .selectBox--secondary {
+    background-color: var(--dark-background-1);
+    border-color: var(--dark-background-4);
+    color: var(--white);
+  }
+
   .selectDropdown {
     position: absolute;
     top: 100%;
@@ -55,12 +67,10 @@
     width: 100%;
     margin-top: 5px;
     border-radius: 10px;
-    background-color: $darkBackground2;
-    color: white;
+    color: var(--white);
     z-index: 1000;
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid $darkBackground1;
 
     .selectDropdown-optionList {
       list-style: none;
@@ -75,12 +85,30 @@
       cursor: pointer;
 
       &:hover {
-        background-color: $darkBackground1;
+        background-color: var(--dark-background-1);
       }
 
       &.selected {
-        color: $white;
+        color: var(--white);
       }
+    }
+  }
+
+  .selectDropdown--default {
+    background-color: var(--dark-background-2);
+    border: 1px solid var(--dark-background-1);
+
+    .selectDropdown-optionList-optionItem:hover {
+      background-color: var(--dark-background-1);
+    }
+  }
+
+  .selectDropdown--secondary {
+    background-color: var(--dark-background-1);
+    border: 1px solid var(--dark-background-4);
+
+    .selectDropdown-optionList-optionItem:hover {
+      background-color: var(--dark-background-4);
     }
   }
 }

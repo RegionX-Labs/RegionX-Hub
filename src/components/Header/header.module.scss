@@ -7,7 +7,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: $darkBackground1;
+  background-color: var(--dark-background-1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   padding: 10px 20px;
@@ -28,35 +28,38 @@
 }
 
 .logo {
-  width: 150px;
+  width: 160px;
   height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  transition: margin-left 0.3s ease;
   cursor: pointer;
+  @media (max-width: 768px) {
+    margin-left: auto;
+    margin-right: 25px;
+  }
 }
+
 .settingIcon {
   width: 30px;
   height: auto;
-
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   transition: margin-left 0.3s ease;
   cursor: pointer;
+
   @media (max-width: 768px) {
     width: 30px;
   }
 }
-.leftSection {
-  display: flex;
-  align-items: center;
-}
 
+.leftSection,
 .burgerAndLogo {
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+    width: 100%;
+  }
 
   @media (min-width: 1281px) {
     .burgerIcon {
@@ -64,14 +67,15 @@
     }
   }
 }
+
 .desktopLinks {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 6px;
-  background-color: $darkBackground2;
+  background-color: var(--dark-background-2);
   border-radius: 10px;
-  border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--border-gray);
   z-index: 1;
   max-width: 700px;
   width: 100%;
@@ -95,6 +99,7 @@
     margin-right: 35%;
   }
 }
+
 .desktopLinksWithConnect {
   margin-right: 17%;
   @media (min-width: 2021px) {
@@ -123,7 +128,7 @@
   list-style: none;
   max-width: 100%;
   gap: 20px;
-  color: $white;
+  color: var(--white);
   font-size: 14px;
 
   @media (max-width: 768px) {
@@ -140,10 +145,11 @@
   white-space: nowrap;
   border-radius: 5px;
   text-align: left;
-  color: $white;
+  color: var(--white);
+
   &:hover {
-    background-color: $greenPrimary;
-    color: $darkBackground2;
+    background-color: var(--green-primary);
+    color: var(--dark-background-2);
   }
 }
 
@@ -154,14 +160,13 @@
   transition: transform 0.3s ease;
 }
 
-.coretimeWrapper {
+.coretimeWrapper,
+.desktopContent {
   display: flex;
   align-items: center;
 }
 
 .desktopContent {
-  display: flex;
-  align-items: center;
   justify-content: flex-end;
   border-radius: 5px;
   gap: 5px;
@@ -180,29 +185,8 @@
   }
 }
 
-.rpcButton {
-  display: flex;
-  align-items: center;
-  margin-right: 30px;
-  margin-left: 5px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-
-  @media (min-width: 768px) and (max-width: 1435px) {
-    margin-right: 20px;
-  }
-}
-
-.rpcButtonDesktop {
-  margin-right: 20px;
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
-.connectButton {
+.connectButton,
+.mobileConnectButton {
   height: 50px;
   padding: 10px 16px;
   font-size: 16px;
@@ -211,47 +195,67 @@
   justify-content: center;
   margin-right: 25px;
   border-radius: 10px;
-  color: $white;
-  background-color: $darkBackground2;
-  border: 1px solid $darkBackground1;
+  color: var(--white);
+  background-color: var(--dark-background-2);
+  border: 1px solid var(--dark-background-1);
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.3s ease;
   @include Inter;
 
   &:hover {
-    background-color: color.adjust($darkBackground2, $lightness: 5%);
-    border-color: color.adjust($darkBackground2, $lightness: 10%);
+    background-color: $darkBackground4;
   }
 }
 
-.mobileConnectButton {
-  font-size: 14px;
+.mobileRpcButton {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  padding-left: 2px;
+
+  button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 12px;
+    background-color: var(--dark-background-2);
+    border: 1px solid var(--dark-background-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 20px;
+
+      height: 20px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.rpcButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  font-size: 20px;
   color: $white;
-  background-color: $darkBackground2;
-  border: 1px solid $darkBackground1;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.3s ease;
-  @include Inter;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
 
-  &:hover {
-    background-color: color.adjust($darkBackground2, $lightness: 5%);
-    border-color: color.adjust($darkBackground2, $lightness: 10%);
-  }
-}
-.mobileRpcButton {
-  margin-top: auto;
-  padding: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  @media (min-width: 768px) {
-    display: none;
+  img {
+    width: 22px;
+    height: 22px;
   }
 }
 
@@ -273,10 +277,11 @@
 
 .burgerIcon {
   display: none;
-  font-size: 24px;
+  font-size: 28px;
   cursor: pointer;
   margin-right: 0px;
-  color: white;
+  color: var(--white);
+
   @media (max-width: 1281px) {
     display: block;
   }
@@ -288,19 +293,17 @@
   left: -100%;
   width: 60%;
   height: 100vh;
-  background-color: $darkBackground1;
+  background-color: var(--dark-background-1);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   transition:
     left 0.4s ease,
     opacity 0.4s ease;
   z-index: 1001;
   padding-top: 20px;
-  overflow-y: auto;
   overflow: hidden;
-  box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
+  @include Inter;
 
   &.open {
     left: 0;
@@ -318,18 +321,18 @@
     gap: 10px;
     padding: 20px;
     margin: 0;
-    color: $white;
+    color: var(--white);
   }
 
   .navItem {
     background-color: transparent;
-    color: $white;
+    color: var(--white);
     width: 100%;
     font-size: 14px;
 
     &:hover {
-      background-color: $greenPrimary;
-      color: $darkBackground2;
+      background-color: var(--green-primary);
+      color: var(--dark-background-2);
     }
   }
 }
@@ -342,7 +345,7 @@
   position: absolute;
   margin-right: 300px;
   top: 90%;
-  background-color: $darkBackground2;
+  background-color: var(--dark-background-2);
   padding: 10px 0;
   border-radius: 10px;
   z-index: 100;
@@ -358,13 +361,14 @@
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
-  background-color: rgba($greenPrimary, 0.1);
-  color: $white;
+  background-color: rgba(12, 193, 132, 0.1);
+  color: var(--white);
 
   &:hover {
-    background-color: rgba($greenPrimary, 0.2);
+    background-color: rgba(12, 193, 132, 0.2);
   }
 }
+
 .coretimeSubMenu {
   display: flex;
   flex-direction: column;
@@ -374,11 +378,11 @@
 
   .navItem {
     background-color: transparent;
-    color: $white;
+    color: var(--white);
 
     &:hover {
-      background-color: $greenPrimary;
-      color: $darkBackground2;
+      background-color: var(--green-primary);
+      color: var(--dark-background-2);
     }
   }
 
@@ -392,50 +396,41 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-sizing: border-box;
-  background-color: $darkBackground1;
-  color: $black;
+  background-color: var(--dark-background-1);
+  color: var(--black);
+
   @media (min-width: 768px) and (max-width: 1281px) {
     display: none;
   }
-}
 
-@media (max-width: 768px) {
-  .mobileContent {
-    .accSelector,
-    .networkSelector {
-      width: 100%;
-      height: 40px;
-    }
+  .accSelector,
+  .networkSelector {
+    width: 100%;
+    height: 40px;
+  }
 
-    button {
-      @include Inter;
-      padding: 6px 10px;
-      font-size: 16px;
-      height: 50px;
-      width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      background-color: $darkBackground2;
-      div {
-        gap: 10px;
-        height: 20px;
+  button {
+    @include Inter;
+    padding: 6px 10px;
+    font-size: 16px;
+    height: 50px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    div {
+      gap: 10px;
+      height: 20px;
 
-        img {
-          width: 16px;
-          height: 16px;
-        }
+      img {
+        width: 16px;
+        height: 16px;
       }
     }
   }
-}
 
-@media (max-width: 768px) {
-  .mobileContent {
-    .networkSelector {
-      margin-bottom: 10px;
-    }
+  .networkSelector {
+    margin-bottom: 10px;
   }
 }
 
@@ -447,6 +442,14 @@
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  &.open {
+    opacity: 1;
+    pointer-events: all;
+  }
 
   @media (min-width: 1281px) {
     display: none;
@@ -455,7 +458,7 @@
 
 @media (max-width: 1450px) {
   .logo {
-    width: 120px;
+    width: 150px;
   }
 
   .navItem {
@@ -467,6 +470,7 @@
     gap: 5px;
   }
 }
+
 @media (max-width: 1375px) {
   .navItem {
     font-size: 12px;
@@ -476,4 +480,13 @@
   .desktopContent {
     gap: 5px;
   }
+}
+
+@media (max-width: 800px) {
+  .logo {
+    width: 140px;
+  }
+}
+.rpcButton img {
+  filter: brightness(0.5);
 }

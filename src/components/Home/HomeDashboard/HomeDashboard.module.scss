@@ -1,10 +1,10 @@
 @use '../../../styles/variables' as *;
 @use '../../../styles/_mixins' as *;
-@use 'sass:color';
 
 .dashboardWrapper {
   border-radius: 15px;
-  color: $white;
+  color: var(--text-primary);
+  background-color: var(--card-background);
   width: 100%;
   max-height: calc(100vh - 140px);
   margin-top: 100px;
@@ -30,8 +30,6 @@
   -ms-overflow-style: auto;
 
   @media (max-width: 800px) {
-    max-height: none;
-    overflow: visible;
     margin-top: 140px;
   }
 }
@@ -42,8 +40,9 @@
   flex-wrap: wrap;
   max-width: 100%;
   margin-left: 10px;
-  padding-bottom: 0px;
+
   @media (max-width: 800px) {
     margin-left: 2%;
+    padding-bottom: 40px;
   }
 }

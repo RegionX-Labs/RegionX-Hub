@@ -12,11 +12,16 @@ import {
 } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { getCorePriceAt, getTokenSymbol, toUnit } from '@/utils';
+import { getCorePriceAt, getMinEndPrice, getTokenSymbol, toUnit } from '@/utils';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-export default function DutchAuctionChart() {
+interface DutchAuctionChartProps {
+  theme: 'light' | 'dark';
+  view?: string;
+}
+
+export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProps) {
   const connections = useUnit($connections);
   const network = useUnit($network);
   const saleInfo = useUnit($latestSaleInfo);
@@ -54,9 +59,14 @@ export default function DutchAuctionChart() {
       value: toUnit(
         network,
         phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo))
+          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
           : BigInt(0)
       ),
+      phase: SalePhase.Leadin,
+    },
+    {
+      timestamp: phaseEndpoints && (phaseEndpoints.leadin.start + phaseEndpoints.leadin.end) / 2,
+      value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
       phase: SalePhase.Leadin,
     },
     {
@@ -75,12 +85,6 @@ export default function DutchAuctionChart() {
       phase: SalePhase.FixedPrice,
     },
   ];
-
-  data.push({
-    timestamp: ((phaseEndpoints?.leadin.start || 0) + (phaseEndpoints?.leadin.end || 0)) / 2,
-    value: toUnit(network, BigInt(saleInfo?.endPrice || '0') * BigInt(10)),
-    phase: SalePhase.Leadin,
-  });
 
   data.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
@@ -104,22 +108,15 @@ export default function DutchAuctionChart() {
       type: 'line',
       height: 300,
       background: 'transparent',
-      toolbar: {
-        show: false,
-      },
-      zoom: {
-        enabled: false,
-      },
+      toolbar: { show: false },
+      zoom: { enabled: false },
     },
     stroke: {
       width: [2, 2],
       curve: 'straight',
       dashArray: [0, 7],
     },
-    markers: {
-      size: 0,
-      strokeWidth: 0,
-    },
+    markers: { size: 0, strokeWidth: 0 },
     xaxis: {
       labels: { show: true },
       axisTicks: { show: false },
@@ -133,17 +130,17 @@ export default function DutchAuctionChart() {
       max: toUnit(
         network,
         phaseEndpoints && saleInfo
-          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo))
+          ? BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network))
           : BigInt(0)
       ),
       labels: {
-        style: { colors: '#888' },
+        style: { colors: theme === 'dark' ? '#aaa' : '#444' },
         formatter: (val: number) => `${val} ${getTokenSymbol(network)}`,
       },
     },
     grid: {
       show: true,
-      borderColor: '#333',
+      borderColor: theme === 'dark' ? '#828c85' : 'rgba(175, 175, 175, 0.25)',
       strokeDashArray: 4,
       xaxis: { lines: { show: false } },
       yaxis: { lines: { show: true } },
@@ -153,30 +150,31 @@ export default function DutchAuctionChart() {
         {
           x: phaseEndpoints?.interlude.start,
           x2: phaseEndpoints?.interlude.end,
-          fillColor: 'rgba(0, 255, 163, 0.05)',
-          opacity: 0.3,
+          fillColor: theme === 'dark' ? 'rgba(0, 255, 163, 0.10)' : 'rgba(0, 200, 140, 0.12)',
+          opacity: 0.5,
         },
         {
           x: phaseEndpoints?.leadin.start,
           x2: phaseEndpoints?.leadin.end,
-          fillColor: 'rgba(0, 17, 255, 0.05)',
-          opacity: 0.3,
+          fillColor: theme === 'dark' ? 'rgba(0, 17, 255, 0.1)' : 'rgba(50, 80, 255, 0.12)',
+          opacity: 0.5,
         },
         {
           x: phaseEndpoints?.fixed.start,
           x2: phaseEndpoints?.fixed.end,
-          fillColor: 'rgba(136, 136, 136, 0.05)',
-          opacity: 0.3,
+          fillColor: theme === 'dark' ? 'rgba(136, 136, 136, 0.05)' : 'rgba(100, 100, 100, 0.06)',
+          opacity: 0.6,
         },
         {
           x: Date.now(),
-          borderColor: '#FBFF00',
+          borderColor: theme === 'dark' ? '#3B82F6' : '#1C64F2',
           strokeDashArray: 4,
           label: {
             text: 'Now',
             style: {
-              color: '#FBFF00;',
-              background: '#fff',
+              color: theme === 'dark' ? '#fff' : '#000',
+              background: theme === 'dark' ? '#3B82F6' : '#B3D4FF',
+              fontWeight: 500,
             },
             orientation: 'horizontal',
             offsetY: -10,
@@ -184,19 +182,15 @@ export default function DutchAuctionChart() {
         },
       ],
     },
-    tooltip: {
-      theme: 'dark',
-      shared: false,
-      intersect: false,
-    },
-    legend: {
-      show: false,
-    },
-    colors: ['#00FFA3', '#888'],
+    tooltip: { theme: 'dark', shared: false, intersect: false },
+    legend: { show: false },
+    colors: ['#58bd86', '#888'],
   };
 
   return (
-    <div className={styles.chartCard}>
+    <div
+      className={`${styles.chartCard} ${view === 'Deploying a new project' ? styles.compact : ''}`}
+    >
       <div className={styles.backgroundLabels}>
         <span className={styles.interlude}>Interlude</span>
         <span className={styles.leadin}>Leadin</span>

@@ -10,6 +10,7 @@ import TransactionModal from '@/components/TransactionModal';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { bitStringToUint8Array, RegionId } from '@/utils';
 import { FixedSizeBinary } from 'polkadot-api';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
 const RADIUS = 90;
 const CENTER = 100;
@@ -156,21 +157,37 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
         bitStringToUint8Array(getBitArrayFromPercentage(Number(leftRatio)))
       ),
     });
+
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
             const err: any = ev.dispatchError;
-            toast.error('Transaction failed');
+            toast.error('Transaction failed', { id: toastId });
             console.log(err);
           } else {
-            toast.success('Transaction succeded!');
+            toast.success('Transaction succeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );
@@ -216,17 +233,31 @@ const InterlaceModal: React.FC<InterlaceModalProps> = ({ isOpen, regionId, onClo
               />
             </g>
 
-            <text x='100' y='98' textAnchor='middle' fill='#ffffff' fontSize='12' fontWeight='600'>
+            <text
+              x='100'
+              y='98'
+              textAnchor='middle'
+              fill='var(--white)'
+              fontSize='12'
+              fontWeight='600'
+            >
               Computational
             </text>
-            <text x='100' y='114' textAnchor='middle' fill='#ffffff' fontSize='12' fontWeight='600'>
+            <text
+              x='100'
+              y='114'
+              textAnchor='middle'
+              fill='var(--white)'
+              fontSize='12'
+              fontWeight='600'
+            >
               capacity
             </text>
 
-            <text x='20' y='170' fontSize='10' fill='#ffffff' textAnchor='middle'>
+            <text x='20' y='170' fontSize='12' fill='var(--white)' textAnchor='middle'>
               {clampedLeft}%
             </text>
-            <text x='180' y='170' fontSize='10' fill='#ffffff' textAnchor='middle'>
+            <text x='180' y='170' fontSize='10' fill='var(--white)' textAnchor='middle'>
               {rightRatio}%
             </text>
           </svg>
