@@ -10,7 +10,7 @@
   margin-top: 100px;
   overflow-y: auto;
   @include Inter;
-  overflow-x: hidden; // 🚫 prevent horizontal scrolling
+  overflow-x: hidden;
 
   scrollbar-width: thin;
   scrollbar-color: rgba(150, 150, 150, 0.4) transparent;
