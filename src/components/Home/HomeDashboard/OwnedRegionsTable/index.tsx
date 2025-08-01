@@ -7,7 +7,7 @@ import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { $regions } from '@/coretime/regions';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { timesliceToTimestamp } from '@/utils';
+import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { TableComponent } from '@/components/elements/TableComponent';
 import styles from './OwnedRegionsTable.module.scss';
 
@@ -56,6 +56,9 @@ export default function OwnedRegionsTable() {
             />
           );
 
+          const paidFormatted =
+            region.paid !== undefined ? toUnitFormatted(network, BigInt(region.paid)) : '-';
+
           return {
             Region: {
               cellType: 'jsx' as const,
@@ -81,6 +84,10 @@ export default function OwnedRegionsTable() {
             Duration: {
               cellType: 'text' as const,
               data: duration,
+            },
+            Paid: {
+              cellType: 'text' as const,
+              data: paidFormatted,
             },
           };
         })

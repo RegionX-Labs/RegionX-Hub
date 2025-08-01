@@ -189,6 +189,7 @@ const RegionsDisplay = ({
             currentUsage: 0,
             onClick: () => setSelectedRegionId(region.id),
             owner: encodeAddress(region.owner, 42),
+            paid: region.paid,
           }}
           task={`Unassigned`}
         />
