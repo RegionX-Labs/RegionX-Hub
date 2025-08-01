@@ -12,7 +12,7 @@ import SellModal from '../../../RegionModals/SellModal';
 import InterlaceModal from '../../../RegionModals/InterlaceModal';
 import TransferToMarketplaceModal from '../../../RegionModals/TransferToMarketplaceModal';
 
-import { RegionId } from '@/utils';
+import { RegionId, toUnitFormatted } from '@/utils';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 
@@ -27,6 +27,7 @@ interface RegionCardHeaderProps {
   regionStartTimeslice: number;
   regionEndTimeslice: number;
   owner?: string;
+  paid?: string | bigint;
 }
 
 const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
@@ -40,6 +41,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   regionStartTimeslice,
   regionEndTimeslice,
   owner,
+  paid,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
   const ss58Address = encodeAddress(publicKey, 42);
@@ -57,6 +59,10 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
   const network = useUnit($network);
   const isKusama = network === 'kusama';
+  const paidFormatted =
+    typeof paid !== 'undefined' && BigInt(paid.toString()) > BigInt(0)
+      ? toUnitFormatted(network, BigInt(paid.toString()))
+      : '-';
 
   const [copied, setCopied] = useState(false);
 
@@ -179,12 +185,17 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           <img src='/barcode.png' alt='core index' />
           <span>Core Index: {coreIndex}</span>
         </div>
+        <div className={styles.labelWithIcon}>
+          <img src='/paid.png' alt='paid' />
+          <span>Paid: {paidFormatted}</span>
+        </div>
 
         <div className={styles.rightSection}>
           <div className={styles.labelWithIcon}>
             <img src='/timer.png' alt='duration' />
             <span>{duration}</span>
           </div>
+
           {owner && (
             <div className={styles.ownerWrapper} title={owner}>
               <Identicon

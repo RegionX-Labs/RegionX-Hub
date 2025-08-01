@@ -38,6 +38,7 @@ export interface RegionData {
   onUnlist?: () => void;
   onPurchase?: () => void;
   owner?: string;
+  paid?: string | bigint;
 }
 
 export type TableData = {
