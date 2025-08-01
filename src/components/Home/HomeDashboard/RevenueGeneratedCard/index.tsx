@@ -45,7 +45,7 @@ export default function RevenueGeneratedCard() {
               target: 'origin',
               above: 'rgba(0, 255, 178, 0.08)',
             },
-            tension: 0.4,
+            tension: 0,
           },
         ],
       },
