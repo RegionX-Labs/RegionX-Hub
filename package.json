@@ -22,6 +22,8 @@
     "apexcharts": "^4.5.0",
     "chart.js": "^4.4.9",
     "chartjs-adapter-date-fns": "^3.0.0",
+    "echarts": "^5.6.0",
+    "echarts-for-react": "^3.0.2",
     "effector": "^23.3.0",
     "effector-react": "^23.3.0",
     "humanize-duration": "^3.32.1",
