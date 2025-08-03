@@ -40,7 +40,7 @@ sample({
 
 const fetchListedRegions = async (network: Network, connections: any): Promise<RegionListing[]> => {
   const chainIds = getNetworkChainIds(network);
-  if (!chainIds) return [];
+  if (!chainIds || !chainIds.regionxChain) return [];
 
   const connection = connections[chainIds.regionxChain];
   if (!connection || !connection.client || connection.status !== 'connected') return [];
