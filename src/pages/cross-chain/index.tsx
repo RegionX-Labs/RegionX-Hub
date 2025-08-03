@@ -73,6 +73,8 @@ const CrossChain = () => {
       await relayChainToCoretimeChain();
     } else if (isRelayChain(originChain) && isRegionXChain(destinationChain)) {
       await relayChainToRegionXChain();
+    } else if (isRegionXChain(originChain) && isRelayChain(destinationChain)) {
+      await regionXChainToRelayChain();
     } else {
       toast.error('Transfer not supported');
     }
@@ -274,6 +276,64 @@ const CrossChain = () => {
         toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
+    );
+  };
+
+  const regionXChainToRelayChain = async () => {
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds || !networkChainIds.regionxChain) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.regionxChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata || !metadata.regionxChain)
+      return toast.error('Connection or metadata missing');
+
+    const tx = connection.client
+      .getTypedApi(metadata.regionxChain)
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 1,
+          interior: XcmV3Junctions.Here(),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.Here(),
+              parents: 1,
+            }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          // TODO: we are not on subscan.
+          <span>Transaction submitted</span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else {
+            toast.success('Transaction succeeded!', { id: toastId });
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => toast.error('Transaction cancelled', { id: toastId })
     );
   };
 
