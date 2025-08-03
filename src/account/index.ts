@@ -43,13 +43,12 @@ const getAccountDataFx = createEffect(
       throw new Error('Network chain IDs not found');
     }
 
-
     const metadata = getNetworkMetadata(network);
     if (!metadata) {
       throw new Error('Network metadata not found');
     }
 
-    if(!networkChainIds.regionxChain || !metadata.regionxChain) {
+    if (!networkChainIds.regionxChain || !metadata.regionxChain) {
       throw new Error(`RegionX doesn't support this network yet`);
     }
 

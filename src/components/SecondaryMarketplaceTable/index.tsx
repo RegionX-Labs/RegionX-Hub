@@ -114,9 +114,9 @@ export default function SecondaryMarketplaceTable() {
       return;
     }
 
-    if(!networkChainIds.regionxChain || !metadata.regionxChain) {
+    if (!networkChainIds.regionxChain || !metadata.regionxChain) {
       toast.error(`RegionX doesn't support this network yet`);
-      return; 
+      return;
     }
 
     const connection = connections[networkChainIds.regionxChain];
