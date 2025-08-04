@@ -359,7 +359,11 @@ const CrossChain = () => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
   const isRegionXChain = (chainId: string): boolean => {
-    return chainId === chains[`regionxKusama` as keyof typeof chains]?.chainId;
+    const capitalize = (str: string): string => {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    return chainId === chains[`regionx${capitalize(network)}` as keyof typeof chains]?.chainId;
   };
 
   const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
