@@ -39,7 +39,6 @@ const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]>
   if (res.status !== 200) return [];
 
   const sales = res.data.sales.nodes as { saleCycle: number }[];
-
   const result: SalePoint[] = [];
 
   for (const { saleCycle } of sales) {
@@ -52,6 +51,7 @@ const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]>
         nodes {
           price
           timestamp
+          purchaseType
         }
       }
     }`;
@@ -60,23 +60,37 @@ const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]>
     if (purchaseRes.status !== 200) continue;
 
     const purchases = purchaseRes.data.purchases.nodes;
+    console.log(`Cycle ${saleCycle} raw purchases:`, purchases);
+
     if (!purchases || purchases.length === 0) continue;
 
-    const validPrices = purchases
+    const validAllPrices = purchases
       .map((p: any) => parseInt(p.price))
       .filter((price: number) => !isNaN(price) && price > 0);
 
-    if (validPrices.length === 0) continue;
+    if (validAllPrices.length === 0) continue;
+
+    const latestPurchase = purchases[0];
+    const latestPrice = parseInt(latestPurchase.price);
+    const timestamp = new Date(Number(latestPurchase.timestamp)).toLocaleDateString();
+
+    const bulkPurchases = purchases.filter((p: any) =>
+      typeof p.purchaseType === 'string' ? p.purchaseType.toLowerCase().includes('bulk') : false
+    );
+
+    const bulkPrices = bulkPurchases
+      .map((p: any) => parseInt(p.price))
+      .filter((price: number) => !isNaN(price) && price > 0);
 
     const average =
-      validPrices.reduce((sum: number, price: number) => sum + price, 0) / validPrices.length;
-
-    const latest = validPrices[0];
+      bulkPrices.length > 0
+        ? bulkPrices.reduce((sum: number, price: number) => sum + price, 0) / bulkPrices.length
+        : 0;
 
     result.push({
       cycle: saleCycle,
-      timestamp: new Date(Number(purchases[0].timestamp)).toLocaleDateString(),
-      price: latest,
+      timestamp,
+      price: latestPrice,
       average,
     });
   }
@@ -94,7 +108,7 @@ export default function HistoricalPricingChart() {
     setLoading(true);
     fetchHistoricalSalePrices(network)
       .then((result) => {
-        console.log('Final result for chart:', result);
+        console.log('Final chart data:', result);
         setData(result);
       })
       .finally(() => setLoading(false));
@@ -111,7 +125,7 @@ export default function HistoricalPricingChart() {
       {loading ? (
         <div style={{ padding: '20px', color: '#aaa' }}>Loading data...</div>
       ) : data.length === 0 ? (
-        <div style={{ padding: '20px', color: '#aaa' }}>No non-renewal purchases found.</div>
+        <div style={{ padding: '20px', color: '#aaa' }}>No data found.</div>
       ) : (
         <ResponsiveContainer width='100%' height={315}>
           <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 50 }}>
@@ -127,7 +141,7 @@ export default function HistoricalPricingChart() {
               )}
             />
             <Tooltip
-              formatter={(value: number) =>
+              formatter={(value: number, name: string) =>
                 `${toUnit(network, BigInt(Math.floor(value))).toFixed(2)} ${token}`
               }
               contentStyle={{ backgroundColor: '#111', border: '1px solid #333' }}
@@ -151,7 +165,7 @@ export default function HistoricalPricingChart() {
               stroke='#00c6ff'
               strokeWidth={2}
               strokeDasharray='5 5'
-              name='Average sale price'
+              name='Average bulk price'
               dot={false}
             />
           </LineChart>
