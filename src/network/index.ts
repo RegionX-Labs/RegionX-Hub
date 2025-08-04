@@ -104,7 +104,7 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: dot,
         coretimeChain: dot_coretime,
-        regionxChain: rx_ksm, // TODO
+        regionxChain: null,
         peopleChain: dot_people,
       };
     case Network.KUSAMA:
@@ -118,14 +118,14 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: pas,
         coretimeChain: pas_coretime,
-        regionxChain: rx_ksm, // TODO
+        regionxChain: null,
         peopleChain: pas_people,
       };
     case Network.WESTEND:
       return {
         relayChain: wnd,
         coretimeChain: wnd_coretime,
-        regionxChain: rx_ksm, // TODO
+        regionxChain: null,
         peopleChain: wnd_people,
       };
     default:

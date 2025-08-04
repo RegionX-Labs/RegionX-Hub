@@ -168,7 +168,7 @@ export default function SecondaryMarketplaceTable() {
           Price: {
             cellType: 'text' as const,
             data: toUnitFormatted(network, calculatePrice(listing)),
-          }, // TODO: need region end for this.
+          },
           Deployment: { cellType: 'text' as const, data: `Usable from ${beginDate}` },
           CorePercentage: {
             cellType: 'text' as const,
