@@ -23,6 +23,7 @@ type SalePoint = {
   cycle: number;
   timestamp: string;
   price: number;
+  average: number;
 };
 
 const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]> => {
@@ -38,19 +39,15 @@ const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]>
   if (res.status !== 200) return [];
 
   const sales = res.data.sales.nodes as { saleCycle: number }[];
-  console.log('Sales returned:', sales);
 
   const result: SalePoint[] = [];
 
   for (const { saleCycle } of sales) {
-    const purchaseQuery = `{
+    const purchasesQuery = `{
       purchases(
-      filter: {
-  saleCycle: { equalTo: ${saleCycle} }
-}
-,
+        filter: { saleCycle: { equalTo: ${saleCycle} } },
         orderBy: HEIGHT_DESC,
-        first: 1
+        first: 1000
       ) {
         nodes {
           price
@@ -59,27 +56,28 @@ const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]>
       }
     }`;
 
-    const purchaseRes = await fetchGraphql(getNetworkCoretimeIndexer(network), purchaseQuery);
+    const purchaseRes = await fetchGraphql(getNetworkCoretimeIndexer(network), purchasesQuery);
     if (purchaseRes.status !== 200) continue;
 
-    const purchase = purchaseRes.data.purchases.nodes?.[0];
-    console.log(`Sale cycle: ${saleCycle}`, purchase);
+    const purchases = purchaseRes.data.purchases.nodes;
+    if (!purchases || purchases.length === 0) continue;
 
-    if (
-      !purchase ||
-      !purchase.timestamp ||
-      purchase.price === '0' ||
-      parseInt(purchase.price) === 0
-    )
-      continue;
+    const validPrices = purchases
+      .map((p: any) => parseInt(p.price))
+      .filter((price: number) => !isNaN(price) && price > 0);
 
-    const parsedPrice = parseInt(purchase.price);
-    console.log(`Parsed price for cycle ${saleCycle}:`, parsedPrice);
+    if (validPrices.length === 0) continue;
+
+    const average =
+      validPrices.reduce((sum: number, price: number) => sum + price, 0) / validPrices.length;
+
+    const latest = validPrices[0];
 
     result.push({
       cycle: saleCycle,
-      timestamp: new Date(Number(purchase.timestamp)).toLocaleDateString(),
-      price: parsedPrice,
+      timestamp: new Date(Number(purchases[0].timestamp)).toLocaleDateString(),
+      price: latest,
+      average,
     });
   }
 
@@ -115,42 +113,49 @@ export default function HistoricalPricingChart() {
       ) : data.length === 0 ? (
         <div style={{ padding: '20px', color: '#aaa' }}>No non-renewal purchases found.</div>
       ) : (
-        <>
-          <ResponsiveContainer width='100%' height={315}>
-            <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 50 }}>
-              <CartesianGrid stroke='#2a2a2a' vertical={false} />
-              <XAxis dataKey='timestamp' stroke='#888' tick={{ fontSize: 13, fill: '#888' }} />
-              <YAxis
-                domain={['auto', 'auto']}
-                stroke='#888'
-                tick={({ x, y, payload }) => (
-                  <text x={x - 5} y={y + 4} fontSize={13} fill='#888' textAnchor='end'>
-                    {`${toUnit(network, BigInt(payload.value)).toFixed(2)} ${token}`}
-                  </text>
-                )}
-              />
-              <Tooltip
-                formatter={(value: number) =>
-                  `${toUnit(network, BigInt(value)).toFixed(2)} ${token}`
-                }
-                contentStyle={{ backgroundColor: '#111', border: '1px solid #333' }}
-              />
-              <Legend
-                verticalAlign='top'
-                align='right'
-                wrapperStyle={{ paddingBottom: 10, marginTop: -10, fontSize: 12 }}
-              />
-              <Line
-                type='monotone'
-                dataKey='price'
-                stroke='#ffef2f'
-                strokeWidth={1.5}
-                name='Last Sale Price'
-                dot
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </>
+        <ResponsiveContainer width='100%' height={315}>
+          <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 50 }}>
+            <CartesianGrid stroke='#2a2a2a' vertical={false} />
+            <XAxis dataKey='timestamp' stroke='#888' tick={{ fontSize: 13, fill: '#888' }} />
+            <YAxis
+              domain={['auto', 'auto']}
+              stroke='#888'
+              tick={({ x, y, payload }) => (
+                <text x={x - 5} y={y + 4} fontSize={13} fill='#888' textAnchor='end'>
+                  {`${toUnit(network, BigInt(payload.value)).toFixed(2)} ${token}`}
+                </text>
+              )}
+            />
+            <Tooltip
+              formatter={(value: number) =>
+                `${toUnit(network, BigInt(Math.floor(value))).toFixed(2)} ${token}`
+              }
+              contentStyle={{ backgroundColor: '#111', border: '1px solid #333' }}
+            />
+            <Legend
+              verticalAlign='top'
+              align='right'
+              wrapperStyle={{ paddingBottom: 10, marginTop: -10, fontSize: 12 }}
+            />
+            <Line
+              type='monotone'
+              dataKey='price'
+              stroke='#ffef2f'
+              strokeWidth={1.5}
+              name='Sellout price'
+              dot
+            />
+            <Line
+              type='monotone'
+              dataKey='average'
+              stroke='#00c6ff'
+              strokeWidth={2}
+              strokeDasharray='5 5'
+              name='Average sale price'
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       )}
     </div>
   );
