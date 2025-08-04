@@ -55,6 +55,11 @@ const CrossChain = () => {
       ? toUnitFormatted(network, accountData.coretimeChainData.free)
       : '--';
 
+  const formattedRegionx =
+    network === 'kusama' && accountData?.regionxChainData?.free != null
+      ? toUnitFormatted(network, accountData.regionxChainData.free)
+      : null;
+
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
     if (originChain === destinationChain)
@@ -434,12 +439,19 @@ const CrossChain = () => {
             <span className={styles.label}>Relay Chain Balance</span>
             <span className={styles.value}>{formattedRelay}</span>
           </div>
-          <div className={`${styles.balanceItem} ${styles.alignRight}`}>
+          <div className={styles.balanceItem}>
             <span className={styles.label}>Coretime Chain Balance</span>
             <span className={styles.value}>{formattedCoretime}</span>
           </div>
+          {formattedRegionx && (
+            <div className={`${styles.balanceItem} ${styles.alignRight}`}>
+              <span className={styles.label}>RegionX Chain Balance</span>
+              <span className={styles.value}>{formattedRegionx}</span>
+            </div>
+          )}
         </div>
       )}
+
       <div className={styles.buttonContainer}>
         <Button onClick={openModal}>Transfer</Button>
       </div>
