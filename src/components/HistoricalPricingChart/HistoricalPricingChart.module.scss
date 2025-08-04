@@ -5,13 +5,12 @@
 
 .card {
   background-color: $darkBackground3;
-  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 20px;
   color: $white;
   display: flex;
   flex-direction: column;
-  height: 100%;
   @include Inter;
 }
 
@@ -31,7 +30,6 @@
 .dropdown {
   background-color: $darkBackground2;
   color: $white;
-  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
   border-radius: 10px;
   padding: 4px 8px;
   font-size: 0.85rem;
