@@ -4,6 +4,8 @@ export const TIMESLICE_PERIOD = 80;
 export const RELAY_CHAIN_BLOCK_TIME = 6000;
 export const CORETIME_PARA_ID = 1005;
 
+export const REGIONX_KUSAMA_PARA_ID = 3422;
+
 export type RegionId = {
   begin: number;
   core: number;

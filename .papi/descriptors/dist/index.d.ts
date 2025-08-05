@@ -13,15 +13,15 @@ export type * from './ksm';
 import { default as pas } from './pas';
 export { pas };
 export type * from './pas';
-import { default as pas_coretime } from './pas_coretime';
-export { pas_coretime };
-export type * from './pas_coretime';
 import { default as wnd } from './wnd';
 export { wnd };
 export type * from './wnd';
 import { default as wnd_coretime } from './wnd_coretime';
 export { wnd_coretime };
 export type * from './wnd_coretime';
+import { default as rx_ksm } from './rx_ksm';
+export { rx_ksm };
+export type * from './rx_ksm';
 import { default as ksm_people } from './ksm_people';
 export { ksm_people };
 export type * from './ksm_people';
@@ -34,6 +34,9 @@ export type * from './wnd_people';
 import { default as dot_people } from './dot_people';
 export { dot_people };
 export type * from './dot_people';
+import { default as pas_coretime } from './pas_coretime';
+export { pas_coretime };
+export type * from './pas_coretime';
 export {
   DigestItem,
   Phase,
@@ -199,5 +202,6 @@ export {
   XcmVersionedXcm,
   PolkadotRuntimeCommonAssignedSlotsSlotLeasePeriodStart,
   XcmVersionedAsset,
+  WestendRuntimeRuntimeHoldReason,
 } from './common-types';
 export declare const getMetadata: (codeHash: string) => Promise<Uint8Array | null>;

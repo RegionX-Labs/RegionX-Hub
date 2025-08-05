@@ -46,11 +46,11 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
   };
 
   const onModalConfirm = async () => {
-    await assign();
+    await transfer();
     setIsModalOpen(false);
   };
 
-  const assign = async () => {
+  const transfer = async () => {
     if (!selectedAccount) {
       toast.error('Account not selected');
       return;
