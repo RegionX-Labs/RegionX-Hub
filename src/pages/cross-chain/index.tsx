@@ -44,7 +44,6 @@ const CrossChain = () => {
   const connections = useUnit($connections);
 
   const accountData = selectedAccount?.address ? accountDataMap[selectedAccount.address] : null;
-
   const formattedRelay =
     accountData?.relayChainData?.free != null
       ? toUnitFormatted(network, accountData.relayChainData.free)
@@ -53,6 +52,11 @@ const CrossChain = () => {
   const formattedCoretime =
     accountData?.coretimeChainData?.free != null
       ? toUnitFormatted(network, accountData.coretimeChainData.free)
+      : '--';
+
+  const formattedRegionx =
+    network === 'kusama' && accountData?.regionxChainData?.free != null
+      ? toUnitFormatted(network, accountData.regionxChainData.free)
       : '--';
 
   const openModal = () => {
@@ -434,12 +438,19 @@ const CrossChain = () => {
             <span className={styles.label}>Relay Chain Balance</span>
             <span className={styles.value}>{formattedRelay}</span>
           </div>
-          <div className={`${styles.balanceItem} ${styles.alignRight}`}>
+          <div className={styles.balanceItem}>
             <span className={styles.label}>Coretime Chain Balance</span>
             <span className={styles.value}>{formattedCoretime}</span>
           </div>
+          {network === 'kusama' && (
+            <div className={`${styles.balanceItem} ${styles.alignRight}`}>
+              <span className={styles.label}>RegionX Chain Balance</span>
+              <span className={styles.value}>{formattedRegionx}</span>
+            </div>
+          )}
         </div>
       )}
+
       <div className={styles.buttonContainer}>
         <Button onClick={openModal}>Transfer</Button>
       </div>
