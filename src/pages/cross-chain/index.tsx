@@ -56,8 +56,10 @@ const CrossChain = () => {
       : '--';
 
   const formattedRegionx =
-    network === 'kusama' && accountData?.regionxChainData?.free != null
-      ? toUnitFormatted(network, accountData.regionxChainData.free)
+    network === 'kusama'
+      ? accountData?.regionxChainData?.free != null
+        ? toUnitFormatted(network, accountData.regionxChainData.free)
+        : '--'
       : null;
 
   const openModal = () => {
@@ -443,7 +445,7 @@ const CrossChain = () => {
             <span className={styles.label}>Coretime Chain Balance</span>
             <span className={styles.value}>{formattedCoretime}</span>
           </div>
-          {formattedRegionx && (
+          {network === 'kusama' && (
             <div className={`${styles.balanceItem} ${styles.alignRight}`}>
               <span className={styles.label}>RegionX Chain Balance</span>
               <span className={styles.value}>{formattedRegionx}</span>

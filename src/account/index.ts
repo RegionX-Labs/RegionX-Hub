@@ -39,22 +39,16 @@ const getAccountDataFx = createEffect(
     const { account, network, connections } = payload;
 
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) {
-      throw new Error('Network chain IDs not found');
-    }
+    if (!networkChainIds) throw new Error('Network chain IDs not found');
 
     const metadata = getNetworkMetadata(network);
-    if (!metadata) {
-      throw new Error('Network metadata not found');
-    }
-
-    if (!networkChainIds.regionxChain || !metadata.regionxChain) {
-      throw new Error(`RegionX doesn't support this network yet`);
-    }
+    if (!metadata) throw new Error('Network metadata not found');
 
     const relayConnection = connections[networkChainIds.relayChain];
     const coretimeConnection = connections[networkChainIds.coretimeChain];
-    const regionxConnection = connections[networkChainIds.regionxChain];
+    const regionxConnection = networkChainIds.regionxChain
+      ? connections[networkChainIds.regionxChain]
+      : undefined;
 
     if (
       !relayConnection ||
@@ -74,8 +68,13 @@ const getAccountDataFx = createEffect(
       account
     );
 
-    let _regionxData;
-    if (regionxConnection && regionxConnection.client && regionxConnection.status === 'connected') {
+    let _regionxData: AccountData | null = null;
+    if (
+      regionxConnection &&
+      regionxConnection.client &&
+      regionxConnection.status === 'connected' &&
+      metadata.regionxChain
+    ) {
       _regionxData = await fetchAccountData(regionxConnection, metadata.regionxChain, account);
     }
 
@@ -83,9 +82,9 @@ const getAccountDataFx = createEffect(
 
     return {
       account,
-      coretimeChainData: _coretimeData,
       relayChainData: _relayData,
-      regionxChainData: _regionxData ?? null,
+      coretimeChainData: _coretimeData,
+      regionxChainData: _regionxData,
     };
   }
 );
@@ -96,12 +95,9 @@ const fetchAccountData = async (
   account: string
 ): Promise<AccountData | null> => {
   const client = connection.client;
-  if (!client || connection.status !== 'connected') {
-    return null;
-  }
+  if (!client || connection.status !== 'connected') return null;
 
   const res = await client.getTypedApi(metadata).query.System.Account.getValue(account);
-
   return res.data;
 };
 
@@ -116,7 +112,7 @@ sample({
   filter: (_, newData) => newData !== null,
   fn: (accountsRecord, newData) => ({
     ...accountsRecord,
-    [newData?.account || '']: newData,
+    [newData!.account]: newData,
   }),
   target: $accountData,
 });
