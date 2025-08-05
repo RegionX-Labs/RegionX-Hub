@@ -44,7 +44,6 @@ const CrossChain = () => {
   const connections = useUnit($connections);
 
   const accountData = selectedAccount?.address ? accountDataMap[selectedAccount.address] : null;
-
   const formattedRelay =
     accountData?.relayChainData?.free != null
       ? toUnitFormatted(network, accountData.relayChainData.free)
@@ -56,11 +55,9 @@ const CrossChain = () => {
       : '--';
 
   const formattedRegionx =
-    network === 'kusama'
-      ? accountData?.regionxChainData?.free != null
-        ? toUnitFormatted(network, accountData.regionxChainData.free)
-        : '--'
-      : null;
+    network === 'kusama' && accountData?.regionxChainData?.free != null
+      ? toUnitFormatted(network, accountData.regionxChainData.free)
+      : '--';
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
