@@ -12,25 +12,28 @@ export const SELECTED_ACCOUNT_KEY = 'account_selected';
 
 export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
+export const walletAdded = createEvent<string>();
 export const accountSelected = createEvent<string>();
 export const restoreSelectedAccount = createEvent();
-
-export const walletAdded = createEvent<string>();
+export const disconnectWallets = createEvent();
 
 export const $walletExtensions = createStore<{ name: string }[]>([]);
-export const $connectedWallets = createStore<string[]>([]).on(walletAdded, (state, walletId) =>
-  state.includes(walletId) ? state : [...state, walletId]
-);
+export const $connectedWallets = createStore<string[]>([])
+  .on(walletAdded, (state, walletId) => (state.includes(walletId) ? state : [...state, walletId]))
+  .reset(disconnectWallets);
 
-export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
-export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
+export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]).reset(disconnectWallets);
+
+export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null).reset(
+  disconnectWallets
+);
 
 const getExtensionsFx = createEffect(async () => {
   const extensions = getInjectedExtensions();
 
   const origin = await isMimirReady();
   if (origin && MIMIR_REGEXP.test(origin)) {
-    inject(); // for Mimir
+    inject();
   }
 
   const isNova =
@@ -54,7 +57,6 @@ const walletSelectedFx = createEffect(
   }
 );
 
-// 🔁 Called when a new wallet is added (for multi-wallet support)
 const walletAddedFx = createEffect(
   async (extension: string): Promise<InjectedPolkadotAccount[]> => {
     const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
@@ -94,7 +96,6 @@ sample({
 sample({ clock: restoreSelectedAccount, target: restoreAccountFx });
 sample({ clock: restoreAccountFx.doneData, target: $selectedAccount });
 
-// ✅ Multi-wallet logic
 sample({ clock: walletAdded, target: walletAddedFx });
 
 sample({
@@ -110,4 +111,9 @@ sample({
     return merged;
   },
   target: $loadedAccounts,
+});
+
+disconnectWallets.watch(() => {
+  localStorage.removeItem(SELECTED_WALLET_KEY);
+  localStorage.removeItem(SELECTED_ACCOUNT_KEY);
 });

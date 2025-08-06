@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useUnit } from 'effector-react';
 import { $walletExtensions, $connectedWallets, walletAdded } from '@/wallet';
@@ -53,7 +51,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
 
   const handleWalletClick = (walletId: string, isAvailable: boolean, alreadyConnected: boolean) => {
     if (isAvailable && !alreadyConnected) {
-      walletAdded(walletId); // ✅ Adds new wallet
+      walletAdded(walletId);
       onClose();
     }
   };
