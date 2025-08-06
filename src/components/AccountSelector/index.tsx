@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
 import Image from 'next/image';
 import styles from './account.module.scss';
 import Select from '../elements/Select';
+import WalletModal from '../WalletModal/WalletModal';
+
 import {
   $loadedAccounts,
   $selectedAccount,
@@ -16,6 +19,7 @@ import {
 import { $accountIdentities } from '@/account/accountIdentity';
 
 const AccountSelector = () => {
+  const [isWalletModalOpen, setWalletModalOpen] = useState(false);
   const accounts = useUnit($loadedAccounts);
   const selectedAccount = useUnit($selectedAccount);
   const identities = useUnit($accountIdentities);
@@ -28,16 +32,21 @@ const AccountSelector = () => {
       accountSelected('');
       return;
     }
+
+    if (value === 'connect-another-wallet') {
+      setWalletModalOpen(true);
+      return;
+    }
+
     if (value) {
       accountSelected(value);
     }
   };
 
-  const formatAddress = (address: string): string => {
-    return `${address.slice(0, 4)}...${address.slice(-6)}`;
-  };
+  const formatAddress = (address: string): string =>
+    `${address.slice(0, 4)}...${address.slice(-6)}`;
 
-  const options = accounts.map((account) => {
+  const accountOptions = accounts.map((account) => {
     const identity = identities[account.address];
     const hasIdentity = !!identity;
     const hasJudgement = identity?.hasJudgement ?? false;
@@ -81,12 +90,21 @@ const AccountSelector = () => {
     };
   });
 
-  options.push({
+  const connectWalletOption = {
+    key: 'connect-another-wallet',
+    value: 'connect-another-wallet',
+    label: 'Connect Another Wallet',
+    icon: <></>,
+  };
+
+  const disconnectOption = {
     key: 'disconnect',
     value: 'disconnect',
     label: 'Disconnect',
     icon: <></>,
-  });
+  };
+
+  const options = [...accountOptions, connectWalletOption, disconnectOption];
 
   return (
     <div className={styles.selectWrapper}>
@@ -96,6 +114,7 @@ const AccountSelector = () => {
         placeholder='Select an account'
         selectedValue={selectedAccount?.address ?? null}
       />
+      <WalletModal isOpen={isWalletModalOpen} onClose={() => setWalletModalOpen(false)} />
     </div>
   );
 };
