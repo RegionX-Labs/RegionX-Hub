@@ -12,19 +12,22 @@ import { $connections, $network, networkStarted } from '@/api/connection';
 import {
   getExtensions,
   SELECTED_WALLET_KEY,
+  SELECTED_ACCOUNT_KEY,
   walletSelected,
-  restoreSelectedAccount,
+  walletAdded,
+  accountSelected,
   $selectedAccount,
   $loadedAccounts,
+  disconnectWallets,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
-import Head from 'next/head';
 import { identityRequested } from '@/account/accountIdentity';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { regionsRequested } from '@/coretime/regions';
+import Head from 'next/head';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -75,10 +78,30 @@ function App({ Component, pageProps }: AppProps) {
     networkStarted(_network);
     getExtensions();
 
+    const savedWallets = localStorage.getItem('connected_wallets');
+    if (savedWallets) {
+      const wallets: string[] = JSON.parse(savedWallets);
+      wallets.forEach(walletAdded);
+    }
+
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    if (selectedWallet) {
+    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
+
+    if (selectedWallet && selectedAddress) {
       walletSelected(selectedWallet);
-      restoreSelectedAccount();
+
+      const checkInterval = setInterval(() => {
+        const currentAccounts = $loadedAccounts.getState();
+        if (currentAccounts.length === 0) return;
+
+        const match = currentAccounts.find((a) => a.address === selectedAddress);
+        if (match) {
+          accountSelected(match.address);
+          clearInterval(checkInterval);
+        }
+      }, 100);
+
+      setTimeout(() => clearInterval(checkInterval), 5000);
     }
   }, [networkFromRouter, router]);
 
