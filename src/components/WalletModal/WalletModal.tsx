@@ -99,7 +99,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                     {wallet.name}
                     {alreadyConnected && ' (Connected)'}
                   </span>
-                  {shouldDisable && (
+                  {!isDetected && (
                     <a
                       href={wallet.url}
                       target='_blank'

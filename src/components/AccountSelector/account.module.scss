@@ -7,45 +7,48 @@
   }
 }
 
-.iconWrapper {
-  display: flex;
-  align-items: center;
-}
-
-.identicon {
-  margin-right: 8px;
-}
-
-.verifiedIcon {
-  width: 24px;
-  height: 24px;
-  margin-left: -5px;
-}
-
-.optionContent {
-  display: flex;
-  flex-direction: column;
-}
-
-.nameLine {
+.inlineWrapper {
   display: flex;
   align-items: center;
   gap: 6px;
+  overflow: hidden;
+}
+
+.identicon {
+  flex-shrink: 0;
+  margin-right: 0px;
+}
+
+.checkmark {
+  width: 24px;
+  height: 24px;
+  margin-right: 0px;
+  margin-left: -5px;
+}
+
+.accountName {
   font-weight: 500;
+  font-size: 14px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .addressLine {
   font-size: 12px;
   color: #888;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.verifiedIcon {
-  width: 24px;
-  height: 24px;
-}
-.noJudgement {
-  width: 16px;
-  height: 16px;
-  margin-right: 5px;
-  margin-left: -1px;
+.walletLogo {
+  margin-left: auto;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
 }

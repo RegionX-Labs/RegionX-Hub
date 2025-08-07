@@ -109,7 +109,7 @@ const MultiWalletModal: React.FC<MultiWalletModalProps> = ({ isOpen, onClose }) 
                 </div>
                 <div className={styles.walletTextWrapper}>
                   <span className={styles.walletName}>{wallet.name}</span>
-                  {shouldDisable && (
+                  {!isDetected && (
                     <a
                       href={wallet.url}
                       target='_blank'

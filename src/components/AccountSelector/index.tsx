@@ -10,6 +10,15 @@ import WalletModal from '../WalletModal/WalletModal';
 import { $accountIdentities } from '@/account/accountIdentity';
 import { $loadedAccounts, $selectedAccount, accountSelected, disconnectWallets } from '@/wallet';
 
+import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
+
+const WALLET_ICONS: Record<string, string> = {
+  'polkadot-js': polkadotIcon.src,
+  'subwallet-js': subwalletIcon.src,
+  talisman: talismanIcon.src,
+  nova: novaIcon.src,
+};
+
 const AccountSelector = () => {
   const [isWalletModalOpen, setWalletModalOpen] = useState(false);
 
@@ -34,48 +43,61 @@ const AccountSelector = () => {
   };
 
   const formatAddress = (address: string): string =>
-    `${address.slice(0, 4)}...${address.slice(-6)}`;
+    `${address.slice(0, 3)}...${address.slice(-3)}`;
 
   const options = accounts.map((account) => {
     const identity = identities[account.address];
     const hasIdentity = !!identity;
     const hasJudgement = identity?.hasJudgement ?? false;
 
-    const label = `${identity?.name || account.name || 'Unknown'} (${formatAddress(account.address)})`;
+    const walletIconSrc = WALLET_ICONS[account.walletSource] || polkadotIcon.src;
 
     const icon = (
-      <div className={styles.iconWrapper}>
+      <div className={styles.inlineWrapper}>
         <Identicon
           value={account.address}
           size={24}
           theme='polkadot'
           className={styles.identicon}
         />
+
         {hasIdentity && hasJudgement && (
           <Image
             src='/verified.png'
             alt='Verified'
-            width={100}
-            height={100}
-            className={styles.verifiedIcon}
+            width={24}
+            height={24}
+            className={styles.checkmark}
           />
         )}
         {hasIdentity && !hasJudgement && (
           <Image
             src='/no-judgement.png'
             alt='No Judgment'
-            width={100}
-            height={100}
-            className={styles.noJudgement}
+            width={24}
+            height={24}
+            className={styles.checkmark}
           />
         )}
+
+        <span className={styles.accountName}>{identity?.name || account.name || 'Unknown'}</span>
+
+        <span className={styles.addressLine}>{formatAddress(account.address)}</span>
+
+        <Image
+          src={walletIconSrc}
+          alt={account.walletSource}
+          width={18}
+          height={18}
+          className={styles.walletLogo}
+        />
       </div>
     );
 
     return {
       key: account.address,
       value: account.address,
-      label,
+      label: '',
       icon,
     };
   });
