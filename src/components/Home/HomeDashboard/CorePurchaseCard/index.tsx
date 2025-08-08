@@ -123,8 +123,9 @@ export default function CorePurchaseCard({ view }: Props) {
     const api = connection.client.getTypedApi(metadata.coretimeChain);
     const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
 
-    const calls = Array.from({ length: times }, () =>
-      api.tx.Broker.purchase({ price_limit: BigInt(corePrice) }).decodedCall
+    const calls = Array.from(
+      { length: times },
+      () => api.tx.Broker.purchase({ price_limit: BigInt(corePrice) }).decodedCall
     );
 
     const tx =
