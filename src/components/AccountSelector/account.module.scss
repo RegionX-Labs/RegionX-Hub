@@ -12,18 +12,26 @@
   align-items: center;
   gap: 6px;
   overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
 .identicon {
   flex-shrink: 0;
-  margin-right: 0px;
 }
 
 .checkmark {
   width: 24px;
   height: 24px;
-  margin-right: 0px;
   margin-left: -5px;
+  margin-right: -5px;
+  flex-shrink: 0;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .accountName {

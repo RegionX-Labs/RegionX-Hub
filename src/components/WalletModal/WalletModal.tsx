@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useUnit } from 'effector-react';
 import { $walletExtensions, $connectedWallets, walletAdded } from '@/wallet';
@@ -73,7 +75,6 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
           }).map((wallet) => {
             const isDetected = availableWallets.some((w) => w.name === wallet.id);
             const alreadyConnected = connectedWallets.includes(wallet.id);
-
             const shouldDisable =
               alreadyConnected || !isDetected || (wallet.id === 'nova' && isMobile && hasSubWallet);
 
@@ -90,15 +91,16 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
                     src={wallet.icon.src}
                     alt={wallet.name}
                     className={styles.walletIcon}
-                    width={24}
-                    height={24}
+                    width={36}
+                    height={36}
                   />
                 </div>
                 <div className={styles.walletTextWrapper}>
-                  <span className={styles.walletName}>
-                    {wallet.name}
-                    {alreadyConnected && ' (Connected)'}
-                  </span>
+                  <>
+                    <span className={styles.walletName}>{wallet.name}</span>
+                    {alreadyConnected && <span className={styles.connectedLabel}>Connected</span>}
+                  </>
+
                   {!isDetected && (
                     <a
                       href={wallet.url}
