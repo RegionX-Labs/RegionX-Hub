@@ -94,7 +94,7 @@ export default function AuctionPhaseStatus({ view }: Props) {
       );
     });
 
-    const progressAngle = Math.max(0, (progressPercent - 0.1) * ARC_TOTAL_WITH_GAPS);
+    const progressAngle = Math.max(0, (progressPercent - 0.04) * ARC_TOTAL_WITH_GAPS);
     let greenAngle = (10 - TOTAL_ARC_ANGLE) / 2;
     let remaining = progressAngle;
     const progressArcs: JSX.Element[] = [];
@@ -151,7 +151,7 @@ export default function AuctionPhaseStatus({ view }: Props) {
       if (!saleInfo) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
-      const connection = connections[networkChainIds.coretimeChain];
+      const connection = connections[networkChainIds.relayChain];
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       const client = connection.client;
@@ -159,7 +159,7 @@ export default function AuctionPhaseStatus({ view }: Props) {
       if (!metadata) return;
 
       const currentBlockNumber = await client
-        .getTypedApi(metadata.coretimeChain)
+        .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);

@@ -15,6 +15,7 @@ interface SelectProps<T> {
   disabled?: boolean;
   selectedValue?: T | null;
   showOnlySelectedIcon?: boolean;
+
   variant?: 'default' | 'secondary';
 }
 
@@ -105,8 +106,20 @@ const Select = <T,>({
                   option.value === selected ? styles.selected : ''
                 }`}
               >
-                {option.icon}
-                {option.label}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {option.icon}
+                    <span style={{ marginLeft: 8 }}>{option.label}</span>
+                  </div>
+                  {option.extra && <div style={{ marginLeft: 12 }}>{option.extra}</div>}
+                </div>
               </li>
             ))}
           </ul>

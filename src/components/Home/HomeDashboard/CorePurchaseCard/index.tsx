@@ -39,9 +39,10 @@ export default function CorePurchaseCard({ view }: Props) {
     if (network && saleInfo) {
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
-        if (!networkChainIds) return;
-        const connection = connections[networkChainIds.coretimeChain];
-        if (!connection?.client || connection.status !== 'connected') return;
+
+        if (!networkChainIds) return null;
+        const connection = connections[networkChainIds.relayChain];
+        if (!connection || !connection.client || connection.status !== 'connected') return null;
 
         const client = connection.client;
         const metadata = getNetworkMetadata(network);
@@ -53,10 +54,10 @@ export default function CorePurchaseCard({ view }: Props) {
         });
 
         const currentBlockNumber = await client
-          .getTypedApi(metadata.coretimeChain)
+          .getTypedApi(metadata.relayChain)
           .query.System.Number.getValue();
         setCurrentHeight(currentBlockNumber);
-        const price = getCorePriceAt(currentBlockNumber, saleInfo);
+        const price = getCorePriceAt(currentBlockNumber, saleInfo, network);
         setCorePrice(price);
         const sold = await fetchCoresSold(network, connections);
         setCoresSold(sold || 0);
@@ -69,15 +70,16 @@ export default function CorePurchaseCard({ view }: Props) {
       if (!saleInfo) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
-      const connection = connections[networkChainIds.coretimeChain];
-      if (!connection?.client || connection.status !== 'connected') return;
+
+      const connection = connections[networkChainIds.relayChain];
+      if (!connection || !connection.client || connection.status !== 'connected') return;
 
       const client = connection.client;
       const metadata = getNetworkMetadata(network);
       if (!metadata) return;
 
       const currentBlockNumber = await client
-        .getTypedApi(metadata.coretimeChain)
+        .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);

@@ -29,7 +29,7 @@ export default function AuctionPriceOverview() {
       const chainIds = getNetworkChainIds(network);
       if (!chainIds) return;
 
-      const connection = connections[chainIds.coretimeChain];
+      const connection = connections[chainIds.relayChain];
       if (!connection || connection.status !== 'connected' || !connection.client) return;
       const client = connection.client;
 
@@ -37,12 +37,12 @@ export default function AuctionPriceOverview() {
       if (!metadata) return;
 
       const currentBlock = await client
-        .getTypedApi(metadata.coretimeChain)
+        .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
 
-      const initial = BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo));
+      const initial = BigInt(getCorePriceAt(saleInfo.saleStart, saleInfo, network));
       const end = BigInt(saleInfo.endPrice || '0');
-      const current = BigInt(getCorePriceAt(currentBlock, saleInfo));
+      const current = BigInt(getCorePriceAt(currentBlock, saleInfo, network));
 
       const initialNum = Number(toUnit(network, initial));
       const endNum = Number(toUnit(network, end));

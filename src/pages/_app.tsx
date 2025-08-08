@@ -12,17 +12,24 @@ import { $connections, $network, networkStarted } from '@/api/connection';
 import {
   getExtensions,
   SELECTED_WALLET_KEY,
+  SELECTED_ACCOUNT_KEY,
   walletSelected,
-  restoreSelectedAccount,
+  walletAdded,
+  accountSelected,
   $selectedAccount,
   $loadedAccounts,
+  disconnectWallets,
+  loadedAccountsSet,
+  walletAddedFx,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
-import Head from 'next/head';
 import { identityRequested } from '@/account/accountIdentity';
+import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { regionsRequested } from '@/coretime/regions';
+import Head from 'next/head';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -34,22 +41,27 @@ function App({ Component, pageProps }: AppProps) {
   const network = useUnit($network);
   const selectedAccount = useUnit($selectedAccount);
   const loadedAccounts = useUnit($loadedAccounts);
+  const saleInfo = useUnit($latestSaleInfo);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
-
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return 'dark';
-  });
-
   const [hasMounted, setHasMounted] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('theme');
+    const initialTheme = stored === 'light' ? 'light' : 'dark';
+    setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -72,10 +84,32 @@ function App({ Component, pageProps }: AppProps) {
     networkStarted(_network);
     getExtensions();
 
+    const savedWallets = localStorage.getItem('connected_wallets');
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    if (selectedWallet) {
-      walletSelected(selectedWallet);
-      restoreSelectedAccount();
+    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
+
+    if (savedWallets) {
+      const wallets: string[] = JSON.parse(savedWallets);
+
+      Promise.all(
+        wallets.map((wallet) => {
+          walletAdded(wallet);
+          return walletAddedFx(wallet);
+        })
+      ).then((results) => {
+        const allAccounts = results.flat();
+        const uniqueAccounts = allAccounts.filter(
+          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
+        );
+        loadedAccountsSet(uniqueAccounts);
+
+        if (selectedWallet && selectedAddress) {
+          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
+          if (match) {
+            accountSelected(match.address);
+          }
+        }
+      });
     }
   }, [networkFromRouter, router]);
 
@@ -85,13 +119,19 @@ function App({ Component, pageProps }: AppProps) {
   }, [connections, network, selectedAccount]);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
     identityRequested({ accounts: loadedAccounts, network, connections });
   }, [connections, network, loadedAccounts]);
+
+  useEffect(() => {
+    latestSaleRequested(network);
+  }, [network, connections]);
+
+  useEffect(() => {
+    if (!saleInfo) return;
+    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
+    const afterTimeslice = saleInfo.regionBegin - regionDuration;
+    regionsRequested({ network, afterTimeslice });
+  }, [network, saleInfo]);
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
@@ -101,7 +141,9 @@ function App({ Component, pageProps }: AppProps) {
       nextUrl.searchParams.delete('dashboard');
       nextUrl.searchParams.delete('paraId');
 
-      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
+      const newUrl = `${nextUrl.pathname}${
+        nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''
+      }`;
       if (newUrl !== window.location.pathname + window.location.search) {
         window.history.replaceState({}, '', newUrl);
       }
@@ -119,6 +161,7 @@ function App({ Component, pageProps }: AppProps) {
     <div className={montserrat.className}>
       <Head>
         <title>RegionX Hub</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />
         <link
@@ -128,9 +171,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
 
       <Header theme={theme} setTheme={setTheme} openRpcModal={() => setIsRpcModalOpen(true)} />
-
       <Component {...pageProps} />
-
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
@@ -143,7 +184,6 @@ function App({ Component, pageProps }: AppProps) {
           bottom: 20,
           right: 20,
           zIndex: 9999,
-          display: 'none',
         }}
         className='mobile-theme-buttons'
       >

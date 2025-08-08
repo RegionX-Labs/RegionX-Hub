@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
-import { $latestSaleInfo, latestSaleRequested, fetchSelloutPrice } from '@/coretime/saleInfo';
+import { $latestSaleInfo, fetchSelloutPrice } from '@/coretime/saleInfo';
 import { $network, $connections } from '@/api/connection';
 import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
@@ -20,17 +20,13 @@ export default function CoreComparison({ view }: Props) {
   const [corePrice, setCorePrice] = useState<number | null>(null);
 
   useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network, connections]);
-
-  useEffect(() => {
     if (network && saleInfo) {
       purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
 
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
         if (!networkChainIds) return null;
-        const connection = connections[networkChainIds.coretimeChain];
+        const connection = connections[networkChainIds.relayChain];
         if (!connection || !connection.client || connection.status !== 'connected') return null;
 
         const client = connection.client;
@@ -38,10 +34,10 @@ export default function CoreComparison({ view }: Props) {
         if (!metadata) return null;
 
         const currentBlockNumber = await client
-          .getTypedApi(metadata.coretimeChain)
+          .getTypedApi(metadata.relayChain)
           .query.System.Number.getValue();
 
-        const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo });
+        const currentPrice = getCorePriceAt(currentBlockNumber, { ...saleInfo }, network);
 
         setCorePrice(currentPrice);
 

@@ -162,6 +162,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
           <div className={styles.networkSelector}>
             <NetworkSelector />
           </div>
+
           {accounts.length > 0 ? (
             <div className={styles.accSelector}>
               <AccountSelector />
@@ -171,31 +172,30 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
               Connect Wallet
             </button>
           )}
-        </div>
 
-        <div className={styles.mobileRpcButton}>
-          <button
-            className={styles.rpcButton}
-            onClick={() => {
-              setIsMenuOpen(false);
-              openRpcModal();
-            }}
-          >
-            <Image src='/Settings.svg' alt='settings' width={24} height={24} />
-          </button>
+          <div className={styles.mobileRpcButton}>
+            <button
+              className={styles.rpcButton}
+              onClick={() => {
+                setIsMenuOpen(false);
+                openRpcModal();
+              }}
+            >
+              <Image src='/Settings.svg' alt='settings' width={24} height={24} />
+            </button>
 
-          <button
-            className={styles.rpcButton}
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            title='Toggle Theme'
-          >
-            <Image
-              src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
-              alt={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-              width={24}
-              height={24}
-            />
-          </button>
+            <button
+              className={styles.rpcButton}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              <Image
+                src={theme === 'dark' ? '/LightMode.svg' : '/DarkMode.svg'}
+                alt={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
         </div>
       </div>
 

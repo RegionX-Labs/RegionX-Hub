@@ -90,14 +90,28 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
 export const ParaStateCard = ({
   state,
   withTooltip = true,
+  renewalStatus,
 }: {
   state: ParaState;
   withTooltip?: boolean;
+  renewalStatus?: 'needed' | 'done';
 }) => {
   const { tooltip, background, title } = paraStateProperties[state];
+  const showRenewal = renewalStatus && state !== ParaState.SYSTEM;
 
   if (!withTooltip) {
-    return <LabelCard label={title} color={background as any} />;
+    return (
+      <div
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}
+      >
+        {showRenewal && (
+          <LabelCard
+            label={renewalStatus === 'done' ? 'Renewed' : 'Needs Renewal'}
+            color={renewalStatus === 'done' ? 'greenDark' : 'redDark'}
+          />
+        )}
+      </div>
+    );
   }
 
   return (

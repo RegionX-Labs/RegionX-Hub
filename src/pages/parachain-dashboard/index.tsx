@@ -20,9 +20,9 @@ type TableData = {
 const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const network = useUnit($network);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
 
@@ -42,12 +42,12 @@ const ParachainDashboard = () => {
     const savedWatchlist = localStorage.getItem(watchlistKey);
     if (savedWatchlist) {
       try {
-        const parsedWatchlist = JSON.parse(savedWatchlist);
-        if (Array.isArray(parsedWatchlist)) {
-          setWatchlist(parsedWatchlist);
+        const parsed = JSON.parse(savedWatchlist);
+        if (Array.isArray(parsed)) {
+          setWatchlist(parsed);
         }
-      } catch (error) {
-        console.error('Failed to parse watchlist from localStorage:', error);
+      } catch (err) {
+        console.error('Failed to parse watchlist:', err);
       }
     } else {
       setWatchlist([]);
@@ -113,31 +113,31 @@ const ParachainDashboard = () => {
   }));
 
   return (
-    <>
-      <div className={styles.parachain_dashboard_table}>
-        <div className={styles.buttonContainer}>
-          <button className={styles.customButton} onClick={() => setShowWatchlist(!showWatchlist)}>
-            {showWatchlist ? 'Show All' : 'Watchlist'}
-          </button>
-          <button
-            className={`${styles.customButton} ${styles.secondary}`}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Reserve New Para
-          </button>
-        </div>
-
-        <h2 className={styles.heading}>Parachain Dashboard</h2>
-
-        <div className={styles.dashboard_table}>
-          <div className={styles.tableWrapper}>
-            <TableComponent data={tableData} pageSize={8} />
+    <div className={styles.parachain_dashboard_table}>
+      <div className={styles.tableWrapper}>
+        <div className={styles.headerRow}>
+          <h2 className={styles.heading}>Parachain Dashboard</h2>
+          <div className={styles.buttonContainer}>
+            <button
+              className={styles.customButton}
+              onClick={() => setShowWatchlist(!showWatchlist)}
+            >
+              {showWatchlist ? 'Show All' : 'Watchlist'}
+            </button>
+            <button
+              className={`${styles.customButton} ${styles.secondary}`}
+              onClick={() => setIsModalOpen(true)}
+            >
+              Reserve New Para
+            </button>
           </div>
         </div>
 
-        <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <TableComponent data={tableData} pageSize={8} />
       </div>
-    </>
+
+      <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </div>
   );
 };
 

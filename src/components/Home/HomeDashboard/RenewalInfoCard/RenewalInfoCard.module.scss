@@ -166,3 +166,16 @@
     background: var(--green-primary-hover);
   }
 }
+.renewalStatus {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+
+  .needsRenewal {
+    color: #f59e0b; // yellow
+  }
+
+  .renewalDone {
+    color: #10b981; // green
+  }
+}

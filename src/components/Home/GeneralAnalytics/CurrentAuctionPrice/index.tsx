@@ -3,7 +3,7 @@ import { useUnit } from 'effector-react';
 import styles from './CurrentAuctionPrice.module.scss';
 
 import { $network, $connections } from '@/api/connection';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { getCorePriceAt, toUnitFormatted, timesliceToTimestamp } from '@/utils';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 import { getRelativeTime } from '@/pages/coretime/my-regions/index';
@@ -17,10 +17,6 @@ const CurrentCorePrice: React.FC = () => {
   const [relativeTime, setRelativeTime] = useState<string>('');
 
   useEffect(() => {
-    if (network) latestSaleRequested(network);
-  }, [network]);
-
-  useEffect(() => {
     const fetchPrice = async () => {
       if (!network || !connections || !saleInfo) return;
 
@@ -28,14 +24,14 @@ const CurrentCorePrice: React.FC = () => {
       const metadata = getNetworkMetadata(network);
       if (!chainIds || !metadata) return;
 
-      const connection = connections[chainIds.coretimeChain];
+      const connection = connections[chainIds.relayChain];
       if (!connection || !connection.client || connection.status !== 'connected') return;
 
       try {
-        const api = connection.client.getTypedApi(metadata.coretimeChain);
+        const api = connection.client.getTypedApi(metadata.relayChain);
         const blockNumber: number = await api.query.System.Number.getValue();
 
-        const rawPrice = getCorePriceAt(blockNumber, saleInfo);
+        const rawPrice = getCorePriceAt(blockNumber, saleInfo, network);
         const formatted = toUnitFormatted(network, BigInt(rawPrice));
         setPrice(formatted);
       } catch (err) {

@@ -192,10 +192,19 @@ export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props
       const name = meta?.name || `Parachain ${item.id}`;
       const logo = meta?.logo;
 
+      const renewalMatch = Array.from(potentialRenewals.entries()).find(
+        ([key, record]) =>
+          (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
+          saleInfo?.regionBegin === key.when
+      );
+
+      const renewalStatus = renewalMatch ? 'Needs Renewal' : 'Renewed';
+      const badgeColor = renewalMatch ? '#dc2626' : '#0cc184';
+
       return {
         key: item.id.toString(),
-        label: name,
         value: item,
+        label: name,
         icon: logo ? (
           <img
             src={logo}
@@ -209,6 +218,21 @@ export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props
             theme='substrate'
             style={{ marginRight: 8 }}
           />
+        ),
+        extra: (
+          <span
+            style={{
+              backgroundColor: badgeColor,
+              color: 'black',
+              fontSize: 10,
+              fontWeight: 600,
+              padding: '2px 6px',
+              borderRadius: 4,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {renewalStatus}
+          </span>
         ),
       };
     });
@@ -239,8 +263,32 @@ export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props
         )}
         {typeof state === 'number' && (
           <div className={styles.stateTooltip}>
-            <ParaStateCard state={state} withTooltip={false} />
-            <div className={styles.stateText}>{paraStateProperties[state]?.description}</div>
+            <ParaStateCard
+              state={state}
+              withTooltip={state === ParaState.SYSTEM}
+              renewalStatus={
+                state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined
+              }
+            />
+            <div className={styles.stateText}>
+              {(() => {
+                if (state === ParaState.SYSTEM) {
+                  return paraStateProperties[state]?.description;
+                }
+
+                const renewalStatus = renewalEntry ? 'needed' : 'done';
+
+                if (renewalStatus === 'done') {
+                  return 'This parachain has renewed the core on time and doesn’t need to do anything until the beginning of the next sale cycle.';
+                }
+
+                if (renewalStatus === 'needed') {
+                  return 'This parachain needs to renew the core, otherwise it may stop if not renewed on time.';
+                }
+
+                return paraStateProperties[state]?.description;
+              })()}
+            </div>
           </div>
         )}
       </div>

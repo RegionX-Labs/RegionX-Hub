@@ -1,13 +1,12 @@
-import { $regions, regionsRequested } from '@/coretime/regions';
+import { $regions, Region } from '@/coretime/regions';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '../../../components/elements/RegionCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './my-regions.module.scss';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
+import { bitStringToUint8Array, maskToBin, RegionId, timesliceToTimestamp } from '@/utils';
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { FixedSizeBinary } from 'polkadot-api';
@@ -36,37 +35,12 @@ export const getRelativeTime = (timestamp: number | Date): string => {
 const MyRegionsPage = () => {
   const network = useUnit($network);
   const regions = useUnit($regions);
-  const saleInfo = useUnit($latestSaleInfo);
   const connections = useUnit($connections);
   const selectedAccount = useUnit($selectedAccount);
 
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [regionDateInfos, setRegionDateInfos] = useState<Record<string, RegionDateInfo>>();
   const [loading, setLoading] = useState(true);
-
-  const countBits = (regionMask: string) => {
-    let count = 0;
-    // Convert hex to bits and count ones.
-    for (let i = 2; i < regionMask.length; ++i) {
-      let v = parseInt(regionMask.slice(i, i + 1), 16);
-      while (v > 0) {
-        if (v & 1) ++count;
-        v >>= 1;
-      }
-    }
-    return count;
-  };
-
-  useEffect(() => {
-    if (!saleInfo) return;
-    const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
-    const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
-  }, [network, saleInfo]);
-
-  useEffect(() => {
-    latestSaleRequested(network);
-  }, [connections, network]);
 
   useEffect(() => {
     const loadDates = async () => {
@@ -100,68 +74,49 @@ const MyRegionsPage = () => {
     }
   }, [regions, network, connections]);
 
+  const ownedRegions = useMemo(() => {
+    if (!selectedAccount) return false;
+    return regions.filter(
+      (region) => encodeAddress(region.owner, 42) === encodeAddress(selectedAccount.address, 42)
+    );
+  }, [regions, selectedAccount]);
+
   return (
     <>
       <div className={styles.mainContainer}>
         <div className={styles.pageHeader}>
           {selectedAccount && <h1>My Regions</h1>}
 
-          {!loading &&
-          selectedAccount &&
-          regions.length > 0 &&
-          !regions.some(
-            (r) => encodeAddress(r.owner, 42) === encodeAddress(selectedAccount.address, 42)
-          ) ? (
-            <p className={styles.noRegionsMessage}>No regions owned by the selected account.</p>
-          ) : (
-            <p className={styles.subtitle}></p>
+          {!loading && !ownedRegions && (
+            <div className={styles.messageNote}>No regions owned by the selected account. </div>
           )}
-          <p className={styles.subtitle}>All regions</p>
+
+          {!loading && regions.length === 0 && (
+            <div className={styles.messageNote}>There are no regions available.</div>
+          )}
+        </div>
+
+        {ownedRegions && (
+          <div className={styles.container}>
+            <RegionsDisplay
+              regionDateInfos={regionDateInfos ?? {}}
+              regions={ownedRegions}
+              selectedRegionId={selectedRegionId}
+              setSelectedRegionId={setSelectedRegionId}
+            />
+          </div>
+        )}
+        <div className={styles.pageHeader}>
+          {regions.length > 0 && <p className={styles.subtitle}>All regions</p>}
         </div>
 
         <div className={styles.container}>
-          {regions.map((region) => {
-            const regionStart = regionDateInfos?.[region.id]?.beginDate
-              ? `Begin: ${regionDateInfos[region.id].beginDate}`
-              : `Begin: Timeslice #${region.begin}`;
-
-            const regionEnd = regionDateInfos?.[region.id]?.endDate
-              ? `End: ${regionDateInfos[region.id].endDate}`
-              : `End: Timeslice #${region.end}`;
-
-            const storageKey = `regionName-${regionStart}-${regionEnd}-${region.core}`;
-            const storedName =
-              typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
-
-            return (
-              <div className={styles['region-card']} key={region.id}>
-                <RegionCard
-                  selected={selectedRegionId == region.id}
-                  regionId={{
-                    begin: region.begin,
-                    core: region.core,
-                    mask: new FixedSizeBinary(bitStringToUint8Array(maskToBin(region.mask))),
-                  }}
-                  regionData={{
-                    chainColor: 'greenDark',
-                    chainLabel: 'Coretime Chain',
-                    coreIndex: region.core,
-                    consumed: 0,
-                    coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
-                    duration: regionDateInfos?.[region.id]?.duration || '28 days',
-                    name: storedName || `Region #${region.core}`,
-                    regionStart,
-                    regionEnd,
-                    regionBeginTimeslice: region.begin,
-                    regionEndTimeslice: region.end,
-                    currentUsage: 0,
-                    onClick: () => setSelectedRegionId(region.id),
-                  }}
-                  task={`Unassigned`}
-                />
-              </div>
-            );
-          })}
+          <RegionsDisplay
+            regionDateInfos={regionDateInfos ?? {}}
+            regions={regions}
+            selectedRegionId={selectedRegionId}
+            setSelectedRegionId={setSelectedRegionId}
+          />
 
           {!loading &&
             selectedAccount &&
@@ -171,6 +126,76 @@ const MyRegionsPage = () => {
       </div>
     </>
   );
+};
+
+interface RegionsDisplayProps {
+  regions: Region[];
+  selectedRegionId: string | null;
+  regionDateInfos: Record<string, RegionDateInfo>;
+  setSelectedRegionId: (_id: string) => void;
+}
+const RegionsDisplay = ({
+  regions,
+  selectedRegionId,
+  regionDateInfos,
+  setSelectedRegionId,
+}: RegionsDisplayProps) => {
+  const countBits = (regionMask: string) => {
+    let count = 0;
+    // Convert hex to bits and count ones.
+    for (let i = 2; i < regionMask.length; ++i) {
+      let v = parseInt(regionMask.slice(i, i + 1), 16);
+      while (v > 0) {
+        if (v & 1) ++count;
+        v >>= 1;
+      }
+    }
+    return count;
+  };
+
+  return regions.map((region) => {
+    const regionStart = regionDateInfos?.[region.id]?.beginDate
+      ? `Begin: ${regionDateInfos[region.id].beginDate}`
+      : `Begin: Timeslice #${region.begin}`;
+
+    const regionEnd = regionDateInfos?.[region.id]?.endDate
+      ? `End: ${regionDateInfos[region.id].endDate}`
+      : `End: Timeslice #${region.end}`;
+
+    const storageKey = `regionName-${regionStart}-${regionEnd}-${region.core}`;
+    const storedName = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+
+    return (
+      <div className={styles['region-card']} key={region.id}>
+        <RegionCard
+          selected={selectedRegionId == region.id}
+          regionId={{
+            begin: region.begin,
+            core: region.core,
+            mask: new FixedSizeBinary(bitStringToUint8Array(maskToBin(region.mask))),
+          }}
+          regionData={{
+            chainColor: 'greenDark',
+            chainLabel: 'Coretime Chain',
+            coreIndex: region.core,
+            consumed: 0,
+            coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,
+            duration: regionDateInfos?.[region.id]?.duration || '28 days',
+            name: storedName || `Region #${region.core}`,
+            regionStart,
+            regionEnd,
+            regionBeginTimeslice: region.begin,
+            regionEndTimeslice: region.end,
+            currentUsage: 0,
+            onClick: () => setSelectedRegionId(region.id),
+            owner: encodeAddress(region.owner, 42),
+            paid: region.paid,
+          }}
+          task={`Unassigned`}
+        />
+      </div>
+    );
+  });
 };
 
 export default MyRegionsPage;

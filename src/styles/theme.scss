@@ -30,6 +30,8 @@
 
   --blue-dark: #2563eb;
   --blue-light-5: #dbeafe;
+  --dark-modal: rgb(225, 229, 235);
+  --border-modal: #cbd5e1;
 
   --white: #000000;
   --black: #ffffff;
@@ -43,10 +45,12 @@
   --background: #ffffff;
   --text-color: #111827;
   --white-text: #ffffff;
+
   --dark-background-1: #f6f7f8;
   --dark-background-2: rgb(235, 239, 245);
   --dark-background-3: rgb(235, 239, 245);
   --dark-background-4: #c5c8cc;
+  --dark-background-5: rgb(191, 199, 211);
 }
 
 [data-theme='dark'] {
@@ -59,9 +63,13 @@
   --dark-background-2: #111212;
   --dark-background-3: #171a1c;
   --dark-background-4: #222424;
+  --dark-background-5: #111212;
+
   --border-gray: rgb(43, 43, 43);
   --green-primary: #0cc184;
   --card-border: #313535;
+  --dark-modal: #272b2b;
+  --border-modal: #37393f;
 
   --white: #ffffff;
   --black: #000000;

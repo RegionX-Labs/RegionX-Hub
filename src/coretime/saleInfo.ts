@@ -126,20 +126,11 @@ const getSalePhaseEndpointsFx = createEffect(
     const metadata = getNetworkMetadata(network);
     if (!metadata) return null;
 
-    let saleStartTimestamp;
-    if (network == Network.WESTEND) {
-      const connection = connections[chainIds.relayChain];
-      if (!connection) return null;
-      saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
-      );
-    } else {
-      const connection = connections[chainIds.coretimeChain];
-      if (!connection) return null;
-      saleStartTimestamp = Number(
-        await blockToTimestamp(saleInfo.saleStart, connection, metadata.coretimeChain)
-      );
-    }
+    const connection = connections[chainIds.relayChain];
+    if (!connection) return null;
+    const saleStartTimestamp = Number(
+      await blockToTimestamp(saleInfo.saleStart, connection, metadata.relayChain)
+    );
 
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
     const config = await fetchBrokerConfig(network, connections);
