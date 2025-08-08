@@ -44,20 +44,24 @@ function App({ Component, pageProps }: AppProps) {
   const saleInfo = useUnit($latestSaleInfo);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
-
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return 'dark';
-  });
-
   const [hasMounted, setHasMounted] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('theme');
+    const initialTheme = stored === 'light' ? 'light' : 'dark';
+    setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -115,11 +119,6 @@ function App({ Component, pageProps }: AppProps) {
   }, [connections, network, selectedAccount]);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
     identityRequested({ accounts: loadedAccounts, network, connections });
   }, [connections, network, loadedAccounts]);
 
@@ -172,9 +171,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
 
       <Header theme={theme} setTheme={setTheme} openRpcModal={() => setIsRpcModalOpen(true)} />
-
       <Component {...pageProps} />
-
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
@@ -187,7 +184,6 @@ function App({ Component, pageProps }: AppProps) {
           bottom: 20,
           right: 20,
           zIndex: 9999,
-          display: 'none',
         }}
         className='mobile-theme-buttons'
       >
