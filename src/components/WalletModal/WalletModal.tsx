@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import { useUnit } from 'effector-react';
-import { $walletExtensions, SELECTED_WALLET_KEY, walletSelected } from '@/wallet';
+import { $walletExtensions, $connectedWallets, walletAdded } from '@/wallet';
 import Image from 'next/image';
 import styles from './walletModal.module.scss';
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
@@ -43,15 +45,15 @@ interface WalletModalProps {
 
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
+  const connectedWallets = useUnit($connectedWallets);
 
   const hasSubWallet = availableWallets.some((w) => w.name === 'subwallet-js');
 
   if (!isOpen) return null;
 
-  const handleWalletClick = (walletId: string, isAvailable: boolean) => {
-    if (isAvailable) {
-      walletSelected(walletId);
-      localStorage.setItem(SELECTED_WALLET_KEY, walletId);
+  const handleWalletClick = (walletId: string, isAvailable: boolean, alreadyConnected: boolean) => {
+    if (isAvailable && !alreadyConnected) {
+      walletAdded(walletId);
       onClose();
     }
   };
@@ -72,8 +74,9 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
             return true;
           }).map((wallet) => {
             const isDetected = availableWallets.some((w) => w.name === wallet.id);
-
-            const shouldDisable = !isDetected || (wallet.id === 'nova' && isMobile && hasSubWallet);
+            const alreadyConnected = connectedWallets.includes(wallet.id);
+            const shouldDisable =
+              alreadyConnected || !isDetected || (wallet.id === 'nova' && isMobile && hasSubWallet);
 
             const buttonClass = `${styles.walletButton} ${shouldDisable ? styles.disabled : ''}`;
 
@@ -81,20 +84,24 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
               <button
                 key={wallet.id}
                 className={buttonClass}
-                onClick={() => handleWalletClick(wallet.id, !shouldDisable)}
+                onClick={() => handleWalletClick(wallet.id, isDetected, alreadyConnected)}
               >
                 <div className={styles.walletIconWrapper}>
                   <Image
                     src={wallet.icon.src}
                     alt={wallet.name}
                     className={styles.walletIcon}
-                    width={24}
-                    height={24}
+                    width={36}
+                    height={36}
                   />
                 </div>
                 <div className={styles.walletTextWrapper}>
-                  <span className={styles.walletName}>{wallet.name}</span>
-                  {shouldDisable && (
+                  <>
+                    <span className={styles.walletName}>{wallet.name}</span>
+                    {alreadyConnected && <span className={styles.connectedLabel}>Connected</span>}
+                  </>
+
+                  {!isDetected && (
                     <a
                       href={wallet.url}
                       target='_blank'

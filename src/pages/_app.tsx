@@ -12,19 +12,24 @@ import { $connections, $network, networkStarted } from '@/api/connection';
 import {
   getExtensions,
   SELECTED_WALLET_KEY,
+  SELECTED_ACCOUNT_KEY,
   walletSelected,
-  restoreSelectedAccount,
+  walletAdded,
+  accountSelected,
   $selectedAccount,
   $loadedAccounts,
+  disconnectWallets,
+  loadedAccountsSet,
+  walletAddedFx,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
 import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
-import Head from 'next/head';
 import { identityRequested } from '@/account/accountIdentity';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { regionsRequested } from '@/coretime/regions';
+import Head from 'next/head';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -75,10 +80,32 @@ function App({ Component, pageProps }: AppProps) {
     networkStarted(_network);
     getExtensions();
 
+    const savedWallets = localStorage.getItem('connected_wallets');
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    if (selectedWallet) {
-      walletSelected(selectedWallet);
-      restoreSelectedAccount();
+    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
+
+    if (savedWallets) {
+      const wallets: string[] = JSON.parse(savedWallets);
+
+      Promise.all(
+        wallets.map((wallet) => {
+          walletAdded(wallet);
+          return walletAddedFx(wallet);
+        })
+      ).then((results) => {
+        const allAccounts = results.flat();
+        const uniqueAccounts = allAccounts.filter(
+          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
+        );
+        loadedAccountsSet(uniqueAccounts);
+
+        if (selectedWallet && selectedAddress) {
+          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
+          if (match) {
+            accountSelected(match.address);
+          }
+        }
+      });
     }
   }, [networkFromRouter, router]);
 
@@ -115,7 +142,9 @@ function App({ Component, pageProps }: AppProps) {
       nextUrl.searchParams.delete('dashboard');
       nextUrl.searchParams.delete('paraId');
 
-      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
+      const newUrl = `${nextUrl.pathname}${
+        nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''
+      }`;
       if (newUrl !== window.location.pathname + window.location.search) {
         window.history.replaceState({}, '', newUrl);
       }

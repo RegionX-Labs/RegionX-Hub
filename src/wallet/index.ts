@@ -2,38 +2,40 @@ import { createEffect, createEvent, createStore, sample } from 'effector';
 import {
   getInjectedExtensions,
   connectInjectedExtension,
-  InjectedExtension,
   InjectedPolkadotAccount,
 } from 'polkadot-api/pjs-signer';
+import { inject, isMimirReady, MIMIR_REGEXP } from '@mimirdev/apps-inject';
 
 export const SELECTED_WALLET_KEY = 'wallet_selected';
 export const SELECTED_ACCOUNT_KEY = 'account_selected';
 
 export const getExtensions = createEvent();
 export const walletSelected = createEvent<string>();
+export const walletAdded = createEvent<string>();
 export const accountSelected = createEvent<string>();
 export const restoreSelectedAccount = createEvent();
-import { inject, isMimirReady, MIMIR_REGEXP } from '@mimirdev/apps-inject';
+export const disconnectWallets = createEvent();
 
-type WalletExtension = {
-  name: string;
+export const $walletExtensions = createStore<{ name: string }[]>([]);
+
+export const $connectedWallets = createStore<string[]>([])
+  .on(walletAdded, (state, walletId) => (state.includes(walletId) ? state : [...state, walletId]))
+  .reset(disconnectWallets);
+
+export type WalletAccount = InjectedPolkadotAccount & {
+  walletSource: string;
 };
 
-export const $walletExtensions = createStore<WalletExtension[]>([]);
-export const $loadedAccounts = createStore<InjectedPolkadotAccount[]>([]);
-export const $selectedAccount = createStore<InjectedPolkadotAccount | null>(null);
+export const $loadedAccounts = createStore<WalletAccount[]>([]).reset(disconnectWallets);
+export const $selectedAccount = createStore<WalletAccount | null>(null).reset(disconnectWallets);
+export const loadedAccountsSet = createEvent<WalletAccount[]>();
+$loadedAccounts.on(loadedAccountsSet, (_, payload) => payload);
 
-const getExtensionsFx = createEffect(async (): Promise<WalletExtension[]> => {
-  const extensions: string[] = getInjectedExtensions();
-
-  // Try to connect mimir
+const getExtensionsFx = createEffect(async () => {
+  const extensions = getInjectedExtensions();
   const origin = await isMimirReady();
-
-  // Verify if the URL matches Mimir's pattern
   if (origin && MIMIR_REGEXP.test(origin)) {
-    // Inject Mimir into window.injectedWeb3
     inject();
-    // Now you can use polkadot extension functions
   }
 
   const isNova =
@@ -42,56 +44,58 @@ const getExtensionsFx = createEffect(async (): Promise<WalletExtension[]> => {
     window.walletExtension.isNovaWallet === true;
 
   return extensions.map((extName) => {
-    if (extName === 'polkadot-js' && isNova) {
-      return { name: 'nova' };
-    }
+    if (extName === 'polkadot-js' && isNova) return { name: 'nova' };
     return { name: extName };
   });
 });
 
-const walletSelectedFx = createEffect(
-  async (extension: string): Promise<InjectedPolkadotAccount[]> => {
-    if (!extension) return [];
-    const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
-    const selectedExtension: InjectedExtension = await connectInjectedExtension(realExtension);
-    return selectedExtension.getAccounts();
-  }
-);
+const walletSelectedFx = createEffect(async (extension: string): Promise<WalletAccount[]> => {
+  const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
+  const ext = await connectInjectedExtension(realExtension);
+  const accounts = await ext.getAccounts();
+  return accounts.map((a) => ({ ...a, walletSource: extension }));
+});
 
-const restoreAccountFx = createEffect(async (): Promise<InjectedPolkadotAccount | null> => {
+const walletAddedFx = createEffect(async (extension: string): Promise<WalletAccount[]> => {
+  const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
+  const ext = await connectInjectedExtension(realExtension);
+  const accounts = await ext.getAccounts();
+  return accounts.map((a) => ({ ...a, walletSource: extension }));
+});
+
+const restoreAccountFx = createEffect(async (): Promise<WalletAccount | null> => {
   const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-  const selectedAccount = localStorage.getItem(SELECTED_ACCOUNT_KEY);
-  if (!selectedWallet || !selectedAccount) return null;
+  const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
+  if (!selectedWallet || !selectedAddress) return null;
 
   const realExtension = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
-  const extension = await connectInjectedExtension(realExtension);
-  const accounts = await extension.getAccounts();
-  return accounts.find((a) => a.address === selectedAccount) || null;
+  const ext = await connectInjectedExtension(realExtension);
+  const accounts = await ext.getAccounts();
+  const found = accounts.find((a) => a.address === selectedAddress);
+  if (!found) return null;
+  return { ...found, walletSource: selectedWallet };
 });
 
-sample({
-  clock: getExtensions,
-  target: getExtensionsFx,
-});
+sample({ clock: getExtensions, target: getExtensionsFx });
+sample({ clock: getExtensionsFx.doneData, target: $walletExtensions });
+
+sample({ clock: walletSelected, target: walletSelectedFx });
+sample({ clock: walletSelectedFx.doneData, target: $loadedAccounts });
+
+sample({ clock: walletAdded, target: walletAddedFx });
 
 sample({
-  clock: getExtensionsFx.doneData,
-  target: $walletExtensions,
-});
-
-sample({
-  clock: walletSelected,
-  target: walletSelectedFx,
-});
-
-sample({
-  clock: walletSelectedFx.done,
-  fn: () => null,
-  target: $selectedAccount,
-});
-
-sample({
-  clock: walletSelectedFx.doneData,
+  clock: walletAddedFx.doneData,
+  source: $loadedAccounts,
+  fn: (prev, next) => {
+    const merged = [...prev];
+    for (const acc of next) {
+      if (!merged.some((a) => a.address === acc.address)) {
+        merged.push(acc);
+      }
+    }
+    return merged;
+  },
   target: $loadedAccounts,
 });
 
@@ -99,18 +103,32 @@ sample({
   clock: accountSelected,
   source: $loadedAccounts,
   fn: (accounts, selectedAddr) => {
-    localStorage.setItem(SELECTED_ACCOUNT_KEY, selectedAddr);
-    return accounts.find((a) => a.address === selectedAddr) || null;
+    const acc = accounts.find((a) => a.address === selectedAddr) || null;
+    if (acc) {
+      localStorage.setItem(SELECTED_ACCOUNT_KEY, acc.address);
+      localStorage.setItem(SELECTED_WALLET_KEY, acc.walletSource);
+    }
+    return acc;
   },
   target: $selectedAccount,
 });
 
-sample({
-  clock: restoreSelectedAccount,
-  target: restoreAccountFx,
+sample({ clock: restoreSelectedAccount, target: restoreAccountFx });
+sample({ clock: restoreAccountFx.doneData, target: $selectedAccount });
+
+walletAdded.watch((walletId) => {
+  const stored = localStorage.getItem('connected_wallets');
+  const wallets = stored ? JSON.parse(stored) : [];
+  if (!wallets.includes(walletId)) {
+    wallets.push(walletId);
+    localStorage.setItem('connected_wallets', JSON.stringify(wallets));
+  }
 });
 
-sample({
-  clock: restoreAccountFx.doneData,
-  target: $selectedAccount,
+disconnectWallets.watch(() => {
+  localStorage.removeItem(SELECTED_WALLET_KEY);
+  localStorage.removeItem(SELECTED_ACCOUNT_KEY);
+  localStorage.removeItem('connected_wallets');
 });
+
+export { walletAddedFx };
