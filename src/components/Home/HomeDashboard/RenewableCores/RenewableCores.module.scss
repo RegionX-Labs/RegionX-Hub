@@ -10,6 +10,7 @@
   width: 30%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 20px;
   border: 1px solid var(--card-border);
 
@@ -40,6 +41,7 @@
   @media (max-width: 450px) {
     max-width: 80%;
   }
+
   &.compact {
     width: 33%;
 
@@ -116,6 +118,13 @@
   font-weight: 500;
 }
 
+.content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .renewButton {
   background-color: $greenPrimary;
   color: var(--black-text);
@@ -125,14 +134,15 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-top: 65px;
-  margin-bottom: -7px;
+  margin-top: auto;
+  margin-bottom: 10px;
   @include Inter;
 
   &:hover {
     background-color: var(--accent-green-hover);
   }
 }
+
 .noDataMessage {
   background-color: $darkBackground1;
   color: $gray6;
