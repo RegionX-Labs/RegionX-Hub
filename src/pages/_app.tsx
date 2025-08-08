@@ -19,6 +19,8 @@ import {
   $selectedAccount,
   $loadedAccounts,
   disconnectWallets,
+  loadedAccountsSet,
+  walletAddedFx,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
@@ -79,29 +81,31 @@ function App({ Component, pageProps }: AppProps) {
     getExtensions();
 
     const savedWallets = localStorage.getItem('connected_wallets');
-    if (savedWallets) {
-      const wallets: string[] = JSON.parse(savedWallets);
-      wallets.forEach(walletAdded);
-    }
-
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
     const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
 
-    if (selectedWallet && selectedAddress) {
-      walletSelected(selectedWallet);
+    if (savedWallets) {
+      const wallets: string[] = JSON.parse(savedWallets);
 
-      const checkInterval = setInterval(() => {
-        const currentAccounts = $loadedAccounts.getState();
-        if (currentAccounts.length === 0) return;
+      Promise.all(
+        wallets.map((wallet) => {
+          walletAdded(wallet);
+          return walletAddedFx(wallet);
+        })
+      ).then((results) => {
+        const allAccounts = results.flat();
+        const uniqueAccounts = allAccounts.filter(
+          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
+        );
+        loadedAccountsSet(uniqueAccounts);
 
-        const match = currentAccounts.find((a) => a.address === selectedAddress);
-        if (match) {
-          accountSelected(match.address);
-          clearInterval(checkInterval);
+        if (selectedWallet && selectedAddress) {
+          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
+          if (match) {
+            accountSelected(match.address);
+          }
         }
-      }, 100);
-
-      setTimeout(() => clearInterval(checkInterval), 5000);
+      });
     }
   }, [networkFromRouter, router]);
 
@@ -138,7 +142,9 @@ function App({ Component, pageProps }: AppProps) {
       nextUrl.searchParams.delete('dashboard');
       nextUrl.searchParams.delete('paraId');
 
-      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
+      const newUrl = `${nextUrl.pathname}${
+        nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''
+      }`;
       if (newUrl !== window.location.pathname + window.location.search) {
         window.history.replaceState({}, '', newUrl);
       }

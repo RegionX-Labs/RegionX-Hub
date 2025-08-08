@@ -17,6 +17,7 @@ export const restoreSelectedAccount = createEvent();
 export const disconnectWallets = createEvent();
 
 export const $walletExtensions = createStore<{ name: string }[]>([]);
+
 export const $connectedWallets = createStore<string[]>([])
   .on(walletAdded, (state, walletId) => (state.includes(walletId) ? state : [...state, walletId]))
   .reset(disconnectWallets);
@@ -27,6 +28,8 @@ export type WalletAccount = InjectedPolkadotAccount & {
 
 export const $loadedAccounts = createStore<WalletAccount[]>([]).reset(disconnectWallets);
 export const $selectedAccount = createStore<WalletAccount | null>(null).reset(disconnectWallets);
+export const loadedAccountsSet = createEvent<WalletAccount[]>();
+$loadedAccounts.on(loadedAccountsSet, (_, payload) => payload);
 
 const getExtensionsFx = createEffect(async () => {
   const extensions = getInjectedExtensions();
@@ -127,3 +130,5 @@ disconnectWallets.watch(() => {
   localStorage.removeItem(SELECTED_ACCOUNT_KEY);
   localStorage.removeItem('connected_wallets');
 });
+
+export { walletAddedFx };
