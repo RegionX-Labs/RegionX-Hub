@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './my-regions.module.scss';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { bitStringToUint8Array, maskToBin, RegionId, timesliceToTimestamp } from '@/utils';
+import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { FixedSizeBinary } from 'polkadot-api';
@@ -191,7 +191,7 @@ const RegionsDisplay = ({
             owner: encodeAddress(region.owner, 42),
             paid: region.paid,
           }}
-          task={`Unassigned`}
+          task={region.task === 0 ? 'Unassigned' : region.task.toString()}
         />
       </div>
     );
