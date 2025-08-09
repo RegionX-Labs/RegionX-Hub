@@ -128,7 +128,7 @@ export { nodesPolymeshSVG } from './polymeshSVG';
 export { nodesPontemSVG } from './pontemSVG';
 export { nodesPrismPNG } from './prismPNG';
 export { nodesQuartzPNG } from './quartzPNG';
-export { nodesRegionxPNG } from './regionxPNG';
+export { nodesRegionxSVG } from './regionxSVG';
 export { nodesRealisPNG } from './realisPNG';
 export { nodesRegionxCocosPNG } from './regionxCocosPNG';
 export { nodesRexSVG } from './rexSVG';

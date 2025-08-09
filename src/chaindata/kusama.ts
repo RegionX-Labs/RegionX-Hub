@@ -61,7 +61,7 @@ import {
   nodesXodePNG,
   nodesYerbanetworkPNG,
   nodesZeroSVG,
-  nodesRegionxPNG,
+  nodesRegionxSVG,
 } from '../../public/parachain-logos';
 
 import { ChainDetails } from './types';
@@ -689,7 +689,7 @@ const prodParasKusama: ChainDetails[] = [
     text: 'RegionX',
     ui: {
       color: '#0CC184',
-      logo: nodesRegionxPNG,
+      logo: nodesRegionxSVG,
     },
   },
   {
