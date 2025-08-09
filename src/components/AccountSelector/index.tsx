@@ -76,7 +76,7 @@ const AccountSelector = () => {
             alt='No Judgment'
             width={24}
             height={24}
-            className={styles.checkmark}
+            className={styles.judgement}
           />
         )}
 

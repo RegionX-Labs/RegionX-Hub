@@ -28,6 +28,14 @@
   flex-shrink: 0;
 }
 
+.judgement {
+  width: 16px;
+  height: 16px;
+  margin-left: -2px;
+  margin-right: -2px;
+  flex-shrink: 0;
+}
+
 .textBlock {
   display: flex;
   flex-direction: column;
