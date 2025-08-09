@@ -28,7 +28,8 @@ export const paraStateProperties: Record<ParaState, StateInfo> = {
   [ParaState.GENESIS]: {
     title: 'At Genesis',
     background: 'pinkDark',
-    tooltip: 'The parachain has been registered but has not produced any blocks other than the genesis block.',
+    tooltip:
+      'The parachain has been registered but has not produced any blocks other than the genesis block.',
     description:
       'The parachain code and genesis state have been registered. The parachain requires Coretime to start producing blocks.',
   },

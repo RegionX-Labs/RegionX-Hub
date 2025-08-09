@@ -39,7 +39,6 @@ const getParachainsFx = createEffect(
         let state = ParaState.ACTIVE_PARA;
 
         if (entry.keyArgs[0] < 2000) state = ParaState.SYSTEM;
-        console.log(entry.value.locked)
         if (entry.value.locked === undefined) state = ParaState.RESERVED;
         if (entry.value.locked === false) state = ParaState.GENESIS;
 
