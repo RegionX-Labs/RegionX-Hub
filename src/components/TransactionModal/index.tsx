@@ -21,8 +21,6 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   const network = useUnit($network);
   if (!isOpen) return null;
 
-  const txFee = '0.002 DOT';
-
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
       onClose();
@@ -41,9 +39,6 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
         <p className={styles.balance}>
           Coretime Chain Balance:{' '}
           <span>{toUnitFormatted(network, accountData.coretimeChainData.free)}</span>
-        </p>
-        <p className={styles.balance}>
-          Transaction Fee: <span>{txFee}</span>
         </p>
 
         <p className={styles.question}>Do you want to proceed with the transaction?</p>

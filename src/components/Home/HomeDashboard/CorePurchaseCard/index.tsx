@@ -12,7 +12,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import { $selectedAccount } from '@/wallet';
 import TransactionModal from '@/components/TransactionModal';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
-import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
 type Props = {
   view?: string;
