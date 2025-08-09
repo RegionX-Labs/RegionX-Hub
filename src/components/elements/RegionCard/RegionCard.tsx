@@ -57,6 +57,7 @@ const RegionCard: React.FC<RegionCardProps> = ({
         onNameChange={handleNameChange}
         owner={regionData.owner}
         paid={regionData.paid}
+        task={task}
       />
 
       <RegionCardProperties
