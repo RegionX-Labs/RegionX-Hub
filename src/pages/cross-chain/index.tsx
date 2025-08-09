@@ -83,6 +83,11 @@ const CrossChain = () => {
     const metadata = getNetworkMetadata(network);
     if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
 
+    if (accountData && accountData.relayChainData.free < BigInt(amount)) {
+      toast.error('Insufficient balance');
+      return;
+    }
+
     const tx = connection.client
       .getTypedApi(metadata.relayChain)
       .tx.XcmPallet.limited_teleport_assets({
@@ -148,6 +153,11 @@ const CrossChain = () => {
     const connection = connections[networkChainIds.coretimeChain];
     const metadata = getNetworkMetadata(network);
     if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
+
+    if (accountData && accountData.coretimeChainData.free < BigInt(amount)) {
+      toast.error('Insufficient balance');
+      return;
+    }
 
     const tx = connection.client
       .getTypedApi(metadata.coretimeChain)
