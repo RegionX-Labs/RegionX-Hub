@@ -15,68 +15,6 @@ export const parachainsRequested = createEvent<Network>();
 
 export const $parachains = createStore<Parachain[]>([]);
 
-const fetchActiveParas = async (
-  client: PolkadotClient,
-  metadata: CoretimeMetadata
-): Promise<number[]> => {
-  const workload = await client.getTypedApi(metadata).query.Broker.Workload.getEntries();
-  const activeParas: number[] = [];
-  for (const { value } of workload) {
-    const assignments = value
-      .filter((v: any) => v.assignment.type === 'Task')
-      .map((v: any) => v.assignment.value);
-
-    activeParas.push(...assignments);
-  }
-
-  return activeParas;
-};
-
-const fetchLeaseHoldingParas = async (
-  client: PolkadotClient,
-  metadata: CoretimeMetadata
-): Promise<number[]> => {
-  const leases = await client.getTypedApi(metadata).query.Broker.Leases.getValue();
-  const paraIds = (leases as Array<{ until: number; task: number }>).map((lease) => lease.task);
-  return paraIds;
-};
-
-const fetchWorkplanParas = async (
-  client: PolkadotClient,
-  metadata: CoretimeMetadata
-): Promise<number[]> => {
-  const workplan = await client.getTypedApi(metadata).query.Broker.Workplan.getEntries();
-  const workplanParas: number[] = [];
-
-  for (const { value } of workplan) {
-    const assignments = value
-      .filter((v: any) => v.assignment.type === 'Task')
-      .map((v: any) => v.assignment.value);
-
-    workplanParas.push(...assignments);
-  }
-
-  return workplanParas;
-};
-
-const fetchSystemParas = async (
-  client: PolkadotClient,
-  metadata: CoretimeMetadata
-): Promise<number[]> => {
-  const reservations = await client.getTypedApi(metadata).query.Broker.Reservations.getValue();
-
-  const systemParas: number[] = [];
-  for (const value of reservations) {
-    const assignments = value
-      .filter((v: any) => v.assignment.type === 'Task')
-      .map((v: any) => v.assignment.value);
-
-    systemParas.push(...assignments);
-  }
-
-  return systemParas;
-};
-
 type GetParachainsPayload = {
   connections: Record<ChainId, Connection>;
   network: Network;
@@ -87,33 +25,30 @@ const getParachainsFx = createEffect(
     const networkChainIds = getNetworkChainIds(payload.network);
 
     if (!networkChainIds) return [];
-    const connection = payload.connections[networkChainIds.coretimeChain];
+    const connection = payload.connections[networkChainIds.relayChain];
     if (!connection || !connection.client || connection.status !== 'connected') return [];
 
     const client = connection.client;
     const metadata = getNetworkMetadata(payload.network);
     if (!metadata) return [];
+    const typedApi = client.getTypedApi(metadata.relayChain);
 
-    const activeParas = await fetchActiveParas(client, metadata.coretimeChain);
-    const leaseHoldingParas = await fetchLeaseHoldingParas(client, metadata.coretimeChain);
-    const workplanParas = await fetchWorkplanParas(client, metadata.coretimeChain);
-    const systemParas = await fetchSystemParas(client, metadata.coretimeChain);
+    const parachains: Parachain[] = (await typedApi.query.Registrar.Paras.getEntries())
+      .sort((_e1, _e2) => _e1.keyArgs[0] - _e2.keyArgs[0])
+      .map((entry) => {
+        let state = ParaState.ACTIVE_PARA;
 
-    const parachains: Parachain[] = Array.from(
-      new Set([...activeParas, ...leaseHoldingParas, ...workplanParas, ...systemParas])
-    )
-      .sort((_p1, _p2) => _p1 - _p2)
-      .map((p) => ({
-        id: p,
-        network: payload.network,
-        state: systemParas.find((_p) => _p === p)
-          ? ParaState.SYSTEM
-          : leaseHoldingParas.find((_p) => _p === p)
-            ? ParaState.LEASE_HOLDING
-            : activeParas.find((_p) => _p === p)
-              ? ParaState.ACTIVE_PARA
-              : ParaState.IN_WORKPLAN,
-      }));
+        if (entry.keyArgs[0] < 2000) state = ParaState.SYSTEM;
+        console.log(entry.value.locked)
+        if (entry.value.locked === undefined) state = ParaState.RESERVED;
+        if (entry.value.locked === false) state = ParaState.GENESIS;
+
+        return {
+          id: entry.keyArgs[0],
+          state,
+          network: payload.network,
+        };
+      });
 
     return parachains;
   }

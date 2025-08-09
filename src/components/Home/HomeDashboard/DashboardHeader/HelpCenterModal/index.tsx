@@ -212,7 +212,7 @@ Here's what you can do:
 If no core is available for renewal, the Renew button will not appear.
 
 💡 Tip:  Submitting your renewal during the interlude phase ensures that a core will be allocated to the project. Missing the renewal can result in the project failing to secure a core, leading to stalling block production.`,
-      images: ['/help/RenewalInfoCard.png', '/help/RenewalInfoCard2.png'],
+      images: ['/help/ParachainInfoCard.png', '/help/RenewalInfoCard2.png'],
     },
     {
       text: `**Renewal vs New Core Price Comparison**
