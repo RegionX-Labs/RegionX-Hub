@@ -81,9 +81,23 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   }, [name]);
 
   const handleSave = () => {
+    const next = editedName.trim();
     setIsEditing(false);
-    if (onNameChange && editedName !== name) {
-      onNameChange(editedName);
+    if (!next || next === name) {
+      setEditedName(name);
+      return;
+    }
+    onNameChange?.(next);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSave();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsEditing(false);
+      setEditedName(name);
     }
   };
 
@@ -122,6 +136,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 onBlur={handleSave}
+                onKeyDown={handleKeyDown}
                 autoFocus
               />
             ) : (
