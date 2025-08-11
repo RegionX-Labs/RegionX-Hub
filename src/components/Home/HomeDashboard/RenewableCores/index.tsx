@@ -106,7 +106,6 @@ export default function RenewableCores({ view }: Props) {
 
   const allCoresSold = (saleInfo?.coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0);
 
-  // Banner message logic
   const bannerMsg = useMemo(() => {
     if (allCoresSold) return 'All cores are sold — renewals are unavailable this cycle.';
     if (interludeEnded)
