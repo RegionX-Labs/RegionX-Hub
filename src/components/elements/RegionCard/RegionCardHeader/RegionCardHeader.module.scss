@@ -59,6 +59,11 @@
 
   h5 {
     margin: 0;
+    @include Inter;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    color: $white;
   }
 
   .editIcon {
@@ -72,21 +77,24 @@
   }
 
   .editInput {
-    font-size: 1rem;
-    padding: 0.35rem 0.6rem;
-    border: 0.5px solid $gray3;
-    background-color: $darkBackground4;
-    max-width: 120px;
-    border-radius: 6px;
+    @include Inter;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    color: $white;
+
+    padding: 0 4px;
+    height: 24px;
+    border: none;
+    border-bottom: 1px solid transparent;
+    background: transparent;
     outline: none;
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
-    color: var(--text-primary);
+    max-width: 140px;
+
+    transition: border-color 0.2s ease;
 
     &:focus {
-      border-color: $greenPrimary;
-      box-shadow: 0 0 0 1px $greenPrimary;
+      border-bottom: 1px solid $greenPrimary;
     }
   }
 }
