@@ -239,7 +239,9 @@ export default function RenewableCores({ view }: Props) {
         </div>
 
         <div className={styles.interludeSection}>
-          <p className={styles.interludeHeading}>Interlude ends</p>
+          <p className={styles.interludeHeading}>
+            {interludeEnded ? 'Interlude ended' : 'Interlude ends'}
+          </p>
           <p className={styles.interludeValue}>
             {interludeEndDate ? formatDate(interludeEndDate) : '-'}
           </p>
