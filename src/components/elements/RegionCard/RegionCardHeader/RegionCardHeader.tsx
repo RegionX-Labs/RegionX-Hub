@@ -26,6 +26,7 @@ interface RegionCardHeaderProps {
   onNameChange?: (newName: string) => void;
   regionStartTimeslice: number;
   regionEndTimeslice: number;
+  task: string;
   owner?: string;
   paid?: string | bigint;
 }
@@ -42,6 +43,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   regionEndTimeslice,
   owner,
   paid,
+  task,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
   const ss58Address = encodeAddress(publicKey, 42);
@@ -203,6 +205,9 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         <div className={styles.labelWithIcon}>
           <img src='/paid.png' alt='paid' />
           <span>Paid: {paidFormatted}</span>
+        </div>
+        <div className={styles.labelWithIcon}>
+          <span>Assigned: {task}</span>
         </div>
 
         <div className={styles.rightSection}>
