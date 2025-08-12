@@ -14,7 +14,7 @@ import DashboardHeader from './DashboardHeader';
 import RenewalsOverview from './RenewalsOverview';
 import CoreRemainingCard from './CoreRemainingCard';
 import RevenueGeneratedCard from './RevenueGeneratedCard';
-import RenewalInfoCard from './RenewalInfoCard';
+import ParachainInfoCard from './ParachainInfoCard';
 import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
 import OwnedRegionsTable from './OwnedRegionsTable';
@@ -136,7 +136,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
 
         {selected === 'Managing Existing Project' && (
           <>
-            <RenewalInfoCard
+            <ParachainInfoCard
               initialParaId={selectedParaId ?? undefined}
               onSelectParaId={(id) => {
                 setSelectedParaId(id);

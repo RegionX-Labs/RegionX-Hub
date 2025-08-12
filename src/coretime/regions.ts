@@ -19,6 +19,7 @@ export type Region = {
   end: number;
   owner: string;
   paid: string;
+  task: number;
 };
 
 const fetchRegions = async (network: Network, afterTimeslice: number): Promise<ApiResponse> => {
@@ -32,6 +33,7 @@ const fetchRegions = async (network: Network, afterTimeslice: number): Promise<A
         end
         owner
         paid
+        task
       }
     }
   }`;

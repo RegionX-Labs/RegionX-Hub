@@ -61,6 +61,7 @@ import {
   nodesXodePNG,
   nodesYerbanetworkPNG,
   nodesZeroSVG,
+  nodesRegionxSVG,
 } from '../../public/parachain-logos';
 
 import { ChainDetails } from './types';
@@ -97,7 +98,7 @@ const prodParasKusama: ChainDetails[] = [
     info: 'altair',
     paraId: 2088,
     providers: {
-      Centrifuge: 'wss://fullnode.altair.centrifuge.io',
+      // Centrifuge: 'wss://fullnode.altair.centrifuge.io', // https://github.com/polkadot-js/apps/issues/11566
       OnFinality: 'wss://altair.api.onfinality.io/public-ws',
     },
     text: 'Altair',
@@ -111,7 +112,6 @@ const prodParasKusama: ChainDetails[] = [
     info: 'amplitude',
     paraId: 2124,
     providers: {
-      Dwellir: 'wss://amplitude-rpc.dwellir.com',
       PendulumChain: 'wss://rpc-amplitude.pendulumchain.tech',
     },
     text: 'Amplitude',
@@ -125,9 +125,9 @@ const prodParasKusama: ChainDetails[] = [
     info: 'bajun',
     paraId: 2119,
     providers: {
-      AjunaNetwork: 'wss://rpc-parachain.bajun.network',
-      OnFinality: 'wss://bajun.api.onfinality.io/public-ws',
-      RadiumBlock: 'wss://bajun.public.curie.radiumblock.co/ws',
+      // AjunaNetwork: 'wss://rpc-para.bajun.network' // https://github.com/polkadot-js/apps/issues/11544
+      // OnFinality: 'wss://bajun.api.onfinality.io/public-ws'
+      // RadiumBlock: 'wss://bajun.public.curie.radiumblock.co/ws' https://github.com/polkadot-js/apps/issues/11157
     },
     text: 'Bajun Network',
     ui: {
@@ -141,7 +141,7 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2090,
     providers: {
       Basilisk: 'wss://rpc.basilisk.cloud',
-      Dwellir: 'wss://basilisk-rpc.dwellir.com',
+      Dwellir: 'wss://basilisk-rpc.n.dwellir.com',
       // OnFinality: 'wss://basilisk.api.onfinality.io/public-ws' // https://github.com/polkadot-js/apps/issues/9414
     },
     text: 'Basilisk',
@@ -151,14 +151,13 @@ const prodParasKusama: ChainDetails[] = [
     },
   },
   {
-    homepage: 'https://ksm.vtoken.io/?ref=polkadotjs',
+    homepage: 'https://bifrost.io/',
     info: 'bifrost',
     paraId: 2001,
     providers: {
-      Dwellir: 'wss://bifrost-rpc.dwellir.com',
       Liebi: 'wss://bifrost-rpc.liebi.com/ws',
       LiebiUS: 'wss://us.bifrost-rpc.liebi.com/ws',
-      OnFinality: 'wss://bifrost-parachain.api.onfinality.io/public-ws',
+      // OnFinality: 'wss://bifrost-parachain.api.onfinality.io/public-ws'
     },
     text: 'Bifrost',
     ui: {
@@ -171,7 +170,7 @@ const prodParasKusama: ChainDetails[] = [
     info: 'calamari',
     paraId: 2084,
     providers: {
-      'Manta Network': 'wss://calamari.systems',
+      // 'Manta Network': 'wss://calamari.systems' // https://github.com/polkadot-js/apps/issues/11439
     },
     text: 'Calamari',
     ui: {
@@ -185,8 +184,8 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2105,
     providers: {
       Darwinia: 'wss://crab-rpc.darwinia.network/',
-      Dcdao: 'wss://crab-rpc.dcdao.box',
-      Dwellir: 'wss://darwiniacrab-rpc.dwellir.com',
+      // Dcdao: 'wss://crab-rpc.dcdao.box', // https://github.com/polkadot-js/apps/issues/11232
+      Dwellir: 'wss://darwiniacrab-rpc.n.dwellir.com',
     },
     text: 'Crab',
     ui: {
@@ -200,6 +199,9 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2012,
     providers: {
       Crust: 'wss://rpc-shadow.crust.network/',
+      'Crust APP': 'wss://rpc-shadow.crustnetwork.app',
+      'Crust CC': 'wss://rpc-shadow.crustnetwork.cc',
+      'Crust XYZ': 'wss://rpc-shadow.crustnetwork.xyz',
     },
     text: 'Crust Shadow',
     ui: {
@@ -237,7 +239,7 @@ const prodParasKusama: ChainDetails[] = [
     info: 'ipci',
     paraId: 2222,
     providers: {
-      Airalab: 'wss://kusama.rpc.ipci.io',
+      Airalab: 'wss://ipci.rpc.robonomics.network',
     },
     text: 'DAO IPCI',
     ui: {
@@ -320,7 +322,7 @@ const prodParasKusama: ChainDetails[] = [
     info: 'imbue',
     paraId: 2121,
     providers: {
-      'Imbue Network 0': 'wss://kusama.imbuenetwork.com',
+      // 'Imbue Network 0': 'wss://kusama.imbuenetwork.com' // https://github.com/polkadot-js/apps/issues/11364
       // 'Imbue Network 1': 'wss://collator.production.imbue.network' // https://github.com/polkadot-js/apps/issues/9848
     },
     text: 'Imbue Network',
@@ -349,7 +351,6 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2125,
     providers: {
       // 'InvArch Team': 'wss://tinker.invarch.network', // https://github.com/polkadot-js/apps/issues/8623
-      Dwellir: 'wss://tinkernet-rpc.dwellir.com',
       // OnFinality: 'wss://invarch-tinkernet.api.onfinality.io/public-ws', // https://github.com/polkadot-js/apps/issues/9955
       'light client': 'light://substrate-connect/kusama/tinkernet',
     },
@@ -357,19 +358,6 @@ const prodParasKusama: ChainDetails[] = [
     ui: {
       color: '#161616',
       logo: chainsTinkerPNG,
-    },
-  },
-  {
-    homepage: 'https://laosnetwork.io/',
-    info: 'k-laos',
-    paraId: 3336,
-    providers: {
-      Freeverse: 'wss://rpc.klaos.laosfoundation.io',
-    },
-    text: 'K-Laos',
-    ui: {
-      color: 'linear-gradient(158deg, rgba(226,157,0,1) 0%, rgba(234,55,203,1) 100%)',
-      logo: chainsLaosPNG,
     },
   },
   {
@@ -394,9 +382,9 @@ const prodParasKusama: ChainDetails[] = [
       'Acala Foundation 1': 'wss://karura-rpc-1.aca-api.network',
       'Acala Foundation 2': 'wss://karura-rpc-2.aca-api.network/ws',
       'Acala Foundation 3': 'wss://karura-rpc-3.aca-api.network/ws',
-      Dwellir: 'wss://karura-rpc.dwellir.com',
+      Dwellir: 'wss://karura-rpc.n.dwellir.com',
       // LuckyFriday: 'wss://rpc-karura.luckyfriday.io',  // https://github.com/polkadot-js/apps/issues/10663
-      OnFinality: 'wss://karura.api.onfinality.io/public-ws',
+      // OnFinality: 'wss://karura.api.onfinality.io/public-ws'
       // 'Polkawallet 0': 'wss://karura.polkawallet.io' // https://github.com/polkadot-js/apps/issues/9383
     },
     text: 'Karura',
@@ -410,12 +398,11 @@ const prodParasKusama: ChainDetails[] = [
     info: 'khala',
     paraId: 2004,
     providers: {
-      Dwellir: 'wss://khala-rpc.dwellir.com',
-      Helikon: 'wss://rpc.helikon.io/khala',
-      OnFinality: 'wss://khala.api.onfinality.io/public-ws',
-      Phala: 'wss://khala-api.phala.network/ws',
-      RadiumBlock: 'wss://khala.public.curie.radiumblock.co/ws',
-      Rockx: 'wss://rockx-khala.w3node.com/polka-public-khala/ws',
+      // Helikon: 'wss://rpc.helikon.io/khala'
+      // OnFinality: 'wss://khala.api.onfinality.io/public-ws',
+      // Phala: 'wss://khala-api.phala.network/ws', // https://github.com/polkadot-js/apps/issues/11178
+      // RadiumBlock: 'wss://khala.public.curie.radiumblock.co/ws'// https://github.com/polkadot-js/apps/issues/11274
+      // Rockx: 'wss://rockx-khala.w3node.com/polka-public-khala/ws' // https://github.com/polkadot-js/apps/issues/10728
     },
     text: 'Khala Network',
     ui: {
@@ -455,7 +442,6 @@ const prodParasKusama: ChainDetails[] = [
     info: 'kintsugi',
     paraId: 2092,
     providers: {
-      Dwellir: 'wss://kintsugi-rpc.dwellir.com',
       'Kintsugi Labs': 'wss://api-kusama.interlay.io/parachain',
       // LuckyFriday: 'wss://rpc-kintsugi.luckyfriday.io/', // https://github.com/polkadot-js/apps/issues/9947
       OnFinality: 'wss://kintsugi.api.onfinality.io/public-ws',
@@ -483,11 +469,13 @@ const prodParasKusama: ChainDetails[] = [
   {
     homepage: 'https://virto.network/',
     info: 'kreivo',
+    isPeopleForIdentity: true,
     paraId: 2281,
     providers: {
       Kippu: 'wss://kreivo.kippu.rocks/',
-      Virto: 'wss://kreivo.io/',
+      // Virto: 'wss://kreivo.io/' // https://github.com/polkadot-js/apps/issues/11544
     },
+    relayName: 'kusama',
     text: 'Kreivo - By Virto',
     ui: {
       color: '#294940',
@@ -500,10 +488,9 @@ const prodParasKusama: ChainDetails[] = [
     info: 'krest',
     paraId: 2241,
     providers: {
-      Dwellir: 'wss://krest-rpc.dwellir.com',
       Krest: 'wss://wss-krest.peaq.network/',
       OnFinality: 'wss://krest.api.onfinality.io/public-ws',
-      UnitedBloc: 'wss://krest.unitedbloc.com/',
+      // UnitedBloc: 'wss://krest.unitedbloc.com/' https://github.com/polkadot-js/apps/issues/10997
     },
     text: 'Krest',
     ui: {
@@ -522,19 +509,6 @@ const prodParasKusama: ChainDetails[] = [
     ui: {
       color: '#FFAD0A',
       logo: chainsListenPNG,
-    },
-  },
-  {
-    homepage: 'https://www.litentry.com/',
-    info: 'litmus',
-    paraId: 2106,
-    providers: {
-      Litentry: 'wss://rpc.litmus-parachain.litentry.io',
-    },
-    text: 'Litmus',
-    ui: {
-      color: '#3913D3',
-      logo: nodesLitmusPNG,
     },
   },
   {
@@ -582,8 +556,8 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2023,
     providers: {
       Allnodes: 'wss://moonriver-rpc.publicnode.com',
-      Blast: 'wss://moonriver.public.blastapi.io',
-      Dwellir: 'wss://moonriver-rpc.dwellir.com',
+      // Blast: 'wss://moonriver.public.blastapi.io', // https://github.com/polkadot-js/apps/issues/11608
+      Dwellir: 'wss://moonriver-rpc.n.dwellir.com',
       'Moonbeam Foundation': 'wss://wss.api.moonriver.moonbeam.network',
       OnFinality: 'wss://moonriver.api.onfinality.io/public-ws',
       RadiumBlock: 'wss://moonriver.public.curie.radiumblock.co/ws',
@@ -601,7 +575,7 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2085,
     providers: {
       // OnFinality: 'wss://parallel-heiko.api.onfinality.io/public-ws', // https://github.com/polkadot-js/apps/issues/9964
-      Parallel: 'wss://heiko-rpc.parallel.fi',
+      // Parallel: 'wss://heiko-rpc.parallel.fi' // https://github.com/polkadot-js/apps/issues/11337
     },
     text: 'Parallel Heiko',
     ui: {
@@ -627,7 +601,6 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2087,
     providers: {
       Composable: 'wss://rpc.composablenodes.tech',
-      Dwellir: 'wss://picasso-rpc.dwellir.com',
       // LuckyFriday: 'wss://rpc-picasso.luckyfriday.io' // https://github.com/polkadot-js/apps/issues/9947
     },
     text: 'Picasso',
@@ -654,7 +627,7 @@ const prodParasKusama: ChainDetails[] = [
     info: 'pioneer',
     paraId: 2096,
     providers: {
-      MetaverseNetwork: 'wss://pioneer-rpc-3.bit.country/wss',
+      // MetaverseNetwork: 'wss://pioneer-rpc-3.bit.country/wss' // https://github.com/polkadot-js/apps/issues/11531
       // OnFinality: 'wss://pioneer.api.onfinality.io/public-ws' // https://github.com/polkadot-js/apps/issues/9955
     },
     text: 'Pioneer',
@@ -693,10 +666,10 @@ const prodParasKusama: ChainDetails[] = [
     info: 'quartz',
     paraId: 2095,
     providers: {
-      Dwellir: 'wss://quartz-rpc.dwellir.com',
+      // Dwellir: 'wss://quartz-rpc.n.dwellir.com', // https://github.com/polkadot-js/apps/issues/11513
       // OnFinality: 'wss://quartz.api.onfinality.io/public-ws', // https://github.com/polkadot-js/apps/issues/9972
       'Geo Load Balancer': 'wss://ws-quartz.unique.network',
-      'Unique America': 'wss://us-ws-quartz.unique.network',
+      // 'Unique America': 'wss://us-ws-quartz.unique.network', // https://github.com/polkadot-js/apps/issues/11477
       'Unique Asia': 'wss://asia-ws-quartz.unique.network',
       'Unique Europe': 'wss://eu-ws-quartz.unique.network',
     },
@@ -704,6 +677,19 @@ const prodParasKusama: ChainDetails[] = [
     ui: {
       color: '#FF4D6A',
       logo: nodesQuartzPNG,
+    },
+  },
+  {
+    homepage: 'https://www.regionx.tech/',
+    info: 'regionx',
+    paraId: 3422,
+    providers: {
+      RegionX: 'wss://regionx-kusama-rpc-lb.zeeve.net/ld940yl9c6/rpc',
+    },
+    text: 'RegionX',
+    ui: {
+      color: '#0CC184',
+      logo: nodesRegionxSVG,
     },
   },
   {
@@ -725,14 +711,13 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2048,
     providers: {
       Airalab: 'wss://kusama.rpc.robonomics.network/',
-      Dwellir: 'wss://robonomics-rpc.dwellir.com',
       // Leemo: 'wss://robonomics.leemo.me', // https://github.com/polkadot-js/apps/issues/9817
       // OnFinality: 'wss://robonomics.api.onfinality.io/public-ws', // https://github.com/polkadot-js/apps/issues/9824
-      Samsara: 'wss://robonomics.0xsamsara.com',
+      // Samsara: 'wss://robonomics.0xsamsara.com' https://github.com/polkadot-js/apps/issues/11026
     },
     text: 'Robonomics',
     ui: {
-      color: '#2949d3',
+      color: '#000000',
       logo: nodesRobonomicsSVG,
     },
   },
@@ -745,7 +730,7 @@ const prodParasKusama: ChainDetails[] = [
       Airalab: 'wss://kusama.rpc.robonomics.network/',
       // Leemo: 'wss://robonomics.leemo.me', // https://github.com/polkadot-js/apps/issues/9817
       // OnFinality: 'wss://robonomics.api.onfinality.io/public-ws', // https://github.com/polkadot-js/apps/issues/9824
-      Samsara: 'wss://robonomics.0xsamsara.com',
+      // Samsara: 'wss://robonomics.0xsamsara.com' https://github.com/polkadot-js/apps/issues/11026
     },
     text: 'Robonomics 2',
     ui: {
@@ -773,8 +758,8 @@ const prodParasKusama: ChainDetails[] = [
     paraId: 2007,
     providers: {
       Astar: 'wss://rpc.shiden.astar.network',
-      Blast: 'wss://shiden.public.blastapi.io',
-      Dwellir: 'wss://shiden-rpc.dwellir.com',
+      // Blast: 'wss://shiden.public.blastapi.io', // https://github.com/polkadot-js/apps/issues/11610
+      Dwellir: 'wss://shiden-rpc.n.dwellir.com',
       OnFinality: 'wss://shiden.api.onfinality.io/public-ws',
       RadiumBlock: 'wss://shiden.public.curie.radiumblock.co/ws',
       'light client': 'light://substrate-connect/kusama/shiden',
@@ -893,8 +878,7 @@ const prodParasKusama: ChainDetails[] = [
     info: 'turing',
     paraId: 2114,
     providers: {
-      Dwellir: 'wss://turing-rpc.dwellir.com',
-      OAK: 'wss://rpc.turing.oak.tech',
+      // OAK: 'wss://rpc.turing.oak.tech' // https://github.com/polkadot-js/apps/issues/11098
     },
     text: 'Turing Network',
     ui: {
@@ -945,7 +929,8 @@ const prodParasKusama: ChainDetails[] = [
     info: 'zero',
     paraId: 2236,
     providers: {
-      'Zero Network': 'wss://rpc-1.kusama.node.zero.io',
+      // 'Zero Network': 'wss://rpc-1.kusama.node.zero.io' // https://github.com/polkadot-js/apps/issues/10803
+      // GameDAO: 'wss://rpc-1.gamedao.net' https://github.com/polkadot-js/apps/issues/11026
     },
     text: 'ZERO Canary',
     ui: {

@@ -1,9 +1,11 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import styles from './RenewableCores.module.scss';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
-import { useUnit } from 'effector-react';
-import { useEffect, useState } from 'react';
 import {
   $potentialRenewals,
   potentialRenewalsRequested,
@@ -14,15 +16,22 @@ import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { chainData } from '@/chaindata';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
-import { $latestSaleInfo } from '@/coretime/saleInfo';
+import { $latestSaleInfo, $phaseEndpoints } from '@/coretime/saleInfo';
 import { $selectedAccount } from '@/wallet';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
 import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 
-type Props = {
-  view: string;
-};
+type Props = { view: string };
+
+const formatDate = (d: Date) =>
+  d.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
 export default function RenewableCores({ view }: Props) {
   const accountData = useUnit($accountData);
@@ -30,6 +39,7 @@ export default function RenewableCores({ view }: Props) {
   const connections = useUnit($connections);
   const selectedAccount = useUnit($selectedAccount);
   const saleInfo = useUnit($latestSaleInfo);
+  const phaseEndpoints = useUnit($phaseEndpoints);
   const potentialRenewals = useUnit($potentialRenewals);
 
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
@@ -65,37 +75,54 @@ export default function RenewableCores({ view }: Props) {
       }))
       .sort((a, b) => a.key.localeCompare(b.key));
     setOptions(_options);
-
     if (_options[0]) setSelected(_options[0].value);
-  }, [saleInfo, potentialRenewals]);
+  }, [saleInfo, potentialRenewals, network]);
 
   useEffect(() => {
     (async () => {
-      if (!selected) return setSelectedDeadline('-');
+      if (!selected) {
+        setSelectedDeadline('-');
+        return;
+      }
       const deadline = await timesliceToTimestamp(selected[0].when, network, connections);
-      if (!deadline) return setSelectedDeadline('-');
-      setSelectedDeadline(formatDate(deadline));
+      if (!deadline) {
+        setSelectedDeadline('-');
+        return;
+      }
+      const date = typeof deadline === 'bigint' ? new Date(Number(deadline)) : (deadline as Date);
+      setSelectedDeadline(formatDate(date));
     })();
-  }, [selected]);
+  }, [selected, network, connections]);
+
+  const interludeEndDate = useMemo(() => {
+    if (!phaseEndpoints?.interlude?.end) return null;
+    return new Date(phaseEndpoints.interlude.end);
+  }, [phaseEndpoints]);
+
+  const interludeEnded = useMemo(() => {
+    if (!phaseEndpoints?.interlude?.end) return false;
+    return Date.now() >= phaseEndpoints.interlude.end;
+  }, [phaseEndpoints]);
+
+  const allCoresSold = (saleInfo?.coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0);
+
+  const bannerMsg = useMemo(() => {
+    if (allCoresSold) return 'All cores are sold — renewals are unavailable this cycle.';
+    if (interludeEnded)
+      return 'Sale has started — you will not be able to renew if all cores are sold';
+    return null;
+  }, [allCoresSold, interludeEnded]);
 
   const openModal = () => {
     if (!selectedAccount) {
       toast.error('Account not selected');
       return;
     }
+    if (allCoresSold) {
+      toast.error('All cores are sold — renewals are unavailable this cycle.');
+      return;
+    }
     setIsModalOpen(true);
-  };
-
-  const formatDate = (timestamp: Date | bigint | null): string => {
-    if (!timestamp) return '-';
-    const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
-    return date.toLocaleString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   const onModalConfirm = async () => {
@@ -112,8 +139,8 @@ export default function RenewableCores({ view }: Props) {
       toast.error('Account not selected');
       return;
     }
-    if (saleInfo?.coresSold == saleInfo?.coresOffered) {
-      toast.error('No more cores remaining');
+    if (allCoresSold) {
+      toast.error('All cores are sold — renewals are unavailable this cycle.');
       return;
     }
 
@@ -158,21 +185,20 @@ export default function RenewableCores({ view }: Props) {
         );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
-            const err: any = ev.dispatchError;
             toast.error('Transaction failed', { id: toastId });
-            console.log(err);
           } else {
-            toast.success('Transaction succeded!', { id: toastId });
+            toast.success('Transaction succeeded!', { id: toastId });
             getAccountData({ account: selectedAccount.address, connections, network });
           }
         }
       },
-      (e) => {
+      () => {
         toast.error('Transaction cancelled', { id: toastId });
-        console.log(e);
       }
     );
   };
+
+  const disableRenew = !selectedAccount || !selected || allCoresSold;
 
   return (
     <div
@@ -180,35 +206,66 @@ export default function RenewableCores({ view }: Props) {
         view === 'Deploying a new project' ? styles.compact : ''
       }`}
     >
-      <p className={styles.title}>Renewable Cores</p>
+      <div className={styles.content}>
+        <p className={styles.title}>Renewable Cores</p>
 
-      <div className={styles.selectBox}>
-        {options.length > 0 ? (
-          <Select
-            options={options}
-            selectedValue={selected}
-            onChange={setSelected}
-            variant='secondary'
-          />
-        ) : (
-          <p className={styles.noDataMessage}>
-            All cores have been renewed. Nothing left to renew!
+        <div className={styles.selectBox}>
+          {options.length > 0 ? (
+            <Select
+              options={options}
+              selectedValue={selected}
+              onChange={setSelected}
+              variant='secondary'
+            />
+          ) : (
+            <p className={styles.noDataMessage}>
+              All cores have been renewed. Nothing left to renew!
+            </p>
+          )}
+        </div>
+
+        <div className={styles.details}>
+          <div className={styles.detailBlock}>
+            <p className={styles.label}>Renewal Price</p>
+            <p className={styles.value}>
+              {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
+            </p>
+          </div>
+
+          <div className={styles.detailBlock}>
+            <p className={styles.label}>Renewal deadline</p>
+            <p className={styles.value}>{selectedDeadline}</p>
+          </div>
+        </div>
+
+        <div className={styles.interludeSection}>
+          <p className={styles.interludeHeading}>
+            {interludeEnded ? 'Interlude ended' : 'Interlude ends'}
           </p>
+          <p className={styles.interludeValue}>
+            {interludeEndDate ? formatDate(interludeEndDate) : '-'}
+          </p>
+        </div>
+
+        {bannerMsg && (
+          <div
+            className={`${styles.notice} ${
+              allCoresSold ? styles.noticeError : styles.noticeWarning
+            }`}
+          >
+            {bannerMsg}
+          </div>
         )}
       </div>
 
-      <div className={styles.details}>
-        <div className={styles.detailBlock}>
-          <p className={styles.label}>Renewal Price</p>
-          <p className={styles.value}>
-            {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
-          </p>
-        </div>
-        <div className={styles.detailBlock}>
-          <p className={styles.label}>Renewal deadline</p>
-          <p className={styles.value}>{selectedDeadline}</p>
-        </div>
-      </div>
+      <button
+        className={styles.renewButton}
+        onClick={openModal}
+        disabled={disableRenew}
+        title={disableRenew && allCoresSold ? 'All cores are sold' : undefined}
+      >
+        Renew Now
+      </button>
 
       {selectedAccount && accountData[selectedAccount.address] !== null && (
         <TransactionModal
@@ -218,10 +275,6 @@ export default function RenewableCores({ view }: Props) {
           onConfirm={onModalConfirm}
         />
       )}
-
-      <button className={styles.renewButton} onClick={openModal}>
-        Renew Now
-      </button>
       <Toaster />
     </div>
   );

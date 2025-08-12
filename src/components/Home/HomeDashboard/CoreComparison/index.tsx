@@ -69,7 +69,10 @@ export default function CoreComparison({ view }: Props) {
         {priceDiff! >= 0 ? '+' : '−'}
         {priceDiffFormatted}
       </h2>
-
+      <p className={styles.note}>
+        Even when purchasing a cheaper option, to guarantee 100% coretime procurement, you should
+        renew.
+      </p>
       <div className={styles.bottomSection}>
         <p className={styles.subtext}>
           It is <span className={styles.priceDiff}>{Math.abs(Number(diffPercent))}%</span>{' '}

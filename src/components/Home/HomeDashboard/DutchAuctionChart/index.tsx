@@ -103,19 +103,26 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
         trigger: 'axis',
         axisPointer: {
           type: 'cross',
-          snap: true,
+          label: {
+            formatter: function (params: any) {
+              if (params.axisDimension === 'x') {
+                return new Date(params.value).toLocaleDateString();
+              } else if (params.axisDimension === 'y') {
+                return `${params.value.toFixed(2)} ${getTokenSymbol(network)}`;
+              }
+              return '';
+            },
+          },
         },
-
-        formatter: (params: any[]) => {
-          const realPoint = params.find((p) =>
-            ['Interlude', 'Leadin', 'Fixed'].includes(p.seriesName)
-          );
-          if (!realPoint) return '';
-          const date = new Date(realPoint.data[0]).toLocaleDateString();
-          const price = realPoint.data[1];
+        formatter: function (params: any[]) {
+          const item = params.find((p) => ['Interlude', 'Leadin', 'Fixed'].includes(p.seriesName));
+          if (!item) return '';
+          const date = new Date(item.data[0]).toLocaleDateString();
+          const price = item.data[1];
           return `${date}<br/>Price: ${price.toLocaleString()} ${getTokenSymbol(network)}`;
         },
       },
+
       xAxis: {
         type: 'time',
         axisLine: { lineStyle: { color: theme === 'dark' ? '#888' : '#444' } },

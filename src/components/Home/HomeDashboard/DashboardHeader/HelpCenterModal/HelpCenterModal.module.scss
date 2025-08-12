@@ -46,7 +46,7 @@
 
   .closeIcon {
     cursor: pointer;
-    color: white;
+    color: var(--text-primary);
     transition: opacity 0.2s ease;
 
     &:hover {
@@ -137,7 +137,7 @@
     border: none;
     padding: 8px 16px;
     border-radius: 8px;
-    color: white;
+    color: var(--text-primary);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;

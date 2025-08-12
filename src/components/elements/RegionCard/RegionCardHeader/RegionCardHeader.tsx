@@ -26,6 +26,7 @@ interface RegionCardHeaderProps {
   onNameChange?: (newName: string) => void;
   regionStartTimeslice: number;
   regionEndTimeslice: number;
+  task: string;
   owner?: string;
   paid?: string | bigint;
 }
@@ -42,6 +43,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   regionEndTimeslice,
   owner,
   paid,
+  task,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
   const ss58Address = encodeAddress(publicKey, 42);
@@ -81,9 +83,23 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   }, [name]);
 
   const handleSave = () => {
+    const next = editedName.trim();
     setIsEditing(false);
-    if (onNameChange && editedName !== name) {
-      onNameChange(editedName);
+    if (!next || next === name) {
+      setEditedName(name);
+      return;
+    }
+    onNameChange?.(next);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSave();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsEditing(false);
+      setEditedName(name);
     }
   };
 
@@ -122,6 +138,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 onBlur={handleSave}
+                onKeyDown={handleKeyDown}
                 autoFocus
               />
             ) : (
@@ -188,6 +205,9 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
         <div className={styles.labelWithIcon}>
           <img src='/paid.png' alt='paid' />
           <span>Paid: {paidFormatted}</span>
+        </div>
+        <div className={styles.labelWithIcon}>
+          <span>Assigned: {task}</span>
         </div>
 
         <div className={styles.rightSection}>

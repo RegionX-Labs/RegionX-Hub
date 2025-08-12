@@ -10,6 +10,7 @@
   width: 30%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 20px;
   border: 1px solid var(--card-border);
 
@@ -40,6 +41,7 @@
   @media (max-width: 450px) {
     max-width: 80%;
   }
+
   &.compact {
     width: 33%;
 
@@ -116,6 +118,13 @@
   font-weight: 500;
 }
 
+.content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .renewButton {
   background-color: $greenPrimary;
   color: var(--black-text);
@@ -125,14 +134,15 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-top: 65px;
-  margin-bottom: -7px;
+  margin-top: auto;
+  margin-bottom: 10px;
   @include Inter;
 
   &:hover {
     background-color: var(--accent-green-hover);
   }
 }
+
 .noDataMessage {
   background-color: $darkBackground1;
   color: $gray6;
@@ -146,4 +156,32 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.interludeSection {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.interludeHeading {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.interludeValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: $darkBackground1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  letter-spacing: 0.2px;
+  display: inline-block;
 }

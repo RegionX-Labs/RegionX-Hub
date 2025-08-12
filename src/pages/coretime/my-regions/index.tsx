@@ -178,7 +178,7 @@ const RegionsDisplay = ({
             owner: encodeAddress(region.owner, 42),
             paid: region.paid,
           }}
-          task={`Unassigned`}
+          task={region.task === 0 ? 'Unassigned' : region.task.toString()}
         />
       </div>
     );

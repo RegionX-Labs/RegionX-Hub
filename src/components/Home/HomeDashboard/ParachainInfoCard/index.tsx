@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from './RenewalInfoCard.module.scss';
+import styles from './ParachainInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { $parachains, parachainsRequested } from '@/parachains';
@@ -31,7 +31,7 @@ type Props = {
   initialParaId?: string;
 };
 
-export default function RenewalInfoCard({ onSelectParaId, initialParaId }: Props) {
+export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Props) {
   const [selected, setSelected] = useState<any | null>(null);
   const [hasSetInitial, setHasSetInitial] = useState(false);
   const [renewalEntry, setRenewalEntry] = useState<[RenewalKey, RenewalRecord] | null>(null);
