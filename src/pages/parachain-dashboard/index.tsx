@@ -87,7 +87,7 @@ const ParachainDashboard = () => {
 
     return match
       ? { label: 'Needs Renewal', color: '#dc2626' }
-      : { label: 'Renewed', color: '#0cc184' };
+      : { label: 'Renewed', color: '#15803d' };
   };
 
   const tableData: Record<string, TableData>[] = filteredRows.map((item) => {
@@ -177,7 +177,11 @@ const ParachainDashboard = () => {
           </div>
         </div>
 
-        <TableComponent data={tableData} pageSize={8} />
+        <TableComponent
+          key={`${network}-${showWatchlist ? 'watch' : 'all'}`}
+          data={tableData}
+          pageSize={8}
+        />
       </div>
 
       <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
