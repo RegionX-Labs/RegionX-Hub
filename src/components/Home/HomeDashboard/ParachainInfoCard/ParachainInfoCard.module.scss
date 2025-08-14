@@ -13,7 +13,7 @@
   min-height: 400px;
   width: 420px;
   border: 1px solid var(--card-border);
-  @include Inter;
+  transition: border-color 0.2s ease;
   @media (min-width: 1930px) {
     width: 31%;
   }
@@ -172,10 +172,10 @@
   font-weight: 500;
 
   .needsRenewal {
-    color: #f59e0b; // yellow
+    color: #f59e0b;
   }
 
   .renewalDone {
-    color: #10b981; // green
+    color: #10b981;
   }
 }

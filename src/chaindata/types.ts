@@ -20,4 +20,5 @@ export type BaseChainInfo = {
   name: string;
   logo?: string;
   homepage?: string;
+  color?: string;
 };

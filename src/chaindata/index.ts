@@ -1,16 +1,16 @@
 import { Network } from '@/types';
-
 import KusamaChains from './kusama';
 import PaseoChains from './paseo';
 import PolkadotChains from './polkadot';
 import RococoChains from './rococo';
-import { BaseChainInfo, ChainDetails } from './types';
 import WestendChains from './westend';
+import { BaseChainInfo, ChainDetails } from './types';
 
 const transformData = (data: ChainDetails[]): Record<number, BaseChainInfo> => {
   const mapping: Record<number, BaseChainInfo> = {};
-  data.forEach(({ paraId, text, ui: { logo }, homepage }) => {
-    mapping[paraId] = { name: text, logo, homepage };
+  data.forEach(({ paraId, text, ui = {}, homepage }) => {
+    const { logo, color } = ui as { logo?: string; color?: string };
+    mapping[paraId] = { name: text, logo, homepage, color };
   });
   return mapping;
 };
