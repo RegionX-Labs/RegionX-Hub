@@ -62,32 +62,42 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   }, [network, connections]);
 
   useEffect(() => {
-    if (hasSetInitial || parachains.length === 0 || !potentialRenewals || !saleInfo) return;
+    if (parachains.length === 0 || !potentialRenewals || !saleInfo) return;
 
-    const match = parachains.find((p) => `${p.id}` === initialParaId && p.network === network);
-    if (match) {
-      setSelected(match);
-      onSelectParaId?.(match.id.toString());
-    } else {
-      const fallback = parachains.find((p) => p.network === network);
-      if (fallback) {
-        setSelected(fallback);
-        onSelectParaId?.(fallback.id.toString());
+    const selectedIsForNetwork = selected?.network === network;
+
+    const urlMatch =
+      initialParaId && parachains.find((p) => `${p.id}` === initialParaId && p.network === network);
+
+    if (!hasSetInitial || !selectedIsForNetwork) {
+      if (urlMatch) {
+        setSelected(urlMatch);
+        onSelectParaId?.(urlMatch.id.toString());
+      } else {
+        const fallback = parachains.find((p) => p.network === network);
+        setSelected(fallback ?? null);
+        if (fallback) onSelectParaId?.(fallback.id.toString());
       }
+      setHasSetInitial(true);
     }
-
-    setHasSetInitial(true);
-  }, [parachains, potentialRenewals, saleInfo, network, initialParaId, hasSetInitial]);
+  }, [
+    network,
+    parachains,
+    potentialRenewals,
+    saleInfo,
+    initialParaId,
+    hasSetInitial,
+    selected?.network,
+    onSelectParaId,
+  ]);
 
   useEffect(() => {
     if (!saleInfo || !selected) return;
-
     const match = Array.from(potentialRenewals.entries()).find(
       ([key, record]) =>
         (record.completion as any)?.value?.[0]?.assignment?.value === selected.id &&
         saleInfo.regionBegin === key.when
     );
-
     setRenewalEntry(match ?? null);
   }, [potentialRenewals, selected, saleInfo]);
 
@@ -108,14 +118,24 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         })
       );
     })();
-  }, [renewalEntry]);
+  }, [renewalEntry, network, connections]);
 
   const paraId = selected?.id;
   const state: ParaState | undefined = selected?.state;
   const chain = paraId !== undefined ? chainData[network]?.[paraId] : null;
-  const name = chain?.name || `Parachain ${paraId}`;
-  const logoSrc = chain?.logo;
+  const name = chain?.name || (paraId !== undefined ? `Parachain ${paraId}` : 'Parachain');
+  const logoSrc = (chain?.logo as string | undefined) || undefined;
   const homepage = chain?.homepage || '';
+
+  const pickSolid = (c?: string) => {
+    if (!c) return undefined;
+    if (c.includes('gradient')) {
+      const m = c.match(/#([0-9a-fA-F]{3,8})|rgba?\([^)]+\)/);
+      return m?.[0] || undefined;
+    }
+    return c;
+  };
+  const solidAccent = pickSolid((chain as any)?.color);
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
@@ -185,60 +205,63 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     />
   );
 
-  const selectOptions: SelectOption<any>[] = parachains
-    .filter((p) => p.network === network)
-    .map((item) => {
-      const meta = chainData[network]?.[item.id];
-      const name = meta?.name || `Parachain ${item.id}`;
-      const logo = meta?.logo;
+  const listForNetwork = parachains.filter((p) => p.network === network);
 
-      const renewalMatch = Array.from(potentialRenewals.entries()).find(
-        ([key, record]) =>
-          (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
-          saleInfo?.regionBegin === key.when
-      );
+  const selectOptions: SelectOption<any>[] = listForNetwork.map((item) => {
+    const meta = chainData[network]?.[item.id];
+    const name = meta?.name || `Parachain ${item.id}`;
+    const logo = meta?.logo as string | undefined;
 
-      const renewalStatus = renewalMatch ? 'Needs Renewal' : 'Renewed';
-      const badgeColor = renewalMatch ? '#dc2626' : '#0cc184';
+    const renewalMatch = Array.from(potentialRenewals.entries()).find(
+      ([key, record]) =>
+        (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
+        saleInfo?.regionBegin === key.when
+    );
 
-      return {
-        key: item.id.toString(),
-        value: item,
-        label: name,
-        icon: logo ? (
-          <img
-            src={logo}
-            alt='logo'
-            style={{ width: 24, height: 24, borderRadius: '100%', marginRight: 8 }}
-          />
-        ) : (
-          <Identicon
-            value={blake2AsHex(`${network}-${item.id}`, 256)}
-            size={24}
-            theme='substrate'
-            style={{ marginRight: 8 }}
-          />
-        ),
-        extra: (
-          <span
-            style={{
-              backgroundColor: badgeColor,
-              color: 'black',
-              fontSize: 10,
-              fontWeight: 600,
-              padding: '2px 6px',
-              borderRadius: 4,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {renewalStatus}
-          </span>
-        ),
-      };
-    });
+    const renewalStatus = renewalMatch ? 'Needs Renewal' : 'Renewed';
+    const badgeColor = renewalMatch ? '#dc2626' : '#0cc184';
+
+    return {
+      key: item.id.toString(),
+      value: item,
+      label: name,
+      icon: logo ? (
+        <img
+          src={logo}
+          alt='logo'
+          style={{ width: 24, height: 24, borderRadius: '100%', marginRight: 8 }}
+        />
+      ) : (
+        <Identicon
+          value={blake2AsHex(`${network}-${item.id}`, 256)}
+          size={24}
+          theme='substrate'
+          style={{ marginRight: 8 }}
+        />
+      ),
+      extra: (
+        <span
+          style={{
+            backgroundColor: badgeColor,
+            color: 'black',
+            fontSize: 10,
+            fontWeight: 600,
+            padding: '2px 6px',
+            borderRadius: 4,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {renewalStatus}
+        </span>
+      ),
+    };
+  });
 
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      style={solidAccent ? { borderColor: solidAccent, borderWidth: '2px' } : undefined}
+    >
       <div className={styles.content}>
         {selected ? (
           <div className={styles.infoBox}>
@@ -259,8 +282,9 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             </div>
           </div>
         ) : (
-          <p></p>
+          <p />
         )}
+
         {typeof state === 'number' && (
           <div className={styles.stateTooltip}>
             <ParaStateCard
@@ -275,17 +299,13 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
                 if (state === ParaState.SYSTEM) {
                   return paraStateProperties[state]?.description;
                 }
-
                 const renewalStatus = renewalEntry ? 'needed' : 'done';
-
                 if (renewalStatus === 'done') {
                   return 'This parachain has renewed the core on time and doesn’t need to do anything until the beginning of the next sale cycle.';
                 }
-
                 if (renewalStatus === 'needed') {
                   return 'This parachain needs to renew the core, otherwise it may stop if not renewed on time.';
                 }
-
                 return paraStateProperties[state]?.description;
               })()}
             </div>
