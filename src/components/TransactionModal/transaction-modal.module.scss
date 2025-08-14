@@ -90,14 +90,51 @@
   }
 }
 
-@media (max-width: 768px) {
-  .modalContent {
-    padding: 20px;
-    width: 80%;
+@media (max-width: 515px) {
+  .modalOverlay {
+    padding: 12px;
+    box-sizing: border-box;
   }
 
-  .actions {
-    flex-direction: column;
-    gap: 10px;
+  .modalContent {
+    width: 90%;
+    max-width: 100%;
+    padding: 18px;
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .balance {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 14px;
+
+      span {
+        margin-left: 0;
+      }
+    }
+
+    .question {
+      font-size: 15px;
+      margin-bottom: 18px;
+      line-height: 1.35;
+    }
+
+    .actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+
+      button {
+        width: 100%;
+        padding: 12px;
+        font-size: 15px;
+      }
+    }
   }
 }
