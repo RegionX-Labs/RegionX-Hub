@@ -260,7 +260,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   return (
     <div
       className={styles.card}
-      style={solidAccent ? { borderColor: solidAccent, borderWidth: '2px' } : undefined}
+      style={solidAccent ? { borderColor: solidAccent, borderWidth: '1px' } : undefined}
     >
       <div className={styles.content}>
         {selected ? (
