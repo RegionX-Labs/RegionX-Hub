@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './ParachainInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
@@ -16,6 +16,7 @@ import {
   potentialRenewalsRequested,
   RenewalKey,
   RenewalRecord,
+  fetchAutoRenewals,
 } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $selectedAccount } from '@/wallet';
@@ -40,6 +41,8 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
 
+  const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
+
   const [
     network,
     connections,
@@ -61,7 +64,24 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   useEffect(() => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
+    void refreshAutoRenewals();
   }, [network, connections]);
+
+  const refreshAutoRenewals = async () => {
+    try {
+      const list = await fetchAutoRenewals(network, connections);
+      const set = new Set<number>(list.map((e: any) => Number(e.task)));
+      setAutoRenewSet(set);
+    } catch (e) {
+      console.error('fetchAutoRenewals failed', e);
+    }
+  };
+
+  useEffect(() => {
+    if (!isAutoRenewOpen) {
+      void refreshAutoRenewals();
+    }
+  }, [isAutoRenewOpen]);
 
   useEffect(() => {
     if (parachains.length === 0 || !potentialRenewals || !saleInfo) return;
@@ -163,7 +183,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
     const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
+      (ev: any) => {
         toast.loading(
           <span>
             Transaction submitted:&nbsp;
@@ -187,7 +207,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           }
         }
       },
-      (e) => {
+      (e: any) => {
         toast.error('Transaction error', { id: toastId });
         console.error(e);
       }
@@ -207,7 +227,10 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     />
   );
 
-  const listForNetwork = parachains.filter((p) => p.network === network);
+  const listForNetwork = useMemo(
+    () => parachains.filter((p) => p.network === network),
+    [parachains, network]
+  );
 
   const selectOptions: SelectOption<any>[] = listForNetwork.map((item) => {
     const meta = chainData[network]?.[item.id];
@@ -258,6 +281,11 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       ),
     };
   });
+
+  const autoRenewEnabled = useMemo(() => {
+    if (!selected?.id) return false;
+    return autoRenewSet.has(Number(selected.id));
+  }, [autoRenewSet, selected?.id]);
 
   return (
     <div
@@ -328,11 +356,25 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           </div>
         </div>
       )}
-      <div className={styles.autoRenewRow}>
-        <button className={styles.autoRenewBtn} onClick={() => setIsAutoRenewOpen(true)}>
-          Auto-Renewal
-        </button>
-      </div>
+
+      {/* Auto-Renewal row: hidden for system parachains */}
+      {state !== ParaState.SYSTEM && selected && (
+        <div className={styles.autoRenewRow}>
+          <button
+            className={
+              autoRenewEnabled
+                ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
+                : styles.autoRenewBtn
+            }
+            onClick={() => {
+              if (!autoRenewEnabled) setIsAutoRenewOpen(true);
+            }}
+            disabled={autoRenewEnabled}
+          >
+            {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
+          </button>
+        </div>
+      )}
 
       {selected && (
         <div className={styles.inputSection}>
@@ -343,6 +385,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             onChange={(value) => {
               setSelected(value);
               onSelectParaId?.(value.id.toString());
+              void refreshAutoRenewals();
             }}
             variant='secondary'
           />

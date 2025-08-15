@@ -201,3 +201,17 @@
     color: black;
   }
 }
+
+.autoRenewBtnEnabled {
+  background: $greenPrimary;
+  color: black;
+  border-color: $greenPrimary;
+  cursor: default;
+  pointer-events: none;
+}
+
+.autoRenewBtn:disabled {
+  opacity: 0.92;
+  cursor: default;
+  pointer-events: none;
+}
