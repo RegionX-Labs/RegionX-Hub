@@ -40,6 +40,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           Coretime Chain Balance:{' '}
           <span>{toUnitFormatted(network, accountData.coretimeChainData.free)}</span>
         </p>
+        <p className={styles.balance}>
+          RegionX Chain Balance:{' '}
+          <span>{toUnitFormatted(network, accountData.regionxChainData?.free || BigInt(0))}</span>
+        </p>
 
         <p className={styles.question}>Do you want to proceed with the transaction?</p>
         <div className={styles.actions}>
