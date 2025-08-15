@@ -25,6 +25,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
 import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
+import AutoRenewalModal from '@/components/AutoRenewalModal/index';
 
 type Props = {
   onSelectParaId?: (id: string) => void;
@@ -37,6 +38,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   const [renewalEntry, setRenewalEntry] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [deadline, setDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
 
   const [
     network,
@@ -326,6 +328,11 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           </div>
         </div>
       )}
+      <div className={styles.autoRenewRow}>
+        <button className={styles.autoRenewBtn} onClick={() => setIsAutoRenewOpen(true)}>
+          Auto-Renewal
+        </button>
+      </div>
 
       {selected && (
         <div className={styles.inputSection}>
@@ -350,6 +357,13 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           onConfirm={onModalConfirm}
         />
       )}
+
+      <AutoRenewalModal
+        isOpen={isAutoRenewOpen}
+        onClose={() => setIsAutoRenewOpen(false)}
+        paraId={paraId}
+        defaultRpc=''
+      />
 
       <Toaster />
     </div>
