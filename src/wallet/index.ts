@@ -32,7 +32,7 @@ export const loadedAccountsSet = createEvent<WalletAccount[]>();
 $loadedAccounts.on(loadedAccountsSet, (_, payload) => payload);
 
 const getExtensionsFx = createEffect(async () => {
-  if(window !== window.parent) {
+  if (window !== window.parent) {
     const origin = await isMimirReady();
     if (origin && MIMIR_REGEXP.test(origin)) {
       inject();
