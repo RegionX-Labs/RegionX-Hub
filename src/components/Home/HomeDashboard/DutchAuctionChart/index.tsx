@@ -117,9 +117,17 @@ export default function DutchAuctionChart({ theme, view }: DutchAuctionChartProp
         formatter: function (params: any[]) {
           const item = params.find((p) => ['Interlude', 'Leadin', 'Fixed'].includes(p.seriesName));
           if (!item) return '';
-          const date = new Date(item.data[0]).toLocaleDateString();
+          const d = new Date(item.data[0]);
+          const dateTime =
+            d.toLocaleDateString() +
+            ' ' +
+            d.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            });
           const price = item.data[1];
-          return `${date}<br/>Price: ${price.toLocaleString()} ${getTokenSymbol(network)}`;
+          return `${dateTime}<br/>Price: ${price.toLocaleString()} ${getTokenSymbol(network)}`;
         },
       },
 
