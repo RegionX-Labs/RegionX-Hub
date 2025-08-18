@@ -302,25 +302,6 @@ xcmPallet.send(
               </div>
             </div>
 
-            <div className={styles.section}>
-              <div className={styles.row}>
-                <div className={styles.iconDot} aria-hidden />
-                <div className={styles.optionText}>
-                  <div className={styles.optionTitle}>
-                    Auto-renew preference enabled <span className={styles.badge}>Auto</span>
-                  </div>
-                  <div className={styles.optionSub}>
-                    Reads <code className={styles.mono}>broker.autoRenewals(paraId)</code> on
-                    Coretime.
-                  </div>
-                </div>
-                <label className={styles.switch} aria-label='Auto-renew pref (auto)'>
-                  <input type='checkbox' checked={checks.enableAutoRenew} readOnly disabled />
-                  <span className={styles.slider} />
-                </label>
-              </div>
-            </div>
-
             {checks.loading && <div className={styles.note}>Running checks…</div>}
             {checks.error && <div className={styles.error}>{checks.error}</div>}
 
