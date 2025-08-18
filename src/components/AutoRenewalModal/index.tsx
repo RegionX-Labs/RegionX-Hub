@@ -239,9 +239,7 @@ xcmPallet.send(
               </div>
               <div className={styles.kv}>
                 <span>Current Relay balance</span>
-                <code className={styles.mono}>
-                  {fmt(checks.relayBalance)} {symbol}
-                </code>
+                <code className={styles.mono}>{fmt(checks.relayBalance)}</code>
               </div>
             </div>
 
@@ -265,9 +263,7 @@ xcmPallet.send(
               </div>
               <div className={styles.kv}>
                 <span>Current Coretime balance</span>
-                <code className={styles.mono}>
-                  {fmt(checks.coretimeBalance)} {symbol}
-                </code>
+                <code className={styles.mono}>{fmt(checks.coretimeBalance)}</code>
               </div>
             </div>
 
