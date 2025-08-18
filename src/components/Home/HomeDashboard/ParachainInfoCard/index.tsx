@@ -26,7 +26,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
 import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
-import AutoRenewalModal from '@/components/AutoRenewalModal/index';
+import AutoRenewalModal from '@/components/AutoRenewalModal';
 
 type Props = {
   onSelectParaId?: (id: string) => void;
@@ -40,7 +40,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   const [deadline, setDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
-
   const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
 
   const [
@@ -87,7 +86,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     if (parachains.length === 0 || !potentialRenewals || !saleInfo) return;
 
     const selectedIsForNetwork = selected?.network === network;
-
     const urlMatch =
       initialParaId && parachains.find((p) => `${p.id}` === initialParaId && p.network === network);
 
@@ -142,7 +140,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     })();
   }, [renewalEntry, network, connections]);
 
-  const paraId = selected?.id;
+  const paraId = selected?.id as number | undefined;
   const state: ParaState | undefined = selected?.state;
   const chain = paraId !== undefined ? chainData[network]?.[paraId] : null;
   const name = chain?.name || (paraId !== undefined ? `Parachain ${paraId}` : 'Parachain');
@@ -357,7 +355,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         </div>
       )}
 
-      {/* Auto-Renewal row: hidden for system parachains */}
       {state !== ParaState.SYSTEM && selected && (
         <div className={styles.autoRenewRow}>
           <button
@@ -366,10 +363,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
                 ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
                 : styles.autoRenewBtn
             }
-            onClick={() => {
-              if (!autoRenewEnabled) setIsAutoRenewOpen(true);
-            }}
-            disabled={autoRenewEnabled}
+            onClick={() => setIsAutoRenewOpen(true)}
           >
             {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
           </button>
@@ -401,12 +395,13 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         />
       )}
 
-      <AutoRenewalModal
-        isOpen={isAutoRenewOpen}
-        onClose={() => setIsAutoRenewOpen(false)}
-        paraId={paraId}
-        defaultRpc=''
-      />
+      {typeof paraId === 'number' && (
+        <AutoRenewalModal
+          isOpen={isAutoRenewOpen}
+          onClose={() => setIsAutoRenewOpen(false)}
+          paraId={paraId}
+        />
+      )}
 
       <Toaster />
     </div>

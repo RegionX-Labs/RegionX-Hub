@@ -1,33 +1,176 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './AutoRenewalModal.module.scss';
+import { useUnit } from 'effector-react';
+import { $connections, $network } from '@/api/connection';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { ParaType, paraIdToAddress, toUnitFormatted, getTokenSymbol } from '@/utils';
+import { Clipboard } from 'lucide-react';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  paraId?: number | string;
-  defaultRpc?: string;
+  paraId: number;
 };
 
-const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId, defaultRpc }) => {
-  const [rpc, setRpc] = useState(defaultRpc ?? '');
-  const [fundBoth, setFundBoth] = useState(false);
-  const [fundRelay, setFundRelay] = useState(false);
-  const [fundCoretime, setFundCoretime] = useState(false);
-  const [openHrmp, setOpenHrmp] = useState(false);
-  const [enableAutoRenew, setEnableAutoRenew] = useState(false);
+type CheckState = {
+  fundRelay: boolean;
+  fundCoretime: boolean;
+  fundBoth: boolean;
+  openHrmp: boolean;
+  enableAutoRenew: boolean;
+  relayBalance: string;
+  coretimeBalance: string;
+  loading: boolean;
+  error?: string;
+};
+
+const MIN_BALANCE = BigInt(0);
+
+const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
+  const [connections, network] = useUnit([$connections, $network]);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [checks, setChecks] = useState<CheckState>({
+    fundRelay: false,
+    fundCoretime: false,
+    fundBoth: false,
+    openHrmp: false,
+    enableAutoRenew: false,
+    relayBalance: '0',
+    coretimeBalance: '0',
+    loading: false,
+  });
+
+  const canProceed = useMemo(
+    () =>
+      checks.fundBoth &&
+      checks.fundRelay &&
+      checks.fundCoretime &&
+      checks.openHrmp &&
+      checks.enableAutoRenew &&
+      !checks.loading &&
+      !checks.error,
+    [checks]
+  );
 
   useEffect(() => {
-    if (isOpen) {
-      setRpc(defaultRpc ?? '');
-      setFundBoth(false);
-      setFundRelay(false);
-      setFundCoretime(false);
-      setOpenHrmp(false);
-      setEnableAutoRenew(false);
-    }
-  }, [isOpen, defaultRpc]);
+    if (!isOpen) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        setChecks((p) => ({ ...p, loading: true, error: undefined }));
+        const chainIds = getNetworkChainIds(network);
+        const metadata = getNetworkMetadata(network);
+        if (!chainIds || !metadata) throw new Error('Unknown network');
+        const relayConn = connections[chainIds.relayChain];
+        const coretimeConn = connections[chainIds.coretimeChain];
+        if (!relayConn?.client || relayConn.status !== 'connected') {
+          throw new Error('Relay connection not ready.');
+        }
+        if (!coretimeConn?.client || coretimeConn.status !== 'connected') {
+          throw new Error('Coretime connection not ready.');
+        }
+        const relayApi = relayConn.client.getTypedApi(metadata.relayChain);
+        const coretimeApi = coretimeConn.client.getTypedApi(metadata.coretimeChain);
+        const relayAddr = paraIdToAddress(paraId, ParaType.Child);
+        const coretimeAddr = paraIdToAddress(paraId, ParaType.Sibling);
+        const [relayAcc, coretimeAcc] = await Promise.all([
+          (relayApi as any).query?.System?.Account?.getValue(relayAddr),
+          (coretimeApi as any).query?.System?.Account?.getValue(coretimeAddr),
+        ]);
+        const toBI = (v: any) => {
+          try {
+            const raw = (v?.data?.free ?? v?.data?.frozen ?? v?.data)?.toString?.() ?? `${v}`;
+            return BigInt(String(raw));
+          } catch {
+            return BigInt(0);
+          }
+        };
+        const relayFree = toBI(relayAcc);
+        const coretimeFree = toBI(coretimeAcc);
+        const fundRelay = relayFree > MIN_BALANCE;
+        const fundCoretime = coretimeFree > MIN_BALANCE;
+        const fundBoth = fundRelay && fundCoretime;
+        const coretimeParaId = (chainIds as any).coretime ?? (chainIds as any).coretimeParaId;
+        let openHrmp = false;
+        if (typeof coretimeParaId === 'number') {
+          const tryGet = async () => {
+            const tryA =
+              (relayApi as any).query?.Hrmp?.HrmpChannels?.getValue &&
+              (await (relayApi as any).query.Hrmp.HrmpChannels.getValue({
+                sender: paraId,
+                receiver: coretimeParaId,
+              }));
+            const tryB =
+              (relayApi as any).query?.Hrmp?.HrmpChannels?.getValue &&
+              (await (relayApi as any).query.Hrmp.HrmpChannels.getValue({
+                sender: coretimeParaId,
+                receiver: paraId,
+              }));
+            if (tryA !== undefined && tryB !== undefined) {
+              const aOpen = !!tryA && !(tryA as any).isNone;
+              const bOpen = !!tryB && !(tryB as any).isNone;
+              return aOpen && bOpen;
+            }
+            const altA =
+              (relayApi as any).query?.Hrmp?.Channels?.getValue &&
+              (await (relayApi as any).query.Hrmp.Channels.getValue({
+                sender: paraId,
+                receiver: coretimeParaId,
+              }));
+            const altB =
+              (relayApi as any).query?.Hrmp?.Channels?.getValue &&
+              (await (relayApi as any).query.Hrmp.Channels.getValue({
+                sender: coretimeParaId,
+                receiver: paraId,
+              }));
+            if (altA !== undefined && altB !== undefined) {
+              const aOpen = !!altA && !(altA as any).isNone;
+              const bOpen = !!altB && !(altB as any).isNone;
+              return aOpen && bOpen;
+            }
+            return false;
+          };
+          openHrmp = await tryGet();
+        }
+        let enableAutoRenew = false;
+        try {
+          const pref =
+            (coretimeApi as any).query?.Broker?.AutoRenewals?.getValue &&
+            (await (coretimeApi as any).query.Broker.AutoRenewals.getValue(paraId));
+          enableAutoRenew = Boolean(
+            (pref as any)?.isSome ? (pref as any).unwrap?.() : (pref as any)
+          );
+        } catch {
+          enableAutoRenew = false;
+        }
+        if (!cancelled) {
+          setChecks({
+            fundRelay,
+            fundCoretime,
+            fundBoth,
+            openHrmp,
+            enableAutoRenew,
+            relayBalance: relayFree.toString(),
+            coretimeBalance: coretimeFree.toString(),
+            loading: false,
+          });
+        }
+      } catch (e: any) {
+        if (!cancelled) {
+          setChecks((p) => ({
+            ...p,
+            loading: false,
+            error: e?.message ?? 'Failed to run checks.',
+          }));
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, paraId, connections, network]);
 
   if (!isOpen) return null;
 
@@ -35,162 +178,218 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId, defaultRpc
     if ((e.target as HTMLDivElement).classList.contains(styles.modalOverlay)) onClose();
   };
 
+  const fmt = (raw: string) => {
+    try {
+      return toUnitFormatted(network, BigInt(raw));
+    } catch {
+      return raw;
+    }
+  };
+  const symbol = getTokenSymbol(network);
+  const chainIds = getNetworkChainIds(network);
+  const coretimeParaId =
+    (chainIds as any)?.coretime ?? (chainIds as any)?.coretimeParaId ?? 'CORETIME';
+
+  const xcmCall = `// XCM v3: Transact from parachain sovereign to Coretime (para ${coretimeParaId})
+xcmPallet.send(
+  dest: ParentThenParachain(${coretimeParaId}),
+  message: [
+    WithdrawAsset(/* fee asset */),
+    BuyExecution{/* weight, fee */},
+    Transact{
+      originKind: SovereignAccount,
+      requireWeightAtMost: <set_weight>,
+      call: broker.setAutoRenew(true)
+    },
+    RefundSurplus,
+    DepositAsset{ beneficiary: SovereignOf(${paraId}) }
+  ]
+);`;
+
   return (
     <div className={styles.modalOverlay} onClick={closeByOverlay}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2 className={styles.title}>Auto-Renewal</h2>
           <p className={styles.subtitle}>
-            Pick an RPC, make sure fee pots are topped up, and choose HRMP + auto-renewal prefs.
+            We’ll auto-check everything needed for auto-renewal approval.
           </p>
-          {paraId !== undefined && <div className={styles.pillLarge}>ParaID: {paraId}</div>}
+          <div className={styles.pillLarge}>ParaID: {paraId}</div>
         </div>
 
-        <div className={styles.section}>
-          <label className={styles.label}>RPC endpoint</label>
-          <div className={styles.inputWrap}>
-            <span className={styles.inputPrefix}>RPC</span>
-            <input
-              className={styles.input}
-              placeholder='wss://your-rpc-endpoint'
-              value={rpc}
-              onChange={(e) => setRpc(e.target.value)}
-            />
-            {rpc && (
-              <button
-                type='button'
-                className={styles.clearBtn}
-                onClick={() => setRpc('')}
-                aria-label='Clear RPC'
-              >
-                ×
+        {step === 1 && (
+          <>
+            <div className={styles.section}>
+              <div className={styles.row}>
+                <div className={styles.iconDot} aria-hidden />
+                <div className={styles.optionText}>
+                  <div className={styles.optionTitle}>
+                    Fund sovereign account on <b>Relay</b>{' '}
+                    <span className={styles.badge}>Auto</span>
+                  </div>
+                  <div className={styles.optionSub}>
+                    Address:{' '}
+                    <code className={styles.mono}>{paraIdToAddress(paraId, ParaType.Child)}</code>
+                  </div>
+                </div>
+                <label className={styles.switch} aria-label='Relay funded (auto)'>
+                  <input type='checkbox' checked={checks.fundRelay} readOnly disabled />
+                  <span className={styles.slider} />
+                </label>
+              </div>
+              <div className={styles.kv}>
+                <span>Current Relay balance</span>
+                <code className={styles.mono}>
+                  {fmt(checks.relayBalance)} {symbol}
+                </code>
+              </div>
+            </div>
+
+            <div className={styles.section}>
+              <div className={styles.row}>
+                <div className={styles.iconDot} aria-hidden />
+                <div className={styles.optionText}>
+                  <div className={styles.optionTitle}>
+                    Fund sovereign account on <b>Coretime</b>{' '}
+                    <span className={styles.badge}>Auto</span>
+                  </div>
+                  <div className={styles.optionSub}>
+                    Address:{' '}
+                    <code className={styles.mono}>{paraIdToAddress(paraId, ParaType.Sibling)}</code>
+                  </div>
+                </div>
+                <label className={styles.switch} aria-label='Coretime funded (auto)'>
+                  <input type='checkbox' checked={checks.fundCoretime} readOnly disabled />
+                  <span className={styles.slider} />
+                </label>
+              </div>
+              <div className={styles.kv}>
+                <span>Current Coretime balance</span>
+                <code className={styles.mono}>
+                  {fmt(checks.coretimeBalance)} {symbol}
+                </code>
+              </div>
+            </div>
+
+            <div className={styles.section}>
+              <div className={styles.row}>
+                <div className={styles.iconDot} aria-hidden />
+                <div className={styles.optionText}>
+                  <div className={styles.optionTitle}>
+                    Both fee pots funded <span className={styles.badge}>Auto</span>
+                  </div>
+                  <div className={styles.optionSub}>Relay + Coretime sovereign accounts.</div>
+                </div>
+                <label className={styles.switch} aria-label='Both funded (auto)'>
+                  <input type='checkbox' checked={checks.fundBoth} readOnly disabled />
+                  <span className={styles.slider} />
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.section}>
+              <div className={styles.row}>
+                <div className={styles.iconDot} aria-hidden />
+                <div className={styles.optionText}>
+                  <div className={styles.optionTitle}>
+                    HRMP channel open <span className={styles.badge}>Auto</span>
+                  </div>
+                  <div className={styles.optionSub}>
+                    Checks <code className={styles.mono}>hrmp.hrmpChannels</code> both directions on
+                    Relay.
+                  </div>
+                </div>
+                <label className={styles.switch} aria-label='HRMP open (auto)'>
+                  <input type='checkbox' checked={checks.openHrmp} readOnly disabled />
+                  <span className={styles.slider} />
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.section}>
+              <div className={styles.row}>
+                <div className={styles.iconDot} aria-hidden />
+                <div className={styles.optionText}>
+                  <div className={styles.optionTitle}>
+                    Auto-renew preference enabled <span className={styles.badge}>Auto</span>
+                  </div>
+                  <div className={styles.optionSub}>
+                    Reads <code className={styles.mono}>broker.autoRenewals(paraId)</code> on
+                    Coretime.
+                  </div>
+                </div>
+                <label className={styles.switch} aria-label='Auto-renew pref (auto)'>
+                  <input type='checkbox' checked={checks.enableAutoRenew} readOnly disabled />
+                  <span className={styles.slider} />
+                </label>
+              </div>
+            </div>
+
+            {checks.loading && <div className={styles.note}>Running checks…</div>}
+            {checks.error && <div className={styles.error}>{checks.error}</div>}
+
+            <div className={styles.actions}>
+              <button className={styles.ghost} onClick={onClose}>
+                Close
               </button>
-            )}
-          </div>
-          <p className={styles.help}>
-            Used for checks and future renewals. You can change this whenever you like.
-          </p>
-        </div>
+              <button
+                className={styles.primary}
+                disabled={!canProceed}
+                onClick={() => setStep(2)}
+                aria-disabled={!canProceed}
+                title={canProceed ? 'All checks passed' : 'Complete all checks to continue'}
+              >
+                Continue
+              </button>
+            </div>
+          </>
+        )}
 
-        <div className={styles.section}>
-          <div className={styles.row}>
-            <div className={styles.iconDot} aria-hidden />
-            <div className={styles.optionText}>
-              <div className={styles.optionTitle}>Fund the sovereign accounts</div>
-              <div className={styles.optionSub}>
-                Single action that funds both Relay and Coretime fee pots.
+        {step === 2 && (
+          <>
+            <div className={styles.section}>
+              <div className={styles.rowTitle}>
+                <div className={styles.iconDot} aria-hidden />
+                <div className={styles.optionText}>
+                  <div className={styles.optionTitle}>Send this from your parachain</div>
+                  <div className={styles.optionSub}>
+                    XCM message to Coretime (para {String(coretimeParaId)}) to approve auto-renewal.
+                  </div>
+                </div>
+              </div>
+
+              <pre className={styles.codeBlock}>{xcmCall}</pre>
+
+              <div className={styles.kv}>
+                <span>Beneficiary sovereign (Relay)</span>
+                <code className={styles.mono}>{paraIdToAddress(paraId, ParaType.Child)}</code>
+              </div>
+              <div className={styles.kv}>
+                <span>Beneficiary sovereign (Coretime)</span>
+                <code className={styles.mono}>{paraIdToAddress(paraId, ParaType.Sibling)}</code>
+              </div>
+
+              <div className={styles.copyRow}>
+                <button
+                  className={styles.copyBtn}
+                  onClick={() => navigator.clipboard.writeText(xcmCall)}
+                  aria-label='Copy XCM call'
+                >
+                  <Clipboard size={16} /> Copy call
+                </button>
               </div>
             </div>
-            <label className={styles.switch}>
-              <input
-                type='checkbox'
-                checked={fundBoth}
-                onChange={(e) => setFundBoth(e.target.checked)}
-              />
-              <span className={styles.slider} />
-            </label>
-          </div>
-        </div>
 
-        <div className={styles.section}>
-          <div className={styles.row}>
-            <div className={styles.iconDot} aria-hidden />
-            <div className={styles.optionText}>
-              <div className={styles.optionTitle}>
-                Fund sovereign account on <b>Relay</b>
-                <span className={styles.badge}>Recommended</span>
-              </div>
-              <div className={styles.optionSub}>Covers HRMP calls and relay-side fees.</div>
+            <div className={styles.actions}>
+              <button className={styles.ghost} onClick={() => setStep(1)}>
+                Back
+              </button>
+              <button className={styles.primary} onClick={onClose}>
+                Done
+              </button>
             </div>
-            <label className={styles.switch}>
-              <input
-                type='checkbox'
-                checked={fundRelay}
-                onChange={(e) => setFundRelay(e.target.checked)}
-              />
-              <span className={styles.slider} />
-            </label>
-          </div>
-          <div className={styles.kv}>
-            <span>Current Relay balance</span>
-            <code className={styles.mono}>0</code>
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <div className={styles.row}>
-            <div className={styles.iconDot} aria-hidden />
-            <div className={styles.optionText}>
-              <div className={styles.optionTitle}>
-                Fund sovereign account on <b>Coretime</b>
-              </div>
-              <div className={styles.optionSub}>
-                Ensures XCM renewals and future messages don’t run out of fees.
-              </div>
-            </div>
-            <label className={styles.switch}>
-              <input
-                type='checkbox'
-                checked={fundCoretime}
-                onChange={(e) => setFundCoretime(e.target.checked)}
-              />
-              <span className={styles.slider} />
-            </label>
-          </div>
-          <div className={styles.kv}>
-            <span>Current Coretime balance</span>
-            <code className={styles.mono}>0</code>
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <div className={styles.row}>
-            <div className={styles.iconDot} aria-hidden />
-            <div className={styles.optionText}>
-              <div className={styles.optionTitle}>Open HRMP channel</div>
-              <div className={styles.optionSub}>
-                Creates the route between your parachain and the Coretime system chain.
-              </div>
-            </div>
-            <label className={styles.switch}>
-              <input
-                type='checkbox'
-                checked={openHrmp}
-                onChange={(e) => setOpenHrmp(e.target.checked)}
-              />
-              <span className={styles.slider} />
-            </label>
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <div className={styles.row}>
-            <div className={styles.iconDot} aria-hidden />
-            <div className={styles.optionText}>
-              <div className={styles.optionTitle}>Enable auto-renew</div>
-              <div className={styles.optionSub}>
-                If the current core isn’t eligible, this just saves the preference for next cycles.
-              </div>
-            </div>
-            <label className={styles.switch}>
-              <input
-                type='checkbox'
-                checked={enableAutoRenew}
-                onChange={(e) => setEnableAutoRenew(e.target.checked)}
-              />
-              <span className={styles.slider} />
-            </label>
-          </div>
-        </div>
-
-        <div className={styles.actions}>
-          <button className={styles.ghost} onClick={onClose}>
-            Close
-          </button>
-          <button className={styles.primary} onClick={onClose}>
-            Save settings
-          </button>
-        </div>
+          </>
+        )}
 
         <button className={styles.close} onClick={onClose} aria-label='Close modal'>
           ×
