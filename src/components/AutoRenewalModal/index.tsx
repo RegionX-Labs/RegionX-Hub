@@ -5,7 +5,13 @@ import styles from './AutoRenewalModal.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { ParaType, paraIdToAddress, toUnitFormatted, getTokenSymbol, CORETIME_PARA_ID } from '@/utils';
+import {
+  ParaType,
+  paraIdToAddress,
+  toUnitFormatted,
+  getTokenSymbol,
+  CORETIME_PARA_ID,
+} from '@/utils';
 import { Clipboard } from 'lucide-react';
 
 type Props = {
@@ -94,7 +100,10 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
         const fundBoth = fundRelay && fundCoretime;
         let openHrmp = false;
 
-        const channel = await relayApi.query.Hrmp.HrmpChannels.getValue({ sender: paraId, recipient: CORETIME_PARA_ID });
+        const channel = await relayApi.query.Hrmp.HrmpChannels.getValue({
+          sender: paraId,
+          recipient: CORETIME_PARA_ID,
+        });
         openHrmp = channel ? true : false;
 
         let enableAutoRenew = false;
