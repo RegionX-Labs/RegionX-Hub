@@ -5,7 +5,7 @@ import styles from './AutoRenewalModal.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { ParaType, paraIdToAddress, toUnitFormatted, getTokenSymbol } from '@/utils';
+import { ParaType, paraIdToAddress, toUnitFormatted, getTokenSymbol, CORETIME_PARA_ID } from '@/utils';
 import { Clipboard } from 'lucide-react';
 
 type Props = {
@@ -92,48 +92,11 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
         const fundRelay = relayFree > MIN_BALANCE;
         const fundCoretime = coretimeFree > MIN_BALANCE;
         const fundBoth = fundRelay && fundCoretime;
-        const coretimeParaId = (chainIds as any).coretime ?? (chainIds as any).coretimeParaId;
         let openHrmp = false;
-        if (typeof coretimeParaId === 'number') {
-          const tryGet = async () => {
-            const tryA =
-              (relayApi as any).query?.Hrmp?.HrmpChannels?.getValue &&
-              (await (relayApi as any).query.Hrmp.HrmpChannels.getValue({
-                sender: paraId,
-                receiver: coretimeParaId,
-              }));
-            const tryB =
-              (relayApi as any).query?.Hrmp?.HrmpChannels?.getValue &&
-              (await (relayApi as any).query.Hrmp.HrmpChannels.getValue({
-                sender: coretimeParaId,
-                receiver: paraId,
-              }));
-            if (tryA !== undefined && tryB !== undefined) {
-              const aOpen = !!tryA && !(tryA as any).isNone;
-              const bOpen = !!tryB && !(tryB as any).isNone;
-              return aOpen && bOpen;
-            }
-            const altA =
-              (relayApi as any).query?.Hrmp?.Channels?.getValue &&
-              (await (relayApi as any).query.Hrmp.Channels.getValue({
-                sender: paraId,
-                receiver: coretimeParaId,
-              }));
-            const altB =
-              (relayApi as any).query?.Hrmp?.Channels?.getValue &&
-              (await (relayApi as any).query.Hrmp.Channels.getValue({
-                sender: coretimeParaId,
-                receiver: paraId,
-              }));
-            if (altA !== undefined && altB !== undefined) {
-              const aOpen = !!altA && !(altA as any).isNone;
-              const bOpen = !!altB && !(altB as any).isNone;
-              return aOpen && bOpen;
-            }
-            return false;
-          };
-          openHrmp = await tryGet();
-        }
+
+        const channel = await relayApi.query.Hrmp.HrmpChannels.getValue({ sender: paraId, recipient: CORETIME_PARA_ID });
+        openHrmp = channel ? true : false;
+
         let enableAutoRenew = false;
         try {
           const pref =
