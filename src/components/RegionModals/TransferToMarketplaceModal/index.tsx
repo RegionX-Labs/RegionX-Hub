@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './TransferToMarketplaceModal.module.scss';
-import { X } from 'lucide-react';
 import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
 import { $accountData, MultiChainAccountData } from '@/account';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
-import { RegionId } from '@/utils';
+import { fromUnit, RegionId, REGIONX_KUSAMA_PARA_ID } from '@/utils';
 import Image from 'next/image';
 import {
   PolkadotCoretime,
@@ -15,6 +14,11 @@ import {
   PaseoCoretime,
   WestendCoretime,
 } from '@/assets/networks';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { ksm_coretime, XcmV3Junction, XcmV3Junctions, XcmV3MultiassetAssetId, XcmV3MultiassetFungibility, XcmV3WeightLimit, XcmVersionedAssets, XcmVersionedLocation } from '@polkadot-api/descriptors';
+import { AccountId, Binary, getTypedCodecs } from 'polkadot-api';
+import { SUBSCAN_RELAY_URL } from '@/pages/coretime/sale-history';
+import { X } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -26,6 +30,8 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
   const accountData = useUnit($accountData);
   const selectedAccount = useUnit($selectedAccount);
   const network = useUnit($network);
+  const connections = useUnit($connections);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!isOpen) return null;
@@ -46,6 +52,77 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
 
   const onModalConfirm = async () => {
     toast.success('Pretend transfer to RegionX initiated');
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.coretimeChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
+
+    const tx = connection.client
+      .getTypedApi(metadata.coretimeChain)
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(REGIONX_KUSAMA_PARA_ID)),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(selectedAccount.address)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            // fee payment
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number('2500000000'))),
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.Here(),
+              parents: 1,
+            }),
+          },
+          {
+            fun: XcmV3MultiassetFungibility.NonFungible({type: 'Index', value: BigInt(0)}),
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.Here(),
+              parents: 0,
+            })
+          }
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
     setIsModalOpen(false);
   };
 
