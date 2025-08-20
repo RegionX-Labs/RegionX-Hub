@@ -90,7 +90,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
             // fee payment
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number('2500000000'))),
             id: XcmV3MultiassetAssetId.Concrete({
-              interior: XcmV3Junctions.Here(),
+              interior: XcmV3Junctions.Here(), // Not here, pallet broker
               parents: 1,
             }),
           },
