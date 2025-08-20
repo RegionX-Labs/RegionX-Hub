@@ -71,7 +71,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
 
     const tx = connection.client
       .getTypedApi(metadata.coretimeChain)
-      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+      .tx.PolkadotXcm.transfer_assets({
         dest: XcmVersionedLocation.V3({
           parents: 0,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(REGIONX_KUSAMA_PARA_ID)),
