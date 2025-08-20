@@ -34,7 +34,8 @@
     "react-markdown": "^10.1.0",
     "react-tooltip": "^5.28.0",
     "recharts": "^2.15.3",
-    "sass": "^1.85.0"
+    "sass": "^1.85.0",
+    "scale-ts": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

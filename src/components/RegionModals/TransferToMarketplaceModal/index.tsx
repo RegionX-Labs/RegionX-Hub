@@ -15,15 +15,25 @@ import {
   WestendCoretime,
 } from '@/assets/networks';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { ksm_coretime, XcmV3Junction, XcmV3Junctions, XcmV3MultiassetAssetId, XcmV3MultiassetFungibility, XcmV3WeightLimit, XcmVersionedAssets, XcmVersionedLocation } from '@polkadot-api/descriptors';
-import { AccountId, Binary, getTypedCodecs } from 'polkadot-api';
+import { XcmV3Junction, XcmV3Junctions, XcmV3MultiassetAssetId, XcmV3MultiassetFungibility, XcmV3WeightLimit, XcmVersionedAssets, XcmVersionedLocation } from '@polkadot-api/descriptors';
+import { AccountId, Binary } from 'polkadot-api';
 import { SUBSCAN_RELAY_URL } from '@/pages/coretime/sale-history';
 import { X } from 'lucide-react';
+import { u16, u32 } from 'scale-ts';
+import { u8aToHex } from '@polkadot/util';
 
 interface Props {
   isOpen: boolean;
   regionId: RegionId;
   onClose: () => void;
+}
+
+const encodeRegionId = (regionId: RegionId): BigInt => {
+  const encodeBegin = u8aToHex(u32.enc(regionId.begin)).substring(2);
+  const encodeCore = u8aToHex(u16.enc(regionId.core)).substring(2);
+
+  const hex = encodeBegin + encodeCore + regionId.mask.asHex().substring(2);
+  return BigInt('0x' + hex);
 }
 
 const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose }) => {
@@ -85,7 +95,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
             }),
           },
           {
-            fun: XcmV3MultiassetFungibility.NonFungible({type: 'Index', value: BigInt(0)}),
+            fun: XcmV3MultiassetFungibility.NonFungible({type: 'Index', value: encodeRegionId(regionId) as bigint}),
             id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
               parents: 0,
