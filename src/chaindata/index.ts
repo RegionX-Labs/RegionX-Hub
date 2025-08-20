@@ -8,9 +8,9 @@ import { BaseChainInfo, ChainDetails } from './types';
 
 const transformData = (data: ChainDetails[]): Record<number, BaseChainInfo> => {
   const mapping: Record<number, BaseChainInfo> = {};
-  data.forEach(({ paraId, text, ui = {}, homepage }) => {
+  data.forEach(({ paraId, text, ui = {}, homepage, providers }) => {
     const { logo, color } = ui as { logo?: string; color?: string };
-    mapping[paraId] = { name: text, logo, homepage, color };
+    mapping[paraId] = { name: text, logo, homepage, color, providers };
   });
   return mapping;
 };

@@ -1,6 +1,7 @@
+// components/AutoRenewalModal.tsx
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styles from './AutoRenewalModal.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
@@ -12,7 +13,10 @@ import {
   getTokenSymbol,
   CORETIME_PARA_ID,
 } from '@/utils';
-import { Clipboard } from 'lucide-react';
+import { Clipboard, ExternalLink } from 'lucide-react';
+import { chainData } from '@/chaindata';
+import { BaseChainInfo } from '@/chaindata/types';
+import { Network } from '@/types';
 
 type Props = {
   isOpen: boolean;
@@ -261,9 +265,9 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
             </button>
             <button
               className={styles.primary}
-              disabled={!canProceed ? true : false}
+              disabled={!canProceed}
               onClick={() => setShowBytesModal(true)}
-              aria-disabled={!canProceed ? true : false}
+              aria-disabled={!canProceed}
               title='Open bytes preview'
             >
               Continue
@@ -276,15 +280,55 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
         </div>
       </div>
 
-      {showBytesModal && <BytesPreviewModal onClose={() => setShowBytesModal(false)} />}
+      {showBytesModal && (
+        <BytesPreviewModal
+          onClose={() => setShowBytesModal(false)}
+          network={network}
+          paraId={paraId}
+        />
+      )}
     </>
   );
 };
 
-function BytesPreviewModal({ onClose }: { onClose: () => void }) {
-  const hex = `0x470003010100b50f031400040001000007fcbea0ba05130001000007fcbea0ba0500060103d033527c0434321579005e0d000001a8be0500140d01000001007935`;
+function pickFirstProvider(info?: BaseChainInfo): string | undefined {
+  if (!info?.providers) return;
+  const entries = Object.values(info.providers);
+  return entries.find((u) => !!u) || undefined;
+}
 
-  const copy = () => navigator.clipboard.writeText(hex);
+function encodeRpcParam(wsUrl: string): string {
+  try {
+    return encodeURIComponent(wsUrl);
+  } catch {
+    return wsUrl;
+  }
+}
+
+function buildDecodeUrl(wsUrl: string): string {
+  const enc = encodeRpcParam(wsUrl);
+  return `https://polkadot.js.org/apps/?rpc=${enc}#/extrinsics/decode`;
+}
+
+function BytesPreviewModal({
+  onClose,
+  network,
+  paraId,
+}: {
+  onClose: () => void;
+  network: Network;
+  paraId: number;
+}) {
+  const chainMap = chainData[network] || {};
+  const info = chainMap[paraId];
+  const wsProvider = useMemo(() => pickFirstProvider(info), [info]);
+  const decodeUrl = wsProvider ? buildDecodeUrl(wsProvider) : undefined;
+
+  const hex = '';
+  const copy = () => {
+    if (!hex) return;
+    navigator.clipboard.writeText(hex);
+  };
 
   const closeByOverlay = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
@@ -295,22 +339,48 @@ function BytesPreviewModal({ onClose }: { onClose: () => void }) {
     <div className={styles.modalOverlay} onClick={closeByOverlay}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Extrinsic Bytes (Preview)</h2>
-          <p className={styles.subtitle}>SCALE-encoded hex preview</p>
+          <h2 className={styles.title}>Extrinsic Bytes</h2>
+          <p className={styles.subtitle}>
+            Use the portal to generate and copy SCALE-encoded bytes.
+          </p>
         </div>
 
-        <pre
-          className={styles.codeBlock}
-          style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-        >
-          {hex}
-        </pre>
+        {hex ? (
+          <pre
+            className={styles.codeBlock}
+            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+          >
+            {hex}
+          </pre>
+        ) : (
+          <div className={styles.emptyState}>
+            <div className={styles.kv}>
+              <span>Parachain</span>
+              <code className={styles.mono}>{info?.name ?? `Para ${paraId}`}</code>
+            </div>
+            <div className={styles.kv}>
+              <span>Provider</span>
+              <code className={styles.mono}>{wsProvider ?? 'Unavailable'}</code>
+            </div>
+            <a
+              className={styles.primary}
+              href={decodeUrl}
+              target='_blank'
+              rel='noreferrer'
+              aria-disabled={!decodeUrl}
+              style={{ pointerEvents: decodeUrl ? 'auto' : 'none', opacity: decodeUrl ? 1 : 0.5 }}
+            >
+              <ExternalLink size={16} style={{ verticalAlign: 'text-bottom', marginRight: 6 }} />
+              Open Polkadot.js Decode
+            </a>
+          </div>
+        )}
 
         <div className={styles.actions}>
           <button className={styles.ghost} onClick={onClose}>
             Close
           </button>
-          <button className={styles.primary} onClick={copy}>
+          <button className={styles.primary} onClick={copy} disabled={!hex}>
             <Clipboard size={16} style={{ verticalAlign: 'text-bottom', marginRight: 6 }} />
             Copy bytes
           </button>
