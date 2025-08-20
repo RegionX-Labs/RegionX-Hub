@@ -2,6 +2,7 @@ import { Connection } from '@/api/connection';
 import {
   ChainId,
   CoretimeMetadata,
+  RegionXMetadata,
   RelayMetadata,
   getNetworkChainIds,
   getNetworkMetadata,
@@ -21,6 +22,7 @@ export type MultiChainAccountData = {
   account: string;
   relayChainData: AccountData;
   coretimeChainData: AccountData;
+  regionxChainData: AccountData | null;
 };
 
 type AccountData = {
@@ -37,25 +39,26 @@ const getAccountDataFx = createEffect(
     const { account, network, connections } = payload;
 
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) {
-      throw new Error('Network chain IDs not found');
-    }
+    if (!networkChainIds) throw new Error('Network chain IDs not found');
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) throw new Error('Network metadata not found');
 
     const relayConnection = connections[networkChainIds.relayChain];
     const coretimeConnection = connections[networkChainIds.coretimeChain];
+    const regionxConnection = networkChainIds.regionxChain
+      ? connections[networkChainIds.regionxChain]
+      : undefined;
+
     if (
       !relayConnection ||
       !coretimeConnection ||
       !relayConnection.client ||
-      !coretimeConnection ||
+      !coretimeConnection.client ||
       relayConnection.status !== 'connected' ||
       coretimeConnection.status !== 'connected'
     ) {
       throw new Error('Connection not available');
-    }
-    const metadata = getNetworkMetadata(network);
-    if (!metadata) {
-      throw new Error('Network metadata not found');
     }
 
     const _relayData = await fetchAccountData(relayConnection, metadata.relayChain, account);
@@ -65,28 +68,36 @@ const getAccountDataFx = createEffect(
       account
     );
 
+    let _regionxData: AccountData | null = null;
+    if (
+      regionxConnection &&
+      regionxConnection.client &&
+      regionxConnection.status === 'connected' &&
+      metadata.regionxChain
+    ) {
+      _regionxData = await fetchAccountData(regionxConnection, metadata.regionxChain, account);
+    }
+
     if (!_relayData || !_coretimeData) return null;
 
     return {
       account,
-      coretimeChainData: _coretimeData,
       relayChainData: _relayData,
+      coretimeChainData: _coretimeData,
+      regionxChainData: _regionxData,
     };
   }
 );
 
 const fetchAccountData = async (
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata,
+  metadata: RelayMetadata | CoretimeMetadata | RegionXMetadata,
   account: string
 ): Promise<AccountData | null> => {
   const client = connection.client;
-  if (!client || connection.status !== 'connected') {
-    return null;
-  }
+  if (!client || connection.status !== 'connected') return null;
 
   const res = await client.getTypedApi(metadata).query.System.Account.getValue(account);
-
   return res.data;
 };
 
@@ -101,7 +112,7 @@ sample({
   filter: (_, newData) => newData !== null,
   fn: (accountsRecord, newData) => ({
     ...accountsRecord,
-    [newData?.account || '']: newData,
+    [newData!.account]: newData,
   }),
   target: $accountData,
 });

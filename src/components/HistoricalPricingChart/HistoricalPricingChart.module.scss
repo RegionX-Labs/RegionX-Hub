@@ -1,0 +1,36 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@use 'sass:color';
+
+.card {
+  background-color: $darkBackground3;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 25px;
+  color: $white;
+  display: flex;
+  flex-direction: column;
+  @include Inter;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $gray5;
+}
+
+.dropdown {
+  background-color: $darkBackground2;
+  color: $white;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
