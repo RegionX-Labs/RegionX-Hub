@@ -103,11 +103,17 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
   useEffect(() => {
     (async () => {
-      if (!renewalEntry) return setDeadline('-');
+      if (!renewalEntry) {
+        setDeadline('-');
+        return;
+      }
       const [key] = renewalEntry;
       const ts = await timesliceToTimestamp(key.when, network, connections);
       const date = typeof ts === 'bigint' ? new Date(Number(ts)) : ts;
-      if (!date || !(date instanceof Date)) return setDeadline('-');
+      if (!date || !(date instanceof Date)) {
+        setDeadline('-');
+        return;
+      }
       setDeadline(
         date.toLocaleString(undefined, {
           year: 'numeric',
@@ -185,9 +191,8 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           }
         }
       },
-      (e) => {
+      () => {
         toast.error('Transaction error', { id: toastId });
-        console.error(e);
       }
     );
 
@@ -257,6 +262,8 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     };
   });
 
+  const dateTitle = renewalEntry ? 'Renewal deadline' : 'End of sale cycle';
+
   return (
     <div
       className={styles.card}
@@ -313,20 +320,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         )}
       </div>
 
-      {renewalEntry && (
-        <div className={styles.renewRow}>
-          <button className={styles.renewButtonSmall} onClick={openModal}>
-            Renew
-          </button>
-          <div className={styles.renewInfo}>
-            <span className={styles.renewLabel}>
-              {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
-            </span>
-            <span className={styles.renewLabel}>{deadline}</span>
-          </div>
-        </div>
-      )}
-
       {selected && (
         <div className={styles.inputSection}>
           <label>Select Parachain</label>
@@ -339,6 +332,21 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             }}
             variant='secondary'
           />
+        </div>
+      )}
+
+      {(renewalEntry || deadline !== '-') && (
+        <div className={styles.renewRow}>
+          {renewalEntry && (
+            <button className={styles.renewButtonSmall} onClick={openModal}>
+              Renew
+            </button>
+          )}
+
+          <div className={styles.dateWrap}>
+            <span className={styles.dateTitle}>{dateTitle}</span>
+            <span className={styles.dateValue}>{deadline}</span>
+          </div>
         </div>
       )}
 
