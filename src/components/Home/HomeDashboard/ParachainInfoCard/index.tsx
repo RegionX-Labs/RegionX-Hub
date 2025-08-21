@@ -362,48 +362,44 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         </div>
       )}
 
-      {(renewalEntry || deadline !== '-') && (
-        <>
-          <div className={styles.summaryRow}>
-            <div className={styles.priceBox}>
-              <span className={styles.priceLabel}>Renewal Price</span>
-              <span className={styles.priceValue}>
-                {renewalEntry ? toUnitFormatted(network, BigInt(renewalEntry[1].price)) : '-'}
-              </span>
-            </div>
-
-            <div className={styles.dateWrap}>
-              <span className={styles.dateTitle}>{dateTitle}</span>
-              <span className={styles.dateValue}>{deadline}</span>
-            </div>
+      {renewalEntry && (
+        <div className={styles.summaryRow}>
+          <div className={styles.priceBox}>
+            <span className={styles.priceLabel}>Renewal Price</span>
+            <span className={styles.priceValue}>
+              {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
+            </span>
           </div>
-
-          <div className={styles.actionRow}>
-            <div className={styles.leftAction}>
-              {renewalEntry && (
-                <button className={styles.renewButton} onClick={openModal}>
-                  Renew
-                </button>
-              )}
-            </div>
-
-            <div className={styles.rightAction}>
-              {state !== ParaState.SYSTEM && selected && (
-                <button
-                  className={
-                    autoRenewEnabled
-                      ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
-                      : styles.autoRenewBtn
-                  }
-                  onClick={() => setIsAutoRenewOpen(true)}
-                >
-                  {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
-                </button>
-              )}
-            </div>
+          <div className={styles.dateWrap}>
+            <span className={styles.dateTitle}>{dateTitle}</span>
+            <span className={styles.dateValue}>{deadline}</span>
           </div>
-        </>
+        </div>
       )}
+
+      <div className={styles.actionRow}>
+        <div className={styles.leftAction}>
+          {renewalEntry && (
+            <button className={styles.renewButton} onClick={openModal}>
+              Renew
+            </button>
+          )}
+        </div>
+        <div className={styles.rightAction}>
+          {state !== ParaState.SYSTEM && selected && (
+            <button
+              className={
+                autoRenewEnabled
+                  ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
+                  : styles.autoRenewBtn
+              }
+              onClick={() => setIsAutoRenewOpen(true)}
+            >
+              {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
+            </button>
+          )}
+        </div>
+      </div>
 
       {selectedAccount && accountData[selectedAccount.address] && (
         <TransactionModal
