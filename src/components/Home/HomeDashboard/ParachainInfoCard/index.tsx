@@ -123,11 +123,17 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
   useEffect(() => {
     (async () => {
-      if (!renewalEntry) return setDeadline('-');
+      if (!renewalEntry) {
+        setDeadline('-');
+        return;
+      }
       const [key] = renewalEntry;
       const ts = await timesliceToTimestamp(key.when, network, connections);
       const date = typeof ts === 'bigint' ? new Date(Number(ts)) : ts;
-      if (!date || !(date instanceof Date)) return setDeadline('-');
+      if (!date || !(date instanceof Date)) {
+        setDeadline('-');
+        return;
+      }
       setDeadline(
         date.toLocaleString(undefined, {
           year: 'numeric',
@@ -207,7 +213,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       },
       (e: any) => {
         toast.error('Transaction error', { id: toastId });
-        console.error(e);
       }
     );
 
@@ -285,6 +290,8 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     return autoRenewSet.has(Number(selected.id));
   }, [autoRenewSet, selected?.id]);
 
+  const dateTitle = renewalEntry ? 'Renewal deadline' : 'End of sale cycle';
+
   return (
     <div
       className={styles.card}
@@ -341,16 +348,38 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         )}
       </div>
 
-      {renewalEntry && (
+      {selected && (
+        <div className={styles.inputSection}>
+          <label>Select Parachain</label>
+          <Select
+            options={selectOptions}
+            selectedValue={selected}
+            onChange={(value) => {
+              setSelected(value);
+              onSelectParaId?.(value.id.toString());
+              void refreshAutoRenewals();
+            }}
+            variant='secondary'
+          />
+        </div>
+      )}
+
+      {(renewalEntry || deadline !== '-') && (
         <div className={styles.renewRow}>
-          <button className={styles.renewButtonSmall} onClick={openModal}>
-            Renew
-          </button>
-          <div className={styles.renewInfo}>
-            <span className={styles.renewLabel}>
-              {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
-            </span>
-            <span className={styles.renewLabel}>{deadline}</span>
+          {renewalEntry && (
+            <button className={styles.renewButtonSmall} onClick={openModal}>
+              Renew
+            </button>
+          )}
+
+          <div className={styles.dateWrap}>
+            <span className={styles.dateTitle}>{dateTitle}</span>
+            <span className={styles.dateValue}>{deadline}</span>
+            {renewalEntry && (
+              <span className={styles.priceValue}>
+                {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -367,22 +396,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           >
             {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
           </button>
-        </div>
-      )}
-
-      {selected && (
-        <div className={styles.inputSection}>
-          <label>Select Parachain</label>
-          <Select
-            options={selectOptions}
-            selectedValue={selected}
-            onChange={(value) => {
-              setSelected(value);
-              onSelectParaId?.(value.id.toString());
-              void refreshAutoRenewals();
-            }}
-            variant='secondary'
-          />
         </div>
       )}
 

@@ -94,7 +94,7 @@ export default function AuctionPhaseStatus({ view }: Props) {
       );
     });
 
-    const progressAngle = Math.max(0, (progressPercent - 0.04) * ARC_TOTAL_WITH_GAPS);
+    const progressAngle = Math.max(0, (progressPercent - 0.1) * ARC_TOTAL_WITH_GAPS);
     let greenAngle = (10 - TOTAL_ARC_ANGLE) / 2;
     let remaining = progressAngle;
     const progressArcs: JSX.Element[] = [];
