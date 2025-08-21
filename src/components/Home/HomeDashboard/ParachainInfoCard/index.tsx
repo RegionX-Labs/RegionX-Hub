@@ -407,6 +407,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           onConfirm={onModalConfirm}
         />
       )}
+
       {typeof paraId === 'number' && (
         <AutoRenewalModal
           isOpen={isAutoRenewOpen}
