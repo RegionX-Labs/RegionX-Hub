@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './ParachainInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
@@ -16,6 +16,7 @@ import {
   potentialRenewalsRequested,
   RenewalKey,
   RenewalRecord,
+  fetchAutoRenewals,
 } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $selectedAccount } from '@/wallet';
@@ -25,6 +26,7 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
 import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
+import AutoRenewalModal from '@/components/AutoRenewalModal';
 
 type Props = {
   onSelectParaId?: (id: string) => void;
@@ -37,6 +39,8 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   const [renewalEntry, setRenewalEntry] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [deadline, setDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
+  const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
 
   const [
     network,
@@ -59,13 +63,29 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   useEffect(() => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
+    void refreshAutoRenewals();
   }, [network, connections]);
+
+  const refreshAutoRenewals = async () => {
+    try {
+      const list = await fetchAutoRenewals(network, connections);
+      const set = new Set<number>(list.map((e: any) => Number(e.task)));
+      setAutoRenewSet(set);
+    } catch (e) {
+      console.error('fetchAutoRenewals failed', e);
+    }
+  };
+
+  useEffect(() => {
+    if (!isAutoRenewOpen) {
+      void refreshAutoRenewals();
+    }
+  }, [isAutoRenewOpen]);
 
   useEffect(() => {
     if (parachains.length === 0 || !potentialRenewals || !saleInfo) return;
 
     const selectedIsForNetwork = selected?.network === network;
-
     const urlMatch =
       initialParaId && parachains.find((p) => `${p.id}` === initialParaId && p.network === network);
 
@@ -126,7 +146,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     })();
   }, [renewalEntry, network, connections]);
 
-  const paraId = selected?.id;
+  const paraId = selected?.id as number | undefined;
   const state: ParaState | undefined = selected?.state;
   const chain = paraId !== undefined ? chainData[network]?.[paraId] : null;
   const name = chain?.name || (paraId !== undefined ? `Parachain ${paraId}` : 'Parachain');
@@ -167,7 +187,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
     const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
+      (ev: any) => {
         toast.loading(
           <span>
             Transaction submitted:&nbsp;
@@ -191,7 +211,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           }
         }
       },
-      () => {
+      (e: any) => {
         toast.error('Transaction error', { id: toastId });
       }
     );
@@ -210,7 +230,10 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     />
   );
 
-  const listForNetwork = parachains.filter((p) => p.network === network);
+  const listForNetwork = useMemo(
+    () => parachains.filter((p) => p.network === network),
+    [parachains, network]
+  );
 
   const selectOptions: SelectOption<any>[] = listForNetwork.map((item) => {
     const meta = chainData[network]?.[item.id];
@@ -261,6 +284,11 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       ),
     };
   });
+
+  const autoRenewEnabled = useMemo(() => {
+    if (!selected?.id) return false;
+    return autoRenewSet.has(Number(selected.id));
+  }, [autoRenewSet, selected?.id]);
 
   const dateTitle = renewalEntry ? 'Renewal deadline' : 'End of sale cycle';
 
@@ -329,6 +357,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             onChange={(value) => {
               setSelected(value);
               onSelectParaId?.(value.id.toString());
+              void refreshAutoRenewals();
             }}
             variant='secondary'
           />
@@ -346,7 +375,27 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           <div className={styles.dateWrap}>
             <span className={styles.dateTitle}>{dateTitle}</span>
             <span className={styles.dateValue}>{deadline}</span>
+            {renewalEntry && (
+              <span className={styles.priceValue}>
+                {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
+              </span>
+            )}
           </div>
+        </div>
+      )}
+
+      {state !== ParaState.SYSTEM && selected && (
+        <div className={styles.autoRenewRow}>
+          <button
+            className={
+              autoRenewEnabled
+                ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
+                : styles.autoRenewBtn
+            }
+            onClick={() => setIsAutoRenewOpen(true)}
+          >
+            {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
+          </button>
         </div>
       )}
 
@@ -356,6 +405,14 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           accountData={accountData[selectedAccount.address] as MultiChainAccountData}
           onClose={() => setIsModalOpen(false)}
           onConfirm={onModalConfirm}
+        />
+      )}
+
+      {typeof paraId === 'number' && (
+        <AutoRenewalModal
+          isOpen={isAutoRenewOpen}
+          onClose={() => setIsAutoRenewOpen(false)}
+          paraId={paraId}
         />
       )}
 

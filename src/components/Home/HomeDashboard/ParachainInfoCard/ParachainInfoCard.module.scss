@@ -180,3 +180,39 @@
   font-weight: 600;
   color: var(--text-primary);
 }
+
+.autoRenewRow {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.autoRenewBtn {
+  background: transparent;
+  color: $greenPrimary;
+  border: 1px solid $greenPrimary;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $greenPrimary;
+    color: black;
+  }
+}
+
+.autoRenewBtnEnabled {
+  background: $greenPrimary;
+  color: black;
+  border-color: $greenPrimary;
+  cursor: default;
+  pointer-events: none;
+}
+
+.autoRenewBtn:disabled {
+  opacity: 0.92;
+  cursor: default;
+  pointer-events: none;
+}
