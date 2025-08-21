@@ -11114,28 +11114,28 @@ export type Ieh6nis3hdbtgi = ResultPayload<
 export type Ie9sr1iqcg3cgm = ResultPayload<undefined, string>;
 export type I1mqgk2tmnn9i2 = string | undefined;
 export type I6lr8sctk0bi4e = Array<string>;
-export type I8l55oo60ovgap = Array<{
+export type I1urskkb58nkjk = Array<{
   phase: Phase;
-  event: Anonymize<I5jq74ddtq4as4>;
+  event: Anonymize<I48smljvfff2j2>;
   topics: Anonymize<Ic5m5lp1oioo8r>;
 }>;
-export type I5jq74ddtq4as4 = AnonymousEnum<{
-  System: Anonymize<I8tid8mfmc63tm>;
+export type I48smljvfff2j2 = AnonymousEnum<{
+  System: Anonymize<I9pvbkpnh8eg2c>;
   ParachainSystem: Anonymize<Icbsekf57miplo>;
   Balances: Anonymize<Iao8h4hv7atnq3>;
   TransactionPayment: TransactionPaymentEvent;
   CollatorSelection: Anonymize<I4srakrmf0fspo>;
-  Session: SessionEvent;
+  Session: Anonymize<I4co4bgsti676q>;
   XcmpQueue: Anonymize<Idsqc7mhp6nnle>;
-  PolkadotXcm: Anonymize<I5ce1ru810vv9d>;
-  CumulusXcm: Anonymize<Ibvp9t1gqae5ct>;
+  PolkadotXcm: Anonymize<Id2l439q7pe8kr>;
+  CumulusXcm: Anonymize<Ihpdgvt7vs2cb>;
   MessageQueue: Anonymize<I2kosejppk3jon>;
-  Utility: Anonymize<I8ffde8540ui55>;
-  Multisig: Anonymize<I58o1t5tsit5ha>;
-  Proxy: Anonymize<I4fiunbtkr5m5r>;
-  Broker: Anonymize<If8i3p468lj1ba>;
+  Utility: Anonymize<I72919mddjcf1c>;
+  Multisig: Anonymize<Iddjiu90hlfci5>;
+  Proxy: Anonymize<Ibr5cbthv02gl6>;
+  Broker: Anonymize<I8oh7vfem3j5g8>;
 }>;
-export type I8tid8mfmc63tm = AnonymousEnum<{
+export type I9pvbkpnh8eg2c = AnonymousEnum<{
   /**
    * An extrinsic completed successfully.
    */
@@ -11143,7 +11143,7 @@ export type I8tid8mfmc63tm = AnonymousEnum<{
   /**
    * An extrinsic failed.
    */
-  ExtrinsicFailed: Anonymize<I9bn0adjc806el>;
+  ExtrinsicFailed: Anonymize<Igobn73stm8td>;
   /**
    * `:code` was updated.
    */
@@ -11164,18 +11164,22 @@ export type I8tid8mfmc63tm = AnonymousEnum<{
    * An upgrade was authorized.
    */
   UpgradeAuthorized: Anonymize<Ibgl04rn6nbfm6>;
+  /**
+   * An invalid authorized upgrade was rejected while trying to apply it.
+   */
+  RejectedInvalidAuthorizedUpgrade: Anonymize<Id6o3bppgpgeg2>;
 }>;
-export type I9bn0adjc806el = {
-  dispatch_error: Anonymize<I6iir5b1cc0ncm>;
+export type Igobn73stm8td = {
+  dispatch_error: Anonymize<Ieomelrcrr6qh5>;
   dispatch_info: Anonymize<Ic9s8f85vjtncc>;
 };
-export type I6iir5b1cc0ncm = AnonymousEnum<{
+export type Ieomelrcrr6qh5 = AnonymousEnum<{
   Other: undefined;
   CannotLookup: undefined;
   BadOrigin: undefined;
   Module: Enum<{
     System: Anonymize<I5o0s7c8q1cc9b>;
-    ParachainSystem: Anonymize<I9p95gln24a0rn>;
+    ParachainSystem: Anonymize<Icjkr35j4tmg7k>;
     Timestamp: undefined;
     ParachainInfo: undefined;
     Balances: Anonymize<Idj13i7adlomht>;
@@ -11186,13 +11190,13 @@ export type I6iir5b1cc0ncm = AnonymousEnum<{
     Aura: undefined;
     AuraExt: undefined;
     XcmpQueue: Anonymize<Idnnbndsjjeqqs>;
-    PolkadotXcm: Anonymize<I87j95aq93d7dq>;
+    PolkadotXcm: Anonymize<I6dl09bpoqheqk>;
     CumulusXcm: undefined;
     MessageQueue: Anonymize<I5iupade5ag2dp>;
     Utility: Anonymize<I8dt2g2hcrgh36>;
     Multisig: Anonymize<Ia76qmhhg4jvb9>;
     Proxy: Anonymize<Iuvt54ei4cehc>;
-    Broker: Anonymize<I3ruhpr143p9re>;
+    Broker: Anonymize<I1ova47ispn87v>;
   }>;
   ConsumerRemaining: undefined;
   NoProviders: undefined;
@@ -11204,8 +11208,9 @@ export type I6iir5b1cc0ncm = AnonymousEnum<{
   Corruption: undefined;
   Unavailable: undefined;
   RootNotAllowed: undefined;
+  Trie: Anonymize<Idh4cj79bvroj8>;
 }>;
-export type I9p95gln24a0rn = AnonymousEnum<{
+export type Icjkr35j4tmg7k = AnonymousEnum<{
   /**
    * Attempt to upgrade validation function while existing upgrade pending.
    */
@@ -11231,14 +11236,6 @@ export type I9p95gln24a0rn = AnonymousEnum<{
    * No validation function upgrade is currently scheduled.
    */
   NotScheduled: undefined;
-  /**
-   * No code upgrade has been authorized.
-   */
-  NothingAuthorized: undefined;
-  /**
-   * The given code upgrade has not been authorized.
-   */
-  Unauthorized: undefined;
 }>;
 export type I36bcffk2387dv = AnonymousEnum<{
   /**
@@ -11332,7 +11329,120 @@ export type Idnnbndsjjeqqs = AnonymousEnum<{
    */
   TooBig: undefined;
 }>;
-export type I3ruhpr143p9re = AnonymousEnum<{
+export type I6dl09bpoqheqk = AnonymousEnum<{
+  /**
+   * The desired destination was unreachable, generally because there is a no way of routing
+   * to it.
+   */
+  Unreachable: undefined;
+  /**
+   * There was some other issue (i.e. not to do with routing) in sending the message.
+   * Perhaps a lack of space for buffering the message.
+   */
+  SendFailure: undefined;
+  /**
+   * The message execution fails the filter.
+   */
+  Filtered: undefined;
+  /**
+   * The message's weight could not be determined.
+   */
+  UnweighableMessage: undefined;
+  /**
+   * The destination `Location` provided cannot be inverted.
+   */
+  DestinationNotInvertible: undefined;
+  /**
+   * The assets to be sent are empty.
+   */
+  Empty: undefined;
+  /**
+   * Could not re-anchor the assets to declare the fees for the destination chain.
+   */
+  CannotReanchor: undefined;
+  /**
+   * Too many assets have been attempted for transfer.
+   */
+  TooManyAssets: undefined;
+  /**
+   * Origin is invalid for sending.
+   */
+  InvalidOrigin: undefined;
+  /**
+   * The version of the `Versioned` value used is not able to be interpreted.
+   */
+  BadVersion: undefined;
+  /**
+   * The given location could not be used (e.g. because it cannot be expressed in the
+   * desired version of XCM).
+   */
+  BadLocation: undefined;
+  /**
+   * The referenced subscription could not be found.
+   */
+  NoSubscription: undefined;
+  /**
+   * The location is invalid since it already has a subscription from us.
+   */
+  AlreadySubscribed: undefined;
+  /**
+   * Could not check-out the assets for teleportation to the destination chain.
+   */
+  CannotCheckOutTeleport: undefined;
+  /**
+   * The owner does not own (all) of the asset that they wish to do the operation on.
+   */
+  LowBalance: undefined;
+  /**
+   * The asset owner has too many locks on the asset.
+   */
+  TooManyLocks: undefined;
+  /**
+   * The given account is not an identifiable sovereign account for any location.
+   */
+  AccountNotSovereign: undefined;
+  /**
+   * The operation required fees to be paid which the initiator could not meet.
+   */
+  FeesNotMet: undefined;
+  /**
+   * A remote lock with the corresponding data could not be found.
+   */
+  LockNotFound: undefined;
+  /**
+   * The unlock operation cannot succeed because there are still consumers of the lock.
+   */
+  InUse: undefined;
+  /**
+   * Invalid asset, reserve chain could not be determined for it.
+   */
+  InvalidAssetUnknownReserve: undefined;
+  /**
+   * Invalid asset, do not support remote asset reserves with different fees reserves.
+   */
+  InvalidAssetUnsupportedReserve: undefined;
+  /**
+   * Too many assets with different reserve locations have been attempted for transfer.
+   */
+  TooManyReserves: undefined;
+  /**
+   * Local XCM execution incomplete.
+   */
+  LocalExecutionIncomplete: undefined;
+  /**
+   * Too many locations authorized to alias origin.
+   */
+  TooManyAuthorizedAliases: undefined;
+  /**
+   * Expiry block number is in the past.
+   */
+  ExpiresInPast: undefined;
+  /**
+   * The alias to remove authorization for was not found.
+   */
+  AliasNotFound: undefined;
+}>;
+export type I1ova47ispn87v = AnonymousEnum<{
   /**
    * The given region identity is not known.
    */
@@ -11411,6 +11521,10 @@ export type I3ruhpr143p9re = AnonymousEnum<{
    */
   TooManyLeases: undefined;
   /**
+   * The lease does not exist.
+   */
+  LeaseNotFound: undefined;
+  /**
    * The revenue for the Instantaneous Core Sales of this period is not (yet) known and thus
    * this operation cannot proceed.
    */
@@ -11472,7 +11586,36 @@ export type I3ruhpr143p9re = AnonymousEnum<{
    * Attempted to disable auto-renewal for a core that didn't have it enabled.
    */
   AutoRenewalNotEnabled: undefined;
+  /**
+   * Attempted to force remove an assignment that doesn't exist.
+   */
+  AssignmentNotFound: undefined;
+  /**
+   * Needed to prevent spam attacks.The amount of credits the user attempted to purchase is
+   * below `T::MinimumCreditPurchase`.
+   */
+  CreditPurchaseTooSmall: undefined;
 }>;
+export type Idh4cj79bvroj8 = AnonymousEnum<{
+  InvalidStateRoot: undefined;
+  IncompleteDatabase: undefined;
+  ValueAtIncompleteKey: undefined;
+  DecoderError: undefined;
+  InvalidHash: undefined;
+  DuplicateKey: undefined;
+  ExtraneousNode: undefined;
+  ExtraneousValue: undefined;
+  ExtraneousHashReference: undefined;
+  InvalidChildReference: undefined;
+  ValueMismatch: undefined;
+  IncompleteProof: undefined;
+  RootMismatch: undefined;
+  DecodeError: undefined;
+}>;
+export type Id6o3bppgpgeg2 = {
+  code_hash: FixedSizeBinary<32>;
+  error: Anonymize<Ieomelrcrr6qh5>;
+};
 export type Icbsekf57miplo = AnonymousEnum<{
   /**
    * The validation function has been scheduled to apply.
@@ -11570,6 +11713,24 @@ export type I9ubb2kqevnu6t = {
   new: SS58String;
   deposit: bigint;
 };
+export type I4co4bgsti676q = AnonymousEnum<{
+  /**
+   * New session has happened. Note that the argument is the session index, not the
+   * block number as the type might suggest.
+   */
+  NewSession: Anonymize<I2hq50pu2kdjpo>;
+  /**
+   * Validator has been disabled.
+   */
+  ValidatorDisabled: Anonymize<I9acqruh7322g2>;
+  /**
+   * Validator has been re-enabled.
+   */
+  ValidatorReenabled: Anonymize<I9acqruh7322g2>;
+}>;
+export type I9acqruh7322g2 = {
+  validator: SS58String;
+};
 export type Idsqc7mhp6nnle = AnonymousEnum<{
   /**
    * An HRMP message was sent to a sibling parachain.
@@ -11579,7 +11740,550 @@ export type Idsqc7mhp6nnle = AnonymousEnum<{
 export type I137t1cld92pod = {
   message_hash: FixedSizeBinary<32>;
 };
-export type Ibvp9t1gqae5ct = AnonymousEnum<{
+export type Id2l439q7pe8kr = AnonymousEnum<{
+  /**
+   * Execution of an XCM message was attempted.
+   */
+  Attempted: Anonymize<Ia72eet39sf8j9>;
+  /**
+   * An XCM message was sent.
+   */
+  Sent: Anonymize<If8u5kl4h8070m>;
+  /**
+   * An XCM message failed to send.
+   */
+  SendFailed: Anonymize<Ibmuil6p3vl83l>;
+  /**
+   * An XCM message failed to process.
+   */
+  ProcessXcmError: Anonymize<I7lul91g50ae87>;
+  /**
+   * Query response received which does not match a registered query. This may be because a
+   * matching query was never registered, it may be because it is a duplicate response, or
+   * because the query timed out.
+   */
+  UnexpectedResponse: Anonymize<Icl7nl1rfeog3i>;
+  /**
+   * Query response has been received and is ready for taking with `take_response`. There is
+   * no registered notification call.
+   */
+  ResponseReady: Anonymize<Iasr6pj6shs0fl>;
+  /**
+   * Query response has been received and query is removed. The registered notification has
+   * been dispatched and executed successfully.
+   */
+  Notified: Anonymize<I2uqmls7kcdnii>;
+  /**
+   * Query response has been received and query is removed. The registered notification
+   * could not be dispatched because the dispatch weight is greater than the maximum weight
+   * originally budgeted by this runtime for the query result.
+   */
+  NotifyOverweight: Anonymize<Idg69klialbkb8>;
+  /**
+   * Query response has been received and query is removed. There was a general error with
+   * dispatching the notification call.
+   */
+  NotifyDispatchError: Anonymize<I2uqmls7kcdnii>;
+  /**
+   * Query response has been received and query is removed. The dispatch was unable to be
+   * decoded into a `Call`; this might be due to dispatch function having a signature which
+   * is not `(origin, QueryId, Response)`.
+   */
+  NotifyDecodeFailed: Anonymize<I2uqmls7kcdnii>;
+  /**
+   * Expected query response has been received but the origin location of the response does
+   * not match that expected. The query remains registered for a later, valid, response to
+   * be received and acted upon.
+   */
+  InvalidResponder: Anonymize<I7r6b7145022pp>;
+  /**
+   * Expected query response has been received but the expected origin location placed in
+   * storage by this runtime previously cannot be decoded. The query remains registered.
+   *
+   * This is unexpected (since a location placed in storage in a previously executing
+   * runtime should be readable prior to query timeout) and dangerous since the possibly
+   * valid response will be dropped. Manual governance intervention is probably going to be
+   * needed.
+   */
+  InvalidResponderVersion: Anonymize<Icl7nl1rfeog3i>;
+  /**
+   * Received query response has been read and removed.
+   */
+  ResponseTaken: Anonymize<I30pg328m00nr3>;
+  /**
+   * Some assets have been placed in an asset trap.
+   */
+  AssetsTrapped: Anonymize<Icmrn7bogp28cs>;
+  /**
+   * An XCM version change notification message has been attempted to be sent.
+   *
+   * The cost of sending it (borne by the chain) is included.
+   */
+  VersionChangeNotified: Anonymize<I7m9b5plj4h5ot>;
+  /**
+   * The supported version of a location has been changed. This might be through an
+   * automatic notification or a manual intervention.
+   */
+  SupportedVersionChanged: Anonymize<I9kt8c221c83ln>;
+  /**
+   * A given location which had a version change subscription was dropped owing to an error
+   * sending the notification to it.
+   */
+  NotifyTargetSendFail: Anonymize<I9onhk772nfs4f>;
+  /**
+   * A given location which had a version change subscription was dropped owing to an error
+   * migrating the location to our new XCM format.
+   */
+  NotifyTargetMigrationFail: Anonymize<I3l6bnksrmt56r>;
+  /**
+   * Expected query response has been received but the expected querier location placed in
+   * storage by this runtime previously cannot be decoded. The query remains registered.
+   *
+   * This is unexpected (since a location placed in storage in a previously executing
+   * runtime should be readable prior to query timeout) and dangerous since the possibly
+   * valid response will be dropped. Manual governance intervention is probably going to be
+   * needed.
+   */
+  InvalidQuerierVersion: Anonymize<Icl7nl1rfeog3i>;
+  /**
+   * Expected query response has been received but the querier location of the response does
+   * not match the expected. The query remains registered for a later, valid, response to
+   * be received and acted upon.
+   */
+  InvalidQuerier: Anonymize<Idh09k0l2pmdcg>;
+  /**
+   * A remote has requested XCM version change notification from us and we have honored it.
+   * A version information message is sent to them and its cost is included.
+   */
+  VersionNotifyStarted: Anonymize<I7uoiphbm0tj4r>;
+  /**
+   * We have requested that a remote chain send us XCM version change notifications.
+   */
+  VersionNotifyRequested: Anonymize<I7uoiphbm0tj4r>;
+  /**
+   * We have requested that a remote chain stops sending us XCM version change
+   * notifications.
+   */
+  VersionNotifyUnrequested: Anonymize<I7uoiphbm0tj4r>;
+  /**
+   * Fees were paid from a location for an operation (often for using `SendXcm`).
+   */
+  FeesPaid: Anonymize<I512p1n7qt24l8>;
+  /**
+   * Some assets have been claimed from an asset trap
+   */
+  AssetsClaimed: Anonymize<Icmrn7bogp28cs>;
+  /**
+   * A XCM version migration finished.
+   */
+  VersionMigrationFinished: Anonymize<I6s1nbislhk619>;
+  /**
+   * An `aliaser` location was authorized by `target` to alias it, authorization valid until
+   * `expiry` block number.
+   */
+  AliasAuthorized: Anonymize<I3gghqnh2mj0is>;
+  /**
+   * `target` removed alias authorization for `aliaser`.
+   */
+  AliasAuthorizationRemoved: Anonymize<I6iv852roh6t3h>;
+  /**
+   * `target` removed all alias authorizations.
+   */
+  AliasesAuthorizationsRemoved: Anonymize<I9oc2o6itbiopq>;
+}>;
+export type Ia72eet39sf8j9 = {
+  outcome: Anonymize<I6uq5gb4s805s7>;
+};
+export type I6uq5gb4s805s7 = AnonymousEnum<{
+  Complete: Anonymize<I30iff2d192eu7>;
+  Incomplete: {
+    used: Anonymize<I4q39t5hn830vp>;
+    error: Anonymize<Id56rgs0bdb7gl>;
+  };
+  Error: {
+    error: Anonymize<Id56rgs0bdb7gl>;
+  };
+}>;
+export type Id56rgs0bdb7gl = AnonymousEnum<{
+  Overflow: undefined;
+  Unimplemented: undefined;
+  UntrustedReserveLocation: undefined;
+  UntrustedTeleportLocation: undefined;
+  LocationFull: undefined;
+  LocationNotInvertible: undefined;
+  BadOrigin: undefined;
+  InvalidLocation: undefined;
+  AssetNotFound: undefined;
+  FailedToTransactAsset: undefined;
+  NotWithdrawable: undefined;
+  LocationCannotHold: undefined;
+  ExceedsMaxMessageSize: undefined;
+  DestinationUnsupported: undefined;
+  Transport: undefined;
+  Unroutable: undefined;
+  UnknownClaim: undefined;
+  FailedToDecode: undefined;
+  MaxWeightInvalid: undefined;
+  NotHoldingFees: undefined;
+  TooExpensive: undefined;
+  Trap: bigint;
+  ExpectationFalse: undefined;
+  PalletNotFound: undefined;
+  NameMismatch: undefined;
+  VersionIncompatible: undefined;
+  HoldingWouldOverflow: undefined;
+  ExportError: undefined;
+  ReanchorFailed: undefined;
+  NoDeal: undefined;
+  FeesNotMet: undefined;
+  LockError: undefined;
+  NoPermission: undefined;
+  Unanchored: undefined;
+  NotDepositable: undefined;
+  TooManyAssets: undefined;
+  UnhandledXcmVersion: undefined;
+  WeightLimitReached: Anonymize<I4q39t5hn830vp>;
+  Barrier: undefined;
+  WeightNotComputable: undefined;
+  ExceedsStackLimit: undefined;
+}>;
+export type If8u5kl4h8070m = {
+  origin: Anonymize<If9iqq7i64mur8>;
+  destination: Anonymize<If9iqq7i64mur8>;
+  message: Anonymize<Ict03eedr8de9s>;
+  message_id: FixedSizeBinary<32>;
+};
+export type If9iqq7i64mur8 = {
+  parents: number;
+  interior: XcmV5Junctions;
+};
+export type XcmV5Junctions = Enum<{
+  Here: undefined;
+  X1: XcmV5Junction;
+  X2: FixedSizeArray<2, XcmV5Junction>;
+  X3: FixedSizeArray<3, XcmV5Junction>;
+  X4: FixedSizeArray<4, XcmV5Junction>;
+  X5: FixedSizeArray<5, XcmV5Junction>;
+  X6: FixedSizeArray<6, XcmV5Junction>;
+  X7: FixedSizeArray<7, XcmV5Junction>;
+  X8: FixedSizeArray<8, XcmV5Junction>;
+}>;
+export declare const XcmV5Junctions: GetEnum<XcmV5Junctions>;
+export type XcmV5Junction = Enum<{
+  Parachain: number;
+  AccountId32: {
+    network?: Anonymize<I97pd2rst02a7r>;
+    id: FixedSizeBinary<32>;
+  };
+  AccountIndex64: {
+    network?: Anonymize<I97pd2rst02a7r>;
+    index: bigint;
+  };
+  AccountKey20: {
+    network?: Anonymize<I97pd2rst02a7r>;
+    key: FixedSizeBinary<20>;
+  };
+  PalletInstance: number;
+  GeneralIndex: bigint;
+  GeneralKey: Anonymize<I15lht6t53odo4>;
+  OnlyChild: undefined;
+  Plurality: Anonymize<I518fbtnclg1oc>;
+  GlobalConsensus: XcmV5NetworkId;
+}>;
+export declare const XcmV5Junction: GetEnum<XcmV5Junction>;
+export type I97pd2rst02a7r = XcmV5NetworkId | undefined;
+export type XcmV5NetworkId = Enum<{
+  ByGenesis: FixedSizeBinary<32>;
+  ByFork: Anonymize<I15vf5oinmcgps>;
+  Polkadot: undefined;
+  Kusama: undefined;
+  Ethereum: Anonymize<I623eo8t3jrbeo>;
+  BitcoinCore: undefined;
+  BitcoinCash: undefined;
+  PolkadotBulletin: undefined;
+}>;
+export declare const XcmV5NetworkId: GetEnum<XcmV5NetworkId>;
+export type Ict03eedr8de9s = Array<XcmV5Instruction>;
+export type XcmV5Instruction = Enum<{
+  WithdrawAsset: Anonymize<I4npjalvhmfuj>;
+  ReserveAssetDeposited: Anonymize<I4npjalvhmfuj>;
+  ReceiveTeleportedAsset: Anonymize<I4npjalvhmfuj>;
+  QueryResponse: {
+    query_id: bigint;
+    response: Anonymize<I7vucpgm2c6959>;
+    max_weight: Anonymize<I4q39t5hn830vp>;
+    querier?: Anonymize<I4pai6qnfk426l>;
+  };
+  TransferAsset: {
+    assets: Anonymize<I4npjalvhmfuj>;
+    beneficiary: Anonymize<If9iqq7i64mur8>;
+  };
+  TransferReserveAsset: {
+    assets: Anonymize<I4npjalvhmfuj>;
+    dest: Anonymize<If9iqq7i64mur8>;
+    xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  Transact: {
+    origin_kind: XcmV2OriginKind;
+    fallback_max_weight?: Anonymize<Iasb8k6ash5mjn>;
+    call: Binary;
+  };
+  HrmpNewChannelOpenRequest: Anonymize<I5uhhrjqfuo4e5>;
+  HrmpChannelAccepted: Anonymize<Ifij4jam0o7sub>;
+  HrmpChannelClosing: Anonymize<Ieeb4svd9i8fji>;
+  ClearOrigin: undefined;
+  DescendOrigin: XcmV5Junctions;
+  ReportError: Anonymize<I6vsmh07hrp1rc>;
+  DepositAsset: {
+    assets: XcmV5AssetFilter;
+    beneficiary: Anonymize<If9iqq7i64mur8>;
+  };
+  DepositReserveAsset: {
+    assets: XcmV5AssetFilter;
+    dest: Anonymize<If9iqq7i64mur8>;
+    xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  ExchangeAsset: {
+    give: XcmV5AssetFilter;
+    want: Anonymize<I4npjalvhmfuj>;
+    maximal: boolean;
+  };
+  InitiateReserveWithdraw: {
+    assets: XcmV5AssetFilter;
+    reserve: Anonymize<If9iqq7i64mur8>;
+    xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  InitiateTeleport: {
+    assets: XcmV5AssetFilter;
+    dest: Anonymize<If9iqq7i64mur8>;
+    xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  ReportHolding: {
+    response_info: Anonymize<I6vsmh07hrp1rc>;
+    assets: XcmV5AssetFilter;
+  };
+  BuyExecution: {
+    fees: Anonymize<Iffh1nc5e1mod6>;
+    weight_limit: XcmV3WeightLimit;
+  };
+  RefundSurplus: undefined;
+  SetErrorHandler: Anonymize<Ict03eedr8de9s>;
+  SetAppendix: Anonymize<Ict03eedr8de9s>;
+  ClearError: undefined;
+  ClaimAsset: {
+    assets: Anonymize<I4npjalvhmfuj>;
+    ticket: Anonymize<If9iqq7i64mur8>;
+  };
+  Trap: bigint;
+  SubscribeVersion: Anonymize<Ieprdqqu7ildvr>;
+  UnsubscribeVersion: undefined;
+  BurnAsset: Anonymize<I4npjalvhmfuj>;
+  ExpectAsset: Anonymize<I4npjalvhmfuj>;
+  ExpectOrigin?: Anonymize<I4pai6qnfk426l>;
+  ExpectError?: Anonymize<I3l6ejee750fv1>;
+  ExpectTransactStatus: XcmV3MaybeErrorCode;
+  QueryPallet: {
+    module_name: Binary;
+    response_info: Anonymize<I6vsmh07hrp1rc>;
+  };
+  ExpectPallet: Anonymize<Id7mf37dkpgfjs>;
+  ReportTransactStatus: Anonymize<I6vsmh07hrp1rc>;
+  ClearTransactStatus: undefined;
+  UniversalOrigin: XcmV5Junction;
+  ExportMessage: {
+    network: XcmV5NetworkId;
+    destination: XcmV5Junctions;
+    xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  LockAsset: {
+    asset: Anonymize<Iffh1nc5e1mod6>;
+    unlocker: Anonymize<If9iqq7i64mur8>;
+  };
+  UnlockAsset: {
+    asset: Anonymize<Iffh1nc5e1mod6>;
+    target: Anonymize<If9iqq7i64mur8>;
+  };
+  NoteUnlockable: {
+    asset: Anonymize<Iffh1nc5e1mod6>;
+    owner: Anonymize<If9iqq7i64mur8>;
+  };
+  RequestUnlock: {
+    asset: Anonymize<Iffh1nc5e1mod6>;
+    locker: Anonymize<If9iqq7i64mur8>;
+  };
+  SetFeesMode: Anonymize<I4nae9rsql8fa7>;
+  SetTopic: FixedSizeBinary<32>;
+  ClearTopic: undefined;
+  AliasOrigin: Anonymize<If9iqq7i64mur8>;
+  UnpaidExecution: {
+    weight_limit: XcmV3WeightLimit;
+    check_origin?: Anonymize<I4pai6qnfk426l>;
+  };
+  PayFees: {
+    asset: Anonymize<Iffh1nc5e1mod6>;
+  };
+  InitiateTransfer: {
+    destination: Anonymize<If9iqq7i64mur8>;
+    remote_fees?: Anonymize<Ifhmc9e7vpeeig> | undefined;
+    preserve_origin: boolean;
+    assets: Array<Anonymize<Ifhmc9e7vpeeig>>;
+    remote_xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  ExecuteWithOrigin: {
+    descendant_origin?: XcmV5Junctions | undefined;
+    xcm: Anonymize<Ict03eedr8de9s>;
+  };
+  SetHints: {
+    hints: Array<
+      Enum<{
+        AssetClaimer: {
+          location: Anonymize<If9iqq7i64mur8>;
+        };
+      }>
+    >;
+  };
+}>;
+export declare const XcmV5Instruction: GetEnum<XcmV5Instruction>;
+export type I4npjalvhmfuj = Array<Anonymize<Iffh1nc5e1mod6>>;
+export type Iffh1nc5e1mod6 = {
+  id: Anonymize<If9iqq7i64mur8>;
+  fun: XcmV3MultiassetFungibility;
+};
+export type I7vucpgm2c6959 = AnonymousEnum<{
+  Null: undefined;
+  Assets: Anonymize<I4npjalvhmfuj>;
+  ExecutionResult?: Anonymize<I3l6ejee750fv1>;
+  Version: number;
+  PalletsInfo: Anonymize<I599u7h20b52at>;
+  DispatchResult: XcmV3MaybeErrorCode;
+}>;
+export type I3l6ejee750fv1 = [number, Anonymize<Id56rgs0bdb7gl>] | undefined;
+export type I4pai6qnfk426l = Anonymize<If9iqq7i64mur8> | undefined;
+export type I6vsmh07hrp1rc = {
+  destination: Anonymize<If9iqq7i64mur8>;
+  query_id: bigint;
+  max_weight: Anonymize<I4q39t5hn830vp>;
+};
+export type XcmV5AssetFilter = Enum<{
+  Definite: Anonymize<I4npjalvhmfuj>;
+  Wild: XcmV5WildAsset;
+}>;
+export declare const XcmV5AssetFilter: GetEnum<XcmV5AssetFilter>;
+export type XcmV5WildAsset = Enum<{
+  All: undefined;
+  AllOf: {
+    id: Anonymize<If9iqq7i64mur8>;
+    fun: XcmV2MultiassetWildFungibility;
+  };
+  AllCounted: number;
+  AllOfCounted: {
+    id: Anonymize<If9iqq7i64mur8>;
+    fun: XcmV2MultiassetWildFungibility;
+    count: number;
+  };
+}>;
+export declare const XcmV5WildAsset: GetEnum<XcmV5WildAsset>;
+export type Ifhmc9e7vpeeig = AnonymousEnum<{
+  Teleport: XcmV5AssetFilter;
+  ReserveDeposit: XcmV5AssetFilter;
+  ReserveWithdraw: XcmV5AssetFilter;
+}>;
+export type Ibmuil6p3vl83l = {
+  origin: Anonymize<If9iqq7i64mur8>;
+  destination: Anonymize<If9iqq7i64mur8>;
+  error: Enum<{
+    NotApplicable: undefined;
+    Transport: undefined;
+    Unroutable: undefined;
+    DestinationUnsupported: undefined;
+    ExceedsMaxMessageSize: undefined;
+    MissingArgument: undefined;
+    Fees: undefined;
+  }>;
+  message_id: FixedSizeBinary<32>;
+};
+export type I7lul91g50ae87 = {
+  origin: Anonymize<If9iqq7i64mur8>;
+  error: Anonymize<Id56rgs0bdb7gl>;
+  message_id: FixedSizeBinary<32>;
+};
+export type Icl7nl1rfeog3i = {
+  origin: Anonymize<If9iqq7i64mur8>;
+  query_id: bigint;
+};
+export type Iasr6pj6shs0fl = {
+  query_id: bigint;
+  response: Anonymize<I7vucpgm2c6959>;
+};
+export type I7r6b7145022pp = {
+  origin: Anonymize<If9iqq7i64mur8>;
+  query_id: bigint;
+  expected_location?: Anonymize<I4pai6qnfk426l>;
+};
+export type Icmrn7bogp28cs = {
+  hash: FixedSizeBinary<32>;
+  origin: Anonymize<If9iqq7i64mur8>;
+  assets: XcmVersionedAssets;
+};
+export type XcmVersionedAssets = Enum<{
+  V3: Anonymize<Iai6dhqiq3bach>;
+  V4: Anonymize<I50mli3hb64f9b>;
+  V5: Anonymize<I4npjalvhmfuj>;
+}>;
+export declare const XcmVersionedAssets: GetEnum<XcmVersionedAssets>;
+export type I7m9b5plj4h5ot = {
+  destination: Anonymize<If9iqq7i64mur8>;
+  result: number;
+  cost: Anonymize<I4npjalvhmfuj>;
+  message_id: FixedSizeBinary<32>;
+};
+export type I9kt8c221c83ln = {
+  location: Anonymize<If9iqq7i64mur8>;
+  version: number;
+};
+export type I9onhk772nfs4f = {
+  location: Anonymize<If9iqq7i64mur8>;
+  query_id: bigint;
+  error: Anonymize<Id56rgs0bdb7gl>;
+};
+export type I3l6bnksrmt56r = {
+  location: XcmVersionedLocation;
+  query_id: bigint;
+};
+export type XcmVersionedLocation = Enum<{
+  V3: Anonymize<I4c0s5cioidn76>;
+  V4: Anonymize<I4c0s5cioidn76>;
+  V5: Anonymize<If9iqq7i64mur8>;
+}>;
+export declare const XcmVersionedLocation: GetEnum<XcmVersionedLocation>;
+export type Idh09k0l2pmdcg = {
+  origin: Anonymize<If9iqq7i64mur8>;
+  query_id: bigint;
+  expected_querier: Anonymize<If9iqq7i64mur8>;
+  maybe_actual_querier?: Anonymize<I4pai6qnfk426l>;
+};
+export type I7uoiphbm0tj4r = {
+  destination: Anonymize<If9iqq7i64mur8>;
+  cost: Anonymize<I4npjalvhmfuj>;
+  message_id: FixedSizeBinary<32>;
+};
+export type I512p1n7qt24l8 = {
+  paying: Anonymize<If9iqq7i64mur8>;
+  fees: Anonymize<I4npjalvhmfuj>;
+};
+export type I3gghqnh2mj0is = {
+  aliaser: Anonymize<If9iqq7i64mur8>;
+  target: Anonymize<If9iqq7i64mur8>;
+  expiry?: Anonymize<I35p85j063s0il>;
+};
+export type I6iv852roh6t3h = {
+  aliaser: Anonymize<If9iqq7i64mur8>;
+  target: Anonymize<If9iqq7i64mur8>;
+};
+export type I9oc2o6itbiopq = {
+  target: Anonymize<If9iqq7i64mur8>;
+};
+export type Ihpdgvt7vs2cb = AnonymousEnum<{
   /**
    * Downward message is invalid XCM.
    * \[ id \]
@@ -11594,9 +12298,9 @@ export type Ibvp9t1gqae5ct = AnonymousEnum<{
    * Downward message executed with the given outcome.
    * \[ id, outcome \]
    */
-  ExecutedDownward: Anonymize<Iea25i7vqm7ot3>;
+  ExecutedDownward: Anonymize<Ibeto40kl3r5j7>;
 }>;
-export type Iea25i7vqm7ot3 = [FixedSizeBinary<32>, XcmV4TraitsOutcome];
+export type Ibeto40kl3r5j7 = [FixedSizeBinary<32>, Anonymize<I6uq5gb4s805s7>];
 export type I2kosejppk3jon = AnonymousEnum<{
   /**
    * Message discarded due to an error in the `MessageProcessor` (usually a format error).
@@ -11688,12 +12392,12 @@ export type I7tmrp94r9sq4n = {
    */
   index: number;
 };
-export type I8ffde8540ui55 = AnonymousEnum<{
+export type I72919mddjcf1c = AnonymousEnum<{
   /**
    * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
    * well as the error.
    */
-  BatchInterrupted: Anonymize<I44ti4iof2qgdo>;
+  BatchInterrupted: Anonymize<Iaiph5klqch0tl>;
   /**
    * Batch of dispatches completed fully with no error.
    */
@@ -11709,24 +12413,35 @@ export type I8ffde8540ui55 = AnonymousEnum<{
   /**
    * A single item within a Batch of dispatches has completed with error.
    */
-  ItemFailed: Anonymize<I9snm45eebd51b>;
+  ItemFailed: Anonymize<Iapl5s735bfplh>;
   /**
    * A call was dispatched.
    */
-  DispatchedAs: Anonymize<I802b96fgd9dvd>;
+  DispatchedAs: Anonymize<I782tvu778vo0f>;
+  /**
+   * Main call was dispatched.
+   */
+  IfElseMainSuccess: undefined;
+  /**
+   * The fallback call was dispatched.
+   */
+  IfElseFallbackCalled: Anonymize<Icbej0174r763l>;
 }>;
-export type I44ti4iof2qgdo = {
+export type Iaiph5klqch0tl = {
   index: number;
-  error: Anonymize<I6iir5b1cc0ncm>;
+  error: Anonymize<Ieomelrcrr6qh5>;
 };
-export type I9snm45eebd51b = {
-  error: Anonymize<I6iir5b1cc0ncm>;
+export type Iapl5s735bfplh = {
+  error: Anonymize<Ieomelrcrr6qh5>;
 };
-export type I802b96fgd9dvd = {
-  result: Anonymize<I5mme01t705osv>;
+export type I782tvu778vo0f = {
+  result: Anonymize<Ibi6egoue863bp>;
 };
-export type I5mme01t705osv = ResultPayload<undefined, Anonymize<I6iir5b1cc0ncm>>;
-export type I58o1t5tsit5ha = AnonymousEnum<{
+export type Ibi6egoue863bp = ResultPayload<undefined, Anonymize<Ieomelrcrr6qh5>>;
+export type Icbej0174r763l = {
+  main_error: Anonymize<Ieomelrcrr6qh5>;
+};
+export type Iddjiu90hlfci5 = AnonymousEnum<{
   /**
    * A new multisig operation has begun.
    */
@@ -11738,24 +12453,34 @@ export type I58o1t5tsit5ha = AnonymousEnum<{
   /**
    * A multisig operation has been executed.
    */
-  MultisigExecuted: Anonymize<I1h0kh7ntal333>;
+  MultisigExecuted: Anonymize<Islk5d1gnq1dg>;
   /**
    * A multisig operation has been cancelled.
    */
   MultisigCancelled: Anonymize<I5qolde99acmd1>;
+  /**
+   * The deposit for a multisig operation has been updated/poked.
+   */
+  DepositPoked: Anonymize<I8gtde5abn1g9a>;
 }>;
-export type I1h0kh7ntal333 = {
+export type Islk5d1gnq1dg = {
   approving: SS58String;
   timepoint: Anonymize<Itvprrpb0nm3o>;
   multisig: SS58String;
   call_hash: FixedSizeBinary<32>;
-  result: Anonymize<I5mme01t705osv>;
+  result: Anonymize<Ibi6egoue863bp>;
 };
-export type I4fiunbtkr5m5r = AnonymousEnum<{
+export type I8gtde5abn1g9a = {
+  who: SS58String;
+  call_hash: FixedSizeBinary<32>;
+  old_deposit: bigint;
+  new_deposit: bigint;
+};
+export type Ibr5cbthv02gl6 = AnonymousEnum<{
   /**
    * A proxy was executed correctly, with the given.
    */
-  ProxyExecuted: Anonymize<I802b96fgd9dvd>;
+  ProxyExecuted: Anonymize<I782tvu778vo0f>;
   /**
    * A pure account has been created by new proxy with given
    * disambiguation index and proxy type.
@@ -11773,6 +12498,10 @@ export type I4fiunbtkr5m5r = AnonymousEnum<{
    * A proxy was removed.
    */
   ProxyRemoved: Anonymize<Idf02iigou8dpt>;
+  /**
+   * A deposit stored for proxies or announcements was poked / updated.
+   */
+  DepositPoked: Anonymize<I1bhd210c3phjj>;
 }>;
 export type I4sa5jshkufeug = {
   pure: SS58String;
@@ -11795,7 +12524,16 @@ export type Idf02iigou8dpt = {
   proxy_type: Anonymize<I1rps369nood5j>;
   delay: number;
 };
-export type If8i3p468lj1ba = AnonymousEnum<{
+export type I1bhd210c3phjj = {
+  who: SS58String;
+  kind: Enum<{
+    Proxies: undefined;
+    Announcements: undefined;
+  }>;
+  old_deposit: bigint;
+  new_deposit: bigint;
+};
+export type I8oh7vfem3j5g8 = AnonymousEnum<{
   /**
    * A Region of Bulk Coretime has been purchased.
    */
@@ -11825,6 +12563,10 @@ export type If8i3p468lj1ba = AnonymousEnum<{
    */
   Assigned: Anonymize<Icinrphfs7c1gh>;
   /**
+   * An assignment has been removed from the workplan.
+   */
+  AssignmentRemoved: Anonymize<I4s60s3v5pfj6u>;
+  /**
    * A Region has been added to the Instantaneous Coretime Pool.
    */
   Pooled: Anonymize<Ib27rtfpnn4vta>;
@@ -11852,6 +12594,10 @@ export type If8i3p468lj1ba = AnonymousEnum<{
    * A new lease has been created.
    */
   Leased: Anonymize<I10gda06ia6n74>;
+  /**
+   * A lease has been removed.
+   */
+  LeaseRemoved: Anonymize<Ihqcf8k5b8c95>;
   /**
    * A lease is about to end.
    */
@@ -12043,6 +12789,12 @@ export type Icinrphfs7c1gh = {
    */
   task: number;
 };
+export type I4s60s3v5pfj6u = {
+  /**
+   * The Region which was removed from the workplan.
+   */
+  region_id: Anonymize<I1vf976h89f2ls>;
+};
 export type Ib27rtfpnn4vta = {
   /**
    * The Region which was added to the Instantaneous Coretime Pool.
@@ -12071,11 +12823,12 @@ export type If5j64blk6vsus = {
 };
 export type Ie7jbpif7cf5o3 = {
   /**
-   * The local block number at which the sale will/did start.
+   * The relay block number at which the sale will/did start.
    */
   sale_start: number;
   /**
-   * The length in blocks of the Leadin Period (where the price is decreasing).
+   * The length in relay chain blocks of the Leadin Period (where the price is
+   * decreasing).
    */
   leadin_length: number;
   /**
@@ -12115,6 +12868,12 @@ export type I10gda06ia6n74 = {
    * longer apply).
    */
   until: number;
+};
+export type Ihqcf8k5b8c95 = {
+  /**
+   * The task to which a core was assigned.
+   */
+  task: number;
 };
 export type Idj7j1g3t3rr57 = {
   /**
@@ -12183,12 +12942,6 @@ export type I201plm6irk5mk = {
    * The amount of credit purchased.
    */
   amount: bigint;
-};
-export type I4s60s3v5pfj6u = {
-  /**
-   * The Region whose contribution is no longer exists.
-   */
-  region_id: Anonymize<I1vf976h89f2ls>;
 };
 export type I7dkrdcvab1juf = {
   /**
@@ -12344,6 +13097,14 @@ export type I4iumukclgj8ej = {
   validation_upgrade_delay: number;
   async_backing_params: Anonymize<Iavuvfkop6318c>;
 };
+export type Ie8lr6tim1k996 = Array<{
+  id: Enum<{
+    PolkadotXcm: Enum<{
+      AuthorizeAlias: undefined;
+    }>;
+  }>;
+  amount: bigint;
+}>;
 export type I9bin2jc70qt6q = Array<Anonymize<I3qt1hgg4djhgb>>;
 export type Ifi4da1gej1fri = Array<Anonymize<Iep1lmt6q3s6r3>>;
 export type Iep1lmt6q3s6r3 = {
@@ -12365,6 +13126,48 @@ export type Ifup3lg9ro8a0f = {
   suspend_threshold: number;
   drop_threshold: number;
   resume_threshold: number;
+};
+export type I5qfubnuvrnqn6 = AnonymousEnum<{
+  Pending: {
+    responder: XcmVersionedLocation;
+    maybe_match_querier?: XcmVersionedLocation | undefined;
+    maybe_notify?: Anonymize<I1faufi0iffstp>;
+    timeout: number;
+  };
+  VersionNotifier: {
+    origin: XcmVersionedLocation;
+    is_active: boolean;
+  };
+  Ready: {
+    response: Enum<{
+      V3: XcmV3Response;
+      V4: XcmV4Response;
+      V5: Anonymize<I7vucpgm2c6959>;
+    }>;
+    at: number;
+  };
+}>;
+export type I8t3u2dv73ahbd = [number, XcmVersionedLocation];
+export type Ie0rpl5bahldfk = Array<[XcmVersionedLocation, number]>;
+export type I7e5oaj2qi4kl1 = {
+  amount: bigint;
+  owner: XcmVersionedLocation;
+  locker: XcmVersionedLocation;
+  consumers: Anonymize<I2ia97v5nng96b>;
+};
+export type Ie849h3gncgvok = [number, SS58String, XcmVersionedAssetId];
+export type XcmVersionedAssetId = Enum<{
+  V3: XcmV3MultiassetAssetId;
+  V4: Anonymize<I4c0s5cioidn76>;
+  V5: Anonymize<If9iqq7i64mur8>;
+}>;
+export declare const XcmVersionedAssetId: GetEnum<XcmVersionedAssetId>;
+export type Iat62vud7hlod2 = Array<[bigint, XcmVersionedLocation]>;
+export type Ici7ejds60vj52 = {
+  aliasers: Array<{
+    location: XcmVersionedLocation;
+    expiry?: Anonymize<I35p85j063s0il>;
+  }>;
 };
 export type Idh2ug6ou4a8og = {
   begin: number;
@@ -12452,6 +13255,16 @@ export type Iarmmkrn32a2vr = Array<{
 export type I6e7fsqs7vbr1g = {
   until: number;
   amount: bigint;
+};
+export type I4fo08joqmcqnm = {
+  spec_name: string;
+  impl_name: string;
+  authoring_version: number;
+  spec_version: number;
+  impl_version: number;
+  apis: Anonymize<Ic9hg6pp5pkea5>;
+  transaction_version: number;
+  system_version: number;
 };
 export type I5kev21p7u6ajb = AnonymousEnum<{
   /**
@@ -12653,6 +13466,348 @@ export type Ib7tahn20bvsep = AnonymousEnum<{
    */
   update_resume_threshold: Anonymize<I3vh014cqgmrfd>;
 }>;
+export type I6k1inef986368 = AnonymousEnum<{
+  send: Anonymize<Ia5cotcvi888ln>;
+  /**
+   * Teleport some assets from the local chain to some destination chain.
+   *
+   * **This function is deprecated: Use `limited_teleport_assets` instead.**
+   *
+   * Fee payment on the destination side is made from the asset in the `assets` vector of
+   * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+   * with all fees taken as needed from the asset.
+   *
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `[Parent,
+   * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+   * relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+   * generally be an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+   * fee on the `dest` chain.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   * fees.
+   */
+  teleport_assets: Anonymize<I21jsa919m88fd>;
+  /**
+   * Transfer some assets from the local chain to the destination chain through their local,
+   * destination or remote reserve.
+   *
+   * `assets` must have same reserve location and may not be teleportable to `dest`.
+   * - `assets` have local reserve: transfer assets to sovereign account of destination
+   * chain and forward a notification XCM to `dest` to mint and deposit reserve-based
+   * assets to `beneficiary`.
+   * - `assets` have destination reserve: burn local assets and forward a notification to
+   * `dest` chain to withdraw the reserve assets from this chain's sovereign account and
+   * deposit them to `beneficiary`.
+   * - `assets` have remote reserve: burn local assets, forward XCM to reserve chain to move
+   * reserves from this chain's SA to `dest` chain's SA, and forward another XCM to `dest`
+   * to mint and deposit reserve-based assets to `beneficiary`.
+   *
+   * **This function is deprecated: Use `limited_reserve_transfer_assets` instead.**
+   *
+   * Fee payment on the destination side is made from the asset in the `assets` vector of
+   * index `fee_asset_item`. The weight limit for fees is not provided and thus is unlimited,
+   * with all fees taken as needed from the asset.
+   *
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `[Parent,
+   * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+   * relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+   * generally be an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+   * fee on the `dest` (and possibly reserve) chains.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   * fees.
+   */
+  reserve_transfer_assets: Anonymize<I21jsa919m88fd>;
+  /**
+   * Execute an XCM message from a local, signed, origin.
+   *
+   * An event is deposited indicating whether `msg` could be executed completely or only
+   * partially.
+   *
+   * No more than `max_weight` will be used in its attempted execution. If this is less than
+   * the maximum amount of weight that the message could take to be executed, then no
+   * execution attempt will be made.
+   */
+  execute: Anonymize<Iegif7m3upfe1k>;
+  /**
+   * Extoll that a particular destination can be communicated with through a particular
+   * version of XCM.
+   *
+   * - `origin`: Must be an origin specified by AdminOrigin.
+   * - `location`: The destination that is being described.
+   * - `xcm_version`: The latest version of XCM that `location` supports.
+   */
+  force_xcm_version: Anonymize<I9kt8c221c83ln>;
+  /**
+   * Set a safe XCM version (the version that XCM should be encoded with if the most recent
+   * version a destination can accept is unknown).
+   *
+   * - `origin`: Must be an origin specified by AdminOrigin.
+   * - `maybe_xcm_version`: The default XCM encoding version, or `None` to disable.
+   */
+  force_default_xcm_version: Anonymize<Ic76kfh5ebqkpl>;
+  /**
+   * Ask a location to notify us regarding their XCM version and any changes to it.
+   *
+   * - `origin`: Must be an origin specified by AdminOrigin.
+   * - `location`: The location to which we should subscribe for XCM version notifications.
+   */
+  force_subscribe_version_notify: Anonymize<Icscpmubum33bq>;
+  /**
+   * Require that a particular destination should no longer notify us regarding any XCM
+   * version changes.
+   *
+   * - `origin`: Must be an origin specified by AdminOrigin.
+   * - `location`: The location to which we are currently subscribed for XCM version
+   * notifications which we no longer desire.
+   */
+  force_unsubscribe_version_notify: Anonymize<Icscpmubum33bq>;
+  /**
+   * Transfer some assets from the local chain to the destination chain through their local,
+   * destination or remote reserve.
+   *
+   * `assets` must have same reserve location and may not be teleportable to `dest`.
+   * - `assets` have local reserve: transfer assets to sovereign account of destination
+   * chain and forward a notification XCM to `dest` to mint and deposit reserve-based
+   * assets to `beneficiary`.
+   * - `assets` have destination reserve: burn local assets and forward a notification to
+   * `dest` chain to withdraw the reserve assets from this chain's sovereign account and
+   * deposit them to `beneficiary`.
+   * - `assets` have remote reserve: burn local assets, forward XCM to reserve chain to move
+   * reserves from this chain's SA to `dest` chain's SA, and forward another XCM to `dest`
+   * to mint and deposit reserve-based assets to `beneficiary`.
+   *
+   * Fee payment on the destination side is made from the asset in the `assets` vector of
+   * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+   * is needed than `weight_limit`, then the operation will fail and the sent assets may be
+   * at risk.
+   *
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `[Parent,
+   * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+   * relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+   * generally be an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+   * fee on the `dest` (and possibly reserve) chains.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   * fees.
+   * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+   */
+  limited_reserve_transfer_assets: Anonymize<I21d2olof7eb60>;
+  /**
+   * Teleport some assets from the local chain to some destination chain.
+   *
+   * Fee payment on the destination side is made from the asset in the `assets` vector of
+   * index `fee_asset_item`, up to enough to pay for `weight_limit` of weight. If more weight
+   * is needed than `weight_limit`, then the operation will fail and the sent assets may be
+   * at risk.
+   *
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `[Parent,
+   * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+   * relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+   * generally be an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+   * fee on the `dest` chain.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   * fees.
+   * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+   */
+  limited_teleport_assets: Anonymize<I21d2olof7eb60>;
+  /**
+   * Set or unset the global suspension state of the XCM executor.
+   *
+   * - `origin`: Must be an origin specified by AdminOrigin.
+   * - `suspended`: `true` to suspend, `false` to resume.
+   */
+  force_suspension: Anonymize<Ibgm4rnf22lal1>;
+  /**
+   * Transfer some assets from the local chain to the destination chain through their local,
+   * destination or remote reserve, or through teleports.
+   *
+   * Fee payment on the destination side is made from the asset in the `assets` vector of
+   * index `fee_asset_item` (hence referred to as `fees`), up to enough to pay for
+   * `weight_limit` of weight. If more weight is needed than `weight_limit`, then the
+   * operation will fail and the sent assets may be at risk.
+   *
+   * `assets` (excluding `fees`) must have same reserve location or otherwise be teleportable
+   * to `dest`, no limitations imposed on `fees`.
+   * - for local reserve: transfer assets to sovereign account of destination chain and
+   * forward a notification XCM to `dest` to mint and deposit reserve-based assets to
+   * `beneficiary`.
+   * - for destination reserve: burn local assets and forward a notification to `dest` chain
+   * to withdraw the reserve assets from this chain's sovereign account and deposit them
+   * to `beneficiary`.
+   * - for remote reserve: burn local assets, forward XCM to reserve chain to move reserves
+   * from this chain's SA to `dest` chain's SA, and forward another XCM to `dest` to mint
+   * and deposit reserve-based assets to `beneficiary`.
+   * - for teleports: burn local assets and forward XCM to `dest` chain to mint/teleport
+   * assets and deposit them to `beneficiary`.
+   *
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `X2(Parent,
+   * Parachain(..))` to send from parachain to parachain, or `X1(Parachain(..))` to send
+   * from relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will
+   * generally be an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+   * fee on the `dest` (and possibly reserve) chains.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   * fees.
+   * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+   */
+  transfer_assets: Anonymize<I21d2olof7eb60>;
+  /**
+   * Claims assets trapped on this pallet because of leftover assets during XCM execution.
+   *
+   * - `origin`: Anyone can call this extrinsic.
+   * - `assets`: The exact assets that were trapped. Use the version to specify what version
+   * was the latest when they were trapped.
+   * - `beneficiary`: The location/account where the claimed assets will be deposited.
+   */
+  claim_assets: Anonymize<Ie68np0vpihith>;
+  /**
+   * Transfer assets from the local chain to the destination chain using explicit transfer
+   * types for assets and fees.
+   *
+   * `assets` must have same reserve location or may be teleportable to `dest`. Caller must
+   * provide the `assets_transfer_type` to be used for `assets`:
+   * - `TransferType::LocalReserve`: transfer assets to sovereign account of destination
+   * chain and forward a notification XCM to `dest` to mint and deposit reserve-based
+   * assets to `beneficiary`.
+   * - `TransferType::DestinationReserve`: burn local assets and forward a notification to
+   * `dest` chain to withdraw the reserve assets from this chain's sovereign account and
+   * deposit them to `beneficiary`.
+   * - `TransferType::RemoteReserve(reserve)`: burn local assets, forward XCM to `reserve`
+   * chain to move reserves from this chain's SA to `dest` chain's SA, and forward another
+   * XCM to `dest` to mint and deposit reserve-based assets to `beneficiary`. Typically
+   * the remote `reserve` is Asset Hub.
+   * - `TransferType::Teleport`: burn local assets and forward XCM to `dest` chain to
+   * mint/teleport assets and deposit them to `beneficiary`.
+   *
+   * On the destination chain, as well as any intermediary hops, `BuyExecution` is used to
+   * buy execution using transferred `assets` identified by `remote_fees_id`.
+   * Make sure enough of the specified `remote_fees_id` asset is included in the given list
+   * of `assets`. `remote_fees_id` should be enough to pay for `weight_limit`. If more weight
+   * is needed than `weight_limit`, then the operation will fail and the sent assets may be
+   * at risk.
+   *
+   * `remote_fees_id` may use different transfer type than rest of `assets` and can be
+   * specified through `fees_transfer_type`.
+   *
+   * The caller needs to specify what should happen to the transferred assets once they reach
+   * the `dest` chain. This is done through the `custom_xcm_on_dest` parameter, which
+   * contains the instructions to execute on `dest` as a final step.
+   * This is usually as simple as:
+   * `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`,
+   * but could be something more exotic like sending the `assets` even further.
+   *
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `[Parent,
+   * Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from
+   * relay to parachain, or `(parents: 2, (GlobalConsensus(..), ..))` to send from
+   * parachain across a bridge to another ecosystem destination.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the
+   * fee on the `dest` (and possibly reserve) chains.
+   * - `assets_transfer_type`: The XCM `TransferType` used to transfer the `assets`.
+   * - `remote_fees_id`: One of the included `assets` to be used to pay fees.
+   * - `fees_transfer_type`: The XCM `TransferType` used to transfer the `fees` assets.
+   * - `custom_xcm_on_dest`: The XCM to be executed on `dest` chain as the last step of the
+   * transfer, which also determines what happens to the assets on the destination chain.
+   * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
+   */
+  transfer_assets_using_type_and_then: Anonymize<I9bnv6lu0crf1q>;
+  /**
+   * Authorize another `aliaser` location to alias into the local `origin` making this call.
+   * The `aliaser` is only authorized until the provided `expiry` block number.
+   * The call can also be used for a previously authorized alias in order to update its
+   * `expiry` block number.
+   *
+   * Usually useful to allow your local account to be aliased into from a remote location
+   * also under your control (like your account on another chain).
+   *
+   * WARNING: make sure the caller `origin` (you) trusts the `aliaser` location to act in
+   * their/your name. Once authorized using this call, the `aliaser` can freely impersonate
+   * `origin` in XCM programs executed on the local chain.
+   */
+  add_authorized_alias: Anonymize<Iauhjqifrdklq7>;
+  /**
+   * Remove a previously authorized `aliaser` from the list of locations that can alias into
+   * the local `origin` making this call.
+   */
+  remove_authorized_alias: Anonymize<Ie1uso9m8rt5cf>;
+  /**
+   * Remove all previously authorized `aliaser`s that can alias into the local `origin`
+   * making this call.
+   */
+  remove_all_authorized_aliases: undefined;
+}>;
+export type Ia5cotcvi888ln = {
+  dest: XcmVersionedLocation;
+  message: XcmVersionedXcm;
+};
+export type XcmVersionedXcm = Enum<{
+  V3: Anonymize<Ianvng4e08j9ii>;
+  V4: Anonymize<Iegrepoo0c1jc5>;
+  V5: Anonymize<Ict03eedr8de9s>;
+}>;
+export declare const XcmVersionedXcm: GetEnum<XcmVersionedXcm>;
+export type I21jsa919m88fd = {
+  dest: XcmVersionedLocation;
+  beneficiary: XcmVersionedLocation;
+  assets: XcmVersionedAssets;
+  fee_asset_item: number;
+};
+export type Iegif7m3upfe1k = {
+  message: XcmVersionedXcm;
+  max_weight: Anonymize<I4q39t5hn830vp>;
+};
+export type Icscpmubum33bq = {
+  location: XcmVersionedLocation;
+};
+export type I21d2olof7eb60 = {
+  dest: XcmVersionedLocation;
+  beneficiary: XcmVersionedLocation;
+  assets: XcmVersionedAssets;
+  fee_asset_item: number;
+  weight_limit: XcmV3WeightLimit;
+};
+export type Ie68np0vpihith = {
+  assets: XcmVersionedAssets;
+  beneficiary: XcmVersionedLocation;
+};
+export type I9bnv6lu0crf1q = {
+  dest: XcmVersionedLocation;
+  assets: XcmVersionedAssets;
+  assets_transfer_type: Enum<{
+    Teleport: undefined;
+    LocalReserve: undefined;
+    DestinationReserve: undefined;
+    RemoteReserve: XcmVersionedLocation;
+  }>;
+  remote_fees_id: XcmVersionedAssetId;
+  fees_transfer_type: Enum<{
+    Teleport: undefined;
+    LocalReserve: undefined;
+    DestinationReserve: undefined;
+    RemoteReserve: XcmVersionedLocation;
+  }>;
+  custom_xcm_on_dest: XcmVersionedXcm;
+  weight_limit: XcmV3WeightLimit;
+};
+export type Iauhjqifrdklq7 = {
+  aliaser: XcmVersionedLocation;
+  expires?: Anonymize<I35p85j063s0il>;
+};
+export type Ie1uso9m8rt5cf = {
+  aliaser: XcmVersionedLocation;
+};
 export type Ic2uoe7jdksosp = AnonymousEnum<{
   /**
    * Remove a page which has no more messages remaining to be processed or is stale.
@@ -12685,7 +13840,7 @@ export type I1r4c2ghbtvjuc = {
   index: number;
   weight_limit: Anonymize<I4q39t5hn830vp>;
 };
-export type Iadmvgoa0eoqvu = AnonymousEnum<{
+export type I121lfpo4rqkj4 = AnonymousEnum<{
   /**
    * Send a batch of dispatch calls.
    *
@@ -12706,7 +13861,7 @@ export type Iadmvgoa0eoqvu = AnonymousEnum<{
    * and the error of the failed call. If all were successful, then the `BatchCompleted`
    * event is deposited.
    */
-  batch: Anonymize<Ifu4ae4s208rno>;
+  batch: Anonymize<Icfmqdurtvvhm8>;
   /**
    * Send a call through an indexed pseudonym of the sender.
    *
@@ -12722,7 +13877,7 @@ export type Iadmvgoa0eoqvu = AnonymousEnum<{
    *
    * The dispatch origin for this call must be _Signed_.
    */
-  as_derivative: Anonymize<I6nb6jcptm78me>;
+  as_derivative: Anonymize<Ibvqcte45720kp>;
   /**
    * Send a batch of dispatch calls and atomically execute them.
    * The whole transaction will rollback and fail if any of the calls failed.
@@ -12738,7 +13893,7 @@ export type Iadmvgoa0eoqvu = AnonymousEnum<{
    * ## Complexity
    * - O(C) where C is the number of calls to be batched.
    */
-  batch_all: Anonymize<Ifu4ae4s208rno>;
+  batch_all: Anonymize<Icfmqdurtvvhm8>;
   /**
    * Dispatches a function call with a provided origin.
    *
@@ -12747,7 +13902,7 @@ export type Iadmvgoa0eoqvu = AnonymousEnum<{
    * ## Complexity
    * - O(1).
    */
-  dispatch_as: Anonymize<I12f6r5plvs0sh>;
+  dispatch_as: Anonymize<I88hn32igim519>;
   /**
    * Send a batch of dispatch calls.
    * Unlike `batch`, it allows errors and won't interrupt.
@@ -12763,7 +13918,7 @@ export type Iadmvgoa0eoqvu = AnonymousEnum<{
    * ## Complexity
    * - O(C) where C is the number of calls to be batched.
    */
-  force_batch: Anonymize<Ifu4ae4s208rno>;
+  force_batch: Anonymize<Icfmqdurtvvhm8>;
   /**
    * Dispatch a function call with a specified weight.
    *
@@ -12772,34 +13927,74 @@ export type Iadmvgoa0eoqvu = AnonymousEnum<{
    *
    * The dispatch origin for this call must be _Root_.
    */
-  with_weight: Anonymize<I94mh594ndp59c>;
+  with_weight: Anonymize<Ienqb246ur0h4e>;
+  /**
+   * Dispatch a fallback call in the event the main call fails to execute.
+   * May be called from any origin except `None`.
+   *
+   * This function first attempts to dispatch the `main` call.
+   * If the `main` call fails, the `fallback` is attemted.
+   * if the fallback is successfully dispatched, the weights of both calls
+   * are accumulated and an event containing the main call error is deposited.
+   *
+   * In the event of a fallback failure the whole call fails
+   * with the weights returned.
+   *
+   * - `main`: The main call to be dispatched. This is the primary action to execute.
+   * - `fallback`: The fallback call to be dispatched in case the `main` call fails.
+   *
+   * ## Dispatch Logic
+   * - If the origin is `root`, both the main and fallback calls are executed without
+   * applying any origin filters.
+   * - If the origin is not `root`, the origin filter is applied to both the `main` and
+   * `fallback` calls.
+   *
+   * ## Use Case
+   * - Some use cases might involve submitting a `batch` type call in either main, fallback
+   * or both.
+   */
+  if_else: Anonymize<Ie9f8gbksfhul4>;
+  /**
+   * Dispatches a function call with a provided origin.
+   *
+   * Almost the same as [`Pallet::dispatch_as`] but forwards any error of the inner call.
+   *
+   * The dispatch origin for this call must be _Root_.
+   */
+  dispatch_as_fallible: Anonymize<I88hn32igim519>;
 }>;
-export type Ifu4ae4s208rno = {
+export type Icfmqdurtvvhm8 = {
   calls: Array<TxCallData>;
 };
-export type I6nb6jcptm78me = {
+export type Ibvqcte45720kp = {
   index: number;
   call: TxCallData;
 };
-export type I12f6r5plvs0sh = {
-  as_origin: Anonymize<I48v5riethqckl>;
+export type I88hn32igim519 = {
+  as_origin: Anonymize<I42ficri7uep20>;
   call: TxCallData;
 };
-export type I48v5riethqckl = AnonymousEnum<{
+export type I42ficri7uep20 = AnonymousEnum<{
   system: DispatchRawOrigin;
-  PolkadotXcm: XcmPalletOrigin;
-  CumulusXcm: Anonymize<I3in0d0lb61qi8>;
-  Void: undefined;
+  PolkadotXcm: Anonymize<Icvilmd7qu30i4>;
+  CumulusXcm: Enum<{
+    Relay: undefined;
+    SiblingParachain: number;
+  }>;
 }>;
-export type I3in0d0lb61qi8 = AnonymousEnum<{
-  Relay: undefined;
-  SiblingParachain: number;
+export type Icvilmd7qu30i4 = AnonymousEnum<{
+  Xcm: Anonymize<If9iqq7i64mur8>;
+  Response: Anonymize<If9iqq7i64mur8>;
 }>;
-export type I94mh594ndp59c = {
+export type Ienqb246ur0h4e = {
   call: TxCallData;
   weight: Anonymize<I4q39t5hn830vp>;
 };
-export type I30rldo6vgptic = AnonymousEnum<{
+export type Ie9f8gbksfhul4 = {
+  main: TxCallData;
+  fallback: TxCallData;
+};
+export type I5ftfhbu9c8fis = AnonymousEnum<{
   /**
    * Immediately dispatch a multi-signature call using a single approval from the caller.
    *
@@ -12814,7 +14009,7 @@ export type I30rldo6vgptic = AnonymousEnum<{
    * ## Complexity
    * O(Z + C) where Z is the length of the call and C its execution weight.
    */
-  as_multi_threshold_1: Anonymize<Idj5gtjhrllecf>;
+  as_multi_threshold_1: Anonymize<Ie7hg6igaev50q>;
   /**
    * Register approval for a dispatch to be made from a deterministic composite account if
    * approved by a total of `threshold - 1` of `other_signatories`.
@@ -12856,7 +14051,7 @@ export type I30rldo6vgptic = AnonymousEnum<{
    * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
    * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
    */
-  as_multi: Anonymize<Ibch6kht5imr8g>;
+  as_multi: Anonymize<I4ib9nr8nn446a>;
   /**
    * Register approval for a dispatch to be made from a deterministic composite account if
    * approved by a total of `threshold - 1` of `other_signatories`.
@@ -12914,19 +14109,40 @@ export type I30rldo6vgptic = AnonymousEnum<{
    * - Storage: removes one item.
    */
   cancel_as_multi: Anonymize<I3d9o9d7epp66v>;
+  /**
+   * Poke the deposit reserved for an existing multisig operation.
+   *
+   * The dispatch origin for this call must be _Signed_ and must be the original depositor of
+   * the multisig operation.
+   *
+   * The transaction fee is waived if the deposit amount has changed.
+   *
+   * - `threshold`: The total number of approvals needed for this multisig.
+   * - `other_signatories`: The accounts (other than the sender) who are part of the
+   * multisig.
+   * - `call_hash`: The hash of the call this deposit is reserved for.
+   *
+   * Emits `DepositPoked` if successful.
+   */
+  poke_deposit: Anonymize<I6lqh1vgb4mcja>;
 }>;
-export type Idj5gtjhrllecf = {
+export type Ie7hg6igaev50q = {
   other_signatories: Anonymize<Ia2lhg7l2hilo3>;
   call: TxCallData;
 };
-export type Ibch6kht5imr8g = {
+export type I4ib9nr8nn446a = {
   threshold: number;
   other_signatories: Anonymize<Ia2lhg7l2hilo3>;
   maybe_timepoint?: Anonymize<I95jfd8j5cr5eh>;
   call: TxCallData;
   max_weight: Anonymize<I4q39t5hn830vp>;
 };
-export type I2kh99dbdobb91 = AnonymousEnum<{
+export type I6lqh1vgb4mcja = {
+  threshold: number;
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  call_hash: FixedSizeBinary<32>;
+};
+export type I1aivtpa1qhnlb = AnonymousEnum<{
   /**
    * Dispatch the given `call` from an account that the sender is authorised for through
    * `add_proxy`.
@@ -12938,7 +14154,7 @@ export type I2kh99dbdobb91 = AnonymousEnum<{
    * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
    * - `call`: The call to be made by the `real` account.
    */
-  proxy: Anonymize<Ietl8tjmj464rl>;
+  proxy: Anonymize<Idiu2vile68rp9>;
   /**
    * Register a proxy account for the sender that is able to make calls on its behalf.
    *
@@ -13067,9 +14283,20 @@ export type I2kh99dbdobb91 = AnonymousEnum<{
    * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
    * - `call`: The call to be made by the `real` account.
    */
-  proxy_announced: Anonymize<I3inuji72uvdo3>;
+  proxy_announced: Anonymize<I1sc83h9kdklfa>;
+  /**
+   * Poke / Adjust deposits made for proxies and announcements based on current values.
+   * This can be used by accounts to possibly lower their locked amount.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * The transaction fee is waived if the deposit amount has changed.
+   *
+   * Emits `DepositPoked` if successful.
+   */
+  poke_deposit: undefined;
 }>;
-export type Ietl8tjmj464rl = {
+export type Idiu2vile68rp9 = {
   real: MultiAddress;
   force_proxy_type?: Anonymize<I2msdr6fcj5tad>;
   call: TxCallData;
@@ -13092,13 +14319,13 @@ export type I20693ttkj61v9 = {
   height: number;
   ext_index: number;
 };
-export type I3inuji72uvdo3 = {
+export type I1sc83h9kdklfa = {
   delegate: MultiAddress;
   real: MultiAddress;
   force_proxy_type?: Anonymize<I2msdr6fcj5tad>;
   call: TxCallData;
 };
-export type Idigt06eqobqcr = AnonymousEnum<{
+export type I6nevotii2dffg = AnonymousEnum<{
   /**
    * Configure the pallet.
    *
@@ -13108,6 +14335,9 @@ export type Idigt06eqobqcr = AnonymousEnum<{
   configure: Anonymize<I4v4jc8ak5c8j7>;
   /**
    * Reserve a core for a workload.
+   *
+   * The workload will be given a reservation, but two sale period boundaries must pass
+   * before the core is actually assigned.
    *
    * - `origin`: Must be Root or pass `AdminOrigin`.
    * - `workload`: The workload which should be permanently placed on a core.
@@ -13293,6 +14523,35 @@ export type Idigt06eqobqcr = AnonymousEnum<{
    * - `task`: The task for which we want to disable auto renewal.
    */
   disable_auto_renew: Anonymize<I6td68h84ru5u7>;
+  /**
+   * Reserve a core for a workload immediately.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `workload`: The workload which should be permanently placed on a core starting
+   * immediately.
+   * - `core`: The core to which the assignment should be made until the reservation takes
+   * effect. It is left to the caller to either add this new core or reassign any other
+   * tasks to this existing core.
+   *
+   * This reserves the workload and then injects the workload into the Workplan for the next
+   * two sale periods. This overwrites any existing assignments for this core at the start of
+   * the next sale period.
+   */
+  force_reserve: Anonymize<Ickqtr6vqgluk1>;
+  /**
+   * Remove a lease.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `task`: The task id of the lease which should be removed.
+   */
+  remove_lease: Anonymize<Ihqcf8k5b8c95>;
+  /**
+   * Remove an assignment from the Workplan.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `region_id`: The Region to be removed from the workplan.
+   */
+  remove_assignment: Anonymize<I4s60s3v5pfj6u>;
   swap_leases: Anonymize<Idehabrqi23sc0>;
 }>;
 export type I4v4jc8ak5c8j7 = {
@@ -13353,8 +14612,31 @@ export type Ie3qk84fi8j51k = {
   task: number;
   workload_end_hint?: Anonymize<I4arjljr6dpflb>;
 };
-export type I63kbbf0e0o44r = ResultPayload<Anonymize<I5mme01t705osv>, TransactionValidityError>;
-export type I9eibd2giu4tl7 = AnonymousEnum<{
+export type Ickqtr6vqgluk1 = {
+  workload: Anonymize<Ia7varbguadod5>;
+  core: number;
+};
+export type Ia6oqt77riqm2s = ResultPayload<Anonymize<Ibi6egoue863bp>, Anonymize<I5nrjkj9qumobs>>;
+export type I5nrjkj9qumobs = AnonymousEnum<{
+  Invalid: Enum<{
+    Call: undefined;
+    Payment: undefined;
+    Future: undefined;
+    Stale: undefined;
+    BadProof: undefined;
+    AncientBirthBlock: undefined;
+    ExhaustsResources: undefined;
+    Custom: number;
+    BadMandatory: undefined;
+    MandatoryValidation: undefined;
+    BadSigner: undefined;
+    IndeterminateImplicit: undefined;
+    UnknownOrigin: undefined;
+  }>;
+  Unknown: TransactionValidityUnknownTransaction;
+}>;
+export type I9ask1o4tfvcvs = ResultPayload<Anonymize<I6g5lcd9vf2cr0>, Anonymize<I5nrjkj9qumobs>>;
+export type Iej7uo9d8c90rd = AnonymousEnum<{
   System: Anonymize<Iekve0i6djpd9f>;
   ParachainSystem: Anonymize<I5kev21p7u6ajb>;
   Timestamp: Anonymize<I7d75gqfg6jh9c>;
@@ -13363,35 +14645,39 @@ export type I9eibd2giu4tl7 = AnonymousEnum<{
   CollatorSelection: Anonymize<I9dpq5287dur8b>;
   Session: Anonymize<I77dda7hps0u37>;
   XcmpQueue: Anonymize<Ib7tahn20bvsep>;
-  PolkadotXcm: Anonymize<I9nbjvlrb9bp1g>;
+  PolkadotXcm: Anonymize<I6k1inef986368>;
   CumulusXcm: undefined;
   MessageQueue: Anonymize<Ic2uoe7jdksosp>;
-  Utility: Anonymize<Iadmvgoa0eoqvu>;
-  Multisig: Anonymize<I30rldo6vgptic>;
-  Proxy: Anonymize<I2kh99dbdobb91>;
-  Broker: Anonymize<Idigt06eqobqcr>;
+  Utility: Anonymize<I121lfpo4rqkj4>;
+  Multisig: Anonymize<I5ftfhbu9c8fis>;
+  Proxy: Anonymize<I1aivtpa1qhnlb>;
+  Broker: Anonymize<I6nevotii2dffg>;
 }>;
-export type I6rm3t6vu6ur6p = ResultPayload<
+export type Iftvbctbo05fu4 = ResultPayload<Array<XcmVersionedAssetId>, Anonymize<Iavct6f844hfju>>;
+export type Iek7ha36da9mf5 = ResultPayload<XcmVersionedAssets, Anonymize<Iavct6f844hfju>>;
+export type Ic5bbnoqe2e16a = ResultPayload<
   {
     execution_result: ResultPayload<
       Anonymize<Ia1u1r3n74r13c>,
       {
         post_info: Anonymize<Ia1u1r3n74r13c>;
-        error: Anonymize<I6iir5b1cc0ncm>;
+        error: Anonymize<Ieomelrcrr6qh5>;
       }
     >;
-    emitted_events: Anonymize<Ifmr7do1nkchsi>;
-    local_xcm?: Anonymize<I3i0ce56p044d2>;
-    forwarded_xcms: Anonymize<I47tkk5e5nm6g7>;
+    emitted_events: Anonymize<I2fosusn5t77p6>;
+    local_xcm?: Anonymize<Ieqgqma27vbupd>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
   },
   Anonymize<I55ku9c5gk50hb>
 >;
-export type Ifmr7do1nkchsi = Array<Anonymize<I5jq74ddtq4as4>>;
-export type I8skdub5dr5kml = ResultPayload<
+export type I2fosusn5t77p6 = Array<Anonymize<I48smljvfff2j2>>;
+export type Ieqgqma27vbupd = XcmVersionedXcm | undefined;
+export type Ialhmrpub9sefe = Array<[XcmVersionedLocation, Array<XcmVersionedXcm>]>;
+export type Ifbvog3ud0pohe = ResultPayload<
   {
-    execution_result: XcmV4TraitsOutcome;
-    emitted_events: Anonymize<Ifmr7do1nkchsi>;
-    forwarded_xcms: Anonymize<I47tkk5e5nm6g7>;
+    execution_result: Anonymize<I6uq5gb4s805s7>;
+    emitted_events: Anonymize<I2fosusn5t77p6>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
   },
   Anonymize<I55ku9c5gk50hb>
 >;
@@ -18208,1123 +19494,6 @@ export type Ib0m46eqe594fl = ResultPayload<
   },
   Anonymize<I55ku9c5gk50hb>
 >;
-export type Ikhiaindh0p80 = Array<{
-  phase: Phase;
-  event: Anonymize<Ifqdcj1g9g0ifl>;
-  topics: Anonymize<Ic5m5lp1oioo8r>;
-}>;
-export type Ifqdcj1g9g0ifl = AnonymousEnum<{
-  System: Anonymize<I4t0816jvc8l01>;
-  ParachainSystem: Anonymize<Icbsekf57miplo>;
-  Balances: Anonymize<Iao8h4hv7atnq3>;
-  TransactionPayment: TransactionPaymentEvent;
-  CollatorSelection: Anonymize<I4srakrmf0fspo>;
-  Session: SessionEvent;
-  XcmpQueue: Anonymize<Idsqc7mhp6nnle>;
-  PolkadotXcm: Anonymize<I5ce1ru810vv9d>;
-  CumulusXcm: Anonymize<Ibvp9t1gqae5ct>;
-  MessageQueue: Anonymize<I2kosejppk3jon>;
-  Utility: Anonymize<Iagcv91to7mk4h>;
-  Multisig: Anonymize<I7vv51vsbarpn4>;
-  Proxy: Anonymize<Iblqj8plu2m7fe>;
-  Broker: Anonymize<I4v414rto7ef7q>;
-  Sudo: Anonymize<Iaffmdjoqncg6>;
-}>;
-export type I4t0816jvc8l01 = AnonymousEnum<{
-  /**
-   * An extrinsic completed successfully.
-   */
-  ExtrinsicSuccess: Anonymize<Ia82mnkmeo2rhc>;
-  /**
-   * An extrinsic failed.
-   */
-  ExtrinsicFailed: Anonymize<Ia6735lk7i8e0p>;
-  /**
-   * `:code` was updated.
-   */
-  CodeUpdated: undefined;
-  /**
-   * A new account was created.
-   */
-  NewAccount: Anonymize<Icbccs0ug47ilf>;
-  /**
-   * An account was reaped.
-   */
-  KilledAccount: Anonymize<Icbccs0ug47ilf>;
-  /**
-   * On on-chain remark happened.
-   */
-  Remarked: Anonymize<I855j4i3kr8ko1>;
-  /**
-   * An upgrade was authorized.
-   */
-  UpgradeAuthorized: Anonymize<Ibgl04rn6nbfm6>;
-}>;
-export type Ia6735lk7i8e0p = {
-  dispatch_error: Anonymize<I2o6jg75dvq5ba>;
-  dispatch_info: Anonymize<Ic9s8f85vjtncc>;
-};
-export type I2o6jg75dvq5ba = AnonymousEnum<{
-  Other: undefined;
-  CannotLookup: undefined;
-  BadOrigin: undefined;
-  Module: Enum<{
-    System: Anonymize<I5o0s7c8q1cc9b>;
-    ParachainSystem: Anonymize<I9p95gln24a0rn>;
-    Timestamp: undefined;
-    ParachainInfo: undefined;
-    Balances: Anonymize<Idj13i7adlomht>;
-    TransactionPayment: undefined;
-    Authorship: undefined;
-    CollatorSelection: Anonymize<I36bcffk2387dv>;
-    Session: Anonymize<I1e07dgbaqd1sq>;
-    Aura: undefined;
-    AuraExt: undefined;
-    XcmpQueue: Anonymize<Idnnbndsjjeqqs>;
-    PolkadotXcm: Anonymize<I87j95aq93d7dq>;
-    CumulusXcm: undefined;
-    MessageQueue: Anonymize<I5iupade5ag2dp>;
-    Utility: Anonymize<I8dt2g2hcrgh36>;
-    Multisig: Anonymize<Ia76qmhhg4jvb9>;
-    Proxy: Anonymize<Iuvt54ei4cehc>;
-    Broker: Anonymize<I6pkfjsv122g68>;
-    Sudo: Anonymize<Iaug04qjhbli00>;
-  }>;
-  ConsumerRemaining: undefined;
-  NoProviders: undefined;
-  TooManyConsumers: undefined;
-  Token: TokenError;
-  Arithmetic: ArithmeticError;
-  Transactional: TransactionalError;
-  Exhausted: undefined;
-  Corruption: undefined;
-  Unavailable: undefined;
-  RootNotAllowed: undefined;
-}>;
-export type I6pkfjsv122g68 = AnonymousEnum<{
-  /**
-   * The given region identity is not known.
-   */
-  UnknownRegion: undefined;
-  /**
-   * The owner of the region is not the origin.
-   */
-  NotOwner: undefined;
-  /**
-   * The pivot point of the partition at or after the end of the region.
-   */
-  PivotTooLate: undefined;
-  /**
-   * The pivot point of the partition at the beginning of the region.
-   */
-  PivotTooEarly: undefined;
-  /**
-   * The pivot mask for the interlacing is not contained within the region's interlace mask.
-   */
-  ExteriorPivot: undefined;
-  /**
-   * The pivot mask for the interlacing is void (and therefore unschedulable).
-   */
-  VoidPivot: undefined;
-  /**
-   * The pivot mask for the interlacing is complete (and therefore not a strict subset).
-   */
-  CompletePivot: undefined;
-  /**
-   * The workplan of the pallet's state is invalid. This indicates a state corruption.
-   */
-  CorruptWorkplan: undefined;
-  /**
-   * There is no sale happening currently.
-   */
-  NoSales: undefined;
-  /**
-   * The price limit is exceeded.
-   */
-  Overpriced: undefined;
-  /**
-   * There are no cores available.
-   */
-  Unavailable: undefined;
-  /**
-   * The sale limit has been reached.
-   */
-  SoldOut: undefined;
-  /**
-   * The renewal operation is not valid at the current time (it may become valid in the next
-   * sale).
-   */
-  WrongTime: undefined;
-  /**
-   * Invalid attempt to renew.
-   */
-  NotAllowed: undefined;
-  /**
-   * This pallet has not yet been initialized.
-   */
-  Uninitialized: undefined;
-  /**
-   * The purchase cannot happen yet as the sale period is yet to begin.
-   */
-  TooEarly: undefined;
-  /**
-   * There is no work to be done.
-   */
-  NothingToDo: undefined;
-  /**
-   * The maximum amount of reservations has already been reached.
-   */
-  TooManyReservations: undefined;
-  /**
-   * The maximum amount of leases has already been reached.
-   */
-  TooManyLeases: undefined;
-  /**
-   * The revenue for the Instantaneous Core Sales of this period is not (yet) known and thus
-   * this operation cannot proceed.
-   */
-  UnknownRevenue: undefined;
-  /**
-   * The identified contribution to the Instantaneous Core Pool is unknown.
-   */
-  UnknownContribution: undefined;
-  /**
-   * The workload assigned for renewal is incomplete. This is unexpected and indicates a
-   * logic error.
-   */
-  IncompleteAssignment: undefined;
-  /**
-   * An item cannot be dropped because it is still valid.
-   */
-  StillValid: undefined;
-  /**
-   * The history item does not exist.
-   */
-  NoHistory: undefined;
-  /**
-   * No reservation of the given index exists.
-   */
-  UnknownReservation: undefined;
-  /**
-   * The renewal record cannot be found.
-   */
-  UnknownRenewal: undefined;
-  /**
-   * The lease expiry time has already passed.
-   */
-  AlreadyExpired: undefined;
-  /**
-   * The configuration could not be applied because it is invalid.
-   */
-  InvalidConfig: undefined;
-  /**
-   * The revenue must be claimed for 1 or more timeslices.
-   */
-  NoClaimTimeslices: undefined;
-}>;
-export type Iagcv91to7mk4h = AnonymousEnum<{
-  /**
-   * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-   * well as the error.
-   */
-  BatchInterrupted: Anonymize<I7nj1r2dpqa0k>;
-  /**
-   * Batch of dispatches completed fully with no error.
-   */
-  BatchCompleted: undefined;
-  /**
-   * Batch of dispatches completed but has errors.
-   */
-  BatchCompletedWithErrors: undefined;
-  /**
-   * A single item within a Batch of dispatches has completed with no error.
-   */
-  ItemCompleted: undefined;
-  /**
-   * A single item within a Batch of dispatches has completed with error.
-   */
-  ItemFailed: Anonymize<Ibbfpo202spvoa>;
-  /**
-   * A call was dispatched.
-   */
-  DispatchedAs: Anonymize<Ia3higtu1pm9oe>;
-}>;
-export type I7nj1r2dpqa0k = {
-  index: number;
-  error: Anonymize<I2o6jg75dvq5ba>;
-};
-export type Ibbfpo202spvoa = {
-  error: Anonymize<I2o6jg75dvq5ba>;
-};
-export type Ia3higtu1pm9oe = {
-  result: Anonymize<Icn7g4ebhrgt2h>;
-};
-export type Icn7g4ebhrgt2h = ResultPayload<undefined, Anonymize<I2o6jg75dvq5ba>>;
-export type I7vv51vsbarpn4 = AnonymousEnum<{
-  /**
-   * A new multisig operation has begun.
-   */
-  NewMultisig: Anonymize<Iep27ialq4a7o7>;
-  /**
-   * A multisig operation has been approved by someone.
-   */
-  MultisigApproval: Anonymize<Iasu5jvoqr43mv>;
-  /**
-   * A multisig operation has been executed.
-   */
-  MultisigExecuted: Anonymize<I7tf4tvajpeju5>;
-  /**
-   * A multisig operation has been cancelled.
-   */
-  MultisigCancelled: Anonymize<I5qolde99acmd1>;
-}>;
-export type I7tf4tvajpeju5 = {
-  approving: SS58String;
-  timepoint: Anonymize<Itvprrpb0nm3o>;
-  multisig: SS58String;
-  call_hash: FixedSizeBinary<32>;
-  result: Anonymize<Icn7g4ebhrgt2h>;
-};
-export type Iblqj8plu2m7fe = AnonymousEnum<{
-  /**
-   * A proxy was executed correctly, with the given.
-   */
-  ProxyExecuted: Anonymize<Ia3higtu1pm9oe>;
-  /**
-   * A pure account has been created by new proxy with given
-   * disambiguation index and proxy type.
-   */
-  PureCreated: Anonymize<I4sa5jshkufeug>;
-  /**
-   * An announcement was placed to make a call in the future.
-   */
-  Announced: Anonymize<I2ur0oeqg495j8>;
-  /**
-   * A proxy was added.
-   */
-  ProxyAdded: Anonymize<Idf02iigou8dpt>;
-  /**
-   * A proxy was removed.
-   */
-  ProxyRemoved: Anonymize<Idf02iigou8dpt>;
-}>;
-export type I4v414rto7ef7q = AnonymousEnum<{
-  /**
-   * A Region of Bulk Coretime has been purchased.
-   */
-  Purchased: Anonymize<Iaf2rbm5li8ck4>;
-  /**
-   * The workload of a core has become renewable.
-   */
-  Renewable: Anonymize<Ib118uuss8au5p>;
-  /**
-   * A workload has been renewed.
-   */
-  Renewed: Anonymize<Idfdoi7vpo971s>;
-  /**
-   * Ownership of a Region has been transferred.
-   */
-  Transferred: Anonymize<Icjdv7ehtt4mjk>;
-  /**
-   * A Region has been split into two non-overlapping Regions.
-   */
-  Partitioned: Anonymize<I7fa966sr93enr>;
-  /**
-   * A Region has been converted into two overlapping Regions each of lesser regularity.
-   */
-  Interlaced: Anonymize<I7fa966sr93enr>;
-  /**
-   * A Region has been assigned to a particular task.
-   */
-  Assigned: Anonymize<Icinrphfs7c1gh>;
-  /**
-   * A Region has been added to the Instantaneous Coretime Pool.
-   */
-  Pooled: Anonymize<Ib27rtfpnn4vta>;
-  /**
-   * A new number of cores has been requested.
-   */
-  CoreCountRequested: Anonymize<I629ak383ovl28>;
-  /**
-   * The number of cores available for scheduling has changed.
-   */
-  CoreCountChanged: Anonymize<I629ak383ovl28>;
-  /**
-   * There is a new reservation for a workload.
-   */
-  ReservationMade: Anonymize<If5j64blk6vsus>;
-  /**
-   * A reservation for a workload has been cancelled.
-   */
-  ReservationCancelled: Anonymize<If5j64blk6vsus>;
-  /**
-   * A new sale has been initialized.
-   */
-  SaleInitialized: Anonymize<Ie7jbpif7cf5o3>;
-  /**
-   * A new lease has been created.
-   */
-  Leased: Anonymize<I10gda06ia6n74>;
-  /**
-   * A lease is about to end.
-   */
-  LeaseEnding: Anonymize<Idj7j1g3t3rr57>;
-  /**
-   * The sale rotation has been started and a new sale is imminent.
-   */
-  SalesStarted: Anonymize<Ickukqupg34u5t>;
-  /**
-   * The act of claiming revenue has begun.
-   */
-  RevenueClaimBegun: Anonymize<I9l243q1j0e2us>;
-  /**
-   * A particular timeslice has a non-zero claim.
-   */
-  RevenueClaimItem: Anonymize<I44ckreh9i933v>;
-  /**
-   * A revenue claim has (possibly only in part) been paid.
-   */
-  RevenueClaimPaid: Anonymize<I2o3evaj5726u9>;
-  /**
-   * Some Instantaneous Coretime Pool credit has been purchased.
-   */
-  CreditPurchased: Anonymize<I201plm6irk5mk>;
-  /**
-   * A Region has been dropped due to being out of date.
-   */
-  RegionDropped: Anonymize<Ib27rtfpnn4vta>;
-  /**
-   * Some historical Instantaneous Core Pool contribution record has been dropped.
-   */
-  ContributionDropped: Anonymize<I4s60s3v5pfj6u>;
-  /**
-   * Some historical Instantaneous Core Pool payment record has been initialized.
-   */
-  HistoryInitialized: Anonymize<I7dkrdcvab1juf>;
-  /**
-   * Some historical Instantaneous Core Pool payment record has been dropped.
-   */
-  HistoryDropped: Anonymize<If5tfto9lepmm8>;
-  /**
-   * Some historical Instantaneous Core Pool payment record has been ignored because the
-   * timeslice was already known. Governance may need to intervene.
-   */
-  HistoryIgnored: Anonymize<If5tfto9lepmm8>;
-  /**
-   * Some historical Instantaneous Core Pool Revenue is ready for payout claims.
-   */
-  ClaimsReady: Anonymize<Ifla9c8bp7r3l9>;
-  /**
-   * A Core has been assigned to one or more tasks and/or the Pool on the Relay-chain.
-   */
-  CoreAssigned: Anonymize<Im8dpq6bqg07f>;
-  /**
-   * Some historical Instantaneous Core Pool payment record has been dropped.
-   */
-  PotentialRenewalDropped: Anonymize<I3blejcb10m5c9>;
-}>;
-export type Iaffmdjoqncg6 = AnonymousEnum<{
-  /**
-   * A sudo call just took place.
-   */
-  Sudid: Anonymize<I4bausjrgjmqbe>;
-  /**
-   * The sudo key has been updated.
-   */
-  KeyChanged: Anonymize<I5rtkmhm2dng4u>;
-  /**
-   * The key was permanently removed.
-   */
-  KeyRemoved: undefined;
-  /**
-   * A [sudo_as](Pallet::sudo_as) call just took place.
-   */
-  SudoAsDone: Anonymize<I4bausjrgjmqbe>;
-}>;
-export type I4bausjrgjmqbe = {
-  /**
-   * The result of the call made by the sudo user.
-   */
-  sudo_result: Anonymize<Icn7g4ebhrgt2h>;
-};
-export type I3jmip7qjlcqot = AnonymousEnum<{
-  /**
-   * Set the current validation data.
-   *
-   * This should be invoked exactly once per block. It will panic at the finalization
-   * phase if the call was not invoked.
-   *
-   * The dispatch origin for this call must be `Inherent`
-   *
-   * As a side effect, this function upgrades the current validation function
-   * if the appropriate time has come.
-   */
-  set_validation_data: Anonymize<I60v7bikk54tpu>;
-  sudo_send_upward_message: Anonymize<Ifpj261e8s63m3>;
-  /**
-   * Authorize an upgrade to a given `code_hash` for the runtime. The runtime can be supplied
-   * later.
-   *
-   * The `check_version` parameter sets a boolean flag for whether or not the runtime's spec
-   * version and name should be verified on upgrade. Since the authorization only has a hash,
-   * it cannot actually perform the verification.
-   *
-   * This call requires Root origin.
-   */
-  authorize_upgrade: Anonymize<Ibgl04rn6nbfm6>;
-  /**
-   * Provide the preimage (runtime binary) `code` for an upgrade that has been authorized.
-   *
-   * If the authorization required a version check, this call will ensure the spec name
-   * remains unchanged and that the spec version has increased.
-   *
-   * Note that this function will not apply the new `code`, but only attempt to schedule the
-   * upgrade with the Relay Chain.
-   *
-   * All origins are allowed.
-   */
-  enact_authorized_upgrade: Anonymize<I6pjjpfvhvcfru>;
-}>;
-export type I66ud291tptqtl = AnonymousEnum<{
-  /**
-   * Send a batch of dispatch calls.
-   *
-   * May be called from any origin except `None`.
-   *
-   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
-   * exceed the constant: `batched_calls_limit` (available in constant metadata).
-   *
-   * If origin is root then the calls are dispatched without checking origin filter. (This
-   * includes bypassing `frame_system::Config::BaseCallFilter`).
-   *
-   * ## Complexity
-   * - O(C) where C is the number of calls to be batched.
-   *
-   * This will return `Ok` in all circumstances. To determine the success of the batch, an
-   * event is deposited. If a call failed and the batch was interrupted, then the
-   * `BatchInterrupted` event is deposited, along with the number of successful calls made
-   * and the error of the failed call. If all were successful, then the `BatchCompleted`
-   * event is deposited.
-   */
-  batch: Anonymize<Ickd61t69sqkth>;
-  /**
-   * Send a call through an indexed pseudonym of the sender.
-   *
-   * Filter from origin are passed along. The call will be dispatched with an origin which
-   * use the same filter as the origin of this call.
-   *
-   * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
-   * because you expect `proxy` to have been used prior in the call stack and you do not want
-   * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
-   * in the Multisig pallet instead.
-   *
-   * NOTE: Prior to version *12, this was called `as_limited_sub`.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   */
-  as_derivative: Anonymize<Iag12r76uq368k>;
-  /**
-   * Send a batch of dispatch calls and atomically execute them.
-   * The whole transaction will rollback and fail if any of the calls failed.
-   *
-   * May be called from any origin except `None`.
-   *
-   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
-   * exceed the constant: `batched_calls_limit` (available in constant metadata).
-   *
-   * If origin is root then the calls are dispatched without checking origin filter. (This
-   * includes bypassing `frame_system::Config::BaseCallFilter`).
-   *
-   * ## Complexity
-   * - O(C) where C is the number of calls to be batched.
-   */
-  batch_all: Anonymize<Ickd61t69sqkth>;
-  /**
-   * Dispatches a function call with a provided origin.
-   *
-   * The dispatch origin for this call must be _Root_.
-   *
-   * ## Complexity
-   * - O(1).
-   */
-  dispatch_as: Anonymize<I9pg11io6d0h1r>;
-  /**
-   * Send a batch of dispatch calls.
-   * Unlike `batch`, it allows errors and won't interrupt.
-   *
-   * May be called from any origin except `None`.
-   *
-   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
-   * exceed the constant: `batched_calls_limit` (available in constant metadata).
-   *
-   * If origin is root then the calls are dispatch without checking origin filter. (This
-   * includes bypassing `frame_system::Config::BaseCallFilter`).
-   *
-   * ## Complexity
-   * - O(C) where C is the number of calls to be batched.
-   */
-  force_batch: Anonymize<Ickd61t69sqkth>;
-  /**
-   * Dispatch a function call with a specified weight.
-   *
-   * This function does not check the weight of the call, and instead allows the
-   * Root origin to specify the weight of the call.
-   *
-   * The dispatch origin for this call must be _Root_.
-   */
-  with_weight: Anonymize<Ifufsmtj8e5qs2>;
-}>;
-export type Ickd61t69sqkth = {
-  calls: Array<TxCallData>;
-};
-export type Iag12r76uq368k = {
-  index: number;
-  call: TxCallData;
-};
-export type I9pg11io6d0h1r = {
-  as_origin: Anonymize<I48v5riethqckl>;
-  call: TxCallData;
-};
-export type Ifufsmtj8e5qs2 = {
-  call: TxCallData;
-  weight: Anonymize<I4q39t5hn830vp>;
-};
-export type I9237jont8gs29 = AnonymousEnum<{
-  /**
-   * Immediately dispatch a multi-signature call using a single approval from the caller.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * - `other_signatories`: The accounts (other than the sender) who are part of the
-   * multi-signature, but do not participate in the approval process.
-   * - `call`: The call to be executed.
-   *
-   * Result is equivalent to the dispatched result.
-   *
-   * ## Complexity
-   * O(Z + C) where Z is the length of the call and C its execution weight.
-   */
-  as_multi_threshold_1: Anonymize<Ichhvidbc532oh>;
-  /**
-   * Register approval for a dispatch to be made from a deterministic composite account if
-   * approved by a total of `threshold - 1` of `other_signatories`.
-   *
-   * If there are enough, then dispatch the call.
-   *
-   * Payment: `DepositBase` will be reserved if this is the first approval, plus
-   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-   * is cancelled.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * - `threshold`: The total number of approvals for this dispatch before it is executed.
-   * - `other_signatories`: The accounts (other than the sender) who can approve this
-   * dispatch. May not be empty.
-   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-   * not the first approval, then it must be `Some`, with the timepoint (block number and
-   * transaction index) of the first approval transaction.
-   * - `call`: The call to be executed.
-   *
-   * NOTE: Unless this is the final approval, you will generally want to use
-   * `approve_as_multi` instead, since it only requires a hash of the call.
-   *
-   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-   * on success, result is `Ok` and the result from the interior call, if it was executed,
-   * may be found in the deposited `MultisigExecuted` event.
-   *
-   * ## Complexity
-   * - `O(S + Z + Call)`.
-   * - Up to one balance-reserve or unreserve operation.
-   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-   * - One encode & hash, both of complexity `O(S)`.
-   * - Up to one binary search and insert (`O(logS + S)`).
-   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-   * - One event.
-   * - The weight of the `call`.
-   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
-   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
-   */
-  as_multi: Anonymize<Ichfk1ncmntvpo>;
-  /**
-   * Register approval for a dispatch to be made from a deterministic composite account if
-   * approved by a total of `threshold - 1` of `other_signatories`.
-   *
-   * Payment: `DepositBase` will be reserved if this is the first approval, plus
-   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-   * is cancelled.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * - `threshold`: The total number of approvals for this dispatch before it is executed.
-   * - `other_signatories`: The accounts (other than the sender) who can approve this
-   * dispatch. May not be empty.
-   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-   * not the first approval, then it must be `Some`, with the timepoint (block number and
-   * transaction index) of the first approval transaction.
-   * - `call_hash`: The hash of the call to be executed.
-   *
-   * NOTE: If this is the final approval, you will want to use `as_multi` instead.
-   *
-   * ## Complexity
-   * - `O(S)`.
-   * - Up to one balance-reserve or unreserve operation.
-   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   * - One encode & hash, both of complexity `O(S)`.
-   * - Up to one binary search and insert (`O(logS + S)`).
-   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-   * - One event.
-   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
-   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
-   */
-  approve_as_multi: Anonymize<Ideaemvoneh309>;
-  /**
-   * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
-   * for this operation will be unreserved on success.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * - `threshold`: The total number of approvals for this dispatch before it is executed.
-   * - `other_signatories`: The accounts (other than the sender) who can approve this
-   * dispatch. May not be empty.
-   * - `timepoint`: The timepoint (block number and transaction index) of the first approval
-   * transaction for this dispatch.
-   * - `call_hash`: The hash of the call to be executed.
-   *
-   * ## Complexity
-   * - `O(S)`.
-   * - Up to one balance-reserve or unreserve operation.
-   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   * - One encode & hash, both of complexity `O(S)`.
-   * - One event.
-   * - I/O: 1 read `O(S)`, one remove.
-   * - Storage: removes one item.
-   */
-  cancel_as_multi: Anonymize<I3d9o9d7epp66v>;
-}>;
-export type Ichhvidbc532oh = {
-  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
-  call: TxCallData;
-};
-export type Ichfk1ncmntvpo = {
-  threshold: number;
-  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
-  maybe_timepoint?: Anonymize<I95jfd8j5cr5eh>;
-  call: TxCallData;
-  max_weight: Anonymize<I4q39t5hn830vp>;
-};
-export type I34kfpfpn76f5g = AnonymousEnum<{
-  /**
-   * Dispatch the given `call` from an account that the sender is authorised for through
-   * `add_proxy`.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * Parameters:
-   * - `real`: The account that the proxy will make a call on behalf of.
-   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   * - `call`: The call to be made by the `real` account.
-   */
-  proxy: Anonymize<Idvu9vbqfm1dp2>;
-  /**
-   * Register a proxy account for the sender that is able to make calls on its behalf.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * Parameters:
-   * - `proxy`: The account that the `caller` would like to make a proxy.
-   * - `proxy_type`: The permissions allowed for this proxy account.
-   * - `delay`: The announcement period required of the initial proxy. Will generally be
-   * zero.
-   */
-  add_proxy: Anonymize<I83oifkl5gf7v7>;
-  /**
-   * Unregister a proxy account for the sender.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * Parameters:
-   * - `proxy`: The account that the `caller` would like to remove as a proxy.
-   * - `proxy_type`: The permissions currently enabled for the removed proxy account.
-   */
-  remove_proxy: Anonymize<I83oifkl5gf7v7>;
-  /**
-   * Unregister all proxy accounts for the sender.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * WARNING: This may be called on accounts created by `pure`, however if done, then
-   * the unreserved fees will be inaccessible. **All access to this account will be lost.**
-   */
-  remove_proxies: undefined;
-  /**
-   * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
-   * initialize it with a proxy of `proxy_type` for `origin` sender.
-   *
-   * Requires a `Signed` origin.
-   *
-   * - `proxy_type`: The type of the proxy that the sender will be registered as over the
-   * new account. This will almost always be the most permissive `ProxyType` possible to
-   * allow for maximum flexibility.
-   * - `index`: A disambiguation index, in case this is called multiple times in the same
-   * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
-   * want to use `0`.
-   * - `delay`: The announcement period required of the initial proxy. Will generally be
-   * zero.
-   *
-   * Fails with `Duplicate` if this has already been called in this transaction, from the
-   * same sender, with the same parameters.
-   *
-   * Fails if there are insufficient funds to pay for deposit.
-   */
-  create_pure: Anonymize<Iad1o67krgn48a>;
-  /**
-   * Removes a previously spawned pure proxy.
-   *
-   * WARNING: **All access to this account will be lost.** Any funds held in it will be
-   * inaccessible.
-   *
-   * Requires a `Signed` origin, and the sender account must have been created by a call to
-   * `pure` with corresponding parameters.
-   *
-   * - `spawner`: The account that originally called `pure` to create this account.
-   * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
-   * - `proxy_type`: The proxy type originally passed to `pure`.
-   * - `height`: The height of the chain when the call to `pure` was processed.
-   * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
-   *
-   * Fails with `NoPermission` in case the caller is not a previously created pure
-   * account whose `pure` call has corresponding parameters.
-   */
-  kill_pure: Anonymize<I20693ttkj61v9>;
-  /**
-   * Publish the hash of a proxy-call that will be made in the future.
-   *
-   * This must be called some number of blocks before the corresponding `proxy` is attempted
-   * if the delay associated with the proxy relationship is greater than zero.
-   *
-   * No more than `MaxPending` announcements may be made at any one time.
-   *
-   * This will take a deposit of `AnnouncementDepositFactor` as well as
-   * `AnnouncementDepositBase` if there are no other pending announcements.
-   *
-   * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
-   *
-   * Parameters:
-   * - `real`: The account that the proxy will make a call on behalf of.
-   * - `call_hash`: The hash of the call to be made by the `real` account.
-   */
-  announce: Anonymize<I2eb501t8s6hsq>;
-  /**
-   * Remove a given announcement.
-   *
-   * May be called by a proxy account to remove a call they previously announced and return
-   * the deposit.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * Parameters:
-   * - `real`: The account that the proxy will make a call on behalf of.
-   * - `call_hash`: The hash of the call to be made by the `real` account.
-   */
-  remove_announcement: Anonymize<I2eb501t8s6hsq>;
-  /**
-   * Remove the given announcement of a delegate.
-   *
-   * May be called by a target (proxied) account to remove a call that one of their delegates
-   * (`delegate`) has announced they want to execute. The deposit is returned.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * Parameters:
-   * - `delegate`: The account that previously announced the call.
-   * - `call_hash`: The hash of the call to be made.
-   */
-  reject_announcement: Anonymize<Ianmuoljk2sk1u>;
-  /**
-   * Dispatch the given `call` from an account that the sender is authorized for through
-   * `add_proxy`.
-   *
-   * Removes any corresponding announcement(s).
-   *
-   * The dispatch origin for this call must be _Signed_.
-   *
-   * Parameters:
-   * - `real`: The account that the proxy will make a call on behalf of.
-   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   * - `call`: The call to be made by the `real` account.
-   */
-  proxy_announced: Anonymize<I1kjcelus01m4q>;
-}>;
-export type Idvu9vbqfm1dp2 = {
-  real: MultiAddress;
-  force_proxy_type?: Anonymize<I2msdr6fcj5tad>;
-  call: TxCallData;
-};
-export type I1kjcelus01m4q = {
-  delegate: MultiAddress;
-  real: MultiAddress;
-  force_proxy_type?: Anonymize<I2msdr6fcj5tad>;
-  call: TxCallData;
-};
-export type I2k0j3pnp1826u = AnonymousEnum<{
-  /**
-   * Configure the pallet.
-   *
-   * - `origin`: Must be Root or pass `AdminOrigin`.
-   * - `config`: The configuration for this pallet.
-   */
-  configure: Anonymize<I4v4jc8ak5c8j7>;
-  /**
-   * Reserve a core for a workload.
-   *
-   * - `origin`: Must be Root or pass `AdminOrigin`.
-   * - `workload`: The workload which should be permanently placed on a core.
-   */
-  reserve: Anonymize<Ieifvmse8ekofd>;
-  /**
-   * Cancel a reservation for a workload.
-   *
-   * - `origin`: Must be Root or pass `AdminOrigin`.
-   * - `item_index`: The index of the reservation. Usually this will also be the index of the
-   * core on which the reservation has been scheduled. However, it is possible that if
-   * other cores are reserved or unreserved in the same sale rotation that they won't
-   * correspond, so it's better to look up the core properly in the `Reservations` storage.
-   */
-  unreserve: Anonymize<Iepja8rcbuaao2>;
-  /**
-   * Reserve a core for a single task workload for a limited period.
-   *
-   * In the interlude and sale period where Bulk Coretime is sold for the period immediately
-   * after `until`, then the same workload may be renewed.
-   *
-   * - `origin`: Must be Root or pass `AdminOrigin`.
-   * - `task`: The workload which should be placed on a core.
-   * - `until`: The timeslice now earlier than which `task` should be placed as a workload on
-   * a core.
-   */
-  set_lease: Anonymize<I10gda06ia6n74>;
-  /**
-   * Begin the Bulk Coretime sales rotation.
-   *
-   * - `origin`: Must be Root or pass `AdminOrigin`.
-   * - `end_price`: The price after the leadin period of Bulk Coretime in the first sale.
-   * - `extra_cores`: Number of extra cores that should be requested on top of the cores
-   * required for `Reservations` and `Leases`.
-   *
-   * This will call [`Self::request_core_count`] internally to set the correct core count on
-   * the relay chain.
-   */
-  start_sales: Anonymize<I6bqnueuk5semj>;
-  /**
-   * Purchase Bulk Coretime in the ongoing Sale.
-   *
-   * - `origin`: Must be a Signed origin with at least enough funds to pay the current price
-   * of Bulk Coretime.
-   * - `price_limit`: An amount no more than which should be paid.
-   */
-  purchase: Anonymize<I268qbbcqfpqi0>;
-  /**
-   * Renew Bulk Coretime in the ongoing Sale or its prior Interlude Period.
-   *
-   * - `origin`: Must be a Signed origin with at least enough funds to pay the renewal price
-   * of the core.
-   * - `core`: The core which should be renewed.
-   */
-  renew: Anonymize<Iaiqv5prlisjkg>;
-  /**
-   * Transfer a Bulk Coretime Region to a new owner.
-   *
-   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-   * - `region_id`: The Region whose ownership should change.
-   * - `new_owner`: The new owner for the Region.
-   */
-  transfer: Anonymize<Ia3ebg5qshpkmr>;
-  /**
-   * Split a Bulk Coretime Region into two non-overlapping Regions at a particular time into
-   * the region.
-   *
-   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-   * - `region_id`: The Region which should be partitioned into two non-overlapping Regions.
-   * - `pivot`: The offset in time into the Region at which to make the split.
-   */
-  partition: Anonymize<Iagnp6gsiemekd>;
-  /**
-   * Split a Bulk Coretime Region into two wholly-overlapping Regions with complementary
-   * interlace masks which together make up the original Region's interlace mask.
-   *
-   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-   * - `region_id`: The Region which should become two interlaced Regions of incomplete
-   * regularity.
-   * - `pivot`: The interlace mask of one of the two new regions (the other is its partial
-   * complement).
-   */
-  interlace: Anonymize<I2uc90glvkisre>;
-  /**
-   * Assign a Bulk Coretime Region to a task.
-   *
-   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-   * - `region_id`: The Region which should be assigned to the task.
-   * - `task`: The task to assign.
-   * - `finality`: Indication of whether this assignment is final (in which case it may be
-   * eligible for renewal) or provisional (in which case it may be manipulated and/or
-   * reassigned at a later stage).
-   */
-  assign: Anonymize<I7tcaqpipfe64i>;
-  /**
-   * Place a Bulk Coretime Region into the Instantaneous Coretime Pool.
-   *
-   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
-   * - `region_id`: The Region which should be assigned to the Pool.
-   * - `payee`: The account which is able to collect any revenue due for the usage of this
-   * Coretime.
-   */
-  pool: Anonymize<I6eqlfpqd4sp3a>;
-  /**
-   * Claim the revenue owed from inclusion in the Instantaneous Coretime Pool.
-   *
-   * - `origin`: Must be a Signed origin.
-   * - `region_id`: The Region which was assigned to the Pool.
-   * - `max_timeslices`: The maximum number of timeslices which should be processed. This
-   * must be greater than 0. This may affect the weight of the call but should be ideally
-   * made equivalent to the length of the Region `region_id`. If less, further dispatches
-   * will be required with the same `region_id` to claim revenue for the remainder.
-   */
-  claim_revenue: Anonymize<Ib2n01qni7h5uk>;
-  /**
-   * Purchase credit for use in the Instantaneous Coretime Pool.
-   *
-   * - `origin`: Must be a Signed origin able to pay at least `amount`.
-   * - `amount`: The amount of credit to purchase.
-   * - `beneficiary`: The account on the Relay-chain which controls the credit (generally
-   * this will be the collator's hot wallet).
-   */
-  purchase_credit: Anonymize<Idscf6boak49q1>;
-  /**
-   * Drop an expired Region from the chain.
-   *
-   * - `origin`: Can be any kind of origin.
-   * - `region_id`: The Region which has expired.
-   */
-  drop_region: Anonymize<I4s60s3v5pfj6u>;
-  /**
-   * Drop an expired Instantaneous Pool Contribution record from the chain.
-   *
-   * - `origin`: Can be any kind of origin.
-   * - `region_id`: The Region identifying the Pool Contribution which has expired.
-   */
-  drop_contribution: Anonymize<I4s60s3v5pfj6u>;
-  /**
-   * Drop an expired Instantaneous Pool History record from the chain.
-   *
-   * - `origin`: Can be any kind of origin.
-   * - `region_id`: The time of the Pool History record which has expired.
-   */
-  drop_history: Anonymize<Ibtsa3docbr9el>;
-  /**
-   * Drop an expired Allowed Renewal record from the chain.
-   *
-   * - `origin`: Can be any kind of origin.
-   * - `core`: The core to which the expired renewal refers.
-   * - `when`: The timeslice to which the expired renewal refers. This must have passed.
-   */
-  drop_renewal: Anonymize<I3blejcb10m5c9>;
-  /**
-   * Request a change to the number of cores available for scheduling work.
-   *
-   * - `origin`: Must be Root or pass `AdminOrigin`.
-   * - `core_count`: The desired number of cores to be made available.
-   */
-  request_core_count: Anonymize<I629ak383ovl28>;
-  notify_core_count: Anonymize<I629ak383ovl28>;
-  notify_revenue: Anonymize<I5cuv5a5cclsfd>;
-  swap_leases: Anonymize<Idehabrqi23sc0>;
-}>;
-export type Ifh6pae9g9cit5 = AnonymousEnum<{
-  /**
-   * Authenticates the sudo key and dispatches a function call with `Root` origin.
-   */
-  sudo: Anonymize<I9fblum9ro92ol>;
-  /**
-   * Authenticates the sudo key and dispatches a function call with `Root` origin.
-   * This function does not check the weight of the call, and instead allows the
-   * Sudo user to specify the weight of the call.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   */
-  sudo_unchecked_weight: Anonymize<Ifufsmtj8e5qs2>;
-  /**
-   * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
-   * key.
-   */
-  set_key: Anonymize<I8k3rnvpeeh4hv>;
-  /**
-   * Authenticates the sudo key and dispatches a function call with `Signed` origin from
-   * a given account.
-   *
-   * The dispatch origin for this call must be _Signed_.
-   */
-  sudo_as: Anonymize<Ie1ufic0kg84ep>;
-  /**
-   * Permanently removes the sudo key.
-   *
-   * **This cannot be un-done.**
-   */
-  remove_key: undefined;
-}>;
-export type I9fblum9ro92ol = {
-  call: TxCallData;
-};
-export type Ie1ufic0kg84ep = {
-  who: MultiAddress;
-  call: TxCallData;
-};
-export type I4c05alij741j7 = ResultPayload<Anonymize<Icn7g4ebhrgt2h>, TransactionValidityError>;
-export type I20pqgsr68g22 = AnonymousEnum<{
-  System: Anonymize<Iekve0i6djpd9f>;
-  ParachainSystem: Anonymize<I3jmip7qjlcqot>;
-  Timestamp: Anonymize<I7d75gqfg6jh9c>;
-  ParachainInfo: undefined;
-  Balances: Anonymize<I9svldsp29mh87>;
-  CollatorSelection: Anonymize<I9dpq5287dur8b>;
-  Session: Anonymize<I77dda7hps0u37>;
-  XcmpQueue: Anonymize<Ib7tahn20bvsep>;
-  PolkadotXcm: Anonymize<I9nbjvlrb9bp1g>;
-  CumulusXcm: undefined;
-  MessageQueue: Anonymize<Ic2uoe7jdksosp>;
-  Utility: Anonymize<I66ud291tptqtl>;
-  Multisig: Anonymize<I9237jont8gs29>;
-  Proxy: Anonymize<I34kfpfpn76f5g>;
-  Broker: Anonymize<I2k0j3pnp1826u>;
-  Sudo: Anonymize<Ifh6pae9g9cit5>;
-}>;
-export type Idlt42m0kjpukp = ResultPayload<
-  {
-    execution_result: ResultPayload<
-      Anonymize<Ia1u1r3n74r13c>,
-      {
-        post_info: Anonymize<Ia1u1r3n74r13c>;
-        error: Anonymize<I2o6jg75dvq5ba>;
-      }
-    >;
-    emitted_events: Anonymize<Ifpq3k8591g026>;
-    local_xcm?: Anonymize<I3i0ce56p044d2>;
-    forwarded_xcms: Anonymize<I47tkk5e5nm6g7>;
-  },
-  Anonymize<I55ku9c5gk50hb>
->;
-export type Ifpq3k8591g026 = Array<Anonymize<Ifqdcj1g9g0ifl>>;
-export type Iejdri2ohgi0ae = ResultPayload<
-  {
-    execution_result: XcmV4TraitsOutcome;
-    emitted_events: Anonymize<Ifpq3k8591g026>;
-    forwarded_xcms: Anonymize<I47tkk5e5nm6g7>;
-  },
-  Anonymize<I55ku9c5gk50hb>
->;
 export type Ifpurdc2mok73e = Array<{
   phase: Phase;
   event: Anonymize<I1tj1l6iridkc0>;
@@ -19884,22 +20053,6 @@ export type Iaaqq5jevtahm8 = AnonymousEnum<{
    */
   Ongoing: undefined;
 }>;
-export type Idh4cj79bvroj8 = AnonymousEnum<{
-  InvalidStateRoot: undefined;
-  IncompleteDatabase: undefined;
-  ValueAtIncompleteKey: undefined;
-  DecoderError: undefined;
-  InvalidHash: undefined;
-  DuplicateKey: undefined;
-  ExtraneousNode: undefined;
-  ExtraneousValue: undefined;
-  ExtraneousHashReference: undefined;
-  InvalidChildReference: undefined;
-  ValueMismatch: undefined;
-  IncompleteProof: undefined;
-  RootMismatch: undefined;
-  DecodeError: undefined;
-}>;
 export type Ibcah038f089c3 = AnonymousEnum<{
   /**
    * The era payout has been set; the first balance is the validator-payout; the second is
@@ -20034,24 +20187,6 @@ export type Iflfd77hlnqapo = {
   payout: bigint;
 };
 export type Id32h28hjj1tch = [SS58String, number, number];
-export type I4co4bgsti676q = AnonymousEnum<{
-  /**
-   * New session has happened. Note that the argument is the session index, not the
-   * block number as the type might suggest.
-   */
-  NewSession: Anonymize<I2hq50pu2kdjpo>;
-  /**
-   * Validator has been disabled.
-   */
-  ValidatorDisabled: Anonymize<I9acqruh7322g2>;
-  /**
-   * Validator has been re-enabled.
-   */
-  ValidatorReenabled: Anonymize<I9acqruh7322g2>;
-}>;
-export type I9acqruh7322g2 = {
-  validator: SS58String;
-};
 export type Ifq13d58qnlh56 = AnonymousEnum<{
   /**
    * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
@@ -20645,62 +20780,6 @@ export type I2q3ri6itcjj5u = AnonymousEnum<{
     asset_id: Anonymize<If9iqq7i64mur8>;
   };
 }>;
-export type If9iqq7i64mur8 = {
-  parents: number;
-  interior: XcmV5Junctions;
-};
-export type XcmV5Junctions = Enum<{
-  Here: undefined;
-  X1: XcmV5Junction;
-  X2: FixedSizeArray<2, XcmV5Junction>;
-  X3: FixedSizeArray<3, XcmV5Junction>;
-  X4: FixedSizeArray<4, XcmV5Junction>;
-  X5: FixedSizeArray<5, XcmV5Junction>;
-  X6: FixedSizeArray<6, XcmV5Junction>;
-  X7: FixedSizeArray<7, XcmV5Junction>;
-  X8: FixedSizeArray<8, XcmV5Junction>;
-}>;
-export declare const XcmV5Junctions: GetEnum<XcmV5Junctions>;
-export type XcmV5Junction = Enum<{
-  Parachain: number;
-  AccountId32: {
-    network?: Anonymize<I97pd2rst02a7r>;
-    id: FixedSizeBinary<32>;
-  };
-  AccountIndex64: {
-    network?: Anonymize<I97pd2rst02a7r>;
-    index: bigint;
-  };
-  AccountKey20: {
-    network?: Anonymize<I97pd2rst02a7r>;
-    key: FixedSizeBinary<20>;
-  };
-  PalletInstance: number;
-  GeneralIndex: bigint;
-  GeneralKey: Anonymize<I15lht6t53odo4>;
-  OnlyChild: undefined;
-  Plurality: Anonymize<I518fbtnclg1oc>;
-  GlobalConsensus: XcmV5NetworkId;
-}>;
-export declare const XcmV5Junction: GetEnum<XcmV5Junction>;
-export type I97pd2rst02a7r = XcmV5NetworkId | undefined;
-export type XcmV5NetworkId = Enum<{
-  ByGenesis: FixedSizeBinary<32>;
-  ByFork: Anonymize<I15vf5oinmcgps>;
-  Polkadot: undefined;
-  Kusama: undefined;
-  Ethereum: Anonymize<I623eo8t3jrbeo>;
-  BitcoinCore: undefined;
-  BitcoinCash: undefined;
-  PolkadotBulletin: undefined;
-}>;
-export declare const XcmV5NetworkId: GetEnum<XcmV5NetworkId>;
-export type XcmVersionedLocation = Enum<{
-  V3: Anonymize<I4c0s5cioidn76>;
-  V4: Anonymize<I4c0s5cioidn76>;
-  V5: Anonymize<If9iqq7i64mur8>;
-}>;
-export declare const XcmVersionedLocation: GetEnum<XcmVersionedLocation>;
 export type If7iaaqrjurpqf = AnonymousEnum<{
   /**
    * A candidate was backed. `[candidate, head_data]`
@@ -21019,311 +21098,6 @@ export type Iel5f66clbekc3 = AnonymousEnum<{
    */
   VersionMigrationFinished: Anonymize<I6s1nbislhk619>;
 }>;
-export type Ia72eet39sf8j9 = {
-  outcome: Anonymize<I6uq5gb4s805s7>;
-};
-export type I6uq5gb4s805s7 = AnonymousEnum<{
-  Complete: Anonymize<I30iff2d192eu7>;
-  Incomplete: {
-    used: Anonymize<I4q39t5hn830vp>;
-    error: Anonymize<Id56rgs0bdb7gl>;
-  };
-  Error: {
-    error: Anonymize<Id56rgs0bdb7gl>;
-  };
-}>;
-export type Id56rgs0bdb7gl = AnonymousEnum<{
-  Overflow: undefined;
-  Unimplemented: undefined;
-  UntrustedReserveLocation: undefined;
-  UntrustedTeleportLocation: undefined;
-  LocationFull: undefined;
-  LocationNotInvertible: undefined;
-  BadOrigin: undefined;
-  InvalidLocation: undefined;
-  AssetNotFound: undefined;
-  FailedToTransactAsset: undefined;
-  NotWithdrawable: undefined;
-  LocationCannotHold: undefined;
-  ExceedsMaxMessageSize: undefined;
-  DestinationUnsupported: undefined;
-  Transport: undefined;
-  Unroutable: undefined;
-  UnknownClaim: undefined;
-  FailedToDecode: undefined;
-  MaxWeightInvalid: undefined;
-  NotHoldingFees: undefined;
-  TooExpensive: undefined;
-  Trap: bigint;
-  ExpectationFalse: undefined;
-  PalletNotFound: undefined;
-  NameMismatch: undefined;
-  VersionIncompatible: undefined;
-  HoldingWouldOverflow: undefined;
-  ExportError: undefined;
-  ReanchorFailed: undefined;
-  NoDeal: undefined;
-  FeesNotMet: undefined;
-  LockError: undefined;
-  NoPermission: undefined;
-  Unanchored: undefined;
-  NotDepositable: undefined;
-  TooManyAssets: undefined;
-  UnhandledXcmVersion: undefined;
-  WeightLimitReached: Anonymize<I4q39t5hn830vp>;
-  Barrier: undefined;
-  WeightNotComputable: undefined;
-  ExceedsStackLimit: undefined;
-}>;
-export type If8u5kl4h8070m = {
-  origin: Anonymize<If9iqq7i64mur8>;
-  destination: Anonymize<If9iqq7i64mur8>;
-  message: Anonymize<Ict03eedr8de9s>;
-  message_id: FixedSizeBinary<32>;
-};
-export type Ict03eedr8de9s = Array<XcmV5Instruction>;
-export type XcmV5Instruction = Enum<{
-  WithdrawAsset: Anonymize<I4npjalvhmfuj>;
-  ReserveAssetDeposited: Anonymize<I4npjalvhmfuj>;
-  ReceiveTeleportedAsset: Anonymize<I4npjalvhmfuj>;
-  QueryResponse: {
-    query_id: bigint;
-    response: Anonymize<I7vucpgm2c6959>;
-    max_weight: Anonymize<I4q39t5hn830vp>;
-    querier?: Anonymize<I4pai6qnfk426l>;
-  };
-  TransferAsset: {
-    assets: Anonymize<I4npjalvhmfuj>;
-    beneficiary: Anonymize<If9iqq7i64mur8>;
-  };
-  TransferReserveAsset: {
-    assets: Anonymize<I4npjalvhmfuj>;
-    dest: Anonymize<If9iqq7i64mur8>;
-    xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  Transact: {
-    origin_kind: XcmV2OriginKind;
-    fallback_max_weight?: Anonymize<Iasb8k6ash5mjn>;
-    call: Binary;
-  };
-  HrmpNewChannelOpenRequest: Anonymize<I5uhhrjqfuo4e5>;
-  HrmpChannelAccepted: Anonymize<Ifij4jam0o7sub>;
-  HrmpChannelClosing: Anonymize<Ieeb4svd9i8fji>;
-  ClearOrigin: undefined;
-  DescendOrigin: XcmV5Junctions;
-  ReportError: Anonymize<I6vsmh07hrp1rc>;
-  DepositAsset: {
-    assets: XcmV5AssetFilter;
-    beneficiary: Anonymize<If9iqq7i64mur8>;
-  };
-  DepositReserveAsset: {
-    assets: XcmV5AssetFilter;
-    dest: Anonymize<If9iqq7i64mur8>;
-    xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  ExchangeAsset: {
-    give: XcmV5AssetFilter;
-    want: Anonymize<I4npjalvhmfuj>;
-    maximal: boolean;
-  };
-  InitiateReserveWithdraw: {
-    assets: XcmV5AssetFilter;
-    reserve: Anonymize<If9iqq7i64mur8>;
-    xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  InitiateTeleport: {
-    assets: XcmV5AssetFilter;
-    dest: Anonymize<If9iqq7i64mur8>;
-    xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  ReportHolding: {
-    response_info: Anonymize<I6vsmh07hrp1rc>;
-    assets: XcmV5AssetFilter;
-  };
-  BuyExecution: {
-    fees: Anonymize<Iffh1nc5e1mod6>;
-    weight_limit: XcmV3WeightLimit;
-  };
-  RefundSurplus: undefined;
-  SetErrorHandler: Anonymize<Ict03eedr8de9s>;
-  SetAppendix: Anonymize<Ict03eedr8de9s>;
-  ClearError: undefined;
-  ClaimAsset: {
-    assets: Anonymize<I4npjalvhmfuj>;
-    ticket: Anonymize<If9iqq7i64mur8>;
-  };
-  Trap: bigint;
-  SubscribeVersion: Anonymize<Ieprdqqu7ildvr>;
-  UnsubscribeVersion: undefined;
-  BurnAsset: Anonymize<I4npjalvhmfuj>;
-  ExpectAsset: Anonymize<I4npjalvhmfuj>;
-  ExpectOrigin?: Anonymize<I4pai6qnfk426l>;
-  ExpectError?: Anonymize<I3l6ejee750fv1>;
-  ExpectTransactStatus: XcmV3MaybeErrorCode;
-  QueryPallet: {
-    module_name: Binary;
-    response_info: Anonymize<I6vsmh07hrp1rc>;
-  };
-  ExpectPallet: Anonymize<Id7mf37dkpgfjs>;
-  ReportTransactStatus: Anonymize<I6vsmh07hrp1rc>;
-  ClearTransactStatus: undefined;
-  UniversalOrigin: XcmV5Junction;
-  ExportMessage: {
-    network: XcmV5NetworkId;
-    destination: XcmV5Junctions;
-    xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  LockAsset: {
-    asset: Anonymize<Iffh1nc5e1mod6>;
-    unlocker: Anonymize<If9iqq7i64mur8>;
-  };
-  UnlockAsset: {
-    asset: Anonymize<Iffh1nc5e1mod6>;
-    target: Anonymize<If9iqq7i64mur8>;
-  };
-  NoteUnlockable: {
-    asset: Anonymize<Iffh1nc5e1mod6>;
-    owner: Anonymize<If9iqq7i64mur8>;
-  };
-  RequestUnlock: {
-    asset: Anonymize<Iffh1nc5e1mod6>;
-    locker: Anonymize<If9iqq7i64mur8>;
-  };
-  SetFeesMode: Anonymize<I4nae9rsql8fa7>;
-  SetTopic: FixedSizeBinary<32>;
-  ClearTopic: undefined;
-  AliasOrigin: Anonymize<If9iqq7i64mur8>;
-  UnpaidExecution: {
-    weight_limit: XcmV3WeightLimit;
-    check_origin?: Anonymize<I4pai6qnfk426l>;
-  };
-  PayFees: {
-    asset: Anonymize<Iffh1nc5e1mod6>;
-  };
-  InitiateTransfer: {
-    destination: Anonymize<If9iqq7i64mur8>;
-    remote_fees?: Anonymize<Ifhmc9e7vpeeig> | undefined;
-    preserve_origin: boolean;
-    assets: Array<Anonymize<Ifhmc9e7vpeeig>>;
-    remote_xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  ExecuteWithOrigin: {
-    descendant_origin?: XcmV5Junctions | undefined;
-    xcm: Anonymize<Ict03eedr8de9s>;
-  };
-  SetHints: {
-    hints: Array<
-      Enum<{
-        AssetClaimer: {
-          location: Anonymize<If9iqq7i64mur8>;
-        };
-      }>
-    >;
-  };
-}>;
-export declare const XcmV5Instruction: GetEnum<XcmV5Instruction>;
-export type I4npjalvhmfuj = Array<Anonymize<Iffh1nc5e1mod6>>;
-export type Iffh1nc5e1mod6 = {
-  id: Anonymize<If9iqq7i64mur8>;
-  fun: XcmV3MultiassetFungibility;
-};
-export type I7vucpgm2c6959 = AnonymousEnum<{
-  Null: undefined;
-  Assets: Anonymize<I4npjalvhmfuj>;
-  ExecutionResult?: Anonymize<I3l6ejee750fv1>;
-  Version: number;
-  PalletsInfo: Anonymize<I599u7h20b52at>;
-  DispatchResult: XcmV3MaybeErrorCode;
-}>;
-export type I3l6ejee750fv1 = [number, Anonymize<Id56rgs0bdb7gl>] | undefined;
-export type I4pai6qnfk426l = Anonymize<If9iqq7i64mur8> | undefined;
-export type I6vsmh07hrp1rc = {
-  destination: Anonymize<If9iqq7i64mur8>;
-  query_id: bigint;
-  max_weight: Anonymize<I4q39t5hn830vp>;
-};
-export type XcmV5AssetFilter = Enum<{
-  Definite: Anonymize<I4npjalvhmfuj>;
-  Wild: XcmV5WildAsset;
-}>;
-export declare const XcmV5AssetFilter: GetEnum<XcmV5AssetFilter>;
-export type XcmV5WildAsset = Enum<{
-  All: undefined;
-  AllOf: {
-    id: Anonymize<If9iqq7i64mur8>;
-    fun: XcmV2MultiassetWildFungibility;
-  };
-  AllCounted: number;
-  AllOfCounted: {
-    id: Anonymize<If9iqq7i64mur8>;
-    fun: XcmV2MultiassetWildFungibility;
-    count: number;
-  };
-}>;
-export declare const XcmV5WildAsset: GetEnum<XcmV5WildAsset>;
-export type Ifhmc9e7vpeeig = AnonymousEnum<{
-  Teleport: XcmV5AssetFilter;
-  ReserveDeposit: XcmV5AssetFilter;
-  ReserveWithdraw: XcmV5AssetFilter;
-}>;
-export type Icl7nl1rfeog3i = {
-  origin: Anonymize<If9iqq7i64mur8>;
-  query_id: bigint;
-};
-export type Iasr6pj6shs0fl = {
-  query_id: bigint;
-  response: Anonymize<I7vucpgm2c6959>;
-};
-export type I7r6b7145022pp = {
-  origin: Anonymize<If9iqq7i64mur8>;
-  query_id: bigint;
-  expected_location?: Anonymize<I4pai6qnfk426l>;
-};
-export type Icmrn7bogp28cs = {
-  hash: FixedSizeBinary<32>;
-  origin: Anonymize<If9iqq7i64mur8>;
-  assets: XcmVersionedAssets;
-};
-export type XcmVersionedAssets = Enum<{
-  V3: Anonymize<Iai6dhqiq3bach>;
-  V4: Anonymize<I50mli3hb64f9b>;
-  V5: Anonymize<I4npjalvhmfuj>;
-}>;
-export declare const XcmVersionedAssets: GetEnum<XcmVersionedAssets>;
-export type I7m9b5plj4h5ot = {
-  destination: Anonymize<If9iqq7i64mur8>;
-  result: number;
-  cost: Anonymize<I4npjalvhmfuj>;
-  message_id: FixedSizeBinary<32>;
-};
-export type I9kt8c221c83ln = {
-  location: Anonymize<If9iqq7i64mur8>;
-  version: number;
-};
-export type I9onhk772nfs4f = {
-  location: Anonymize<If9iqq7i64mur8>;
-  query_id: bigint;
-  error: Anonymize<Id56rgs0bdb7gl>;
-};
-export type I3l6bnksrmt56r = {
-  location: XcmVersionedLocation;
-  query_id: bigint;
-};
-export type Idh09k0l2pmdcg = {
-  origin: Anonymize<If9iqq7i64mur8>;
-  query_id: bigint;
-  expected_querier: Anonymize<If9iqq7i64mur8>;
-  maybe_actual_querier?: Anonymize<I4pai6qnfk426l>;
-};
-export type I7uoiphbm0tj4r = {
-  destination: Anonymize<If9iqq7i64mur8>;
-  cost: Anonymize<I4npjalvhmfuj>;
-  message_id: FixedSizeBinary<32>;
-};
-export type I512p1n7qt24l8 = {
-  paying: Anonymize<If9iqq7i64mur8>;
-  fees: Anonymize<I4npjalvhmfuj>;
-};
 export type I1dcjapt414ijf = AnonymousEnum<{
   AssetRateCreated: Anonymize<I9c4d50jrp7as1>;
   AssetRateRemoved: Anonymize<Ifplevr9hp8jo3>;
@@ -21535,10 +21309,6 @@ export type WestendRuntimeGovernanceOriginsPalletCustomOriginsOrigin = Enum<{
   Fellowship9Dan: undefined;
 }>;
 export declare const WestendRuntimeGovernanceOriginsPalletCustomOriginsOrigin: GetEnum<WestendRuntimeGovernanceOriginsPalletCustomOriginsOrigin>;
-export type Icvilmd7qu30i4 = AnonymousEnum<{
-  Xcm: Anonymize<If9iqq7i64mur8>;
-  Response: Anonymize<If9iqq7i64mur8>;
-}>;
 export type I7rqj1laarti4a = [
   Array<{
     delegate: SS58String;
@@ -21623,52 +21393,6 @@ export type Iepbsvlk3qceij = AnonymousEnum<{
   };
   Stuck: undefined;
 }>;
-export type I5qfubnuvrnqn6 = AnonymousEnum<{
-  Pending: {
-    responder: XcmVersionedLocation;
-    maybe_match_querier?: XcmVersionedLocation | undefined;
-    maybe_notify?: Anonymize<I1faufi0iffstp>;
-    timeout: number;
-  };
-  VersionNotifier: {
-    origin: XcmVersionedLocation;
-    is_active: boolean;
-  };
-  Ready: {
-    response: Enum<{
-      V3: XcmV3Response;
-      V4: XcmV4Response;
-      V5: Anonymize<I7vucpgm2c6959>;
-    }>;
-    at: number;
-  };
-}>;
-export type I8t3u2dv73ahbd = [number, XcmVersionedLocation];
-export type Ie0rpl5bahldfk = Array<[XcmVersionedLocation, number]>;
-export type I7e5oaj2qi4kl1 = {
-  amount: bigint;
-  owner: XcmVersionedLocation;
-  locker: XcmVersionedLocation;
-  consumers: Anonymize<I2ia97v5nng96b>;
-};
-export type Ie849h3gncgvok = [number, SS58String, XcmVersionedAssetId];
-export type XcmVersionedAssetId = Enum<{
-  V3: XcmV3MultiassetAssetId;
-  V4: Anonymize<I4c0s5cioidn76>;
-  V5: Anonymize<If9iqq7i64mur8>;
-}>;
-export declare const XcmVersionedAssetId: GetEnum<XcmVersionedAssetId>;
-export type Iat62vud7hlod2 = Array<[bigint, XcmVersionedLocation]>;
-export type I4fo08joqmcqnm = {
-  spec_name: string;
-  impl_name: string;
-  authoring_version: number;
-  spec_version: number;
-  impl_version: number;
-  apis: Anonymize<Ic9hg6pp5pkea5>;
-  transaction_version: number;
-  system_version: number;
-};
 export type I6b8jvefm4nj77 = Array<{
   id: number;
   info: {
@@ -23776,12 +23500,6 @@ export type I49ncdugfqno1o = {
   id: number;
   xcm: XcmVersionedXcm;
 };
-export type XcmVersionedXcm = Enum<{
-  V3: Anonymize<Ianvng4e08j9ii>;
-  V4: Anonymize<Iegrepoo0c1jc5>;
-  V5: Anonymize<Ict03eedr8de9s>;
-}>;
-export declare const XcmVersionedXcm: GetEnum<XcmVersionedXcm>;
 export type Idlqs78vqqscm0 = AnonymousEnum<{
   /**
    * Assign a permanent parachain slot and immediately create a lease for it.
@@ -24155,53 +23873,6 @@ export type I4up31a3q8cjhp = AnonymousEnum<{
    */
   transfer_assets_using_type_and_then: Anonymize<I9bnv6lu0crf1q>;
 }>;
-export type Ia5cotcvi888ln = {
-  dest: XcmVersionedLocation;
-  message: XcmVersionedXcm;
-};
-export type I21jsa919m88fd = {
-  dest: XcmVersionedLocation;
-  beneficiary: XcmVersionedLocation;
-  assets: XcmVersionedAssets;
-  fee_asset_item: number;
-};
-export type Iegif7m3upfe1k = {
-  message: XcmVersionedXcm;
-  max_weight: Anonymize<I4q39t5hn830vp>;
-};
-export type Icscpmubum33bq = {
-  location: XcmVersionedLocation;
-};
-export type I21d2olof7eb60 = {
-  dest: XcmVersionedLocation;
-  beneficiary: XcmVersionedLocation;
-  assets: XcmVersionedAssets;
-  fee_asset_item: number;
-  weight_limit: XcmV3WeightLimit;
-};
-export type Ie68np0vpihith = {
-  assets: XcmVersionedAssets;
-  beneficiary: XcmVersionedLocation;
-};
-export type I9bnv6lu0crf1q = {
-  dest: XcmVersionedLocation;
-  assets: XcmVersionedAssets;
-  assets_transfer_type: Enum<{
-    Teleport: undefined;
-    LocalReserve: undefined;
-    DestinationReserve: undefined;
-    RemoteReserve: XcmVersionedLocation;
-  }>;
-  remote_fees_id: XcmVersionedAssetId;
-  fees_transfer_type: Enum<{
-    Teleport: undefined;
-    LocalReserve: undefined;
-    DestinationReserve: undefined;
-    RemoteReserve: XcmVersionedLocation;
-  }>;
-  custom_xcm_on_dest: XcmVersionedXcm;
-  weight_limit: XcmV3WeightLimit;
-};
 export type If582h5gr5gh6f = AnonymousEnum<{
   /**
    * Initialize a conversion rate to native balance for the given asset.
@@ -24260,25 +23931,6 @@ export type I7u915mvkdsb08 = ResultPayload<
   }>
 >;
 export type I5d7losipisuu = ResultPayload<Anonymize<I99fj6g2ohpnc>, Anonymize<I5nrjkj9qumobs>>;
-export type I5nrjkj9qumobs = AnonymousEnum<{
-  Invalid: Enum<{
-    Call: undefined;
-    Payment: undefined;
-    Future: undefined;
-    Stale: undefined;
-    BadProof: undefined;
-    AncientBirthBlock: undefined;
-    ExhaustsResources: undefined;
-    Custom: number;
-    BadMandatory: undefined;
-    MandatoryValidation: undefined;
-    BadSigner: undefined;
-    IndeterminateImplicit: undefined;
-    UnknownOrigin: undefined;
-  }>;
-  Unknown: TransactionValidityUnknownTransaction;
-}>;
-export type I9ask1o4tfvcvs = ResultPayload<Anonymize<I6g5lcd9vf2cr0>, Anonymize<I5nrjkj9qumobs>>;
 export type I1v2gv5pb5e508 = Array<
   Enum<{
     Occupied: {
@@ -24391,8 +24043,6 @@ export type I4q6msnsckhfq2 = AnonymousEnum<{
   Beefy: Anonymize<Idmcmrk34p8gic>;
   IdentityMigrator: Anonymize<I67t4bps9r5c4k>;
 }>;
-export type Iftvbctbo05fu4 = ResultPayload<Array<XcmVersionedAssetId>, Anonymize<Iavct6f844hfju>>;
-export type Iek7ha36da9mf5 = ResultPayload<XcmVersionedAssets, Anonymize<Iavct6f844hfju>>;
 export type Ics7nabo3nlk4i = ResultPayload<
   {
     execution_result: Anonymize<Ibua694c9eauuo>;
@@ -24403,8 +24053,6 @@ export type Ics7nabo3nlk4i = ResultPayload<
   Anonymize<I55ku9c5gk50hb>
 >;
 export type Idhlbep11m8lc2 = Array<Anonymize<I1tj1l6iridkc0>>;
-export type Ieqgqma27vbupd = XcmVersionedXcm | undefined;
-export type Ialhmrpub9sefe = Array<[XcmVersionedLocation, Array<XcmVersionedXcm>]>;
 export type I6nudbatvdsaut = ResultPayload<
   {
     execution_result: Anonymize<I6uq5gb4s805s7>;
@@ -24518,6 +24166,41 @@ export type I5gu4h8f0am1te = AnonymousEnum<{
   Unavailable: undefined;
   RootNotAllowed: undefined;
   Trie: Anonymize<Idh4cj79bvroj8>;
+}>;
+export type I9p95gln24a0rn = AnonymousEnum<{
+  /**
+   * Attempt to upgrade validation function while existing upgrade pending.
+   */
+  OverlappingUpgrades: undefined;
+  /**
+   * Polkadot currently prohibits this parachain from upgrading its validation function.
+   */
+  ProhibitedByPolkadot: undefined;
+  /**
+   * The supplied validation function has compiled into a blob larger than Polkadot is
+   * willing to run.
+   */
+  TooBig: undefined;
+  /**
+   * The inherent which supplies the validation data did not run this block.
+   */
+  ValidationDataNotAvailable: undefined;
+  /**
+   * The inherent which supplies the host configuration did not run this block.
+   */
+  HostConfigurationNotAvailable: undefined;
+  /**
+   * No validation function upgrade is currently scheduled.
+   */
+  NotScheduled: undefined;
+  /**
+   * No code upgrade has been authorized.
+   */
+  NothingAuthorized: undefined;
+  /**
+   * The given code upgrade has not been authorized.
+   */
+  Unauthorized: undefined;
 }>;
 export type I818ddn1n7oo45 = AnonymousEnum<{
   /**
@@ -24665,24 +24348,6 @@ export type I818ddn1n7oo45 = AnonymousEnum<{
    */
   CreditPurchaseTooSmall: undefined;
 }>;
-export type Ihpdgvt7vs2cb = AnonymousEnum<{
-  /**
-   * Downward message is invalid XCM.
-   * \[ id \]
-   */
-  InvalidFormat: FixedSizeBinary<32>;
-  /**
-   * Downward message is unsupported version of XCM.
-   * \[ id \]
-   */
-  UnsupportedVersion: FixedSizeBinary<32>;
-  /**
-   * Downward message executed with the given outcome.
-   * \[ id, outcome \]
-   */
-  ExecutedDownward: Anonymize<Ibeto40kl3r5j7>;
-}>;
-export type Ibeto40kl3r5j7 = [FixedSizeBinary<32>, Anonymize<I6uq5gb4s805s7>];
 export type I5lv0todis7gv6 = AnonymousEnum<{
   /**
    * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
@@ -24779,6 +24444,135 @@ export type Ibljbcvk266h6n = AnonymousEnum<{
    * A proxy was removed.
    */
   ProxyRemoved: Anonymize<Idf02iigou8dpt>;
+}>;
+export type If8i3p468lj1ba = AnonymousEnum<{
+  /**
+   * A Region of Bulk Coretime has been purchased.
+   */
+  Purchased: Anonymize<Iaf2rbm5li8ck4>;
+  /**
+   * The workload of a core has become renewable.
+   */
+  Renewable: Anonymize<Ib118uuss8au5p>;
+  /**
+   * A workload has been renewed.
+   */
+  Renewed: Anonymize<Idfdoi7vpo971s>;
+  /**
+   * Ownership of a Region has been transferred.
+   */
+  Transferred: Anonymize<Icjdv7ehtt4mjk>;
+  /**
+   * A Region has been split into two non-overlapping Regions.
+   */
+  Partitioned: Anonymize<I7fa966sr93enr>;
+  /**
+   * A Region has been converted into two overlapping Regions each of lesser regularity.
+   */
+  Interlaced: Anonymize<I7fa966sr93enr>;
+  /**
+   * A Region has been assigned to a particular task.
+   */
+  Assigned: Anonymize<Icinrphfs7c1gh>;
+  /**
+   * A Region has been added to the Instantaneous Coretime Pool.
+   */
+  Pooled: Anonymize<Ib27rtfpnn4vta>;
+  /**
+   * A new number of cores has been requested.
+   */
+  CoreCountRequested: Anonymize<I629ak383ovl28>;
+  /**
+   * The number of cores available for scheduling has changed.
+   */
+  CoreCountChanged: Anonymize<I629ak383ovl28>;
+  /**
+   * There is a new reservation for a workload.
+   */
+  ReservationMade: Anonymize<If5j64blk6vsus>;
+  /**
+   * A reservation for a workload has been cancelled.
+   */
+  ReservationCancelled: Anonymize<If5j64blk6vsus>;
+  /**
+   * A new sale has been initialized.
+   */
+  SaleInitialized: Anonymize<Ie7jbpif7cf5o3>;
+  /**
+   * A new lease has been created.
+   */
+  Leased: Anonymize<I10gda06ia6n74>;
+  /**
+   * A lease is about to end.
+   */
+  LeaseEnding: Anonymize<Idj7j1g3t3rr57>;
+  /**
+   * The sale rotation has been started and a new sale is imminent.
+   */
+  SalesStarted: Anonymize<Ickukqupg34u5t>;
+  /**
+   * The act of claiming revenue has begun.
+   */
+  RevenueClaimBegun: Anonymize<I9l243q1j0e2us>;
+  /**
+   * A particular timeslice has a non-zero claim.
+   */
+  RevenueClaimItem: Anonymize<I44ckreh9i933v>;
+  /**
+   * A revenue claim has (possibly only in part) been paid.
+   */
+  RevenueClaimPaid: Anonymize<I2o3evaj5726u9>;
+  /**
+   * Some Instantaneous Coretime Pool credit has been purchased.
+   */
+  CreditPurchased: Anonymize<I201plm6irk5mk>;
+  /**
+   * A Region has been dropped due to being out of date.
+   */
+  RegionDropped: Anonymize<Ib27rtfpnn4vta>;
+  /**
+   * Some historical Instantaneous Core Pool contribution record has been dropped.
+   */
+  ContributionDropped: Anonymize<I4s60s3v5pfj6u>;
+  /**
+   * Some historical Instantaneous Core Pool payment record has been initialized.
+   */
+  HistoryInitialized: Anonymize<I7dkrdcvab1juf>;
+  /**
+   * Some historical Instantaneous Core Pool payment record has been dropped.
+   */
+  HistoryDropped: Anonymize<If5tfto9lepmm8>;
+  /**
+   * Some historical Instantaneous Core Pool payment record has been ignored because the
+   * timeslice was already known. Governance may need to intervene.
+   */
+  HistoryIgnored: Anonymize<If5tfto9lepmm8>;
+  /**
+   * Some historical Instantaneous Core Pool Revenue is ready for payout claims.
+   */
+  ClaimsReady: Anonymize<Ifla9c8bp7r3l9>;
+  /**
+   * A Core has been assigned to one or more tasks and/or the Pool on the Relay-chain.
+   */
+  CoreAssigned: Anonymize<Im8dpq6bqg07f>;
+  /**
+   * Some historical Instantaneous Core Pool payment record has been dropped.
+   */
+  PotentialRenewalDropped: Anonymize<I3blejcb10m5c9>;
+  AutoRenewalEnabled: Anonymize<I6td68h84ru5u7>;
+  AutoRenewalDisabled: Anonymize<I6td68h84ru5u7>;
+  /**
+   * Failed to auto-renew a core, likely due to the payer account not being sufficiently
+   * funded.
+   */
+  AutoRenewalFailed: Anonymize<I5mulkk8c7che3>;
+  /**
+   * The auto-renewal limit has been reached upon renewing cores.
+   *
+   * This should never happen, given that enable_auto_renew checks for this before enabling
+   * auto-renewal.
+   */
+  AutoRenewalLimitReached: undefined;
 }>;
 export type I26j61ai4a9554 = AnonymousEnum<{
   /**
@@ -24914,11 +24708,6 @@ export type I9e472bkveqvpa = {
   as_origin: Anonymize<I42ficri7uep20>;
   call: TxCallData;
 };
-export type I42ficri7uep20 = AnonymousEnum<{
-  system: DispatchRawOrigin;
-  PolkadotXcm: Anonymize<Icvilmd7qu30i4>;
-  CumulusXcm: Anonymize<I3in0d0lb61qi8>;
-}>;
 export type I2jaf3os28070l = {
   call: TxCallData;
   weight: Anonymize<I4q39t5hn830vp>;
@@ -25423,10 +25212,6 @@ export type I7mijri74c9hu0 = AnonymousEnum<{
   force_reserve: Anonymize<Ickqtr6vqgluk1>;
   swap_leases: Anonymize<Idehabrqi23sc0>;
 }>;
-export type Ickqtr6vqgluk1 = {
-  workload: Anonymize<Ia7varbguadod5>;
-  core: number;
-};
 export type I358hgub2ukk5s = ResultPayload<Anonymize<I1sr4d7ur45n2g>, Anonymize<I5nrjkj9qumobs>>;
 export type I531knd64o65mv = ResultPayload<bigint, Anonymize<I5gu4h8f0am1te>>;
 export type Iap7tiv560me91 = AnonymousEnum<{
@@ -27717,6 +27502,1015 @@ export type Icfg52tq78dtm2 = ResultPayload<
   {
     execution_result: Anonymize<I6uq5gb4s805s7>;
     emitted_events: Anonymize<I422m49ti1qeph>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type I1dgrfe25hjagf = Array<{
+  phase: Phase;
+  event: Anonymize<I3fccgvrr85g1j>;
+  topics: Anonymize<Ic5m5lp1oioo8r>;
+}>;
+export type I3fccgvrr85g1j = AnonymousEnum<{
+  System: Anonymize<I85f620u83rdrb>;
+  ParachainSystem: Anonymize<Icbsekf57miplo>;
+  Balances: Anonymize<Iao8h4hv7atnq3>;
+  TransactionPayment: TransactionPaymentEvent;
+  CollatorSelection: Anonymize<I4srakrmf0fspo>;
+  Session: SessionEvent;
+  XcmpQueue: Anonymize<Idsqc7mhp6nnle>;
+  PolkadotXcm: Anonymize<Iel5f66clbekc3>;
+  CumulusXcm: Anonymize<Ihpdgvt7vs2cb>;
+  MessageQueue: Anonymize<I2kosejppk3jon>;
+  Utility: Anonymize<I5ktqbvgrvgn2i>;
+  Multisig: Anonymize<Id9kuvccifeiuo>;
+  Proxy: Anonymize<Iduar4qhuc3egv>;
+  Broker: Anonymize<If8i3p468lj1ba>;
+  Sudo: Anonymize<Iccadkjussp148>;
+}>;
+export type I85f620u83rdrb = AnonymousEnum<{
+  /**
+   * An extrinsic completed successfully.
+   */
+  ExtrinsicSuccess: Anonymize<Ia82mnkmeo2rhc>;
+  /**
+   * An extrinsic failed.
+   */
+  ExtrinsicFailed: Anonymize<I5rd1vnapdo7tu>;
+  /**
+   * `:code` was updated.
+   */
+  CodeUpdated: undefined;
+  /**
+   * A new account was created.
+   */
+  NewAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * An account was reaped.
+   */
+  KilledAccount: Anonymize<Icbccs0ug47ilf>;
+  /**
+   * On on-chain remark happened.
+   */
+  Remarked: Anonymize<I855j4i3kr8ko1>;
+  /**
+   * An upgrade was authorized.
+   */
+  UpgradeAuthorized: Anonymize<Ibgl04rn6nbfm6>;
+}>;
+export type I5rd1vnapdo7tu = {
+  dispatch_error: Anonymize<Icj8rl7cp87vd2>;
+  dispatch_info: Anonymize<Ic9s8f85vjtncc>;
+};
+export type Icj8rl7cp87vd2 = AnonymousEnum<{
+  Other: undefined;
+  CannotLookup: undefined;
+  BadOrigin: undefined;
+  Module: Enum<{
+    System: Anonymize<I5o0s7c8q1cc9b>;
+    ParachainSystem: Anonymize<I9p95gln24a0rn>;
+    Timestamp: undefined;
+    ParachainInfo: undefined;
+    Balances: Anonymize<Idj13i7adlomht>;
+    TransactionPayment: undefined;
+    Authorship: undefined;
+    CollatorSelection: Anonymize<I36bcffk2387dv>;
+    Session: Anonymize<I1e07dgbaqd1sq>;
+    Aura: undefined;
+    AuraExt: undefined;
+    XcmpQueue: Anonymize<Idnnbndsjjeqqs>;
+    PolkadotXcm: Anonymize<I87j95aq93d7dq>;
+    CumulusXcm: undefined;
+    MessageQueue: Anonymize<I5iupade5ag2dp>;
+    Utility: Anonymize<I8dt2g2hcrgh36>;
+    Multisig: Anonymize<Ia76qmhhg4jvb9>;
+    Proxy: Anonymize<Iuvt54ei4cehc>;
+    Broker: Anonymize<I3ruhpr143p9re>;
+    Sudo: Anonymize<Iaug04qjhbli00>;
+  }>;
+  ConsumerRemaining: undefined;
+  NoProviders: undefined;
+  TooManyConsumers: undefined;
+  Token: TokenError;
+  Arithmetic: ArithmeticError;
+  Transactional: TransactionalError;
+  Exhausted: undefined;
+  Corruption: undefined;
+  Unavailable: undefined;
+  RootNotAllowed: undefined;
+  Trie: Anonymize<Idh4cj79bvroj8>;
+}>;
+export type I3ruhpr143p9re = AnonymousEnum<{
+  /**
+   * The given region identity is not known.
+   */
+  UnknownRegion: undefined;
+  /**
+   * The owner of the region is not the origin.
+   */
+  NotOwner: undefined;
+  /**
+   * The pivot point of the partition at or after the end of the region.
+   */
+  PivotTooLate: undefined;
+  /**
+   * The pivot point of the partition at the beginning of the region.
+   */
+  PivotTooEarly: undefined;
+  /**
+   * The pivot mask for the interlacing is not contained within the region's interlace mask.
+   */
+  ExteriorPivot: undefined;
+  /**
+   * The pivot mask for the interlacing is void (and therefore unschedulable).
+   */
+  VoidPivot: undefined;
+  /**
+   * The pivot mask for the interlacing is complete (and therefore not a strict subset).
+   */
+  CompletePivot: undefined;
+  /**
+   * The workplan of the pallet's state is invalid. This indicates a state corruption.
+   */
+  CorruptWorkplan: undefined;
+  /**
+   * There is no sale happening currently.
+   */
+  NoSales: undefined;
+  /**
+   * The price limit is exceeded.
+   */
+  Overpriced: undefined;
+  /**
+   * There are no cores available.
+   */
+  Unavailable: undefined;
+  /**
+   * The sale limit has been reached.
+   */
+  SoldOut: undefined;
+  /**
+   * The renewal operation is not valid at the current time (it may become valid in the next
+   * sale).
+   */
+  WrongTime: undefined;
+  /**
+   * Invalid attempt to renew.
+   */
+  NotAllowed: undefined;
+  /**
+   * This pallet has not yet been initialized.
+   */
+  Uninitialized: undefined;
+  /**
+   * The purchase cannot happen yet as the sale period is yet to begin.
+   */
+  TooEarly: undefined;
+  /**
+   * There is no work to be done.
+   */
+  NothingToDo: undefined;
+  /**
+   * The maximum amount of reservations has already been reached.
+   */
+  TooManyReservations: undefined;
+  /**
+   * The maximum amount of leases has already been reached.
+   */
+  TooManyLeases: undefined;
+  /**
+   * The revenue for the Instantaneous Core Sales of this period is not (yet) known and thus
+   * this operation cannot proceed.
+   */
+  UnknownRevenue: undefined;
+  /**
+   * The identified contribution to the Instantaneous Core Pool is unknown.
+   */
+  UnknownContribution: undefined;
+  /**
+   * The workload assigned for renewal is incomplete. This is unexpected and indicates a
+   * logic error.
+   */
+  IncompleteAssignment: undefined;
+  /**
+   * An item cannot be dropped because it is still valid.
+   */
+  StillValid: undefined;
+  /**
+   * The history item does not exist.
+   */
+  NoHistory: undefined;
+  /**
+   * No reservation of the given index exists.
+   */
+  UnknownReservation: undefined;
+  /**
+   * The renewal record cannot be found.
+   */
+  UnknownRenewal: undefined;
+  /**
+   * The lease expiry time has already passed.
+   */
+  AlreadyExpired: undefined;
+  /**
+   * The configuration could not be applied because it is invalid.
+   */
+  InvalidConfig: undefined;
+  /**
+   * The revenue must be claimed for 1 or more timeslices.
+   */
+  NoClaimTimeslices: undefined;
+  /**
+   * The caller doesn't have the permission to enable or disable auto-renewal.
+   */
+  NoPermission: undefined;
+  /**
+   * We reached the limit for auto-renewals.
+   */
+  TooManyAutoRenewals: undefined;
+  /**
+   * Only cores which are assigned to a task can be auto-renewed.
+   */
+  NonTaskAutoRenewal: undefined;
+  /**
+   * Failed to get the sovereign account of a task.
+   */
+  SovereignAccountNotFound: undefined;
+  /**
+   * Attempted to disable auto-renewal for a core that didn't have it enabled.
+   */
+  AutoRenewalNotEnabled: undefined;
+}>;
+export type I5ktqbvgrvgn2i = AnonymousEnum<{
+  /**
+   * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
+   * well as the error.
+   */
+  BatchInterrupted: Anonymize<Ie88s8d8qm3mb4>;
+  /**
+   * Batch of dispatches completed fully with no error.
+   */
+  BatchCompleted: undefined;
+  /**
+   * Batch of dispatches completed but has errors.
+   */
+  BatchCompletedWithErrors: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with no error.
+   */
+  ItemCompleted: undefined;
+  /**
+   * A single item within a Batch of dispatches has completed with error.
+   */
+  ItemFailed: Anonymize<I983md5b3413uj>;
+  /**
+   * A call was dispatched.
+   */
+  DispatchedAs: Anonymize<I18t075s4715kr>;
+}>;
+export type Ie88s8d8qm3mb4 = {
+  index: number;
+  error: Anonymize<Icj8rl7cp87vd2>;
+};
+export type I983md5b3413uj = {
+  error: Anonymize<Icj8rl7cp87vd2>;
+};
+export type I18t075s4715kr = {
+  result: Anonymize<I6dkqo6dpri4st>;
+};
+export type I6dkqo6dpri4st = ResultPayload<undefined, Anonymize<Icj8rl7cp87vd2>>;
+export type Id9kuvccifeiuo = AnonymousEnum<{
+  /**
+   * A new multisig operation has begun.
+   */
+  NewMultisig: Anonymize<Iep27ialq4a7o7>;
+  /**
+   * A multisig operation has been approved by someone.
+   */
+  MultisigApproval: Anonymize<Iasu5jvoqr43mv>;
+  /**
+   * A multisig operation has been executed.
+   */
+  MultisigExecuted: Anonymize<I48o9fjl2c71va>;
+  /**
+   * A multisig operation has been cancelled.
+   */
+  MultisigCancelled: Anonymize<I5qolde99acmd1>;
+}>;
+export type I48o9fjl2c71va = {
+  approving: SS58String;
+  timepoint: Anonymize<Itvprrpb0nm3o>;
+  multisig: SS58String;
+  call_hash: FixedSizeBinary<32>;
+  result: Anonymize<I6dkqo6dpri4st>;
+};
+export type Iduar4qhuc3egv = AnonymousEnum<{
+  /**
+   * A proxy was executed correctly, with the given.
+   */
+  ProxyExecuted: Anonymize<I18t075s4715kr>;
+  /**
+   * A pure account has been created by new proxy with given
+   * disambiguation index and proxy type.
+   */
+  PureCreated: Anonymize<I4sa5jshkufeug>;
+  /**
+   * An announcement was placed to make a call in the future.
+   */
+  Announced: Anonymize<I2ur0oeqg495j8>;
+  /**
+   * A proxy was added.
+   */
+  ProxyAdded: Anonymize<Idf02iigou8dpt>;
+  /**
+   * A proxy was removed.
+   */
+  ProxyRemoved: Anonymize<Idf02iigou8dpt>;
+}>;
+export type Iccadkjussp148 = AnonymousEnum<{
+  /**
+   * A sudo call just took place.
+   */
+  Sudid: Anonymize<I4k047sr4clvfo>;
+  /**
+   * The sudo key has been updated.
+   */
+  KeyChanged: Anonymize<I5rtkmhm2dng4u>;
+  /**
+   * The key was permanently removed.
+   */
+  KeyRemoved: undefined;
+  /**
+   * A [sudo_as](Pallet::sudo_as) call just took place.
+   */
+  SudoAsDone: Anonymize<I4k047sr4clvfo>;
+}>;
+export type I4k047sr4clvfo = {
+  /**
+   * The result of the call made by the sudo user.
+   */
+  sudo_result: Anonymize<I6dkqo6dpri4st>;
+};
+export type I224o4rglrgplb = AnonymousEnum<{
+  /**
+   * Send a batch of dispatch calls.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   *
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  batch: Anonymize<Idi3jhombl5991>;
+  /**
+   * Send a call through an indexed pseudonym of the sender.
+   *
+   * Filter from origin are passed along. The call will be dispatched with an origin which
+   * use the same filter as the origin of this call.
+   *
+   * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
+   * because you expect `proxy` to have been used prior in the call stack and you do not want
+   * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
+   * in the Multisig pallet instead.
+   *
+   * NOTE: Prior to version *12, this was called `as_limited_sub`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  as_derivative: Anonymize<I74ee5f90drmps>;
+  /**
+   * Send a batch of dispatch calls and atomically execute them.
+   * The whole transaction will rollback and fail if any of the calls failed.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatched without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  batch_all: Anonymize<Idi3jhombl5991>;
+  /**
+   * Dispatches a function call with a provided origin.
+   *
+   * The dispatch origin for this call must be _Root_.
+   *
+   * ## Complexity
+   * - O(1).
+   */
+  dispatch_as: Anonymize<I7fgi5voun912q>;
+  /**
+   * Send a batch of dispatch calls.
+   * Unlike `batch`, it allows errors and won't interrupt.
+   *
+   * May be called from any origin except `None`.
+   *
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   * exceed the constant: `batched_calls_limit` (available in constant metadata).
+   *
+   * If origin is root then the calls are dispatch without checking origin filter. (This
+   * includes bypassing `frame_system::Config::BaseCallFilter`).
+   *
+   * ## Complexity
+   * - O(C) where C is the number of calls to be batched.
+   */
+  force_batch: Anonymize<Idi3jhombl5991>;
+  /**
+   * Dispatch a function call with a specified weight.
+   *
+   * This function does not check the weight of the call, and instead allows the
+   * Root origin to specify the weight of the call.
+   *
+   * The dispatch origin for this call must be _Root_.
+   */
+  with_weight: Anonymize<I628ue83cjmrce>;
+}>;
+export type Idi3jhombl5991 = {
+  calls: Array<TxCallData>;
+};
+export type I74ee5f90drmps = {
+  index: number;
+  call: TxCallData;
+};
+export type I7fgi5voun912q = {
+  as_origin: Anonymize<I42ficri7uep20>;
+  call: TxCallData;
+};
+export type I628ue83cjmrce = {
+  call: TxCallData;
+  weight: Anonymize<I4q39t5hn830vp>;
+};
+export type I4klp3fcc2n2fd = AnonymousEnum<{
+  /**
+   * Immediately dispatch a multi-signature call using a single approval from the caller.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `other_signatories`: The accounts (other than the sender) who are part of the
+   * multi-signature, but do not participate in the approval process.
+   * - `call`: The call to be executed.
+   *
+   * Result is equivalent to the dispatched result.
+   *
+   * ## Complexity
+   * O(Z + C) where Z is the length of the call and C its execution weight.
+   */
+  as_multi_threshold_1: Anonymize<I84tmqqbca6ttp>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * If there are enough, then dispatch the call.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   *
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   *
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   *
+   * ## Complexity
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  as_multi: Anonymize<Iakoaq8mavgopd>;
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   *
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * NOTE: If this is the final approval, you will want to use `as_multi` instead.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   */
+  approve_as_multi: Anonymize<Ideaemvoneh309>;
+  /**
+   * Cancel a pre-existing, on-going multisig transaction. Any deposit reserved previously
+   * for this operation will be unreserved on success.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `timepoint`: The timepoint (block number and transaction index) of the first approval
+   * transaction for this dispatch.
+   * - `call_hash`: The hash of the call to be executed.
+   *
+   * ## Complexity
+   * - `O(S)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   * signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - One event.
+   * - I/O: 1 read `O(S)`, one remove.
+   * - Storage: removes one item.
+   */
+  cancel_as_multi: Anonymize<I3d9o9d7epp66v>;
+}>;
+export type I84tmqqbca6ttp = {
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  call: TxCallData;
+};
+export type Iakoaq8mavgopd = {
+  threshold: number;
+  other_signatories: Anonymize<Ia2lhg7l2hilo3>;
+  maybe_timepoint?: Anonymize<I95jfd8j5cr5eh>;
+  call: TxCallData;
+  max_weight: Anonymize<I4q39t5hn830vp>;
+};
+export type I3fea2q4dbmrtk = AnonymousEnum<{
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy: Anonymize<I7fvuf2dk93lu4>;
+  /**
+   * Register a proxy account for the sender that is able to make calls on its behalf.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to make a proxy.
+   * - `proxy_type`: The permissions allowed for this proxy account.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   */
+  add_proxy: Anonymize<I83oifkl5gf7v7>;
+  /**
+   * Unregister a proxy account for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `proxy`: The account that the `caller` would like to remove as a proxy.
+   * - `proxy_type`: The permissions currently enabled for the removed proxy account.
+   */
+  remove_proxy: Anonymize<I83oifkl5gf7v7>;
+  /**
+   * Unregister all proxy accounts for the sender.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * WARNING: This may be called on accounts created by `pure`, however if done, then
+   * the unreserved fees will be inaccessible. **All access to this account will be lost.**
+   */
+  remove_proxies: undefined;
+  /**
+   * Spawn a fresh new account that is guaranteed to be otherwise inaccessible, and
+   * initialize it with a proxy of `proxy_type` for `origin` sender.
+   *
+   * Requires a `Signed` origin.
+   *
+   * - `proxy_type`: The type of the proxy that the sender will be registered as over the
+   * new account. This will almost always be the most permissive `ProxyType` possible to
+   * allow for maximum flexibility.
+   * - `index`: A disambiguation index, in case this is called multiple times in the same
+   * transaction (e.g. with `utility::batch`). Unless you're using `batch` you probably just
+   * want to use `0`.
+   * - `delay`: The announcement period required of the initial proxy. Will generally be
+   * zero.
+   *
+   * Fails with `Duplicate` if this has already been called in this transaction, from the
+   * same sender, with the same parameters.
+   *
+   * Fails if there are insufficient funds to pay for deposit.
+   */
+  create_pure: Anonymize<Iad1o67krgn48a>;
+  /**
+   * Removes a previously spawned pure proxy.
+   *
+   * WARNING: **All access to this account will be lost.** Any funds held in it will be
+   * inaccessible.
+   *
+   * Requires a `Signed` origin, and the sender account must have been created by a call to
+   * `pure` with corresponding parameters.
+   *
+   * - `spawner`: The account that originally called `pure` to create this account.
+   * - `index`: The disambiguation index originally passed to `pure`. Probably `0`.
+   * - `proxy_type`: The proxy type originally passed to `pure`.
+   * - `height`: The height of the chain when the call to `pure` was processed.
+   * - `ext_index`: The extrinsic index in which the call to `pure` was processed.
+   *
+   * Fails with `NoPermission` in case the caller is not a previously created pure
+   * account whose `pure` call has corresponding parameters.
+   */
+  kill_pure: Anonymize<I20693ttkj61v9>;
+  /**
+   * Publish the hash of a proxy-call that will be made in the future.
+   *
+   * This must be called some number of blocks before the corresponding `proxy` is attempted
+   * if the delay associated with the proxy relationship is greater than zero.
+   *
+   * No more than `MaxPending` announcements may be made at any one time.
+   *
+   * This will take a deposit of `AnnouncementDepositFactor` as well as
+   * `AnnouncementDepositBase` if there are no other pending announcements.
+   *
+   * The dispatch origin for this call must be _Signed_ and a proxy of `real`.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  announce: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove a given announcement.
+   *
+   * May be called by a proxy account to remove a call they previously announced and return
+   * the deposit.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `call_hash`: The hash of the call to be made by the `real` account.
+   */
+  remove_announcement: Anonymize<I2eb501t8s6hsq>;
+  /**
+   * Remove the given announcement of a delegate.
+   *
+   * May be called by a target (proxied) account to remove a call that one of their delegates
+   * (`delegate`) has announced they want to execute. The deposit is returned.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `delegate`: The account that previously announced the call.
+   * - `call_hash`: The hash of the call to be made.
+   */
+  reject_announcement: Anonymize<Ianmuoljk2sk1u>;
+  /**
+   * Dispatch the given `call` from an account that the sender is authorized for through
+   * `add_proxy`.
+   *
+   * Removes any corresponding announcement(s).
+   *
+   * The dispatch origin for this call must be _Signed_.
+   *
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   */
+  proxy_announced: Anonymize<I94vgvpldc40qi>;
+}>;
+export type I7fvuf2dk93lu4 = {
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<I2msdr6fcj5tad>;
+  call: TxCallData;
+};
+export type I94vgvpldc40qi = {
+  delegate: MultiAddress;
+  real: MultiAddress;
+  force_proxy_type?: Anonymize<I2msdr6fcj5tad>;
+  call: TxCallData;
+};
+export type Idigt06eqobqcr = AnonymousEnum<{
+  /**
+   * Configure the pallet.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `config`: The configuration for this pallet.
+   */
+  configure: Anonymize<I4v4jc8ak5c8j7>;
+  /**
+   * Reserve a core for a workload.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `workload`: The workload which should be permanently placed on a core.
+   */
+  reserve: Anonymize<Ieifvmse8ekofd>;
+  /**
+   * Cancel a reservation for a workload.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `item_index`: The index of the reservation. Usually this will also be the index of the
+   * core on which the reservation has been scheduled. However, it is possible that if
+   * other cores are reserved or unreserved in the same sale rotation that they won't
+   * correspond, so it's better to look up the core properly in the `Reservations` storage.
+   */
+  unreserve: Anonymize<Iepja8rcbuaao2>;
+  /**
+   * Reserve a core for a single task workload for a limited period.
+   *
+   * In the interlude and sale period where Bulk Coretime is sold for the period immediately
+   * after `until`, then the same workload may be renewed.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `task`: The workload which should be placed on a core.
+   * - `until`: The timeslice now earlier than which `task` should be placed as a workload on
+   * a core.
+   */
+  set_lease: Anonymize<I10gda06ia6n74>;
+  /**
+   * Begin the Bulk Coretime sales rotation.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `end_price`: The price after the leadin period of Bulk Coretime in the first sale.
+   * - `extra_cores`: Number of extra cores that should be requested on top of the cores
+   * required for `Reservations` and `Leases`.
+   *
+   * This will call [`Self::request_core_count`] internally to set the correct core count on
+   * the relay chain.
+   */
+  start_sales: Anonymize<I6bqnueuk5semj>;
+  /**
+   * Purchase Bulk Coretime in the ongoing Sale.
+   *
+   * - `origin`: Must be a Signed origin with at least enough funds to pay the current price
+   * of Bulk Coretime.
+   * - `price_limit`: An amount no more than which should be paid.
+   */
+  purchase: Anonymize<I268qbbcqfpqi0>;
+  /**
+   * Renew Bulk Coretime in the ongoing Sale or its prior Interlude Period.
+   *
+   * - `origin`: Must be a Signed origin with at least enough funds to pay the renewal price
+   * of the core.
+   * - `core`: The core which should be renewed.
+   */
+  renew: Anonymize<Iaiqv5prlisjkg>;
+  /**
+   * Transfer a Bulk Coretime Region to a new owner.
+   *
+   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+   * - `region_id`: The Region whose ownership should change.
+   * - `new_owner`: The new owner for the Region.
+   */
+  transfer: Anonymize<Ia3ebg5qshpkmr>;
+  /**
+   * Split a Bulk Coretime Region into two non-overlapping Regions at a particular time into
+   * the region.
+   *
+   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+   * - `region_id`: The Region which should be partitioned into two non-overlapping Regions.
+   * - `pivot`: The offset in time into the Region at which to make the split.
+   */
+  partition: Anonymize<Iagnp6gsiemekd>;
+  /**
+   * Split a Bulk Coretime Region into two wholly-overlapping Regions with complementary
+   * interlace masks which together make up the original Region's interlace mask.
+   *
+   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+   * - `region_id`: The Region which should become two interlaced Regions of incomplete
+   * regularity.
+   * - `pivot`: The interlace mask of one of the two new regions (the other is its partial
+   * complement).
+   */
+  interlace: Anonymize<I2uc90glvkisre>;
+  /**
+   * Assign a Bulk Coretime Region to a task.
+   *
+   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+   * - `region_id`: The Region which should be assigned to the task.
+   * - `task`: The task to assign.
+   * - `finality`: Indication of whether this assignment is final (in which case it may be
+   * eligible for renewal) or provisional (in which case it may be manipulated and/or
+   * reassigned at a later stage).
+   */
+  assign: Anonymize<I7tcaqpipfe64i>;
+  /**
+   * Place a Bulk Coretime Region into the Instantaneous Coretime Pool.
+   *
+   * - `origin`: Must be a Signed origin of the account which owns the Region `region_id`.
+   * - `region_id`: The Region which should be assigned to the Pool.
+   * - `payee`: The account which is able to collect any revenue due for the usage of this
+   * Coretime.
+   */
+  pool: Anonymize<I6eqlfpqd4sp3a>;
+  /**
+   * Claim the revenue owed from inclusion in the Instantaneous Coretime Pool.
+   *
+   * - `origin`: Must be a Signed origin.
+   * - `region_id`: The Region which was assigned to the Pool.
+   * - `max_timeslices`: The maximum number of timeslices which should be processed. This
+   * must be greater than 0. This may affect the weight of the call but should be ideally
+   * made equivalent to the length of the Region `region_id`. If less, further dispatches
+   * will be required with the same `region_id` to claim revenue for the remainder.
+   */
+  claim_revenue: Anonymize<Ib2n01qni7h5uk>;
+  /**
+   * Purchase credit for use in the Instantaneous Coretime Pool.
+   *
+   * - `origin`: Must be a Signed origin able to pay at least `amount`.
+   * - `amount`: The amount of credit to purchase.
+   * - `beneficiary`: The account on the Relay-chain which controls the credit (generally
+   * this will be the collator's hot wallet).
+   */
+  purchase_credit: Anonymize<Idscf6boak49q1>;
+  /**
+   * Drop an expired Region from the chain.
+   *
+   * - `origin`: Can be any kind of origin.
+   * - `region_id`: The Region which has expired.
+   */
+  drop_region: Anonymize<I4s60s3v5pfj6u>;
+  /**
+   * Drop an expired Instantaneous Pool Contribution record from the chain.
+   *
+   * - `origin`: Can be any kind of origin.
+   * - `region_id`: The Region identifying the Pool Contribution which has expired.
+   */
+  drop_contribution: Anonymize<I4s60s3v5pfj6u>;
+  /**
+   * Drop an expired Instantaneous Pool History record from the chain.
+   *
+   * - `origin`: Can be any kind of origin.
+   * - `region_id`: The time of the Pool History record which has expired.
+   */
+  drop_history: Anonymize<Ibtsa3docbr9el>;
+  /**
+   * Drop an expired Allowed Renewal record from the chain.
+   *
+   * - `origin`: Can be any kind of origin.
+   * - `core`: The core to which the expired renewal refers.
+   * - `when`: The timeslice to which the expired renewal refers. This must have passed.
+   */
+  drop_renewal: Anonymize<I3blejcb10m5c9>;
+  /**
+   * Request a change to the number of cores available for scheduling work.
+   *
+   * - `origin`: Must be Root or pass `AdminOrigin`.
+   * - `core_count`: The desired number of cores to be made available.
+   */
+  request_core_count: Anonymize<I629ak383ovl28>;
+  notify_core_count: Anonymize<I629ak383ovl28>;
+  notify_revenue: Anonymize<I5cuv5a5cclsfd>;
+  /**
+   * Extrinsic for enabling auto renewal.
+   *
+   * Callable by the sovereign account of the task on the specified core. This account
+   * will be charged at the start of every bulk period for renewing core time.
+   *
+   * - `origin`: Must be the sovereign account of the task
+   * - `core`: The core to which the task to be renewed is currently assigned.
+   * - `task`: The task for which we want to enable auto renewal.
+   * - `workload_end_hint`: should be used when enabling auto-renewal for a core that is not
+   * expiring in the upcoming bulk period (e.g., due to holding a lease) since it would be
+   * inefficient to look up when the core expires to schedule the next renewal.
+   */
+  enable_auto_renew: Anonymize<Ie3qk84fi8j51k>;
+  /**
+   * Extrinsic for disabling auto renewal.
+   *
+   * Callable by the sovereign account of the task on the specified core.
+   *
+   * - `origin`: Must be the sovereign account of the task.
+   * - `core`: The core for which we want to disable auto renewal.
+   * - `task`: The task for which we want to disable auto renewal.
+   */
+  disable_auto_renew: Anonymize<I6td68h84ru5u7>;
+  swap_leases: Anonymize<Idehabrqi23sc0>;
+}>;
+export type Ie9jlbvo98gpbk = AnonymousEnum<{
+  /**
+   * Authenticates the sudo key and dispatches a function call with `Root` origin.
+   */
+  sudo: Anonymize<I6m4ills74b2k0>;
+  /**
+   * Authenticates the sudo key and dispatches a function call with `Root` origin.
+   * This function does not check the weight of the call, and instead allows the
+   * Sudo user to specify the weight of the call.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  sudo_unchecked_weight: Anonymize<I628ue83cjmrce>;
+  /**
+   * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
+   * key.
+   */
+  set_key: Anonymize<I8k3rnvpeeh4hv>;
+  /**
+   * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+   * a given account.
+   *
+   * The dispatch origin for this call must be _Signed_.
+   */
+  sudo_as: Anonymize<I551iku7nusifg>;
+  /**
+   * Permanently removes the sudo key.
+   *
+   * **This cannot be un-done.**
+   */
+  remove_key: undefined;
+}>;
+export type I6m4ills74b2k0 = {
+  call: TxCallData;
+};
+export type I551iku7nusifg = {
+  who: MultiAddress;
+  call: TxCallData;
+};
+export type I11qd6ipe47fqg = ResultPayload<Anonymize<I6dkqo6dpri4st>, Anonymize<I5nrjkj9qumobs>>;
+export type I6fg2reo3f7mbf = AnonymousEnum<{
+  System: Anonymize<Iekve0i6djpd9f>;
+  ParachainSystem: Anonymize<I5kev21p7u6ajb>;
+  Timestamp: Anonymize<I7d75gqfg6jh9c>;
+  ParachainInfo: undefined;
+  Balances: Anonymize<I9svldsp29mh87>;
+  CollatorSelection: Anonymize<I9dpq5287dur8b>;
+  Session: Anonymize<I77dda7hps0u37>;
+  XcmpQueue: Anonymize<Ib7tahn20bvsep>;
+  PolkadotXcm: Anonymize<I4up31a3q8cjhp>;
+  CumulusXcm: undefined;
+  MessageQueue: Anonymize<Ic2uoe7jdksosp>;
+  Utility: Anonymize<I224o4rglrgplb>;
+  Multisig: Anonymize<I4klp3fcc2n2fd>;
+  Proxy: Anonymize<I3fea2q4dbmrtk>;
+  Broker: Anonymize<Idigt06eqobqcr>;
+  Sudo: Anonymize<Ie9jlbvo98gpbk>;
+}>;
+export type I8887jitq9r4kh = ResultPayload<
+  {
+    execution_result: ResultPayload<
+      Anonymize<Ia1u1r3n74r13c>,
+      {
+        post_info: Anonymize<Ia1u1r3n74r13c>;
+        error: Anonymize<Icj8rl7cp87vd2>;
+      }
+    >;
+    emitted_events: Anonymize<I6gko33gkbq9lj>;
+    local_xcm?: Anonymize<Ieqgqma27vbupd>;
+    forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
+  },
+  Anonymize<I55ku9c5gk50hb>
+>;
+export type I6gko33gkbq9lj = Array<Anonymize<I3fccgvrr85g1j>>;
+export type I64okh1u9iabqe = ResultPayload<
+  {
+    execution_result: Anonymize<I6uq5gb4s805s7>;
+    emitted_events: Anonymize<I6gko33gkbq9lj>;
     forwarded_xcms: Anonymize<Ialhmrpub9sefe>;
   },
   Anonymize<I55ku9c5gk50hb>

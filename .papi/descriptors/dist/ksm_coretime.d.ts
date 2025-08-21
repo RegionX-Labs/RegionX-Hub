@@ -20,11 +20,12 @@ import {
   I5sesotjlssv2d,
   Iffmde3ekjedi9,
   I4mddgoa69c0a2,
-  I8l55oo60ovgap,
+  I1urskkb58nkjk,
   I95g6i7ilua7lq,
   Ieniouoqkq4icf,
   Phase,
   Ibgl04rn6nbfm6,
+  I4q39t5hn830vp,
   I1v7jbnil3tjns,
   I8jgj1nhcr2dg8,
   Ifn6q3equiq9qi,
@@ -35,31 +36,33 @@ import {
   I4iumukclgj8ej,
   Iqnbvitf7a7l3,
   I6r5cbv8ttrb09,
-  I4q39t5hn830vp,
   I1q8tnt1cluu5j,
   I8ds64oj6581v0,
   Ia7pdug7cdsg8g,
+  Ie8lr6tim1k996,
   I9bin2jc70qt6q,
   TransactionPaymentReleases,
   Ia2lhg7l2hilo3,
   Ifi4da1gej1fri,
   Ifvgo9568rpmqc,
-  Icgljjb6j82uhn,
   I82jm9g7pufuel,
   Ic5m5lp1oioo8r,
   I6cs1itejju2vv,
+  Icgljjb6j82uhn,
   Ib77b0fp1a6mjr,
   I5g2vv0ckl2m8b,
   Ifup3lg9ro8a0f,
-  XcmPalletQueryStatus,
-  Ic4qvh5df9s5gp,
+  I5qfubnuvrnqn6,
+  I8t3u2dv73ahbd,
   I7vlvrrl2pnbgk,
-  I50sjs3s5lud21,
+  Ie0rpl5bahldfk,
   XcmPalletVersionMigrationStage,
-  I50qp0ij7h62g2,
-  Iteuj23is2ed5,
-  I3rp19gb4dadaa,
-  Iegrepoo0c1jc5,
+  I7e5oaj2qi4kl1,
+  Ie849h3gncgvok,
+  Iat62vud7hlod2,
+  Ict03eedr8de9s,
+  Ici7ejds60vj52,
+  XcmVersionedLocation,
   Idh2ug6ou4a8og,
   Iejeo53sea6n4q,
   I53esa2ms463bk,
@@ -86,7 +89,7 @@ import {
   In7a38730s6qs,
   If15el53dd76v9,
   I9s0ave7t0vnrk,
-  Ic6nglu2db2c36,
+  I4fo08joqmcqnm,
   Iasb8k6ash5mjn,
   I8ofcg5rbj0g2c,
   I4adgbll7gku4i,
@@ -114,33 +117,37 @@ import {
   I8fougodaj6di6,
   I81vt5eq60l4b6,
   I3vh014cqgmrfd,
-  I9paqujeb1fpv6,
-  Iakevv83i18n4r,
-  If2ssl12kcglhg,
-  Iabk8ljl5g8c86,
+  Ia5cotcvi888ln,
+  I21jsa919m88fd,
+  Iegif7m3upfe1k,
+  I9kt8c221c83ln,
   Ic76kfh5ebqkpl,
-  Icrujen33bbibf,
-  I5gi8h3e5lkbeq,
+  Icscpmubum33bq,
+  I21d2olof7eb60,
   Ibgm4rnf22lal1,
-  I8mmaab8je28oo,
-  I6r0pr82pbiftt,
+  Ie68np0vpihith,
+  I9bnv6lu0crf1q,
+  Iauhjqifrdklq7,
+  Ie1uso9m8rt5cf,
   I40pqum1mu8qg3,
   I1r4c2ghbtvjuc,
-  Ifu4ae4s208rno,
-  I6nb6jcptm78me,
-  I12f6r5plvs0sh,
-  I94mh594ndp59c,
-  Idj5gtjhrllecf,
-  Ibch6kht5imr8g,
+  Icfmqdurtvvhm8,
+  Ibvqcte45720kp,
+  I88hn32igim519,
+  Ienqb246ur0h4e,
+  Ie9f8gbksfhul4,
+  Ie7hg6igaev50q,
+  I4ib9nr8nn446a,
   Ideaemvoneh309,
   I3d9o9d7epp66v,
-  Ietl8tjmj464rl,
+  I6lqh1vgb4mcja,
+  Idiu2vile68rp9,
   I83oifkl5gf7v7,
   Iad1o67krgn48a,
   I20693ttkj61v9,
   I2eb501t8s6hsq,
   Ianmuoljk2sk1u,
-  I3inuji72uvdo3,
+  I1sc83h9kdklfa,
   I4v4jc8ak5c8j7,
   Ieifvmse8ekofd,
   Iepja8rcbuaao2,
@@ -161,11 +168,14 @@ import {
   I5cuv5a5cclsfd,
   Ie3qk84fi8j51k,
   I6td68h84ru5u7,
+  Ickqtr6vqgluk1,
+  Ihqcf8k5b8c95,
   Idehabrqi23sc0,
   Ia82mnkmeo2rhc,
-  I9bn0adjc806el,
+  Igobn73stm8td,
   Icbccs0ug47ilf,
   I855j4i3kr8ko1,
+  Id6o3bppgpgeg2,
   Idd7hd99u0ho0n,
   Iafscmv8tjf0ou,
   I100l07kaehdlp,
@@ -186,38 +196,47 @@ import {
   Idgorhsbgdq2ap,
   I9ubb2kqevnu6t,
   I2hq50pu2kdjpo,
+  I9acqruh7322g2,
   I137t1cld92pod,
-  I2aatv5i0cb96a,
-  Ib9msr5sr8t3dn,
-  I3le5tr7ugg6l2,
-  I3iun9sig164po,
+  Ia72eet39sf8j9,
+  If8u5kl4h8070m,
+  Ibmuil6p3vl83l,
+  I7lul91g50ae87,
+  Icl7nl1rfeog3i,
+  Iasr6pj6shs0fl,
   I2uqmls7kcdnii,
   Idg69klialbkb8,
-  I13jboebjcbglr,
+  I7r6b7145022pp,
   I30pg328m00nr3,
-  I381dkhrurdhrs,
-  Ic8hi3qr11vngc,
-  Ibjdlecumfu7q7,
-  Ia9ems1kg7laoc,
-  I92fq0fa45vi3,
-  Id01dpp0dn2cj0,
-  I6nu8k62ck9o8o,
+  Icmrn7bogp28cs,
+  I7m9b5plj4h5ot,
+  I9onhk772nfs4f,
+  I3l6bnksrmt56r,
+  Idh09k0l2pmdcg,
+  I7uoiphbm0tj4r,
+  I512p1n7qt24l8,
   I6s1nbislhk619,
-  Iea25i7vqm7ot3,
+  I3gghqnh2mj0is,
+  I6iv852roh6t3h,
+  I9oc2o6itbiopq,
+  Ibeto40kl3r5j7,
   I1rvj4ubaplho0,
   Ia3uu7lqcc1q1i,
   I7crucfnonitkn,
   I7tmrp94r9sq4n,
-  I44ti4iof2qgdo,
-  I9snm45eebd51b,
-  I802b96fgd9dvd,
+  Iaiph5klqch0tl,
+  Iapl5s735bfplh,
+  I782tvu778vo0f,
+  Icbej0174r763l,
   Iep27ialq4a7o7,
   Iasu5jvoqr43mv,
-  I1h0kh7ntal333,
+  Islk5d1gnq1dg,
   I5qolde99acmd1,
+  I8gtde5abn1g9a,
   I4sa5jshkufeug,
   I2ur0oeqg495j8,
   Idf02iigou8dpt,
+  I1bhd210c3phjj,
   Iaf2rbm5li8ck4,
   Ib118uuss8au5p,
   Idfdoi7vpo971s,
@@ -242,31 +261,30 @@ import {
   Ic952bubvq4k7d,
   I2v50gu3s1aqk6,
   Iabpgqcjikia83,
-  I63kbbf0e0o44r,
+  Ia6oqt77riqm2s,
   If7uv525tdvv7a,
   I2an1fs2eiebjp,
   TransactionValidityTransactionSource,
-  Iajbob6uln5jct,
+  I9ask1o4tfvcvs,
   Icerf8h8pdu8ss,
   I6spmpef2c7svf,
   Iei2mvq0mjvt81,
-  I9eibd2giu4tl7,
-  I1p1369d52j8jd,
-  DotXcmVersionedXcm,
+  Iej7uo9d8c90rd,
+  Iftvbctbo05fu4,
+  XcmVersionedXcm,
   Ic0c3req3mlc1l,
-  DotXcmVersionedAssetId,
+  XcmVersionedAssetId,
   I7ocn4njqde3v5,
-  DotXcmVersionedLocation,
-  I5rlt6h8ph553n,
-  I48v5riethqckl,
-  I6rm3t6vu6ur6p,
-  I8skdub5dr5kml,
+  Iek7ha36da9mf5,
+  I42ficri7uep20,
+  Ic5bbnoqe2e16a,
+  Ifbvog3ud0pohe,
   Ieh6nis3hdbtgi,
   Ic1d4u2opv3fst,
   Ie9sr1iqcg3cgm,
   I1mqgk2tmnn9i2,
   I6lr8sctk0bi4e,
-  I6iir5b1cc0ncm,
+  Ieomelrcrr6qh5,
 } from './common-types';
 type AnonymousEnum<T extends {}> = T & {
   __anonymous: true;
@@ -357,7 +375,7 @@ type IStorage = {
      * Events have a large in-memory size. Box the events to not go out-of-memory
      * just in case someone still reads them from within the runtime.
      */
-    Events: StorageDescriptor<[], Anonymize<I8l55oo60ovgap>, false, never>;
+    Events: StorageDescriptor<[], Anonymize<I1urskkb58nkjk>, false, never>;
     /**
      * The number of events in the `Events<T>` list.
      */
@@ -401,6 +419,16 @@ type IStorage = {
      * `Some` if a code upgrade has been authorized.
      */
     AuthorizedUpgrade: StorageDescriptor<[], Anonymize<Ibgl04rn6nbfm6>, true, never>;
+    /**
+     * The weight reclaimed for the extrinsic.
+     *
+     * This information is available until the end of the extrinsic execution.
+     * More precisely this information is removed in `note_applied_extrinsic`.
+     *
+     * Logic doing some post dispatch weight reduction must update this storage to avoid duplicate
+     * reduction.
+     */
+    ExtrinsicWeightReclaimed: StorageDescriptor<[], Anonymize<I4q39t5hn830vp>, false, never>;
   };
   ParachainSystem: {
     /**
@@ -636,7 +664,7 @@ type IStorage = {
     /**
      * Holds on account balances.
      */
-    Holds: StorageDescriptor<[Key: SS58String], Anonymize<I9bin2jc70qt6q>, false, never>;
+    Holds: StorageDescriptor<[Key: SS58String], Anonymize<Ie8lr6tim1k996>, false, never>;
     /**
      * Freeze locks on account balances.
      */
@@ -714,7 +742,7 @@ type IStorage = {
      * disabled using binary search. It gets cleared when `on_session_ending` returns
      * a new set of identities.
      */
-    DisabledValidators: StorageDescriptor<[], Anonymize<Icgljjb6j82uhn>, false, never>;
+    DisabledValidators: StorageDescriptor<[], Anonymize<I95g6i7ilua7lq>, false, never>;
     /**
      * The next session keys for a validator.
      */
@@ -746,11 +774,12 @@ type IStorage = {
      */
     Authorities: StorageDescriptor<[], Anonymize<Ic5m5lp1oioo8r>, false, never>;
     /**
-     * Current slot paired with a number of authored blocks.
+     * Current relay chain slot paired with a number of authored blocks.
      *
-     * Updated on each block initialization.
+     * This is updated in [`FixedVelocityConsensusHook::on_state_proof`] with the current relay
+     * chain slot as provided by the relay chain state proof.
      */
-    SlotInfo: StorageDescriptor<[], Anonymize<I6cs1itejju2vv>, true, never>;
+    RelaySlotInfo: StorageDescriptor<[], Anonymize<I6cs1itejju2vv>, true, never>;
   };
   XcmpQueue: {
     /**
@@ -802,7 +831,7 @@ type IStorage = {
     /**
      * The ongoing queries.
      */
-    Queries: StorageDescriptor<[Key: bigint], XcmPalletQueryStatus, true, never>;
+    Queries: StorageDescriptor<[Key: bigint], Anonymize<I5qfubnuvrnqn6>, true, never>;
     /**
      * The existing asset traps.
      *
@@ -818,17 +847,17 @@ type IStorage = {
     /**
      * The Latest versions that we know various locations support.
      */
-    SupportedVersion: StorageDescriptor<Anonymize<Ic4qvh5df9s5gp>, number, true, never>;
+    SupportedVersion: StorageDescriptor<Anonymize<I8t3u2dv73ahbd>, number, true, never>;
     /**
      * All locations that we have requested version notifications from.
      */
-    VersionNotifiers: StorageDescriptor<Anonymize<Ic4qvh5df9s5gp>, bigint, true, never>;
+    VersionNotifiers: StorageDescriptor<Anonymize<I8t3u2dv73ahbd>, bigint, true, never>;
     /**
      * The target locations that are subscribed to our version changes, as well as the most recent
      * of our versions we informed them of.
      */
     VersionNotifyTargets: StorageDescriptor<
-      Anonymize<Ic4qvh5df9s5gp>,
+      Anonymize<I8t3u2dv73ahbd>,
       Anonymize<I7vlvrrl2pnbgk>,
       true,
       never
@@ -838,7 +867,7 @@ type IStorage = {
      * the `u32` counter is the number of times that a send to the destination has been attempted,
      * which is used as a prioritization.
      */
-    VersionDiscoveryQueue: StorageDescriptor<[], Anonymize<I50sjs3s5lud21>, false, never>;
+    VersionDiscoveryQueue: StorageDescriptor<[], Anonymize<Ie0rpl5bahldfk>, false, never>;
     /**
      * The current migration's stage, if any.
      */
@@ -847,15 +876,15 @@ type IStorage = {
      * Fungible assets which we know are locked on a remote chain.
      */
     RemoteLockedFungibles: StorageDescriptor<
-      Anonymize<Iteuj23is2ed5>,
-      Anonymize<I50qp0ij7h62g2>,
+      Anonymize<Ie849h3gncgvok>,
+      Anonymize<I7e5oaj2qi4kl1>,
       true,
       never
     >;
     /**
      * Fungible assets which we know are locked on this chain.
      */
-    LockedFungibles: StorageDescriptor<[Key: SS58String], Anonymize<I3rp19gb4dadaa>, true, never>;
+    LockedFungibles: StorageDescriptor<[Key: SS58String], Anonymize<Iat62vud7hlod2>, true, never>;
     /**
      * Global suspension state of the XCM executor.
      */
@@ -878,7 +907,18 @@ type IStorage = {
      * Only relevant if this pallet is being used as the [`xcm_executor::traits::RecordXcm`]
      * implementation in the XCM executor configuration.
      */
-    RecordedXcm: StorageDescriptor<[], Anonymize<Iegrepoo0c1jc5>, true, never>;
+    RecordedXcm: StorageDescriptor<[], Anonymize<Ict03eedr8de9s>, true, never>;
+    /**
+     * Map of authorized aliasers of local origins. Each local location can authorize a list of
+     * other locations to alias into it. Each aliaser is only valid until its inner `expiry`
+     * block number.
+     */
+    AuthorizedAliases: StorageDescriptor<
+      [Key: XcmVersionedLocation],
+      Anonymize<Ici7ejds60vj52>,
+      true,
+      never
+    >;
   };
   MessageQueue: {
     /**
@@ -1361,7 +1401,7 @@ type ICalls = {
     /**
         
          */
-    send: TxDescriptor<Anonymize<I9paqujeb1fpv6>>;
+    send: TxDescriptor<Anonymize<Ia5cotcvi888ln>>;
     /**
      * Teleport some assets from the local chain to some destination chain.
      *
@@ -1382,7 +1422,7 @@ type ICalls = {
      * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
      * fees.
      */
-    teleport_assets: TxDescriptor<Anonymize<Iakevv83i18n4r>>;
+    teleport_assets: TxDescriptor<Anonymize<I21jsa919m88fd>>;
     /**
      * Transfer some assets from the local chain to the destination chain through their local,
      * destination or remote reserve.
@@ -1415,7 +1455,7 @@ type ICalls = {
      * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
      * fees.
      */
-    reserve_transfer_assets: TxDescriptor<Anonymize<Iakevv83i18n4r>>;
+    reserve_transfer_assets: TxDescriptor<Anonymize<I21jsa919m88fd>>;
     /**
      * Execute an XCM message from a local, signed, origin.
      *
@@ -1426,7 +1466,7 @@ type ICalls = {
      * the maximum amount of weight that the message could take to be executed, then no
      * execution attempt will be made.
      */
-    execute: TxDescriptor<Anonymize<If2ssl12kcglhg>>;
+    execute: TxDescriptor<Anonymize<Iegif7m3upfe1k>>;
     /**
      * Extoll that a particular destination can be communicated with through a particular
      * version of XCM.
@@ -1435,7 +1475,7 @@ type ICalls = {
      * - `location`: The destination that is being described.
      * - `xcm_version`: The latest version of XCM that `location` supports.
      */
-    force_xcm_version: TxDescriptor<Anonymize<Iabk8ljl5g8c86>>;
+    force_xcm_version: TxDescriptor<Anonymize<I9kt8c221c83ln>>;
     /**
      * Set a safe XCM version (the version that XCM should be encoded with if the most recent
      * version a destination can accept is unknown).
@@ -1450,7 +1490,7 @@ type ICalls = {
      * - `origin`: Must be an origin specified by AdminOrigin.
      * - `location`: The location to which we should subscribe for XCM version notifications.
      */
-    force_subscribe_version_notify: TxDescriptor<Anonymize<Icrujen33bbibf>>;
+    force_subscribe_version_notify: TxDescriptor<Anonymize<Icscpmubum33bq>>;
     /**
      * Require that a particular destination should no longer notify us regarding any XCM
      * version changes.
@@ -1459,7 +1499,7 @@ type ICalls = {
      * - `location`: The location to which we are currently subscribed for XCM version
      * notifications which we no longer desire.
      */
-    force_unsubscribe_version_notify: TxDescriptor<Anonymize<Icrujen33bbibf>>;
+    force_unsubscribe_version_notify: TxDescriptor<Anonymize<Icscpmubum33bq>>;
     /**
      * Transfer some assets from the local chain to the destination chain through their local,
      * destination or remote reserve.
@@ -1492,7 +1532,7 @@ type ICalls = {
      * fees.
      * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
-    limited_reserve_transfer_assets: TxDescriptor<Anonymize<I5gi8h3e5lkbeq>>;
+    limited_reserve_transfer_assets: TxDescriptor<Anonymize<I21d2olof7eb60>>;
     /**
      * Teleport some assets from the local chain to some destination chain.
      *
@@ -1513,7 +1553,7 @@ type ICalls = {
      * fees.
      * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
-    limited_teleport_assets: TxDescriptor<Anonymize<I5gi8h3e5lkbeq>>;
+    limited_teleport_assets: TxDescriptor<Anonymize<I21d2olof7eb60>>;
     /**
      * Set or unset the global suspension state of the XCM executor.
      *
@@ -1556,7 +1596,7 @@ type ICalls = {
      * fees.
      * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
-    transfer_assets: TxDescriptor<Anonymize<I5gi8h3e5lkbeq>>;
+    transfer_assets: TxDescriptor<Anonymize<I21d2olof7eb60>>;
     /**
      * Claims assets trapped on this pallet because of leftover assets during XCM execution.
      *
@@ -1565,7 +1605,7 @@ type ICalls = {
      * was the latest when they were trapped.
      * - `beneficiary`: The location/account where the claimed assets will be deposited.
      */
-    claim_assets: TxDescriptor<Anonymize<I8mmaab8je28oo>>;
+    claim_assets: TxDescriptor<Anonymize<Ie68np0vpihith>>;
     /**
      * Transfer assets from the local chain to the destination chain using explicit transfer
      * types for assets and fees.
@@ -1616,7 +1656,31 @@ type ICalls = {
      * transfer, which also determines what happens to the assets on the destination chain.
      * - `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase.
      */
-    transfer_assets_using_type_and_then: TxDescriptor<Anonymize<I6r0pr82pbiftt>>;
+    transfer_assets_using_type_and_then: TxDescriptor<Anonymize<I9bnv6lu0crf1q>>;
+    /**
+     * Authorize another `aliaser` location to alias into the local `origin` making this call.
+     * The `aliaser` is only authorized until the provided `expiry` block number.
+     * The call can also be used for a previously authorized alias in order to update its
+     * `expiry` block number.
+     *
+     * Usually useful to allow your local account to be aliased into from a remote location
+     * also under your control (like your account on another chain).
+     *
+     * WARNING: make sure the caller `origin` (you) trusts the `aliaser` location to act in
+     * their/your name. Once authorized using this call, the `aliaser` can freely impersonate
+     * `origin` in XCM programs executed on the local chain.
+     */
+    add_authorized_alias: TxDescriptor<Anonymize<Iauhjqifrdklq7>>;
+    /**
+     * Remove a previously authorized `aliaser` from the list of locations that can alias into
+     * the local `origin` making this call.
+     */
+    remove_authorized_alias: TxDescriptor<Anonymize<Ie1uso9m8rt5cf>>;
+    /**
+     * Remove all previously authorized `aliaser`s that can alias into the local `origin`
+     * making this call.
+     */
+    remove_all_authorized_aliases: TxDescriptor<undefined>;
   };
   MessageQueue: {
     /**
@@ -1661,7 +1725,7 @@ type ICalls = {
      * and the error of the failed call. If all were successful, then the `BatchCompleted`
      * event is deposited.
      */
-    batch: TxDescriptor<Anonymize<Ifu4ae4s208rno>>;
+    batch: TxDescriptor<Anonymize<Icfmqdurtvvhm8>>;
     /**
      * Send a call through an indexed pseudonym of the sender.
      *
@@ -1677,7 +1741,7 @@ type ICalls = {
      *
      * The dispatch origin for this call must be _Signed_.
      */
-    as_derivative: TxDescriptor<Anonymize<I6nb6jcptm78me>>;
+    as_derivative: TxDescriptor<Anonymize<Ibvqcte45720kp>>;
     /**
      * Send a batch of dispatch calls and atomically execute them.
      * The whole transaction will rollback and fail if any of the calls failed.
@@ -1693,7 +1757,7 @@ type ICalls = {
      * ## Complexity
      * - O(C) where C is the number of calls to be batched.
      */
-    batch_all: TxDescriptor<Anonymize<Ifu4ae4s208rno>>;
+    batch_all: TxDescriptor<Anonymize<Icfmqdurtvvhm8>>;
     /**
      * Dispatches a function call with a provided origin.
      *
@@ -1702,7 +1766,7 @@ type ICalls = {
      * ## Complexity
      * - O(1).
      */
-    dispatch_as: TxDescriptor<Anonymize<I12f6r5plvs0sh>>;
+    dispatch_as: TxDescriptor<Anonymize<I88hn32igim519>>;
     /**
      * Send a batch of dispatch calls.
      * Unlike `batch`, it allows errors and won't interrupt.
@@ -1718,7 +1782,7 @@ type ICalls = {
      * ## Complexity
      * - O(C) where C is the number of calls to be batched.
      */
-    force_batch: TxDescriptor<Anonymize<Ifu4ae4s208rno>>;
+    force_batch: TxDescriptor<Anonymize<Icfmqdurtvvhm8>>;
     /**
      * Dispatch a function call with a specified weight.
      *
@@ -1727,7 +1791,41 @@ type ICalls = {
      *
      * The dispatch origin for this call must be _Root_.
      */
-    with_weight: TxDescriptor<Anonymize<I94mh594ndp59c>>;
+    with_weight: TxDescriptor<Anonymize<Ienqb246ur0h4e>>;
+    /**
+     * Dispatch a fallback call in the event the main call fails to execute.
+     * May be called from any origin except `None`.
+     *
+     * This function first attempts to dispatch the `main` call.
+     * If the `main` call fails, the `fallback` is attemted.
+     * if the fallback is successfully dispatched, the weights of both calls
+     * are accumulated and an event containing the main call error is deposited.
+     *
+     * In the event of a fallback failure the whole call fails
+     * with the weights returned.
+     *
+     * - `main`: The main call to be dispatched. This is the primary action to execute.
+     * - `fallback`: The fallback call to be dispatched in case the `main` call fails.
+     *
+     * ## Dispatch Logic
+     * - If the origin is `root`, both the main and fallback calls are executed without
+     * applying any origin filters.
+     * - If the origin is not `root`, the origin filter is applied to both the `main` and
+     * `fallback` calls.
+     *
+     * ## Use Case
+     * - Some use cases might involve submitting a `batch` type call in either main, fallback
+     * or both.
+     */
+    if_else: TxDescriptor<Anonymize<Ie9f8gbksfhul4>>;
+    /**
+     * Dispatches a function call with a provided origin.
+     *
+     * Almost the same as [`Pallet::dispatch_as`] but forwards any error of the inner call.
+     *
+     * The dispatch origin for this call must be _Root_.
+     */
+    dispatch_as_fallible: TxDescriptor<Anonymize<I88hn32igim519>>;
   };
   Multisig: {
     /**
@@ -1744,7 +1842,7 @@ type ICalls = {
      * ## Complexity
      * O(Z + C) where Z is the length of the call and C its execution weight.
      */
-    as_multi_threshold_1: TxDescriptor<Anonymize<Idj5gtjhrllecf>>;
+    as_multi_threshold_1: TxDescriptor<Anonymize<Ie7hg6igaev50q>>;
     /**
      * Register approval for a dispatch to be made from a deterministic composite account if
      * approved by a total of `threshold - 1` of `other_signatories`.
@@ -1786,7 +1884,7 @@ type ICalls = {
      * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
      * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
      */
-    as_multi: TxDescriptor<Anonymize<Ibch6kht5imr8g>>;
+    as_multi: TxDescriptor<Anonymize<I4ib9nr8nn446a>>;
     /**
      * Register approval for a dispatch to be made from a deterministic composite account if
      * approved by a total of `threshold - 1` of `other_signatories`.
@@ -1844,6 +1942,22 @@ type ICalls = {
      * - Storage: removes one item.
      */
     cancel_as_multi: TxDescriptor<Anonymize<I3d9o9d7epp66v>>;
+    /**
+     * Poke the deposit reserved for an existing multisig operation.
+     *
+     * The dispatch origin for this call must be _Signed_ and must be the original depositor of
+     * the multisig operation.
+     *
+     * The transaction fee is waived if the deposit amount has changed.
+     *
+     * - `threshold`: The total number of approvals needed for this multisig.
+     * - `other_signatories`: The accounts (other than the sender) who are part of the
+     * multisig.
+     * - `call_hash`: The hash of the call this deposit is reserved for.
+     *
+     * Emits `DepositPoked` if successful.
+     */
+    poke_deposit: TxDescriptor<Anonymize<I6lqh1vgb4mcja>>;
   };
   Proxy: {
     /**
@@ -1857,7 +1971,7 @@ type ICalls = {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    proxy: TxDescriptor<Anonymize<Ietl8tjmj464rl>>;
+    proxy: TxDescriptor<Anonymize<Idiu2vile68rp9>>;
     /**
      * Register a proxy account for the sender that is able to make calls on its behalf.
      *
@@ -1986,7 +2100,18 @@ type ICalls = {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    proxy_announced: TxDescriptor<Anonymize<I3inuji72uvdo3>>;
+    proxy_announced: TxDescriptor<Anonymize<I1sc83h9kdklfa>>;
+    /**
+     * Poke / Adjust deposits made for proxies and announcements based on current values.
+     * This can be used by accounts to possibly lower their locked amount.
+     *
+     * The dispatch origin for this call must be _Signed_.
+     *
+     * The transaction fee is waived if the deposit amount has changed.
+     *
+     * Emits `DepositPoked` if successful.
+     */
+    poke_deposit: TxDescriptor<undefined>;
   };
   Broker: {
     /**
@@ -1998,6 +2123,9 @@ type ICalls = {
     configure: TxDescriptor<Anonymize<I4v4jc8ak5c8j7>>;
     /**
      * Reserve a core for a workload.
+     *
+     * The workload will be given a reservation, but two sale period boundaries must pass
+     * before the core is actually assigned.
      *
      * - `origin`: Must be Root or pass `AdminOrigin`.
      * - `workload`: The workload which should be permanently placed on a core.
@@ -2190,6 +2318,35 @@ type ICalls = {
      */
     disable_auto_renew: TxDescriptor<Anonymize<I6td68h84ru5u7>>;
     /**
+     * Reserve a core for a workload immediately.
+     *
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `workload`: The workload which should be permanently placed on a core starting
+     * immediately.
+     * - `core`: The core to which the assignment should be made until the reservation takes
+     * effect. It is left to the caller to either add this new core or reassign any other
+     * tasks to this existing core.
+     *
+     * This reserves the workload and then injects the workload into the Workplan for the next
+     * two sale periods. This overwrites any existing assignments for this core at the start of
+     * the next sale period.
+     */
+    force_reserve: TxDescriptor<Anonymize<Ickqtr6vqgluk1>>;
+    /**
+     * Remove a lease.
+     *
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `task`: The task id of the lease which should be removed.
+     */
+    remove_lease: TxDescriptor<Anonymize<Ihqcf8k5b8c95>>;
+    /**
+     * Remove an assignment from the Workplan.
+     *
+     * - `origin`: Must be Root or pass `AdminOrigin`.
+     * - `region_id`: The Region to be removed from the workplan.
+     */
+    remove_assignment: TxDescriptor<Anonymize<I4s60s3v5pfj6u>>;
+    /**
         
          */
     swap_leases: TxDescriptor<Anonymize<Idehabrqi23sc0>>;
@@ -2204,7 +2361,7 @@ type IEvent = {
     /**
      * An extrinsic failed.
      */
-    ExtrinsicFailed: PlainDescriptor<Anonymize<I9bn0adjc806el>>;
+    ExtrinsicFailed: PlainDescriptor<Anonymize<Igobn73stm8td>>;
     /**
      * `:code` was updated.
      */
@@ -2225,6 +2382,10 @@ type IEvent = {
      * An upgrade was authorized.
      */
     UpgradeAuthorized: PlainDescriptor<Anonymize<Ibgl04rn6nbfm6>>;
+    /**
+     * An invalid authorized upgrade was rejected while trying to apply it.
+     */
+    RejectedInvalidAuthorizedUpgrade: PlainDescriptor<Anonymize<Id6o3bppgpgeg2>>;
   };
   ParachainSystem: {
     /**
@@ -2400,6 +2561,14 @@ type IEvent = {
      * block number as the type might suggest.
      */
     NewSession: PlainDescriptor<Anonymize<I2hq50pu2kdjpo>>;
+    /**
+     * Validator has been disabled.
+     */
+    ValidatorDisabled: PlainDescriptor<Anonymize<I9acqruh7322g2>>;
+    /**
+     * Validator has been re-enabled.
+     */
+    ValidatorReenabled: PlainDescriptor<Anonymize<I9acqruh7322g2>>;
   };
   XcmpQueue: {
     /**
@@ -2411,22 +2580,30 @@ type IEvent = {
     /**
      * Execution of an XCM message was attempted.
      */
-    Attempted: PlainDescriptor<Anonymize<I2aatv5i0cb96a>>;
+    Attempted: PlainDescriptor<Anonymize<Ia72eet39sf8j9>>;
     /**
-     * A XCM message was sent.
+     * An XCM message was sent.
      */
-    Sent: PlainDescriptor<Anonymize<Ib9msr5sr8t3dn>>;
+    Sent: PlainDescriptor<Anonymize<If8u5kl4h8070m>>;
+    /**
+     * An XCM message failed to send.
+     */
+    SendFailed: PlainDescriptor<Anonymize<Ibmuil6p3vl83l>>;
+    /**
+     * An XCM message failed to process.
+     */
+    ProcessXcmError: PlainDescriptor<Anonymize<I7lul91g50ae87>>;
     /**
      * Query response received which does not match a registered query. This may be because a
      * matching query was never registered, it may be because it is a duplicate response, or
      * because the query timed out.
      */
-    UnexpectedResponse: PlainDescriptor<Anonymize<I3le5tr7ugg6l2>>;
+    UnexpectedResponse: PlainDescriptor<Anonymize<Icl7nl1rfeog3i>>;
     /**
      * Query response has been received and is ready for taking with `take_response`. There is
      * no registered notification call.
      */
-    ResponseReady: PlainDescriptor<Anonymize<I3iun9sig164po>>;
+    ResponseReady: PlainDescriptor<Anonymize<Iasr6pj6shs0fl>>;
     /**
      * Query response has been received and query is removed. The registered notification has
      * been dispatched and executed successfully.
@@ -2454,7 +2631,7 @@ type IEvent = {
      * not match that expected. The query remains registered for a later, valid, response to
      * be received and acted upon.
      */
-    InvalidResponder: PlainDescriptor<Anonymize<I13jboebjcbglr>>;
+    InvalidResponder: PlainDescriptor<Anonymize<I7r6b7145022pp>>;
     /**
      * Expected query response has been received but the expected origin location placed in
      * storage by this runtime previously cannot be decoded. The query remains registered.
@@ -2464,7 +2641,7 @@ type IEvent = {
      * valid response will be dropped. Manual governance intervention is probably going to be
      * needed.
      */
-    InvalidResponderVersion: PlainDescriptor<Anonymize<I3le5tr7ugg6l2>>;
+    InvalidResponderVersion: PlainDescriptor<Anonymize<Icl7nl1rfeog3i>>;
     /**
      * Received query response has been read and removed.
      */
@@ -2472,28 +2649,28 @@ type IEvent = {
     /**
      * Some assets have been placed in an asset trap.
      */
-    AssetsTrapped: PlainDescriptor<Anonymize<I381dkhrurdhrs>>;
+    AssetsTrapped: PlainDescriptor<Anonymize<Icmrn7bogp28cs>>;
     /**
      * An XCM version change notification message has been attempted to be sent.
      *
      * The cost of sending it (borne by the chain) is included.
      */
-    VersionChangeNotified: PlainDescriptor<Anonymize<Ic8hi3qr11vngc>>;
+    VersionChangeNotified: PlainDescriptor<Anonymize<I7m9b5plj4h5ot>>;
     /**
      * The supported version of a location has been changed. This might be through an
      * automatic notification or a manual intervention.
      */
-    SupportedVersionChanged: PlainDescriptor<Anonymize<Iabk8ljl5g8c86>>;
+    SupportedVersionChanged: PlainDescriptor<Anonymize<I9kt8c221c83ln>>;
     /**
      * A given location which had a version change subscription was dropped owing to an error
      * sending the notification to it.
      */
-    NotifyTargetSendFail: PlainDescriptor<Anonymize<Ibjdlecumfu7q7>>;
+    NotifyTargetSendFail: PlainDescriptor<Anonymize<I9onhk772nfs4f>>;
     /**
      * A given location which had a version change subscription was dropped owing to an error
      * migrating the location to our new XCM format.
      */
-    NotifyTargetMigrationFail: PlainDescriptor<Anonymize<Ia9ems1kg7laoc>>;
+    NotifyTargetMigrationFail: PlainDescriptor<Anonymize<I3l6bnksrmt56r>>;
     /**
      * Expected query response has been received but the expected querier location placed in
      * storage by this runtime previously cannot be decoded. The query remains registered.
@@ -2503,39 +2680,52 @@ type IEvent = {
      * valid response will be dropped. Manual governance intervention is probably going to be
      * needed.
      */
-    InvalidQuerierVersion: PlainDescriptor<Anonymize<I3le5tr7ugg6l2>>;
+    InvalidQuerierVersion: PlainDescriptor<Anonymize<Icl7nl1rfeog3i>>;
     /**
      * Expected query response has been received but the querier location of the response does
      * not match the expected. The query remains registered for a later, valid, response to
      * be received and acted upon.
      */
-    InvalidQuerier: PlainDescriptor<Anonymize<I92fq0fa45vi3>>;
+    InvalidQuerier: PlainDescriptor<Anonymize<Idh09k0l2pmdcg>>;
     /**
      * A remote has requested XCM version change notification from us and we have honored it.
      * A version information message is sent to them and its cost is included.
      */
-    VersionNotifyStarted: PlainDescriptor<Anonymize<Id01dpp0dn2cj0>>;
+    VersionNotifyStarted: PlainDescriptor<Anonymize<I7uoiphbm0tj4r>>;
     /**
      * We have requested that a remote chain send us XCM version change notifications.
      */
-    VersionNotifyRequested: PlainDescriptor<Anonymize<Id01dpp0dn2cj0>>;
+    VersionNotifyRequested: PlainDescriptor<Anonymize<I7uoiphbm0tj4r>>;
     /**
      * We have requested that a remote chain stops sending us XCM version change
      * notifications.
      */
-    VersionNotifyUnrequested: PlainDescriptor<Anonymize<Id01dpp0dn2cj0>>;
+    VersionNotifyUnrequested: PlainDescriptor<Anonymize<I7uoiphbm0tj4r>>;
     /**
      * Fees were paid from a location for an operation (often for using `SendXcm`).
      */
-    FeesPaid: PlainDescriptor<Anonymize<I6nu8k62ck9o8o>>;
+    FeesPaid: PlainDescriptor<Anonymize<I512p1n7qt24l8>>;
     /**
      * Some assets have been claimed from an asset trap
      */
-    AssetsClaimed: PlainDescriptor<Anonymize<I381dkhrurdhrs>>;
+    AssetsClaimed: PlainDescriptor<Anonymize<Icmrn7bogp28cs>>;
     /**
      * A XCM version migration finished.
      */
     VersionMigrationFinished: PlainDescriptor<Anonymize<I6s1nbislhk619>>;
+    /**
+     * An `aliaser` location was authorized by `target` to alias it, authorization valid until
+     * `expiry` block number.
+     */
+    AliasAuthorized: PlainDescriptor<Anonymize<I3gghqnh2mj0is>>;
+    /**
+     * `target` removed alias authorization for `aliaser`.
+     */
+    AliasAuthorizationRemoved: PlainDescriptor<Anonymize<I6iv852roh6t3h>>;
+    /**
+     * `target` removed all alias authorizations.
+     */
+    AliasesAuthorizationsRemoved: PlainDescriptor<Anonymize<I9oc2o6itbiopq>>;
   };
   CumulusXcm: {
     /**
@@ -2552,7 +2742,7 @@ type IEvent = {
      * Downward message executed with the given outcome.
      * \[ id, outcome \]
      */
-    ExecutedDownward: PlainDescriptor<Anonymize<Iea25i7vqm7ot3>>;
+    ExecutedDownward: PlainDescriptor<Anonymize<Ibeto40kl3r5j7>>;
   };
   MessageQueue: {
     /**
@@ -2577,7 +2767,7 @@ type IEvent = {
      * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
      * well as the error.
      */
-    BatchInterrupted: PlainDescriptor<Anonymize<I44ti4iof2qgdo>>;
+    BatchInterrupted: PlainDescriptor<Anonymize<Iaiph5klqch0tl>>;
     /**
      * Batch of dispatches completed fully with no error.
      */
@@ -2593,11 +2783,19 @@ type IEvent = {
     /**
      * A single item within a Batch of dispatches has completed with error.
      */
-    ItemFailed: PlainDescriptor<Anonymize<I9snm45eebd51b>>;
+    ItemFailed: PlainDescriptor<Anonymize<Iapl5s735bfplh>>;
     /**
      * A call was dispatched.
      */
-    DispatchedAs: PlainDescriptor<Anonymize<I802b96fgd9dvd>>;
+    DispatchedAs: PlainDescriptor<Anonymize<I782tvu778vo0f>>;
+    /**
+     * Main call was dispatched.
+     */
+    IfElseMainSuccess: PlainDescriptor<undefined>;
+    /**
+     * The fallback call was dispatched.
+     */
+    IfElseFallbackCalled: PlainDescriptor<Anonymize<Icbej0174r763l>>;
   };
   Multisig: {
     /**
@@ -2611,17 +2809,21 @@ type IEvent = {
     /**
      * A multisig operation has been executed.
      */
-    MultisigExecuted: PlainDescriptor<Anonymize<I1h0kh7ntal333>>;
+    MultisigExecuted: PlainDescriptor<Anonymize<Islk5d1gnq1dg>>;
     /**
      * A multisig operation has been cancelled.
      */
     MultisigCancelled: PlainDescriptor<Anonymize<I5qolde99acmd1>>;
+    /**
+     * The deposit for a multisig operation has been updated/poked.
+     */
+    DepositPoked: PlainDescriptor<Anonymize<I8gtde5abn1g9a>>;
   };
   Proxy: {
     /**
      * A proxy was executed correctly, with the given.
      */
-    ProxyExecuted: PlainDescriptor<Anonymize<I802b96fgd9dvd>>;
+    ProxyExecuted: PlainDescriptor<Anonymize<I782tvu778vo0f>>;
     /**
      * A pure account has been created by new proxy with given
      * disambiguation index and proxy type.
@@ -2639,6 +2841,10 @@ type IEvent = {
      * A proxy was removed.
      */
     ProxyRemoved: PlainDescriptor<Anonymize<Idf02iigou8dpt>>;
+    /**
+     * A deposit stored for proxies or announcements was poked / updated.
+     */
+    DepositPoked: PlainDescriptor<Anonymize<I1bhd210c3phjj>>;
   };
   Broker: {
     /**
@@ -2670,6 +2876,10 @@ type IEvent = {
      */
     Assigned: PlainDescriptor<Anonymize<Icinrphfs7c1gh>>;
     /**
+     * An assignment has been removed from the workplan.
+     */
+    AssignmentRemoved: PlainDescriptor<Anonymize<I4s60s3v5pfj6u>>;
+    /**
      * A Region has been added to the Instantaneous Coretime Pool.
      */
     Pooled: PlainDescriptor<Anonymize<Ib27rtfpnn4vta>>;
@@ -2697,6 +2907,10 @@ type IEvent = {
      * A new lease has been created.
      */
     Leased: PlainDescriptor<Anonymize<I10gda06ia6n74>>;
+    /**
+     * A lease has been removed.
+     */
+    LeaseRemoved: PlainDescriptor<Anonymize<Ihqcf8k5b8c95>>;
     /**
      * A lease is about to end.
      */
@@ -2845,14 +3059,6 @@ type IError = {
      * No validation function upgrade is currently scheduled.
      */
     NotScheduled: PlainDescriptor<undefined>;
-    /**
-     * No code upgrade has been authorized.
-     */
-    NothingAuthorized: PlainDescriptor<undefined>;
-    /**
-     * The given code upgrade has not been authorized.
-     */
-    Unauthorized: PlainDescriptor<undefined>;
   };
   Balances: {
     /**
@@ -3118,6 +3324,18 @@ type IError = {
      * Local XCM execution incomplete.
      */
     LocalExecutionIncomplete: PlainDescriptor<undefined>;
+    /**
+     * Too many locations authorized to alias origin.
+     */
+    TooManyAuthorizedAliases: PlainDescriptor<undefined>;
+    /**
+     * Expiry block number is in the past.
+     */
+    ExpiresInPast: PlainDescriptor<undefined>;
+    /**
+     * The alias to remove authorization for was not found.
+     */
+    AliasNotFound: PlainDescriptor<undefined>;
   };
   MessageQueue: {
     /**
@@ -3199,11 +3417,12 @@ type IError = {
      */
     SenderInSignatories: PlainDescriptor<undefined>;
     /**
-     * Multisig operation not found when attempting to cancel.
+     * Multisig operation not found in storage.
      */
     NotFound: PlainDescriptor<undefined>;
     /**
-     * Only the account that originally created the multisig is able to cancel it.
+     * Only the account that originally created the multisig is able to cancel it or update
+     * its deposits.
      */
     NotOwner: PlainDescriptor<undefined>;
     /**
@@ -3340,6 +3559,10 @@ type IError = {
      */
     TooManyLeases: PlainDescriptor<undefined>;
     /**
+     * The lease does not exist.
+     */
+    LeaseNotFound: PlainDescriptor<undefined>;
+    /**
      * The revenue for the Instantaneous Core Sales of this period is not (yet) known and thus
      * this operation cannot proceed.
      */
@@ -3401,6 +3624,15 @@ type IError = {
      * Attempted to disable auto-renewal for a core that didn't have it enabled.
      */
     AutoRenewalNotEnabled: PlainDescriptor<undefined>;
+    /**
+     * Attempted to force remove an assignment that doesn't exist.
+     */
+    AssignmentNotFound: PlainDescriptor<undefined>;
+    /**
+     * Needed to prevent spam attacks.The amount of credits the user attempted to purchase is
+     * below `T::MinimumCreditPurchase`.
+     */
+    CreditPurchaseTooSmall: PlainDescriptor<undefined>;
   };
 };
 type IConstants = {
@@ -3424,7 +3656,7 @@ type IConstants = {
     /**
      * Get the chain's in-code version.
      */
-    Version: PlainDescriptor<Anonymize<Ic6nglu2db2c36>>;
+    Version: PlainDescriptor<Anonymize<I4fo08joqmcqnm>>;
     /**
      * The designated SS58 prefix of this chain.
      *
@@ -3507,6 +3739,36 @@ type IConstants = {
      */
     OperationalFeeMultiplier: PlainDescriptor<number>;
   };
+  CollatorSelection: {
+    /**
+     * Account Identifier from which the internal Pot is generated.
+     */
+    PotId: PlainDescriptor<FixedSizeBinary<8>>;
+    /**
+     * Maximum number of candidates that we should have.
+     *
+     * This does not take into account the invulnerables.
+     */
+    MaxCandidates: PlainDescriptor<number>;
+    /**
+     * Minimum number eligible collators. Should always be greater than zero. This includes
+     * Invulnerable collators. This ensures that there will always be one collator who can
+     * produce a block.
+     */
+    MinEligibleCollators: PlainDescriptor<number>;
+    /**
+     * Maximum number of invulnerables.
+     */
+    MaxInvulnerables: PlainDescriptor<number>;
+    /**
+        
+         */
+    KickThreshold: PlainDescriptor<number>;
+    /**
+     * Gets this pallet's derived pot account.
+     */
+    pot_account: PlainDescriptor<SS58String>;
+  };
   Aura: {
     /**
      * The slot duration Aura should run with, expressed in milliseconds.
@@ -3544,6 +3806,13 @@ type IConstants = {
      * overhead is incurred for encoding the format.
      */
     MaxPageSize: PlainDescriptor<number>;
+  };
+  PolkadotXcm: {
+    /**
+     * The latest supported version that we advertise. Generally just set it to
+     * `pallet_xcm::CurrentXcmVersion`.
+     */
+    AdvertisedXcmVersion: PlainDescriptor<number>;
   };
   MessageQueue: {
     /**
@@ -3662,9 +3931,15 @@ type IConstants = {
      */
     MaxReservedCores: PlainDescriptor<number>;
     /**
-        
-         */
+     * Given that we are performing all auto-renewals in a single block, it has to be limited.
+     */
     MaxAutoRenewals: PlainDescriptor<number>;
+    /**
+     * The smallest amount of credits a user can purchase.
+     *
+     * Needed to prevent spam attacks.
+     */
+    MinimumCreditPurchase: PlainDescriptor<bigint>;
   };
 };
 type IViewFns = {};
@@ -3695,12 +3970,15 @@ type IRuntimeCalls = {
    * When the unincluded segment is short, Aura chains will allow authors to create multiple
    * blocks per slot in order to build a backlog. When it is saturated, this API will limit
    * the amount of blocks that can be created.
+   *
+   * Changes:
+   * - Version 2: Update to `can_build_upon` to take a relay chain `Slot` instead of a parachain `Slot`.
    */
   AuraUnincludedSegmentApi: {
     /**
      * Whether it is legal to extend the chain, assuming the given block is the most
      * recently included one as-of the relay parent that will be built against, and
-     * the given slot.
+     * the given relay chain slot.
      *
      * This should be consistent with the logic the runtime uses when validating blocks to
      * avoid issues.
@@ -3718,7 +3996,7 @@ type IRuntimeCalls = {
     /**
      * Returns the version of the runtime.
      */
-    version: RuntimeDescriptor<[], Anonymize<Ic6nglu2db2c36>>;
+    version: RuntimeDescriptor<[], Anonymize<I4fo08joqmcqnm>>;
     /**
      * Execute the given block.
      */
@@ -3763,7 +4041,7 @@ type IRuntimeCalls = {
      * Returns an inclusion outcome which specifies if this extrinsic is included in
      * this block or not.
      */
-    apply_extrinsic: RuntimeDescriptor<[extrinsic: Binary], Anonymize<I63kbbf0e0o44r>>;
+    apply_extrinsic: RuntimeDescriptor<[extrinsic: Binary], Anonymize<Ia6oqt77riqm2s>>;
     /**
      * Finish the current block.
      */
@@ -3800,7 +4078,7 @@ type IRuntimeCalls = {
      */
     validate_transaction: RuntimeDescriptor<
       [source: TransactionValidityTransactionSource, tx: Binary, block_hash: FixedSizeBinary<32>],
-      Anonymize<Iajbob6uln5jct>
+      Anonymize<I9ask1o4tfvcvs>
     >;
   };
   /**
@@ -3871,14 +4149,14 @@ type IRuntimeCalls = {
      * Query information of a dispatch class, weight, and fee of a given encoded `Call`.
      */
     query_call_info: RuntimeDescriptor<
-      [call: Anonymize<I9eibd2giu4tl7>, len: number],
+      [call: Anonymize<Iej7uo9d8c90rd>, len: number],
       Anonymize<I6spmpef2c7svf>
     >;
     /**
      * Query fee details of a given encoded `Call`.
      */
     query_call_fee_details: RuntimeDescriptor<
-      [call: Anonymize<I9eibd2giu4tl7>, len: number],
+      [call: Anonymize<Iej7uo9d8c90rd>, len: number],
       Anonymize<Iei2mvq0mjvt81>
     >;
     /**
@@ -3913,7 +4191,7 @@ type IRuntimeCalls = {
      */
     query_acceptable_payment_assets: RuntimeDescriptor<
       [xcm_version: number],
-      Anonymize<I1p1369d52j8jd>
+      Anonymize<Iftvbctbo05fu4>
     >;
     /**
      * Returns a weight needed to execute a XCM.
@@ -3922,7 +4200,7 @@ type IRuntimeCalls = {
      *
      * * `message`: `VersionedXcm`.
      */
-    query_xcm_weight: RuntimeDescriptor<[message: DotXcmVersionedXcm], Anonymize<Ic0c3req3mlc1l>>;
+    query_xcm_weight: RuntimeDescriptor<[message: XcmVersionedXcm], Anonymize<Ic0c3req3mlc1l>>;
     /**
      * Converts a weight into a fee for the specified `AssetId`.
      *
@@ -3932,7 +4210,7 @@ type IRuntimeCalls = {
      * * `asset`: `VersionedAssetId`.
      */
     query_weight_to_asset_fee: RuntimeDescriptor<
-      [weight: Anonymize<I4q39t5hn830vp>, asset: DotXcmVersionedAssetId],
+      [weight: Anonymize<I4q39t5hn830vp>, asset: XcmVersionedAssetId],
       Anonymize<I7ocn4njqde3v5>
     >;
     /**
@@ -3946,8 +4224,8 @@ type IRuntimeCalls = {
      * different senders that charge different fees.
      */
     query_delivery_fees: RuntimeDescriptor<
-      [destination: DotXcmVersionedLocation, message: DotXcmVersionedXcm],
-      Anonymize<I5rlt6h8ph553n>
+      [destination: XcmVersionedLocation, message: XcmVersionedXcm],
+      Anonymize<Iek7ha36da9mf5>
     >;
   };
   /**
@@ -3963,18 +4241,22 @@ type IRuntimeCalls = {
    */
   DryRunApi: {
     /**
-     * Dry run call.
+     * Dry run call V2.
      */
     dry_run_call: RuntimeDescriptor<
-      [origin: Anonymize<I48v5riethqckl>, call: Anonymize<I9eibd2giu4tl7>],
-      Anonymize<I6rm3t6vu6ur6p>
+      [
+        origin: Anonymize<I42ficri7uep20>,
+        call: Anonymize<Iej7uo9d8c90rd>,
+        result_xcms_version: number,
+      ],
+      Anonymize<Ic5bbnoqe2e16a>
     >;
     /**
      * Dry run XCM program
      */
     dry_run_xcm: RuntimeDescriptor<
-      [origin_location: DotXcmVersionedLocation, xcm: DotXcmVersionedXcm],
-      Anonymize<I8skdub5dr5kml>
+      [origin_location: XcmVersionedLocation, xcm: XcmVersionedXcm],
+      Anonymize<Ifbvog3ud0pohe>
     >;
   };
   /**
@@ -3985,7 +4267,7 @@ type IRuntimeCalls = {
      * Converts `Location` to `AccountId`.
      */
     convert_location: RuntimeDescriptor<
-      [location: DotXcmVersionedLocation],
+      [location: XcmVersionedLocation],
       Anonymize<Ieh6nis3hdbtgi>
     >;
   };
@@ -4005,16 +4287,17 @@ type IRuntimeCalls = {
     >;
   };
   /**
-   * API to interact with RuntimeGenesisConfig for the runtime
+   * API to interact with `RuntimeGenesisConfig` for the runtime
    */
   GenesisBuilder: {
     /**
      * Build `RuntimeGenesisConfig` from a JSON blob not using any defaults and store it in the
      * storage.
      *
-     * In the case of a FRAME-based runtime, this function deserializes the full `RuntimeGenesisConfig` from the given JSON blob and
-     * puts it into the storage. If the provided JSON blob is incorrect or incomplete or the
-     * deserialization fails, an error is returned.
+     * In the case of a FRAME-based runtime, this function deserializes the full
+     * `RuntimeGenesisConfig` from the given JSON blob and puts it into the storage. If the
+     * provided JSON blob is incorrect or incomplete or the deserialization fails, an error
+     * is returned.
      *
      * Please note that provided JSON blob must contain all `RuntimeGenesisConfig` fields, no
      * defaults will be used.
@@ -4024,7 +4307,7 @@ type IRuntimeCalls = {
      * Returns a JSON blob representation of the built-in `RuntimeGenesisConfig` identified by
      * `id`.
      *
-     * If `id` is `None` the function returns JSON blob representation of the default
+     * If `id` is `None` the function should return JSON blob representation of the default
      * `RuntimeGenesisConfig` struct of the runtime. Implementation must provide default
      * `RuntimeGenesisConfig`.
      *
@@ -4047,7 +4330,7 @@ type IRuntimeCalls = {
   };
 };
 type IAsset = PlainDescriptor<void>;
-export type Ksm_coretimeDispatchError = Anonymize<I6iir5b1cc0ncm>;
+export type Ksm_coretimeDispatchError = Anonymize<Ieomelrcrr6qh5>;
 type PalletsTypedef = {
   __storage: IStorage;
   __tx: ICalls;
@@ -4075,7 +4358,7 @@ export type Ksm_coretimeEvents = EventsFromPalletsDef<PalletsTypedef>;
 export type Ksm_coretimeErrors = ErrorsFromPalletsDef<PalletsTypedef>;
 export type Ksm_coretimeConstants = ConstFromPalletsDef<PalletsTypedef>;
 export type Ksm_coretimeViewFns = ViewFnsFromPalletsDef<PalletsTypedef>;
-export type Ksm_coretimeCallData = Anonymize<I9eibd2giu4tl7> & {
+export type Ksm_coretimeCallData = Anonymize<Iej7uo9d8c90rd> & {
   value: {
     type: string;
   };

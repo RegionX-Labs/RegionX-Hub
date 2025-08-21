@@ -13,9 +13,6 @@ export type * from './ksm';
 import { default as pas } from './pas';
 export { pas };
 export type * from './pas';
-import { default as pas_coretime } from './pas_coretime';
-export { pas_coretime };
-export type * from './pas_coretime';
 import { default as wnd } from './wnd';
 export { wnd };
 export type * from './wnd';
@@ -34,6 +31,9 @@ export type * from './wnd_people';
 import { default as dot_people } from './dot_people';
 export { dot_people };
 export type * from './dot_people';
+import { default as pas_coretime } from './pas_coretime';
+export { pas_coretime };
+export type * from './pas_coretime';
 export {
   DigestItem,
   Phase,
@@ -178,25 +178,25 @@ export {
   OccupiedCoreAssumption,
   CandidateEvent,
   MmrPrimitivesError,
-  RecoveryEvent,
-  ConvictionVotingEvent,
-  NominationPoolsEvent,
   XcmV5Junctions,
   XcmV5Junction,
   XcmV5NetworkId,
-  XcmVersionedLocation,
-  PolkadotRuntimeCommonAssignedSlotsEvent,
   XcmV5Instruction,
   XcmV5AssetFilter,
   XcmV5WildAsset,
   XcmVersionedAssets,
+  XcmVersionedLocation,
+  XcmVersionedAssetId,
+  XcmVersionedXcm,
+  RecoveryEvent,
+  ConvictionVotingEvent,
+  NominationPoolsEvent,
+  PolkadotRuntimeCommonAssignedSlotsEvent,
   RootTestingEvent,
   PolkadotRuntimeCommonIdentityMigratorEvent,
   IdentityJudgement,
   IdentityData,
   WestendRuntimeGovernanceOriginsPalletCustomOriginsOrigin,
-  XcmVersionedAssetId,
-  XcmVersionedXcm,
   PolkadotRuntimeCommonAssignedSlotsSlotLeasePeriodStart,
   XcmVersionedAsset,
 } from './common-types';
