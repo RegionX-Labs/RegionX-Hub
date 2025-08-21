@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@rollup/rollup-darwin-arm64": "^4.47.1",
     "@types/humanize-duration": "^3.27.4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -44,6 +45,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "prettier": "3.5.3",
+    "rollup": "^4.47.1",
     "typescript": "^5"
   }
 }

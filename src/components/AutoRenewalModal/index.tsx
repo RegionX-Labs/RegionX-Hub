@@ -1,4 +1,3 @@
-// components/AutoRenewalModal.tsx
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
@@ -22,6 +21,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   paraId: number;
+  coreId?: number;
 };
 
 type CheckState = {
@@ -38,7 +38,7 @@ type CheckState = {
 
 const MIN_BALANCE = BigInt(0);
 
-const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
+const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId, coreId }) => {
   const [connections, network] = useUnit([$connections, $network]);
   const [checks, setChecks] = useState<CheckState>({
     fundRelay: false,
@@ -51,6 +51,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
     loading: false,
   });
   const [showBytesModal, setShowBytesModal] = useState(false);
+  const [encodedHex, setEncodedHex] = useState<string>('');
 
   const canProceed = true;
 
@@ -73,12 +74,33 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
         }
         const relayApi = relayConn.client.getTypedApi(metadata.relayChain);
         const coretimeApi = coretimeConn.client.getTypedApi(metadata.coretimeChain);
+
         const relayAddr = paraIdToAddress(paraId, ParaType.Child);
         const coretimeAddr = paraIdToAddress(paraId, ParaType.Sibling);
+
+        if (typeof coreId === 'number') {
+          try {
+            const encoded = await (coretimeApi as any).tx.Broker.enable_auto_renew({
+              core: coreId,
+              task: paraId,
+              workload_end_hint: undefined,
+            }).getEncodedData();
+            const hex = encoded.asHex();
+            setEncodedHex(hex);
+            console.log(hex);
+          } catch (err) {
+            console.error('Failed to encode enable_auto_renew tx:', err);
+            setEncodedHex('');
+          }
+        } else {
+          setEncodedHex('');
+        }
+
         const [relayAcc, coretimeAcc] = await Promise.all([
           (relayApi as any).query?.System?.Account?.getValue(relayAddr),
           (coretimeApi as any).query?.System?.Account?.getValue(coretimeAddr),
         ]);
+
         const toBI = (v: any) => {
           try {
             const raw = (v?.data?.free ?? v?.data?.frozen ?? v?.data)?.toString?.() ?? `${v}`;
@@ -135,13 +157,14 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
             loading: false,
             error: e?.message ?? 'Failed to run checks.',
           }));
+          setEncodedHex('');
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [isOpen, paraId, connections, network]);
+  }, [isOpen, paraId, coreId, connections, network]);
 
   if (!isOpen) return null;
 
@@ -285,6 +308,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
           onClose={() => setShowBytesModal(false)}
           network={network}
           paraId={paraId}
+          hex={encodedHex}
         />
       )}
     </>
@@ -314,17 +338,18 @@ function BytesPreviewModal({
   onClose,
   network,
   paraId,
+  hex,
 }: {
   onClose: () => void;
   network: Network;
   paraId: number;
+  hex: string;
 }) {
   const chainMap = chainData[network] || {};
   const info = chainMap[paraId];
   const wsProvider = useMemo(() => pickFirstProvider(info), [info]);
   const decodeUrl = wsProvider ? buildDecodeUrl(wsProvider) : undefined;
 
-  const hex = '';
   const copy = () => {
     if (!hex) return;
     navigator.clipboard.writeText(hex);
@@ -341,7 +366,7 @@ function BytesPreviewModal({
         <div className={styles.header}>
           <h2 className={styles.title}>Extrinsic Bytes</h2>
           <p className={styles.subtitle}>
-            Use the portal to generate and copy SCALE-encoded bytes.
+            {hex ? 'Enable auto renew' : 'Use the portal to generate and copy SCALE-encoded bytes.'}
           </p>
         </div>
 
