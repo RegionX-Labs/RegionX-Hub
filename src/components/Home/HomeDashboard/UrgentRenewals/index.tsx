@@ -61,9 +61,7 @@ export default function UrgentRenewals({ view }: Props) {
       const list = await fetchAutoRenewals(network, connections);
       const set = new Set<number>(list.map((e: any) => Number(e.task)));
       setAutoRenewSet(set);
-    } catch {
-      /* no-op */
-    }
+    } catch {}
   };
 
   useEffect(() => {
@@ -122,6 +120,7 @@ export default function UrgentRenewals({ view }: Props) {
 
     setOptions(_options);
     if (_options[0]) setSelected(_options[0].value);
+    else setSelected(null);
   }, [saleInfo, potentialRenewals, network]);
 
   useEffect(() => {
@@ -225,11 +224,14 @@ export default function UrgentRenewals({ view }: Props) {
   };
 
   const disableRenew = !selectedAccount || !selected || allCoresSold;
+  const hasRenewables = options.length > 0;
+
   const paraId = selected?.[1] ? (selected[1].completion as any).value[0].assignment.value : null;
   const autoRenewEnabled = useMemo(
     () => (typeof paraId === 'number' ? autoRenewSet.has(Number(paraId)) : false),
     [autoRenewSet, paraId]
   );
+  const disableAutoRenew = !selectedAccount || typeof paraId !== 'number';
 
   return (
     <div
@@ -241,7 +243,7 @@ export default function UrgentRenewals({ view }: Props) {
         <p className={styles.title}>Urgent Renewals</p>
 
         <div className={styles.selectBox}>
-          {options.length > 0 ? (
+          {hasRenewables ? (
             <Select
               options={options}
               selectedValue={selected}
@@ -299,15 +301,25 @@ export default function UrgentRenewals({ view }: Props) {
           Renew Now
         </button>
 
-        {paraId !== null && (
+        {hasRenewables && (
           <button
             className={
               autoRenewEnabled
                 ? `${styles.autoRenewButton} ${styles.autoRenewButtonEnabled}`
                 : styles.autoRenewButton
             }
-            onClick={() => setIsAutoRenewOpen(true)}
-            disabled={!selectedAccount}
+            onClick={() => {
+              if (disableAutoRenew) return;
+              setIsAutoRenewOpen(true);
+            }}
+            disabled={disableAutoRenew}
+            title={
+              disableAutoRenew
+                ? !selectedAccount
+                  ? 'Account not selected'
+                  : 'Select a core to manage auto-renewal'
+                : undefined
+            }
           >
             {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
           </button>
