@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './HomeDashboard.module.scss';
 
-import RenewableCores from './RenewableCores';
+import UrgentRenewals from './UrgentRenewals';
 import CoreComparison from './CoreComparison';
 import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
@@ -108,7 +108,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       <div className={styles.dashboard}>
         {selected === 'Overview' && (
           <>
-            <RenewableCores view={selected} />
+            <UrgentRenewals view={selected} />
             <CoreComparison view={selected} />
             <CorePurchaseCard />
             <AuctionPhaseStatus view={selected} />

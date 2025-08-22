@@ -223,13 +223,3 @@
   cursor: default;
   pointer-events: none;
 }
-
-@media (max-width: 560px) {
-  .summaryRow,
-  .actionRow {
-    flex-direction: column;
-  }
-  .dateWrap {
-    align-items: flex-start;
-  }
-}
