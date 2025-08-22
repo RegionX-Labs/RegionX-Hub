@@ -185,3 +185,45 @@
   letter-spacing: 0.2px;
   display: inline-block;
 }
+.buttonRow {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: 10px;
+}
+
+.autoRenewButton {
+  flex: 1;
+  background: transparent;
+  color: $greenPrimary;
+  border: 1px solid $greenPrimary;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: auto;
+  margin-bottom: 10px;
+  @include Inter;
+
+  &:hover {
+    background: $greenPrimary;
+    color: black;
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.autoRenewBtnEnabled {
+  background: $greenPrimary;
+  color: black;
+  border-color: $greenPrimary;
+  cursor: default;
+  pointer-events: none;
+}
+
+.renewButton {
+  flex: 1;
+}
