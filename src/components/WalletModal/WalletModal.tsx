@@ -78,7 +78,10 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
     const alreadyConnected = connectedWallets.includes(wallet.id);
     const mimirAvailable = wallet.id === 'mimir' && window !== window.parent;
     const shouldDisable =
-      alreadyConnected || !isDetected || (wallet.id === 'nova' && isMobile && hasSubWallet) || mimirAvailable;
+      alreadyConnected ||
+      !isDetected ||
+      (wallet.id === 'nova' && isMobile && hasSubWallet) ||
+      mimirAvailable;
 
     const buttonClass = `${styles.walletButton} ${shouldDisable ? styles.disabled : ''}`;
 
