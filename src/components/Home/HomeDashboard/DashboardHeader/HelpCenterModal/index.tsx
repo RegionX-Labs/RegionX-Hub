@@ -295,7 +295,7 @@ export default function HelpCenterModal({ isOpen, onClose, selected }: HelpCente
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
           <h2>Help Center</h2>
-          <X size={20} className={styles.closeIcon} onClick={onClose} />
+          <X size={18} className={styles.closeIcon} onClick={onClose} />
         </div>
 
         <div className={styles.helpBody}>
