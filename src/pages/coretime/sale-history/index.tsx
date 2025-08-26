@@ -15,6 +15,7 @@ import { $network, $connections } from '@/api/connection';
 import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
+import DutchAuctionChart from '../../../components/Home/HomeDashboard/DutchAuctionChart';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -56,6 +57,7 @@ const SaleHistoryPage = () => {
   const [selectedSaleId, setSelectedSaleId] = useState<number | null>(null);
   const [modalPurchases, setModalPurchases] = useState<Array<Record<string, TableData>>>([]);
   const [tableData, setTableData] = useState<Array<Record<string, TableData>>>([]);
+  const [chartModalOpen, setChartModalOpen] = useState(false);
 
   const network = useUnit($network);
   const saleInfo = useUnit($saleHistory);
@@ -63,9 +65,7 @@ const SaleHistoryPage = () => {
   const purchaseHistory = useUnit($purchaseHistory);
 
   useEffect(() => {
-    if (network) {
-      saleHistoryRequested(network);
-    }
+    if (network) saleHistoryRequested(network);
   }, [network]);
 
   useEffect(() => {
@@ -94,7 +94,6 @@ const SaleHistoryPage = () => {
             network,
             connections
           );
-
           const saleStartTimestamp = await blockToTimestamp(
             sale.saleStart,
             connection,
@@ -135,6 +134,22 @@ const SaleHistoryPage = () => {
               data: formatDate(saleEndTimestamp),
               searchKey: formatDate(saleEndTimestamp),
             },
+            Auction: {
+              cellType: 'jsx' as const,
+              data: (
+                <button
+                  className={styles.auctionCell}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setChartModalOpen(true);
+                  }}
+                  title='Open Dutch auction'
+                >
+                  <DutchAuctionChart theme='dark' mode='mini' height={12} />
+                </button>
+              ),
+              searchKey: String(sale.saleCycle),
+            },
           };
         })
       );
@@ -164,7 +179,6 @@ const SaleHistoryPage = () => {
 
   useEffect(() => {
     if (!network) return;
-
     const baseUrl = SUBSCAN_CORETIME_URL[network] || 'https://subscan.io';
 
     const formatted = purchaseHistory.map((purchase: PurchaseHistoryItem) => ({
@@ -181,7 +195,6 @@ const SaleHistoryPage = () => {
         ),
         searchKey: purchase.extrinsicId,
       },
-
       Account: {
         cellType: 'address' as const,
         data: purchase.address,
@@ -197,11 +210,7 @@ const SaleHistoryPage = () => {
         data: toUnitFormatted(network, BigInt(purchase.price)),
         searchKey: String(purchase.price),
       },
-      SalesType: {
-        cellType: 'text' as const,
-        data: purchase.type,
-        searchKey: purchase.type,
-      },
+      SalesType: { cellType: 'text' as const, data: purchase.type, searchKey: purchase.type },
       Timestamp: {
         cellType: 'text' as const,
         data: formatDate(purchase.timestamp),
@@ -237,6 +246,22 @@ const SaleHistoryPage = () => {
             />
           );
         })()}
+
+      {chartModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setChartModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitle}>Dutch auction</div>
+              <button className={styles.closeBtn} onClick={() => setChartModalOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <DutchAuctionChart theme='dark' mode='full' context='modal' />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
