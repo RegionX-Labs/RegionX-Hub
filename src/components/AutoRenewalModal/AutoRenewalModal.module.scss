@@ -318,26 +318,35 @@ a.primary {
   border-bottom-right-radius: 16px;
   backdrop-filter: blur(2px);
   z-index: 1;
+  margin-top: 15px;
 }
 
 .close {
   position: absolute;
-  top: 8px;
-  right: 0px;
-  background: none;
-  border: 1px solid transparent;
-  font-size: 20px;
-  color: var(--gray-5);
-  cursor: pointer;
-  z-index: 10012;
-  width: 32px;
-  height: 32px;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
-  line-height: 30px;
-  text-align: center;
+  border: 1px solid var(--border-modal);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
 
   &:hover {
-    color: var(--text-primary);
+    background: var(--dark-background-1);
   }
 }
 
