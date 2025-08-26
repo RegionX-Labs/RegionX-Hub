@@ -12,7 +12,7 @@ import {
   getTokenSymbol,
   CORETIME_PARA_ID,
 } from '@/utils';
-import { Clipboard, ExternalLink } from 'lucide-react';
+import { Clipboard, ExternalLink, X } from 'lucide-react';
 import { chainData } from '@/chaindata';
 import { BaseChainInfo } from '@/chaindata/types';
 import { Network } from '@/types';
@@ -291,7 +291,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId, coreId }) 
           </div>
 
           <button className={styles.close} onClick={onClose} aria-label='Close modal'>
-            ×
+            <X size={16} />
           </button>
         </div>
       </div>
@@ -403,7 +403,7 @@ function BytesPreviewModal({
         </div>
 
         <button className={styles.close} onClick={onClose} aria-label='Close modal'>
-          ×
+          <X size={16} />
         </button>
       </div>
     </div>
