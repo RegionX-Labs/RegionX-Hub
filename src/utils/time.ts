@@ -2,6 +2,8 @@ import { getNetworkChainIds, getNetworkMetadata, CoretimeMetadata, RelayMetadata
 import { Network } from '@/types';
 import { Connection } from '@/api/connection';
 import { TIMESLICE_PERIOD } from './constants';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
 export const timesliceToTimestamp = async (
   timeslice: number,
@@ -83,3 +85,36 @@ export const coretimeChainBlockTime = (network: Network): number => {
       return 0;
   }
 };
+
+let ready = false;
+function ensure() {
+  if (!ready) {
+    TimeAgo.addLocale(en);
+    ready = true;
+  }
+}
+
+export function getRelativeTime(input: bigint | number | Date): string {
+  ensure();
+  const timeAgo = new TimeAgo('en-US');
+
+  let ms: number;
+  if (input instanceof Date) {
+    ms = input.getTime();
+  } else if (typeof input === 'bigint') {
+    const asNum = Number(input);
+    ms = Number.isFinite(asNum) ? asNum : Date.now();
+  } else {
+    ms = input < 2_000_000_000 ? input * 1000 : input;
+  }
+
+  return timeAgo.format(ms, {
+    steps: [
+      { formatAs: 'second' },
+      { formatAs: 'minute', minTime: 60 },
+      { formatAs: 'hour', minTime: 60 * 60 },
+      { formatAs: 'day', minTime: 24 * 60 * 60 },
+    ],
+    labels: 'long',
+  });
+}
