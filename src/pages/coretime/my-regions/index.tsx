@@ -15,10 +15,10 @@ import { Search as SearchIcon } from 'lucide-react';
 
 type RegionDateInfo = { beginDate: string; endDate: string; duration: string };
 type ViewMode = 'owned' | 'all';
+type NetworkMaybe = string | { name?: string; id?: string };
 
-function getNetworkKey(network: unknown) {
+function getNetworkKey(network: NetworkMaybe) {
   if (typeof network === 'string') return network;
-  // @ts-ignore
   return network?.name || network?.id || 'network';
 }
 function orderKeyAll(networkKey: string) {
