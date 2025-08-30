@@ -218,10 +218,10 @@ export default function AuctionPhaseStatus({ view }: Props) {
           <svg width='200' height='200' viewBox='0 0 200 200'>
             {renderedDots}
             {renderedSegments}
-            <text x='90' y='90' textAnchor='left' className={styles.progressLabel}>
+            <text x='90' y='90' textAnchor='start' className={styles.progressLabel}>
               Progress
             </text>
-            <text x='90' y='110' textAnchor='left' className={styles.progressValue}>
+            <text x='90' y='110' textAnchor='start' className={styles.progressValue}>
               {Math.floor(progressPercent * 100)}%
             </text>
           </svg>

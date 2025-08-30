@@ -1,16 +1,19 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './RegionCardHeader.module.scss';
 import LabelCard from '../../LabelCard/LabelCard';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
-import { Pencil, MoreHorizontal } from 'lucide-react';
-
+import { MoreHorizontal } from 'lucide-react';
+import Image from 'next/image';
 import TransferModal from '../../../RegionModals/TransferModal';
 import AssignModal from '../../../RegionModals/AssignModal';
 import PartitionModal from '../../../RegionModals/PartitionModal';
 import SellModal from '../../../RegionModals/SellModal';
 import InterlaceModal from '../../../RegionModals/InterlaceModal';
 import TransferToMarketplaceModal from '../../../RegionModals/TransferToMarketplaceModal';
+import ModalPortal from '@/components/ModalPortal';
 
 import { RegionId, toUnitFormatted } from '@/utils';
 import { useUnit } from 'effector-react';
@@ -144,7 +147,14 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             ) : (
               <h5>{name}</h5>
             )}
-            <Pencil size={16} className={styles.editIcon} onClick={() => setIsEditing(true)} />
+            <Image
+              src='/rename.png'
+              alt='rename'
+              width={16}
+              height={16}
+              className={styles.rename}
+              onClick={() => setIsEditing(true)}
+            />
           </div>
           <p>
             {regionStart} | {regionEnd}
@@ -166,35 +176,6 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             </div>
           )}
         </div>
-
-        <TransferModal
-          isOpen={isTransferModalOpen}
-          onClose={() => setTransferModalOpen(false)}
-          regionId={regionId}
-        />
-        <AssignModal
-          isOpen={isAssignModalOpen}
-          onClose={() => setAssignModalOpen(false)}
-          regionId={regionId}
-        />
-        <PartitionModal
-          isOpen={isPartitionModalOpen}
-          onClose={() => setPartitionModalOpen(false)}
-          regionId={regionId}
-          regionBeginTimeslice={regionStartTimeslice}
-          regionEndTimeslice={regionEndTimeslice}
-        />
-        <InterlaceModal
-          isOpen={isInterlaceModalOpen}
-          onClose={() => setInterlaceModalOpen(false)}
-          regionId={regionId}
-        />
-        <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
-        <TransferToMarketplaceModal
-          isOpen={isMarketplaceModalOpen}
-          onClose={() => setMarketplaceModalOpen(false)}
-          regionId={regionId}
-        />
       </div>
 
       <div className={styles.labelsRow}>
@@ -227,11 +208,9 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
               <span
                 className={styles.ownerAddressWrapper}
                 onClick={() => {
-                  if (owner) {
-                    navigator.clipboard.writeText(owner);
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 1000);
-                  }
+                  navigator.clipboard.writeText(owner);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1000);
                 }}
               >
                 <span className={styles.ownerAddress} title={owner}>
@@ -243,6 +222,64 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           )}
         </div>
       </div>
+
+      {isTransferModalOpen && (
+        <ModalPortal>
+          <TransferModal
+            isOpen={isTransferModalOpen}
+            onClose={() => setTransferModalOpen(false)}
+            regionId={regionId}
+          />
+        </ModalPortal>
+      )}
+
+      {isAssignModalOpen && (
+        <ModalPortal>
+          <AssignModal
+            isOpen={isAssignModalOpen}
+            onClose={() => setAssignModalOpen(false)}
+            regionId={regionId}
+          />
+        </ModalPortal>
+      )}
+
+      {isPartitionModalOpen && (
+        <ModalPortal>
+          <PartitionModal
+            isOpen={isPartitionModalOpen}
+            onClose={() => setPartitionModalOpen(false)}
+            regionId={regionId}
+            regionBeginTimeslice={regionStartTimeslice}
+            regionEndTimeslice={regionEndTimeslice}
+          />
+        </ModalPortal>
+      )}
+
+      {isInterlaceModalOpen && (
+        <ModalPortal>
+          <InterlaceModal
+            isOpen={isInterlaceModalOpen}
+            onClose={() => setInterlaceModalOpen(false)}
+            regionId={regionId}
+          />
+        </ModalPortal>
+      )}
+
+      {isSellModalOpen && (
+        <ModalPortal>
+          <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
+        </ModalPortal>
+      )}
+
+      {isMarketplaceModalOpen && (
+        <ModalPortal>
+          <TransferToMarketplaceModal
+            isOpen={isMarketplaceModalOpen}
+            onClose={() => setMarketplaceModalOpen(false)}
+            regionId={regionId}
+          />
+        </ModalPortal>
+      )}
     </>
   );
 };
