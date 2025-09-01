@@ -55,12 +55,9 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
         const connection = connections[chainIds.coretimeChain];
         if (!connection || !connection.client || connection.status !== 'connected')
           return setRows([]);
-
         const metadata = getNetworkMetadata(network);
         if (!metadata) return setRows([]);
-
         const typedApi = connection.client.getTypedApi(metadata.coretimeChain);
-
         const [workloadEntries, workplanEntries] = await Promise.all([
           typedApi?.query?.Broker?.Workload?.getEntries?.() ?? [],
           typedApi?.query?.Broker?.Workplan?.getEntries?.() ?? [],
@@ -107,10 +104,24 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
     })();
   }, [network, connections, filterTask]);
 
+  const Title = (
+    <div className={styles.header}>
+      <h3 className={styles.heading}>Assigned Cores</h3>
+      {filterTask !== null && (
+        <div className={styles.subheading}>
+          <span className={styles.pill}>Para ID: {filterTask}</span>
+          {isSystemPara && (
+            <span className={`${styles.pill} ${styles.system}`}>System Parachain</span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   if (loading && rows.length === 0) {
     return (
       <div className={styles.wrapper}>
-        <h3 className={styles.heading}>Assigned Cores</h3>
+        {Title}
         <div className={styles.skeleton}>Loading…</div>
       </div>
     );
@@ -119,7 +130,7 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
   if (!rows.length) {
     return (
       <div className={styles.wrapper}>
-        <h3 className={styles.heading}>Assigned Cores</h3>
+        {Title}
         <div className={styles.empty}>
           {isSystemPara
             ? 'Parachain system always has assigned cores.'
@@ -131,9 +142,7 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
 
   return (
     <div className={styles.wrapper}>
-      <h3 className={styles.heading}>
-        Assigned Cores{filterTask !== null ? ` — ParaID: ${filterTask}` : ''}
-      </h3>
+      {Title}
       <TableComponent data={rows} pageSize={pageSize} />
     </div>
   );
