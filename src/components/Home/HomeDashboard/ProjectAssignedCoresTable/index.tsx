@@ -6,6 +6,8 @@ import { $connections, $network } from '@/api/connection';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { timesliceToTimestamp } from '@/utils';
 import { TableComponent } from '@/components/elements/TableComponent';
+import { $parachains } from '@/parachains';
+import { ParaState } from '@/components/ParaStateCard';
 import styles from './ProjectAssignedCoresTable.module.scss';
 
 type TableCell =
@@ -20,7 +22,7 @@ type Props = {
 };
 
 type RawEntry = {
-  source: 'workload' | 'workplan';
+  source: 'Currently Assigned' | 'Scheduled Assignment';
   core: number | null;
   task: number | null;
   begin: number | null;
@@ -56,6 +58,8 @@ const fmtMillis = (ms: number | null): string => {
 export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: Props) {
   const network = useUnit($network);
   const connections = useUnit($connections);
+  const parachains = useUnit($parachains);
+
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -64,6 +68,12 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
     const n = Number(taskParaId);
     return Number.isFinite(n) ? n : null;
   }, [taskParaId]);
+
+  const isSystemPara = useMemo(() => {
+    if (filterTask == null) return false;
+    const p = parachains.find((p) => p.network === network && p.id === filterTask);
+    return p?.state === ParaState.SYSTEM;
+  }, [parachains, network, filterTask]);
 
   useEffect(() => {
     (async () => {
@@ -85,42 +95,30 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
           typedApi?.query?.Broker?.Workplan?.getEntries?.() ?? [],
         ]);
 
-        const normalize = (source: 'workload' | 'workplan', e: any): RawEntry => {
-          const core =
-            typeof e?.keyArgs?.[0] === 'number'
-              ? e.keyArgs[0]
-              : typeof e?.keyArgs?.core === 'number'
-                ? e.keyArgs.core
-                : null;
+        const pickNum = (v: any): number | null =>
+          typeof v === 'number' ? v : typeof v?.value === 'number' ? v.value : null;
 
+        const normalize = (pallet: 'workload' | 'workplan', e: any): RawEntry => {
+          const core = pickNum(e?.keyArgs?.[0]) ?? pickNum(e?.keyArgs?.core);
           const begin =
-            typeof e?.keyArgs?.[1] === 'number'
-              ? e.keyArgs[1]
-              : typeof e?.value?.begin?.value === 'number'
-                ? e.value.begin.value
-                : typeof e?.value?.begin === 'number'
-                  ? e.value.begin
-                  : null;
-
-          const end =
-            typeof e?.value?.end?.value === 'number'
-              ? e.value.end.value
-              : typeof e?.value?.end === 'number'
-                ? e.value.end
-                : null;
-
+            pickNum(e?.keyArgs?.[1]) ??
+            pickNum(e?.value?.begin) ??
+            (pallet === 'workplan' ? pickNum(e?.value?.when) : null);
+          const end = pickNum(e?.value?.end) ?? pickNum(e?.value?.until);
           const task =
-            typeof e?.value?.task?.value === 'number'
-              ? e.value.task.value
-              : typeof e?.value?.task === 'number'
-                ? e.value.task
-                : typeof e?.value?.assignment?.value === 'number'
-                  ? e.value.assignment.value
-                  : typeof e?.value?.[0]?.assignment?.value === 'number'
-                    ? e.value[0].assignment.value
-                    : null;
+            pickNum(e?.value?.task) ??
+            pickNum(e?.value?.assignment) ??
+            (typeof e?.value?.[0]?.assignment?.value === 'number'
+              ? e.value[0].assignment.value
+              : null);
 
-          return { source, core, task, begin, end };
+          return {
+            source: pallet === 'workload' ? 'Currently Assigned' : 'Scheduled Assignment',
+            core: core ?? null,
+            task: task ?? null,
+            begin: begin ?? null,
+            end: end ?? null,
+          };
         };
 
         const raw: RawEntry[] = [
@@ -181,7 +179,9 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
       <div className={styles.wrapper}>
         <h3 className={styles.heading}>Assigned Cores</h3>
         <div className={styles.empty}>
-          No assignments found{filterTask !== null ? ` for project ${filterTask}` : ''}.
+          {isSystemPara
+            ? 'Parachain system always has assigned cores.'
+            : `No assignments found${filterTask !== null ? ` for project ${filterTask}` : ''}.`}
         </div>
       </div>
     );
