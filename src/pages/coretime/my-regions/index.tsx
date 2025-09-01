@@ -140,7 +140,7 @@ export default function MyRegionsPage() {
         <div className={styles.pageHeader}>
           {selectedAccount && <h1>Regions</h1>}
           {regionsAll.length > 0 && (
-            <p className={styles.subtitle}>Rearrange like cards & search.</p>
+            <p className={styles.subtitle}>Browse regions and rearrange them to your liking</p>
           )}
         </div>
 
