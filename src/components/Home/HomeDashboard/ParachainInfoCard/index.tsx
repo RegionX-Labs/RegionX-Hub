@@ -179,25 +179,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     const metadata = getNetworkMetadata(network);
     if (!client || !metadata) return toast.error('API error');
 
-    const api: any = client.getTypedApi(metadata.coretimeChain);
-
-    const txPallet =
-      (api.tx as any)['Broker'] ??
-      (api.tx as any)['broker'] ??
-      (api.tx as any)['CoretimeBroker'] ??
-      (api.tx as any)['coretimeBroker'];
-
-    if (!txPallet?.renew) {
-      toast.error('Renew extrinsic not available on this network');
-      return;
-    }
-
-    let tx: any;
-    try {
-      tx = txPallet.renew({ core: key.core });
-    } catch {
-      tx = txPallet.renew(key.core);
-    }
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({ core: key.core });
 
     const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(

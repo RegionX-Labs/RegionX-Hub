@@ -16,7 +16,7 @@ type TableCell =
 type Row = Record<string, TableCell>;
 
 type Props = {
-  taskParaId?: string | number | null;
+  taskId?: number;
   pageSize?: number;
 };
 
@@ -26,7 +26,7 @@ type RawEntry = {
   task: number | null;
 };
 
-export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: Props) {
+export default function ProjectAssignedCoresTable({ taskId, pageSize = 8 }: Props) {
   const network = useUnit($network);
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
@@ -34,17 +34,10 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const filterTask = useMemo(() => {
-    if (taskParaId === null || taskParaId === undefined || taskParaId === '') return null;
-    const n = Number(taskParaId);
-    return Number.isFinite(n) ? n : null;
-  }, [taskParaId]);
-
   const isSystemPara = useMemo(() => {
-    if (filterTask == null) return false;
-    const p = parachains.find((p) => p.network === network && p.id === filterTask);
+    const p = parachains.find((p) => p.network === network && p.id === taskId);
     return p?.state === ParaState.SYSTEM;
-  }, [parachains, network, filterTask]);
+  }, [parachains, network]);
 
   useEffect(() => {
     (async () => {
@@ -63,17 +56,10 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
           typedApi?.query?.Broker?.Workplan?.getEntries?.() ?? [],
         ]);
 
-        const pickNum = (v: any): number | null =>
-          typeof v === 'number' ? v : typeof v?.value === 'number' ? v.value : null;
-
         const normalize = (pallet: 'workload' | 'workplan', e: any): RawEntry => {
-          const core = pickNum(e?.keyArgs?.[0]) ?? pickNum(e?.keyArgs?.core);
-          const task =
-            pickNum(e?.value?.task) ??
-            pickNum(e?.value?.assignment) ??
-            (typeof e?.value?.[0]?.assignment?.value === 'number'
-              ? e.value[0].assignment.value
-              : null);
+          console.log(e);
+          const core = pallet === 'workload' ? e.keyArgs?.[0] : e.keyArgs?.core;
+          const task = e.value[0].assignment.value;
 
           return {
             source: pallet === 'workload' ? 'Currently Assigned' : 'Scheduled Assignment',
@@ -87,7 +73,7 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
           ...workplanEntries.map((e: any) => normalize('workplan', e)),
         ].filter((r) => r.core !== null && r.task !== null);
 
-        const filtered = filterTask === null ? raw : raw.filter((r) => r.task === filterTask);
+        const filtered = taskId === null ? raw : raw.filter((r) => r.task === taskId);
 
         const tableRows: Row[] = filtered.map((r: any) => ({
           Source: { cellType: 'text', data: r.source },
@@ -102,19 +88,17 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
         setLoading(false);
       }
     })();
-  }, [network, connections, filterTask]);
+  }, [network, connections]);
 
   const Title = (
     <div className={styles.header}>
       <h3 className={styles.heading}>Assigned Cores</h3>
-      {filterTask !== null && (
-        <div className={styles.subheading}>
-          <span className={styles.pill}>Para ID: {filterTask}</span>
-          {isSystemPara && (
-            <span className={`${styles.pill} ${styles.system}`}>System Parachain</span>
-          )}
-        </div>
-      )}
+      <div className={styles.subheading}>
+        <span className={styles.pill}>Para ID: {taskId}</span>
+        {isSystemPara && (
+          <span className={`${styles.pill} ${styles.system}`}>System Parachain</span>
+        )}
+      </div>
     </div>
   );
 
@@ -134,7 +118,7 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
         <div className={styles.empty}>
           {isSystemPara
             ? 'Parachain system always has assigned cores.'
-            : `No assignments found${filterTask !== null ? ` for project ${filterTask}` : ''}.`}
+            : `No assignments found${taskId !== null ? ` for project ${taskId}` : ''}.`}
         </div>
       </div>
     );

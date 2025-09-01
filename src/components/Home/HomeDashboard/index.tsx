@@ -150,7 +150,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
-            <ProjectAssignedCoresTable taskParaId={selectedParaId ?? null} />
+            {selectedParaId && <ProjectAssignedCoresTable taskId={Number(selectedParaId)} />}
             <AutoRenewalTable />
             <OwnedRegionsTable />
           </>
