@@ -107,6 +107,11 @@
   flex-wrap: wrap;
 }
 
+.rename {
+  &:hover {
+    cursor: pointer;
+  }
+}
 .ownerWrapper {
   display: flex;
   align-items: center;
