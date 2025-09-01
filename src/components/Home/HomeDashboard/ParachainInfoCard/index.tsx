@@ -71,9 +71,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       const list = await fetchAutoRenewals(network, connections);
       const set = new Set<number>(list.map((e: any) => Number(e.task)));
       setAutoRenewSet(set);
-    } catch (e) {
-      console.error('fetchAutoRenewals failed', e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {

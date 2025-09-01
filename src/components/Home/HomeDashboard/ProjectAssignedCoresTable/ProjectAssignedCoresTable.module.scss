@@ -1,0 +1,102 @@
+@use '../../../../styles/variables' as *;
+
+.wrapper {
+  border-radius: 12px;
+  background: $darkBackground2;
+  padding: 24px;
+  width: 95%;
+  max-width: unset;
+  border: 1px solid var(--card-border);
+
+  @media (min-width: 3000px) {
+    width: 97.5%;
+  }
+  @media (max-width: 1503px) {
+    max-width: 93.5%;
+  }
+  @media (max-width: 1260px) {
+    max-width: 93%;
+  }
+  @media (max-width: 1130px) {
+    max-width: 92%;
+  }
+  @media (max-width: 1060px) {
+    max-width: 90%;
+  }
+  @media (max-width: 865px) {
+    max-width: 90%;
+  }
+  @media (max-width: 800px) {
+    max-width: 90%;
+  }
+  @media (max-width: 750px) {
+    max-width: 87%;
+  }
+  @media (max-width: 450px) {
+    max-width: 85%;
+  }
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.note {
+  color: var(--muted);
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+.subheading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 0.875rem;
+  line-height: 1;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+.system {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  color: var(--text-primary);
+}
+
+.skeleton {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.04)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.empty {
+  margin-top: 15px;
+  padding: 14px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--card-border);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
