@@ -19,6 +19,8 @@ import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
 import OwnedRegionsTable from './OwnedRegionsTable';
 import AutoRenewalTable from './AutoRenewalTable';
+import ProjectAssignedCoresTable from './ProjectAssignedCoresTable';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -145,10 +147,10 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
                 router.push(`?${params.toString()}`, { scroll: false });
               }}
             />
-
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
+            <ProjectAssignedCoresTable taskParaId={selectedParaId ?? null} />
             <AutoRenewalTable />
             <OwnedRegionsTable />
           </>
