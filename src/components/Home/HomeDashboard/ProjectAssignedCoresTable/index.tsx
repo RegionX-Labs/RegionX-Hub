@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { timesliceToTimestamp } from '@/utils';
 import { TableComponent } from '@/components/elements/TableComponent';
 import { $parachains } from '@/parachains';
 import { ParaState } from '@/components/ParaStateCard';
@@ -25,34 +24,6 @@ type RawEntry = {
   source: 'Currently Assigned' | 'Scheduled Assignment';
   core: number | null;
   task: number | null;
-  begin: number | null;
-  end: number | null;
-};
-
-const toMillis = (v: unknown): number | null => {
-  if (v == null) return null;
-  const t =
-    typeof v === 'bigint'
-      ? Number(v)
-      : typeof v === 'number'
-        ? v
-        : v instanceof Date
-          ? v.getTime()
-          : NaN;
-  return Number.isFinite(t) ? t : null;
-};
-
-const fmtMillis = (ms: number | null): string => {
-  if (ms == null) return '-';
-  const d = new Date(ms);
-  if (!Number.isFinite(d.getTime())) return '-';
-  return d.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
 };
 
 export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: Props) {
@@ -100,11 +71,6 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
 
         const normalize = (pallet: 'workload' | 'workplan', e: any): RawEntry => {
           const core = pickNum(e?.keyArgs?.[0]) ?? pickNum(e?.keyArgs?.core);
-          const begin =
-            pickNum(e?.keyArgs?.[1]) ??
-            pickNum(e?.value?.begin) ??
-            (pallet === 'workplan' ? pickNum(e?.value?.when) : null);
-          const end = pickNum(e?.value?.end) ?? pickNum(e?.value?.until);
           const task =
             pickNum(e?.value?.task) ??
             pickNum(e?.value?.assignment) ??
@@ -116,8 +82,6 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
             source: pallet === 'workload' ? 'Currently Assigned' : 'Scheduled Assignment',
             core: core ?? null,
             task: task ?? null,
-            begin: begin ?? null,
-            end: end ?? null,
           };
         };
 
@@ -128,32 +92,10 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
 
         const filtered = filterTask === null ? raw : raw.filter((r) => r.task === filterTask);
 
-        const withTimestamps = [];
-        for (const r of filtered) {
-          const bdUnknown: unknown =
-            r.begin !== null ? await timesliceToTimestamp(r.begin, network, connections) : null;
-          const edUnknown: unknown =
-            r.end !== null ? await timesliceToTimestamp(r.end, network, connections) : null;
-
-          const beginTs = toMillis(bdUnknown);
-          const endTs = toMillis(edUnknown);
-
-          withTimestamps.push({ ...r, beginTs, endTs });
-        }
-
-        withTimestamps.sort((a, b) => {
-          if (a.beginTs != null && b.beginTs != null) return a.beginTs - b.beginTs;
-          if (a.beginTs != null) return -1;
-          if (b.beginTs != null) return 1;
-          return (a.core ?? 0) - (b.core ?? 0);
-        });
-
-        const tableRows: Row[] = withTimestamps.map((r: any) => ({
+        const tableRows: Row[] = filtered.map((r: any) => ({
           Source: { cellType: 'text', data: r.source },
           Core: { cellType: 'text', data: String(r.core) },
           Task: { cellType: 'text', data: String(r.task) },
-          Begin: { cellType: 'text', data: fmtMillis(r.beginTs) },
-          End: { cellType: 'text', data: fmtMillis(r.endTs) },
         }));
 
         setRows(tableRows);
@@ -190,7 +132,7 @@ export default function ProjectAssignedCoresTable({ taskParaId, pageSize = 8 }: 
   return (
     <div className={styles.wrapper}>
       <h3 className={styles.heading}>
-        Assigned Cores{filterTask !== null ? ` — Project ${filterTask}` : ''}
+        Assigned Cores{filterTask !== null ? ` — ParaID: ${filterTask}` : ''}
       </h3>
       <TableComponent data={rows} pageSize={pageSize} />
     </div>
