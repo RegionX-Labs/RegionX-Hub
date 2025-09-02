@@ -210,6 +210,11 @@ export default function CorePurchaseCard({ view }: Props) {
             />
           )}
         </div>
+
+        <button onClick={openModal} className={styles.buyButton}>
+          Purchase New Core
+          {buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
+        </button>
       </div>
 
       {selectedAccount && accountData[selectedAccount.address] !== null && (
@@ -220,11 +225,6 @@ export default function CorePurchaseCard({ view }: Props) {
           onConfirm={onModalConfirm}
         />
       )}
-
-      <button onClick={openModal} className={styles.buyButton}>
-        Purchase New Core
-        {buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
-      </button>
 
       <Toaster />
     </div>

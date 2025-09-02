@@ -7,11 +7,14 @@
   width: 70%;
   margin-left: auto;
   margin-right: auto;
-  background-color: $darkBackground2;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 25px;
   margin-bottom: 45px;
   color: var(--text-primary);
+  background: var(--dark-background-2);
+  padding: 24px;
+  border: 1px solid var(--card-border);
+  overflow: hidden;
 }
 
 .tableWrapper {
