@@ -95,7 +95,8 @@ export default function CorePurchaseCard({ view }: Props) {
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
-    if (currentPhase === SalePhase.Interlude) return toast.error('Cannot purchase during interlude');
+    if (currentPhase === SalePhase.Interlude)
+      return toast.error('Cannot purchase during interlude');
     if (coresRemaining === 0) return toast.error('No more cores remaining');
 
     if (isExtended && buyMultiple) {
@@ -199,9 +200,9 @@ export default function CorePurchaseCard({ view }: Props) {
 
             {buyMultiple && (
               <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
+                type='text'
+                inputMode='numeric'
+                pattern='[0-9]*'
                 className={styles.coreInput}
                 value={numCores === null ? '' : String(numCores)}
                 onChange={(e) => {
@@ -211,7 +212,7 @@ export default function CorePurchaseCard({ view }: Props) {
                 onKeyDown={(e) => {
                   if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) e.preventDefault();
                 }}
-                placeholder="Amount"
+                placeholder='Amount'
               />
             )}
           </div>

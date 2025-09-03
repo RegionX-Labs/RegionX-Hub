@@ -321,7 +321,9 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             <ParaStateCard
               state={state}
               withTooltip={state === ParaState.SYSTEM}
-              renewalStatus={state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined}
+              renewalStatus={
+                state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined
+              }
             />
             <div className={styles.stateText}>
               {(() => {
@@ -349,7 +351,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             options={selectOptions}
             selectedValue={selected}
             searchable
-            searchPlaceholder="Search by name or ParaID…"
+            searchPlaceholder='Search by name or ParaID…'
             onChange={(value) => {
               if (!value) return;
               setSelected(value);
