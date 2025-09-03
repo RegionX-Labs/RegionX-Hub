@@ -51,7 +51,6 @@ const Select = <T,>({
     if (!term) return options;
     return options.filter((option) => {
       const labelMatch = option.label.toLowerCase().includes(term);
-      // also match numbers like Para ID: try to parse and compare to value.id if present
       const idMatch = typeof option.key === 'string' && option.key.toLowerCase().includes(term);
       return labelMatch || idMatch;
     });

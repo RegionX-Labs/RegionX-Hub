@@ -67,7 +67,27 @@
   }
 
   &.extended {
-    width: 31%;
+    width: 35%;
+    @media (max-width: 3400px) {
+      width: 34%;
+    }
+    @media (max-width: 3250px) {
+      width: 30%;
+    }
+    @media (max-width: 3000px) {
+      width: 27%;
+    }
+    @media (max-width: 2600px) {
+      width: 22%;
+    }
+
+    @media (max-width: 2400px) {
+      width: 31%;
+    }
+
+    @media (max-width: 1910px) {
+      width: 31%;
+    }
     @media (max-width: 1910px) {
       width: 31%;
     }

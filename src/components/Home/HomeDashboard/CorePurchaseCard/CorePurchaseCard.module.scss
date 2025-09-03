@@ -39,9 +39,10 @@
   }
 
   &.extended {
-    @media (min-width: 3000px) {
-      width: 32%;
+    @media (min-width: 2400px) {
+      width: 43%;
     }
+
     @media (max-width: 1800px) {
       width: 22%;
     }

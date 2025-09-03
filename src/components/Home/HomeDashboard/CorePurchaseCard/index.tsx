@@ -26,7 +26,6 @@ export default function CorePurchaseCard({ view }: Props) {
     $selectedAccount,
   ]);
 
-  // view-based variants
   const isCompact = view === 'Deploying a new project';
   const isExtended = view === 'Managing Existing Project';
 
@@ -36,7 +35,6 @@ export default function CorePurchaseCard({ view }: Props) {
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // extended-only state
   const [buyMultiple, setBuyMultiple] = useState(false);
   const [numCores, setNumCores] = useState<number | null>(null);
 
