@@ -71,7 +71,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       const list = await fetchAutoRenewals(network, connections);
       const set = new Set<number>(list.map((e: any) => Number(e.task)));
       setAutoRenewSet(set);
-    } catch (e) {}
+    } catch {}
   };
 
   useEffect(() => {
@@ -233,7 +233,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
   const selectOptions: SelectOption<any>[] = listForNetwork.map((item) => {
     const meta = chainData[network]?.[item.id];
-    const name = meta?.name || `Parachain ${item.id}`;
+    const pname = meta?.name || `Parachain ${item.id}`;
     const logo = meta?.logo as string | undefined;
 
     const renewalMatch = Array.from(potentialRenewals.entries()).find(
@@ -248,7 +248,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     return {
       key: item.id.toString(),
       value: item,
-      label: name,
+      label: `${pname} ${item.id}`,
       icon: logo ? (
         <img
           src={logo}
@@ -300,14 +300,14 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             <div className={styles.infoText}>
               <div className={styles.name}>{name}</div>
               <div className={styles.paraId}>Para ID: {paraId}</div>
-              {homepage && (
+              {chain?.homepage && (
                 <a
-                  href={homepage}
+                  href={chain.homepage}
                   target='_blank'
                   rel='noopener noreferrer'
                   className={styles.siteLink}
                 >
-                  {homepage}
+                  {chain.homepage}
                 </a>
               )}
             </div>
@@ -321,9 +321,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             <ParaStateCard
               state={state}
               withTooltip={state === ParaState.SYSTEM}
-              renewalStatus={
-                state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined
-              }
+              renewalStatus={state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined}
             />
             <div className={styles.stateText}>
               {(() => {
@@ -350,7 +348,10 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           <Select
             options={selectOptions}
             selectedValue={selected}
+            searchable
+            searchPlaceholder="Search by name or ParaID…"
             onChange={(value) => {
+              if (!value) return;
               setSelected(value);
               onSelectParaId?.(value.id.toString());
               void refreshAutoRenewals();

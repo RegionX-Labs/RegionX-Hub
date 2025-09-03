@@ -41,23 +41,17 @@ const AddressInput: React.FC<InputProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-    if (onChange) {
-      onChange(e);
-    }
+    onChange?.(e);
   };
 
   const handleFocus = () => {
     setIsFocused(true);
-    if (onFocus) {
-      onFocus();
-    }
+    onFocus?.();
   };
 
   const handleBlur = () => {
     setIsFocused(false);
-    if (onBlur) {
-      onBlur();
-    }
+    onBlur?.();
   };
 
   const checkValidAddress = (input: string) => {
