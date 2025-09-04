@@ -31,6 +31,7 @@ export default function SecondaryMarketOverview() {
       : BigInt(0);
 
     setAverageBlockPrice(averageTimeslicePrice / BigInt(80));
+
     const lowestPricePerTimeslice = listedRegions.reduce(
       (min, r) => (r.timeslice_price < min ? r.timeslice_price : min),
       listedRegions[0].timeslice_price
@@ -46,12 +47,12 @@ export default function SecondaryMarketOverview() {
   const formattedRegionX =
     accountData?.regionxChainData?.free != null
       ? toUnitFormatted(network, accountData.regionxChainData.free)
-      : '--';
+      : '-';
 
   const formattedCoretime =
     accountData?.coretimeChainData?.free != null
       ? toUnitFormatted(network, accountData.coretimeChainData.free)
-      : '--';
+      : '-';
 
   const calculatePrice = (listing: RegionListing): bigint => {
     return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin);
@@ -65,27 +66,28 @@ export default function SecondaryMarketOverview() {
       <div className={styles.volumeLabel}>Cheapest Price Per Block</div>
       <div className={styles.volumeValue}>{toUnitFormatted(network, lowestBlockPrice)}</div>
 
-      {selectedAccount && accountData && (
-        <div className={styles.balanceBox}>
-          <div className={`${styles.balanceItem} ${styles.alignRight}`}>
-            <span className={styles.label}>Coretime Chain Balance</span>
-            <span className={styles.value}>{formattedCoretime}</span>
-          </div>
-          <div className={styles.balanceItem}>
-            <span className={styles.label}>RegionX Chain Balance</span>
-            <span className={styles.value}>{formattedRegionX}</span>
-          </div>
+      <div className={styles.balanceBox}>
+        <div className={`${styles.balanceItem} ${styles.alignRight}`}>
+          <span className={styles.label}>Coretime Chain Balance</span>
+          <span className={styles.value}>{formattedCoretime}</span>
         </div>
-      )}
+        <div className={styles.balanceItem}>
+          <span className={styles.label}>RegionX Chain Balance</span>
+          <span className={styles.value}>{formattedRegionX}</span>
+        </div>
+      </div>
 
       <div className={styles.listingLabel}>Best Current Listing (based on block price)</div>
       <div className={styles.listingBox}>
-        <div className={styles.listingId}>Core ID {bestListing?.region.core}</div>
+        <div className={styles.listingId}>
+          {bestListing ? `Core ID ${bestListing.region.core}` : '-'}
+        </div>
         <div className={styles.listingPrice}>
           {bestListing ? toUnitFormatted(network, calculatePrice(bestListing)) : '-'}
         </div>
         <button className={styles.buyButton}>Buy Now</button>
       </div>
+
       <Toaster />
     </div>
   );
