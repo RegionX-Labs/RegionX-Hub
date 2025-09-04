@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import styles from './RenewableCores.module.scss';
+import styles from './UrgentRenewals.module.scss';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
 import {
@@ -11,6 +11,7 @@ import {
   potentialRenewalsRequested,
   RenewalKey,
   RenewalRecord,
+  fetchAutoRenewals,
 } from '@/coretime/renewals';
 import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { chainData } from '@/chaindata';
@@ -21,6 +22,7 @@ import { $selectedAccount } from '@/wallet';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
 import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
+import AutoRenewalModal from '@/components/AutoRenewalModal';
 
 type Props = { view: string };
 
@@ -33,7 +35,7 @@ const formatDate = (d: Date) =>
     minute: '2-digit',
   });
 
-export default function RenewableCores({ view }: Props) {
+export default function UrgentRenewals({ view }: Props) {
   const accountData = useUnit($accountData);
   const network = useUnit($network);
   const connections = useUnit($connections);
@@ -45,37 +47,80 @@ export default function RenewableCores({ view }: Props) {
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
   const [options, setOptions] = useState<SelectOption<[RenewalKey, RenewalRecord]>[]>([]);
+  const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
+    void refreshAutoRenewals();
   }, [network, connections]);
+
+  const refreshAutoRenewals = async () => {
+    try {
+      const list = await fetchAutoRenewals(network, connections);
+      const set = new Set<number>(list.map((e: any) => Number(e.task)));
+      setAutoRenewSet(set);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (!isAutoRenewOpen) void refreshAutoRenewals();
+  }, [isAutoRenewOpen]);
 
   useEffect(() => {
     if (!saleInfo) return;
+
     const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
       potentialRenewals.entries()
     )
       .filter((renewal) => renewal[0].when === saleInfo.regionBegin)
-      .map((renewal) => ({
-        key: `${renewal[0].when}-${renewal[0].core}`,
-        label: `Core ${renewal[0].core} | ${
-          chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.name ??
-          'Parachain ' + (renewal[1].completion as any).value[0].assignment.value
-        }`,
-        value: renewal,
-        icon: (
-          <img
-            style={{ width: 28, borderRadius: '100%', marginRight: 8 }}
-            src={
-              chainData[network]?.[(renewal[1].completion as any).value[0].assignment.value]?.logo
-            }
-          />
-        ),
-      }))
+      .map((renewal) => {
+        const paraId = (renewal[1].completion as any).value[0].assignment.value as number;
+        const meta = chainData[network]?.[paraId];
+        const name = meta?.name ?? `Parachain ${paraId}`;
+        const logo = meta?.logo as string | undefined;
+
+        const renewalMatch = Array.from(potentialRenewals.entries()).find(
+          ([key, record]) =>
+            (record.completion as any)?.value?.[0]?.assignment?.value === paraId &&
+            saleInfo?.regionBegin === key.when
+        );
+        const renewalStatus = renewalMatch ? 'Needs Renewal' : 'Renewed';
+        const badgeColor = renewalMatch ? '#dc2626' : '#0cc184';
+
+        return {
+          key: `${renewal[0].when}-${renewal[0].core}`,
+          label: `Core ${renewal[0].core} | ${name}`,
+          value: renewal,
+          icon: logo ? (
+            <img
+              style={{ width: 28, height: 28, borderRadius: '100%', marginRight: 8 }}
+              src={logo}
+            />
+          ) : undefined,
+          extra: (
+            <span
+              style={{
+                backgroundColor: badgeColor,
+                color: 'black',
+                fontSize: 10,
+                fontWeight: 600,
+                padding: '2px 6px',
+                borderRadius: 4,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {renewalStatus}
+            </span>
+          ),
+        };
+      })
       .sort((a, b) => a.key.localeCompare(b.key));
+
     setOptions(_options);
     if (_options[0]) setSelected(_options[0].value);
+    else setSelected(null);
   }, [saleInfo, potentialRenewals, network]);
 
   useEffect(() => {
@@ -114,14 +159,9 @@ export default function RenewableCores({ view }: Props) {
   }, [allCoresSold, interludeEnded]);
 
   const openModal = () => {
-    if (!selectedAccount) {
-      toast.error('Account not selected');
-      return;
-    }
-    if (allCoresSold) {
-      toast.error('All cores are sold — renewals are unavailable this cycle.');
-      return;
-    }
+    if (!selectedAccount) return toast.error('Account not selected');
+    if (allCoresSold)
+      return toast.error('All cores are sold — renewals are unavailable this cycle.');
     setIsModalOpen(true);
   };
 
@@ -131,36 +171,21 @@ export default function RenewableCores({ view }: Props) {
   };
 
   const renew = async () => {
-    if (!selected) {
-      toast.error('Core not selected');
-      return;
-    }
-    if (!selectedAccount) {
-      toast.error('Account not selected');
-      return;
-    }
-    if (allCoresSold) {
-      toast.error('All cores are sold — renewals are unavailable this cycle.');
-      return;
-    }
+    if (!selected) return toast.error('Core not selected');
+    if (!selectedAccount) return toast.error('Account not selected');
+    if (allCoresSold)
+      return toast.error('All cores are sold — renewals are unavailable this cycle.');
 
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) {
-      toast.error('Unknown network');
-      return;
-    }
+    if (!networkChainIds) return toast.error('Unknown network');
     const connection = connections[networkChainIds.coretimeChain];
     if (!connection || !connection.client || connection.status !== 'connected') {
-      toast.error('Failed to connect to the API');
-      return;
+      return toast.error('Failed to connect to the API');
     }
 
     const client = connection.client;
     const metadata = getNetworkMetadata(network);
-    if (!metadata) {
-      toast.error('Failed to find metadata of the chains');
-      return;
-    }
+    if (!metadata) return toast.error('Failed to find metadata of the chains');
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({
       core: selected[0].core,
@@ -199,6 +224,14 @@ export default function RenewableCores({ view }: Props) {
   };
 
   const disableRenew = !selectedAccount || !selected || allCoresSold;
+  const hasRenewables = options.length > 0;
+
+  const paraId = selected?.[1] ? (selected[1].completion as any).value[0].assignment.value : null;
+  const autoRenewEnabled = useMemo(
+    () => (typeof paraId === 'number' ? autoRenewSet.has(Number(paraId)) : false),
+    [autoRenewSet, paraId]
+  );
+  const disableAutoRenew = !selectedAccount || typeof paraId !== 'number';
 
   return (
     <div
@@ -207,10 +240,10 @@ export default function RenewableCores({ view }: Props) {
       }`}
     >
       <div className={styles.content}>
-        <p className={styles.title}>Renewable Cores</p>
+        <p className={styles.title}>Urgent Renewals</p>
 
         <div className={styles.selectBox}>
-          {options.length > 0 ? (
+          {hasRenewables ? (
             <Select
               options={options}
               selectedValue={selected}
@@ -258,14 +291,40 @@ export default function RenewableCores({ view }: Props) {
         )}
       </div>
 
-      <button
-        className={styles.renewButton}
-        onClick={openModal}
-        disabled={disableRenew}
-        title={disableRenew && allCoresSold ? 'All cores are sold' : undefined}
-      >
-        Renew Now
-      </button>
+      <div className={styles.buttonRow}>
+        <button
+          className={styles.renewButton}
+          onClick={openModal}
+          disabled={disableRenew}
+          title={disableRenew && allCoresSold ? 'All cores are sold' : undefined}
+        >
+          Renew Now
+        </button>
+
+        {hasRenewables && (
+          <button
+            className={
+              autoRenewEnabled
+                ? `${styles.autoRenewButton} ${styles.autoRenewButtonEnabled}`
+                : styles.autoRenewButton
+            }
+            onClick={() => {
+              if (disableAutoRenew) return;
+              setIsAutoRenewOpen(true);
+            }}
+            disabled={disableAutoRenew}
+            title={
+              disableAutoRenew
+                ? !selectedAccount
+                  ? 'Account not selected'
+                  : 'Select a core to manage auto-renewal'
+                : undefined
+            }
+          >
+            {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
+          </button>
+        )}
+      </div>
 
       {selectedAccount && accountData[selectedAccount.address] !== null && (
         <TransactionModal
@@ -273,6 +332,15 @@ export default function RenewableCores({ view }: Props) {
           accountData={accountData[selectedAccount.address] as MultiChainAccountData}
           onClose={() => setIsModalOpen(false)}
           onConfirm={onModalConfirm}
+        />
+      )}
+
+      {typeof paraId === 'number' && (
+        <AutoRenewalModal
+          isOpen={isAutoRenewOpen}
+          onClose={() => setIsAutoRenewOpen(false)}
+          paraId={paraId}
+          coreId={selected?.[0]?.core}
         />
       )}
       <Toaster />

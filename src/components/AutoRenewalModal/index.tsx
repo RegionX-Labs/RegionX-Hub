@@ -1,4 +1,3 @@
-// components/AutoRenewalModal.tsx
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
@@ -13,7 +12,7 @@ import {
   getTokenSymbol,
   CORETIME_PARA_ID,
 } from '@/utils';
-import { Clipboard, ExternalLink } from 'lucide-react';
+import { Clipboard, ExternalLink, X } from 'lucide-react';
 import { chainData } from '@/chaindata';
 import { BaseChainInfo } from '@/chaindata/types';
 import { Network } from '@/types';
@@ -22,6 +21,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   paraId: number;
+  coreId?: number;
 };
 
 type CheckState = {
@@ -38,7 +38,7 @@ type CheckState = {
 
 const MIN_BALANCE = BigInt(0);
 
-const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
+const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId, coreId }) => {
   const [connections, network] = useUnit([$connections, $network]);
   const [checks, setChecks] = useState<CheckState>({
     fundRelay: false,
@@ -51,8 +51,8 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
     loading: false,
   });
   const [showBytesModal, setShowBytesModal] = useState(false);
-
-  const canProceed = true;
+  const [encodedHex, setEncodedHex] = useState<string>('0x');
+  const [encodeError, setEncodeError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -60,25 +60,45 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
     (async () => {
       try {
         setChecks((p) => ({ ...p, loading: true, error: undefined }));
+        setEncodeError(undefined);
+
         const chainIds = getNetworkChainIds(network);
         const metadata = getNetworkMetadata(network);
         if (!chainIds || !metadata) throw new Error('Unknown network');
+
         const relayConn = connections[chainIds.relayChain];
         const coretimeConn = connections[chainIds.coretimeChain];
-        if (!relayConn?.client || relayConn.status !== 'connected') {
+        if (!relayConn?.client || relayConn.status !== 'connected')
           throw new Error('Relay connection not ready.');
-        }
-        if (!coretimeConn?.client || coretimeConn.status !== 'connected') {
+        if (!coretimeConn?.client || coretimeConn.status !== 'connected')
           throw new Error('Coretime connection not ready.');
-        }
+
         const relayApi = relayConn.client.getTypedApi(metadata.relayChain);
         const coretimeApi = coretimeConn.client.getTypedApi(metadata.coretimeChain);
+
         const relayAddr = paraIdToAddress(paraId, ParaType.Child);
         const coretimeAddr = paraIdToAddress(paraId, ParaType.Sibling);
+
+        try {
+          const encoded = await (coretimeApi as any).tx.Broker.enable_auto_renew({
+            core: typeof coreId === 'number' ? coreId : 0,
+            task: paraId,
+            workload_end_hint: undefined,
+          }).getEncodedData();
+          const hex = encoded.asHex();
+          if (!cancelled) setEncodedHex(hex || '0x');
+        } catch (err: any) {
+          if (!cancelled) {
+            setEncodedHex('0x');
+            setEncodeError('Failed to encode Broker.enable_auto_renew on Coretime.');
+          }
+        }
+
         const [relayAcc, coretimeAcc] = await Promise.all([
           (relayApi as any).query?.System?.Account?.getValue(relayAddr),
           (coretimeApi as any).query?.System?.Account?.getValue(coretimeAddr),
         ]);
+
         const toBI = (v: any) => {
           try {
             const raw = (v?.data?.free ?? v?.data?.frozen ?? v?.data)?.toString?.() ?? `${v}`;
@@ -87,6 +107,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
             return BigInt(0);
           }
         };
+
         const relayFree = toBI(relayAcc);
         const coretimeFree = toBI(coretimeAcc);
         const fundRelay = relayFree > MIN_BALANCE;
@@ -135,13 +156,15 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
             loading: false,
             error: e?.message ?? 'Failed to run checks.',
           }));
+          setEncodedHex('0x');
+          setEncodeError(e?.message ?? 'Unexpected error.');
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [isOpen, paraId, connections, network]);
+  }, [isOpen, paraId, coreId, connections, network]);
 
   if (!isOpen) return null;
 
@@ -182,7 +205,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
                   <code className={styles.mono}>{paraIdToAddress(paraId, ParaType.Child)}</code>
                 </div>
               </div>
-              <label className={styles.switch} aria-label='Relay funded (auto)'>
+              <label className={styles.switch}>
                 <input type='checkbox' checked={checks.fundRelay} readOnly disabled />
                 <span className={styles.slider} />
               </label>
@@ -208,7 +231,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
                   <code className={styles.mono}>{paraIdToAddress(paraId, ParaType.Sibling)}</code>
                 </div>
               </div>
-              <label className={styles.switch} aria-label='Coretime funded (auto)'>
+              <label className={styles.switch}>
                 <input type='checkbox' checked={checks.fundCoretime} readOnly disabled />
                 <span className={styles.slider} />
               </label>
@@ -230,7 +253,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
                 </div>
                 <div className={styles.optionSub}>Relay + Coretime sovereign accounts.</div>
               </div>
-              <label className={styles.switch} aria-label='Both funded (auto)'>
+              <label className={styles.switch}>
                 <input type='checkbox' checked={checks.fundBoth} readOnly disabled />
                 <span className={styles.slider} />
               </label>
@@ -245,11 +268,10 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
                   HRMP channel open <span className={styles.badge}>Auto</span>
                 </div>
                 <div className={styles.optionSub}>
-                  Checks <code className={styles.mono}>hrmp.hrmpChannels</code> both directions on
-                  Relay.
+                  Checks <code className={styles.mono}>hrmp.hrmpChannels</code> on Relay.
                 </div>
               </div>
-              <label className={styles.switch} aria-label='HRMP open (auto)'>
+              <label className={styles.switch}>
                 <input type='checkbox' checked={checks.openHrmp} readOnly disabled />
                 <span className={styles.slider} />
               </label>
@@ -263,19 +285,13 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
             <button className={styles.ghost} onClick={onClose}>
               Close
             </button>
-            <button
-              className={styles.primary}
-              disabled={!canProceed}
-              onClick={() => setShowBytesModal(true)}
-              aria-disabled={!canProceed}
-              title='Open bytes preview'
-            >
+            <button className={styles.primary} onClick={() => setShowBytesModal(true)}>
               Continue
             </button>
           </div>
 
           <button className={styles.close} onClick={onClose} aria-label='Close modal'>
-            ×
+            <X size={16} />
           </button>
         </div>
       </div>
@@ -285,6 +301,8 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId }) => {
           onClose={() => setShowBytesModal(false)}
           network={network}
           paraId={paraId}
+          hex={encodedHex}
+          encodeError={encodeError}
         />
       )}
     </>
@@ -314,17 +332,20 @@ function BytesPreviewModal({
   onClose,
   network,
   paraId,
+  hex,
+  encodeError,
 }: {
   onClose: () => void;
   network: Network;
   paraId: number;
+  hex: string;
+  encodeError?: string;
 }) {
   const chainMap = chainData[network] || {};
   const info = chainMap[paraId];
   const wsProvider = useMemo(() => pickFirstProvider(info), [info]);
   const decodeUrl = wsProvider ? buildDecodeUrl(wsProvider) : undefined;
 
-  const hex = '';
   const copy = () => {
     if (!hex) return;
     navigator.clipboard.writeText(hex);
@@ -339,55 +360,50 @@ function BytesPreviewModal({
     <div className={styles.modalOverlay} onClick={closeByOverlay}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Extrinsic Bytes</h2>
+          <h2 className={styles.title}>Enable Auto-Renew </h2>
           <p className={styles.subtitle}>
-            Use the portal to generate and copy SCALE-encoded bytes.
+            This is the encoded <code className={styles.mono}>Broker.enable_auto_renew</code> call
+            on the Coretime chain. To enable auto-renewal, your parachain should send an XCM{' '}
+            <code className={styles.mono}>Transact</code> instruction to the Coretime chain, using
+            this encoded call as the payload:{' '}
+            <code className={styles.mono}>Transact(enable_auto_renew encoded call)</code>.
           </p>
         </div>
 
-        {hex ? (
-          <pre
-            className={styles.codeBlock}
-            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-          >
-            {hex}
-          </pre>
-        ) : (
-          <div className={styles.emptyState}>
-            <div className={styles.kv}>
-              <span>Parachain</span>
-              <code className={styles.mono}>{info?.name ?? `Para ${paraId}`}</code>
-            </div>
-            <div className={styles.kv}>
-              <span>Provider</span>
-              <code className={styles.mono}>{wsProvider ?? 'Unavailable'}</code>
-            </div>
-            <a
-              className={styles.primary}
-              href={decodeUrl}
-              target='_blank'
-              rel='noreferrer'
-              aria-disabled={!decodeUrl}
-              style={{ pointerEvents: decodeUrl ? 'auto' : 'none', opacity: decodeUrl ? 1 : 0.5 }}
-            >
-              <ExternalLink size={16} style={{ verticalAlign: 'text-bottom', marginRight: 6 }} />
-              Open Polkadot.js Decode
-            </a>
-          </div>
-        )}
+        {encodeError && <div className={styles.error}>{encodeError}</div>}
+
+        <div className={styles.kv}>
+          <span>Parachain</span>
+          <code className={styles.mono}>{info?.name ?? `Para ${paraId}`}</code>
+        </div>
+        <div className={styles.kv}>
+          <span>Provider</span>
+          <code className={styles.mono}>{wsProvider ?? 'Unavailable'}</code>
+        </div>
+
+        <pre className={styles.codeBlock}>{hex || '0x'}</pre>
 
         <div className={styles.actions}>
+          <a
+            className={styles.primary}
+            href={decodeUrl}
+            target='_blank'
+            rel='noreferrer'
+            aria-disabled={!decodeUrl}
+            style={{ pointerEvents: decodeUrl ? 'auto' : 'none', opacity: decodeUrl ? 1 : 0.5 }}
+          >
+            <ExternalLink size={16} /> Open Polkadot.js Decode
+          </a>
+          <button className={styles.primary} onClick={copy} disabled={!hex}>
+            <Clipboard size={16} /> Copy bytes
+          </button>
           <button className={styles.ghost} onClick={onClose}>
             Close
-          </button>
-          <button className={styles.primary} onClick={copy} disabled={!hex}>
-            <Clipboard size={16} style={{ verticalAlign: 'text-bottom', marginRight: 6 }} />
-            Copy bytes
           </button>
         </div>
 
         <button className={styles.close} onClick={onClose} aria-label='Close modal'>
-          ×
+          <X size={16} />
         </button>
       </div>
     </div>

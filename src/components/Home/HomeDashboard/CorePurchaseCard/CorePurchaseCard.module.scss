@@ -38,6 +38,39 @@
     max-width: 83%;
   }
 
+  &.extended {
+    @media (min-width: 2400px) {
+      width: 43%;
+    }
+
+    @media (max-width: 1800px) {
+      width: 22%;
+    }
+    @media (max-width: 1503px) {
+      width: 22%;
+    }
+    @media (max-width: 1430px) {
+      width: 92%;
+    }
+    @media (max-width: 1194px) {
+      width: 92%;
+    }
+    @media (max-width: 1000px) {
+      width: 89%;
+    }
+    @media (max-width: 887px) {
+      max-width: 88%;
+    }
+    @media (max-width: 800px) {
+      max-width: 91%;
+    }
+    @media (max-width: 750px) {
+      max-width: 86%;
+    }
+    @media (max-width: 450px) {
+      max-width: 83%;
+    }
+  }
   &.compact {
     @media (min-width: 3000px) {
       width: 32%;
@@ -170,7 +203,7 @@
 
 .coreModeSlider {
   position: absolute;
-  top: 4px;
+  top: 3px;
   bottom: 4px;
   left: 4px;
   width: calc(50% - 4px);

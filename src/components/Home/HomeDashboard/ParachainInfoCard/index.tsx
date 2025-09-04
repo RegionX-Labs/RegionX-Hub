@@ -71,9 +71,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       const list = await fetchAutoRenewals(network, connections);
       const set = new Set<number>(list.map((e: any) => Number(e.task)));
       setAutoRenewSet(set);
-    } catch (e) {
-      console.error('fetchAutoRenewals failed', e);
-    }
+    } catch {}
   };
 
   useEffect(() => {
@@ -181,9 +179,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     const metadata = getNetworkMetadata(network);
     if (!client || !metadata) return toast.error('API error');
 
-    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({
-      core: key.core,
-    });
+    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({ core: key.core });
 
     const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
@@ -211,7 +207,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           }
         }
       },
-      (e: any) => {
+      () => {
         toast.error('Transaction error', { id: toastId });
       }
     );
@@ -237,7 +233,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
   const selectOptions: SelectOption<any>[] = listForNetwork.map((item) => {
     const meta = chainData[network]?.[item.id];
-    const name = meta?.name || `Parachain ${item.id}`;
+    const pname = meta?.name || `Parachain ${item.id}`;
     const logo = meta?.logo as string | undefined;
 
     const renewalMatch = Array.from(potentialRenewals.entries()).find(
@@ -252,7 +248,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     return {
       key: item.id.toString(),
       value: item,
-      label: name,
+      label: `${pname} ${item.id}`,
       icon: logo ? (
         <img
           src={logo}
@@ -304,14 +300,14 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             <div className={styles.infoText}>
               <div className={styles.name}>{name}</div>
               <div className={styles.paraId}>Para ID: {paraId}</div>
-              {homepage && (
+              {chain?.homepage && (
                 <a
-                  href={homepage}
+                  href={chain.homepage}
                   target='_blank'
                   rel='noopener noreferrer'
                   className={styles.siteLink}
                 >
-                  {homepage}
+                  {chain.homepage}
                 </a>
               )}
             </div>
@@ -354,7 +350,10 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           <Select
             options={selectOptions}
             selectedValue={selected}
+            searchable
+            searchPlaceholder='Search by name or ParaID…'
             onChange={(value) => {
+              if (!value) return;
               setSelected(value);
               onSelectParaId?.(value.id.toString());
               void refreshAutoRenewals();
@@ -364,40 +363,44 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         </div>
       )}
 
-      {(renewalEntry || deadline !== '-') && (
-        <div className={styles.renewRow}>
-          {renewalEntry && (
-            <button className={styles.renewButtonSmall} onClick={openModal}>
-              Renew
-            </button>
-          )}
-
+      {renewalEntry && (
+        <div className={styles.summaryRow}>
+          <div className={styles.priceBox}>
+            <span className={styles.priceLabel}>Renewal Price</span>
+            <span className={styles.priceValue}>
+              {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
+            </span>
+          </div>
           <div className={styles.dateWrap}>
             <span className={styles.dateTitle}>{dateTitle}</span>
             <span className={styles.dateValue}>{deadline}</span>
-            {renewalEntry && (
-              <span className={styles.priceValue}>
-                {toUnitFormatted(network, BigInt(renewalEntry[1].price))}
-              </span>
-            )}
           </div>
         </div>
       )}
 
-      {state !== ParaState.SYSTEM && selected && (
-        <div className={styles.autoRenewRow}>
-          <button
-            className={
-              autoRenewEnabled
-                ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
-                : styles.autoRenewBtn
-            }
-            onClick={() => setIsAutoRenewOpen(true)}
-          >
-            {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
-          </button>
+      <div className={styles.actionRow}>
+        <div className={styles.leftAction}>
+          {renewalEntry && (
+            <button className={styles.renewButton} onClick={openModal}>
+              Renew
+            </button>
+          )}
         </div>
-      )}
+        <div className={styles.rightAction}>
+          {state !== ParaState.SYSTEM && selected && (
+            <button
+              className={
+                autoRenewEnabled
+                  ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
+                  : styles.autoRenewBtn
+              }
+              onClick={() => setIsAutoRenewOpen(true)}
+            >
+              {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
+            </button>
+          )}
+        </div>
+      </div>
 
       {selectedAccount && accountData[selectedAccount.address] && (
         <TransactionModal
@@ -413,6 +416,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           isOpen={isAutoRenewOpen}
           onClose={() => setIsAutoRenewOpen(false)}
           paraId={paraId}
+          coreId={renewalEntry?.[0]?.core}
         />
       )}
 

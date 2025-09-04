@@ -52,6 +52,9 @@
     }
     @media (max-width: 1800px) {
       width: 34.5%;
+      .value {
+        font-size: 1rem;
+      }
     }
     @media (max-width: 1573px) {
       width: 33.5%;

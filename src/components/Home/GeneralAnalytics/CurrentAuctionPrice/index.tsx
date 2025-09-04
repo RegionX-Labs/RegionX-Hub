@@ -6,7 +6,7 @@ import { $network, $connections } from '@/api/connection';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { getCorePriceAt, toUnitFormatted, timesliceToTimestamp } from '@/utils';
 import { getNetworkMetadata, getNetworkChainIds } from '@/network';
-import { getRelativeTime } from '@/pages/coretime/my-regions/index';
+import { getRelativeTime } from '@/utils/time';
 
 const CurrentCorePrice: React.FC = () => {
   const network = useUnit($network);

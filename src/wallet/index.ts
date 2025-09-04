@@ -53,16 +53,18 @@ const getExtensionsFx = createEffect(async () => {
 });
 
 const walletSelectedFx = createEffect(async (extension: string): Promise<WalletAccount[]> => {
+  if (extension === 'mimir' && window !== window.parent) await isMimirReady();
   const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
   const ext = await connectInjectedExtension(realExtension);
-  const accounts = await ext.getAccounts();
+  const accounts = ext.getAccounts();
   return accounts.map((a) => ({ ...a, walletSource: extension }));
 });
 
 const walletAddedFx = createEffect(async (extension: string): Promise<WalletAccount[]> => {
+  if (extension === 'mimir' && window !== window.parent) await isMimirReady();
   const realExtension = extension === 'nova' ? 'polkadot-js' : extension;
   const ext = await connectInjectedExtension(realExtension);
-  const accounts = await ext.getAccounts();
+  const accounts = ext.getAccounts();
   return accounts.map((a) => ({ ...a, walletSource: extension }));
 });
 
@@ -73,7 +75,7 @@ const restoreAccountFx = createEffect(async (): Promise<WalletAccount | null> =>
 
   const realExtension = selectedWallet === 'nova' ? 'polkadot-js' : selectedWallet;
   const ext = await connectInjectedExtension(realExtension);
-  const accounts = await ext.getAccounts();
+  const accounts = ext.getAccounts();
   const found = accounts.find((a) => a.address === selectedAddress);
   if (!found) return null;
   return { ...found, walletSource: selectedWallet };

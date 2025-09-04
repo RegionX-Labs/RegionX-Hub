@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './select.module.scss';
 import Input from '../AdressInput/AddressInput';
 import DownArrow from '../../../../public/DownArrow.svg';
@@ -15,8 +15,8 @@ interface SelectProps<T> {
   disabled?: boolean;
   selectedValue?: T | null;
   showOnlySelectedIcon?: boolean;
-
   variant?: 'default' | 'secondary';
+  searchPlaceholder?: string;
 }
 
 const Select = <T,>({
@@ -28,6 +28,7 @@ const Select = <T,>({
   selectedValue = null,
   showOnlySelectedIcon = false,
   variant = 'default',
+  searchPlaceholder = 'Search...',
 }: SelectProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState<T | null>(selectedValue);
@@ -35,21 +36,30 @@ const Select = <T,>({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selectedValue) setSelected(selectedValue);
+    setSelected(selectedValue ?? null);
   }, [selectedValue]);
 
   const handleOptionClick = (value: T | null) => {
     setSelected(value);
     setIsDropdownOpen(false);
-    if (onChange) onChange(value);
+    onChange?.(value);
   };
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const term = searchTerm.trim().toLowerCase();
 
-  const selectedOption = options.find(
-    (option) => JSON.stringify(option.value) === JSON.stringify(selected)
+  const filteredOptions = useMemo(() => {
+    if (!term) return options;
+    return options.filter((option) => {
+      const labelMatch = option.label.toLowerCase().includes(term);
+      const idMatch = typeof option.key === 'string' && option.key.toLowerCase().includes(term);
+      return labelMatch || idMatch;
+    });
+  }, [options, term]);
+
+  const selectedOption = useMemo(
+    () =>
+      options.find((option) => JSON.stringify(option.value) === JSON.stringify(selected)) ?? null,
+    [options, selected]
   );
 
   useEffect(() => {
@@ -68,11 +78,22 @@ const Select = <T,>({
     ${styles[`selectBox--${variant}`]}
   `;
 
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const onKeyDownTop = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') setIsDropdownOpen(false);
+  };
+
   return (
-    <div className={styles.selectWrapper} ref={dropdownRef}>
+    <div className={styles.selectWrapper} ref={dropdownRef} onKeyDown={onKeyDownTop}>
       <div
         className={selectClassName}
         onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
+        role='button'
+        aria-haspopup='listbox'
+        aria-expanded={isDropdownOpen}
       >
         {selectedOption ? (
           <div className={styles.selectedOptionDisplay}>
@@ -90,14 +111,24 @@ const Select = <T,>({
       {isDropdownOpen && !disabled && (
         <div className={`${styles.selectDropdown} ${styles[`selectDropdown--${variant}`]}`}>
           {searchable && (
-            <Input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder='Search...'
-              disabled={disabled}
-            />
+            <div style={{ padding: 8 }}>
+              <Input
+                value={searchTerm}
+                onChange={onSearchChange}
+                placeholder={searchPlaceholder}
+                disabled={disabled}
+              />
+            </div>
           )}
-          <ul className={styles['selectDropdown-optionList']}>
+          <ul className={styles['selectDropdown-optionList']} role='listbox'>
+            {filteredOptions.length === 0 && (
+              <li
+                className={styles['selectDropdown-optionList-optionItem']}
+                style={{ opacity: 0.7, cursor: 'default' }}
+              >
+                No results
+              </li>
+            )}
             {filteredOptions.map((option) => (
               <li
                 key={option.key}
@@ -105,6 +136,8 @@ const Select = <T,>({
                 className={`${styles['selectDropdown-optionList-optionItem']} ${
                   option.value === selected ? styles.selected : ''
                 }`}
+                role='option'
+                aria-selected={option.value === selected}
               >
                 <div
                   style={{

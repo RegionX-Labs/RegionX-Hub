@@ -14,7 +14,7 @@
   width: 420px;
   border: 1px solid var(--card-border);
   transition: border-color 0.2s ease;
-  @media (min-width: 1930px) {
+  @media (max-width: 1930px) {
     width: 31%;
   }
   @media (max-width: 1800px) {
@@ -33,6 +33,7 @@
     max-width: 82%;
   }
 }
+
 .content {
   display: flex;
   flex-direction: column;
@@ -46,7 +47,6 @@
   gap: 8px;
   margin-top: 0px;
   padding-top: 20px;
-
   label {
     font-size: 0.95rem;
     font-weight: 600;
@@ -60,7 +60,6 @@
   gap: 16px;
   margin-top: 8px;
 }
-
 .largeLogo {
   width: 64px;
   height: 64px;
@@ -68,13 +67,11 @@
   object-fit: cover;
   flex-shrink: 0;
 }
-
 .infoText {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
-
 .name {
   font-weight: 600;
   font-size: 1.05rem;
@@ -84,32 +81,20 @@
   gap: 8px;
   flex-wrap: wrap;
 }
-
 .paraId {
   font-size: 0.9rem;
   color: var(--text-muted);
 }
-
 .siteLink {
   font-size: 0.88rem;
   color: $greenPrimary;
   text-decoration: none;
   margin-top: 2px;
   word-break: break-word;
-
   &:hover {
     text-decoration: underline;
     color: var(--accent-green-hover);
   }
-}
-
-.description {
-  margin-top: auto;
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  text-align: center;
-  padding-top: 16px;
 }
 
 .stateText {
@@ -128,75 +113,103 @@
   margin-top: 15px;
 }
 
-.renewRow {
+.summaryRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  background: $darkBackground2;
-  border: 1px solid var(--border-muted);
-  border-radius: 12px;
-  padding: 12px;
-  gap: 14px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 12px;
 }
 
-.renewButtonSmall {
-  background: $greenPrimary;
-  color: black;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 18px;
-  margin-left: -10px;
+.priceLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  letter-spacing: 0.4px;
+}
+.priceValue {
   font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  white-space: nowrap;
+  font-weight: 600;
+  color: $greenPrimary;
+}
 
-  &:hover {
-    background: var(--green-primary-hover);
-  }
+.priceBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: $darkBackground1;
+  border: 1px solid var(--border-muted);
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: fit-content;
 }
 
 .dateWrap {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-right: -10px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background-color: var(--dark-background-1);
+  background: var(--dark-background-1);
   border: 1px solid var(--border-muted);
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: fit-content;
+  margin-left: auto;
 }
 
 .dateTitle {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
+  margin-bottom: 2px;
   letter-spacing: 0.5px;
-  margin-bottom: 4px;
 }
-
 .dateValue {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.autoRenewRow {
+.actionRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
   margin-top: 12px;
+}
+.leftAction {
+  display: flex;
+  align-items: center;
+}
+.rightAction {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+
+.renewButton {
+  background: $greenPrimary;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  &:hover {
+    background: var(--green-primary-hover);
+  }
 }
 
 .autoRenewBtn {
   background: transparent;
   color: $greenPrimary;
   border: 1px solid $greenPrimary;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px 16px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
-
+  white-space: nowrap;
   &:hover {
     background: $greenPrimary;
     color: black;
@@ -207,12 +220,6 @@
   background: $greenPrimary;
   color: black;
   border-color: $greenPrimary;
-  cursor: default;
-  pointer-events: none;
-}
-
-.autoRenewBtn:disabled {
-  opacity: 0.92;
   cursor: default;
   pointer-events: none;
 }

@@ -39,4 +39,5 @@ jobs:
       # Run build
       - name: Build
         run: |
+          npx papi
           npm run build

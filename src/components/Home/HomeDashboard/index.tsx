@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './HomeDashboard.module.scss';
 
-import RenewableCores from './RenewableCores';
+import UrgentRenewals from './UrgentRenewals';
 import CoreComparison from './CoreComparison';
 import DutchAuctionChart from './DutchAuctionChart';
 import AuctionPhaseStatus from './AuctionPhaseStatus';
@@ -19,6 +19,8 @@ import UpcomingRenewalsTable from './UpcomingRenewalsTable';
 import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
 import OwnedRegionsTable from './OwnedRegionsTable';
 import AutoRenewalTable from './AutoRenewalTable';
+import ProjectAssignedCoresTable from './ProjectAssignedCoresTable';
+
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
 }
@@ -108,7 +110,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       <div className={styles.dashboard}>
         {selected === 'Overview' && (
           <>
-            <RenewableCores view={selected} />
+            <UrgentRenewals view={selected} />
             <CoreComparison view={selected} />
             <CorePurchaseCard />
             <AuctionPhaseStatus view={selected} />
@@ -145,10 +147,11 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
                 router.push(`?${params.toString()}`, { scroll: false });
               }}
             />
-
+            <CorePurchaseCard view={selected} />
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />
+            {selectedParaId && <ProjectAssignedCoresTable taskId={Number(selectedParaId)} />}
             <AutoRenewalTable />
             <OwnedRegionsTable />
           </>

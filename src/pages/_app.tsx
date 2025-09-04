@@ -13,12 +13,10 @@ import {
   getExtensions,
   SELECTED_WALLET_KEY,
   SELECTED_ACCOUNT_KEY,
-  walletSelected,
   walletAdded,
   accountSelected,
   $selectedAccount,
   $loadedAccounts,
-  disconnectWallets,
   loadedAccountsSet,
   walletAddedFx,
 } from '@/wallet';

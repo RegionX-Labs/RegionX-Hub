@@ -67,21 +67,41 @@
   }
 
   &.extended {
-    width: 59.5%;
+    width: 35%;
+    @media (max-width: 3400px) {
+      width: 34%;
+    }
+    @media (max-width: 3250px) {
+      width: 30%;
+    }
+    @media (max-width: 3000px) {
+      width: 27%;
+    }
+    @media (max-width: 2600px) {
+      width: 22%;
+    }
+
+    @media (max-width: 2400px) {
+      width: 31%;
+    }
+
     @media (max-width: 1910px) {
-      width: 59%;
+      width: 31%;
+    }
+    @media (max-width: 1910px) {
+      width: 31%;
     }
     @media (max-width: 1893px) {
-      width: 58%;
+      width: 29%;
     }
     @media (max-width: 1860px) {
-      width: 57%;
+      width: 29%;
     }
     @media (max-width: 1820px) {
-      width: 56%;
+      width: 29%;
     }
     @media (max-width: 1705px) {
-      width: 55%;
+      width: 26%;
     }
     @media (max-width: 1430px) {
       width: 91%;

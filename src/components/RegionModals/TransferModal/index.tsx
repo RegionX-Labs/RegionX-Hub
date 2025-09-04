@@ -151,13 +151,9 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'left', margin: '10px 0' }}>
-            <Image
-              src='/ArrowDown.svg'
-              alt='Arrow Down'
-              width={20}
-              height={20}
-              className={styles.arrowIcon}
-            />
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '0' }}>
+              <ArrowDown className={styles.arrowIcon} />
+            </div>
           </div>
           <div className={styles.inputRow}>
             <label className={styles.inputLabel}>To</label>
