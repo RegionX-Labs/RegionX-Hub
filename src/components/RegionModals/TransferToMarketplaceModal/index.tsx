@@ -15,7 +15,15 @@ import {
   WestendCoretime,
 } from '@/assets/networks';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { XcmV3Junction, XcmV3Junctions, XcmV3MultiassetAssetId, XcmV3MultiassetFungibility, XcmV3WeightLimit, XcmVersionedAssets, XcmVersionedLocation } from '@polkadot-api/descriptors';
+import {
+  XcmV3Junction,
+  XcmV3Junctions,
+  XcmV3MultiassetAssetId,
+  XcmV3MultiassetFungibility,
+  XcmV3WeightLimit,
+  XcmVersionedAssets,
+  XcmVersionedLocation,
+} from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
 import { SUBSCAN_RELAY_URL } from '@/pages/coretime/sale-history';
 import { X } from 'lucide-react';
@@ -34,7 +42,7 @@ const encodeRegionId = (regionId: RegionId): BigInt => {
 
   const hex = encodeBegin + encodeCore + regionId.mask.asHex().substring(2);
   return BigInt('0x' + hex);
-}
+};
 
 const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose }) => {
   const accountData = useUnit($accountData);
@@ -95,12 +103,15 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
             }),
           },
           {
-            fun: XcmV3MultiassetFungibility.NonFungible({type: 'Index', value: encodeRegionId(regionId) as bigint}),
+            fun: XcmV3MultiassetFungibility.NonFungible({
+              type: 'Index',
+              value: encodeRegionId(regionId) as bigint,
+            }),
             id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
               parents: 0,
-            })
-          }
+            }),
+          },
         ]),
         fee_asset_item: 0,
         weight_limit: XcmV3WeightLimit.Unlimited(),
