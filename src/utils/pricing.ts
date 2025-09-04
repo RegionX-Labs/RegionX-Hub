@@ -34,5 +34,6 @@ export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): bool
     return true;
   if (network === Network.POLKADOT && saleInfo.saleCycle >= POLKADOT_SALE_CYCLE_WITH_UPDATE)
     return true;
+  if (network === Network.PASEO) return true;
   return false;
 };
