@@ -11213,7 +11213,13 @@ type IRuntimeCalls = {
      * Get node features.
      * This is a staging method! Do not use on production runtimes!
      */
-    node_features: RuntimeDescriptor<[], Array<0 | 1>>;
+    node_features: RuntimeDescriptor<
+      [],
+      {
+        bytes: Uint8Array;
+        bitsLen: number;
+      }
+    >;
     /**
      * Approval voting configuration parameters
      */
@@ -11849,7 +11855,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-export type Wnd = {
+type IDescriptors = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -11859,7 +11865,7 @@ export type Wnd = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: Wnd;
+declare const _allDescriptors: IDescriptors;
 export default _allDescriptors;
 export type WndApis = ApisFromDef<IRuntimeCalls>;
 export type WndQueries = QueryFromPalletsDef<PalletsTypedef>;

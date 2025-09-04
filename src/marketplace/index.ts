@@ -1,22 +1,24 @@
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { getNetworkMetadata, getNetworkChainIds } from '@/network';
+import { getNetworkMetadata, getNetworkChainIds, NetworkChainIds, ChainId } from '@/network';
 import { Region } from '@/coretime/regions';
+import { Connection } from '@/api/connection';
+import { FixedSizeBinary } from 'polkadot-api';
 
 type RegionId = {
   begin: number;
   core: number;
-  mask: string;
+  mask: FixedSizeBinary<10>;
 };
 
 export type RegionListing = {
   region: Region;
-  sale_recipeint: string;
+  sale_recipient: string;
   seller: string;
   timeslice_price: bigint;
 };
 
-type Payload = { network: Network; connections: any };
+type Payload = { network: Network; connections: Record<ChainId, Connection> };
 export const listedRegionsRequested = createEvent<Payload>();
 
 export const $listedRegions = createStore<RegionListing[]>([]);
@@ -38,7 +40,10 @@ sample({
   target: $listedRegions,
 });
 
-const fetchListedRegions = async (network: Network, connections: any): Promise<RegionListing[]> => {
+const fetchListedRegions = async (
+  network: Network,
+  connections: Record<ChainId, Connection>
+): Promise<RegionListing[]> => {
   const chainIds = getNetworkChainIds(network);
   if (!chainIds || !chainIds.regionxChain) return [];
 
@@ -46,7 +51,7 @@ const fetchListedRegions = async (network: Network, connections: any): Promise<R
   if (!connection || !connection.client || connection.status !== 'connected') return [];
 
   const metadata = getNetworkMetadata(network);
-  if (!metadata) return [];
+  if (!metadata || !metadata.regionxChain) return [];
 
   const api = connection.client.getTypedApi(metadata.regionxChain);
 
@@ -59,7 +64,7 @@ const fetchListedRegions = async (network: Network, connections: any): Promise<R
       mask: entry.keyArgs[0].mask,
     };
 
-    const region = await fetchRegionData(network, connection, regionId);
+    const region = await fetchRegionData(network, connections, chainIds, regionId);
     if (!region) continue;
 
     listedRegions.push({
@@ -76,18 +81,31 @@ const fetchListedRegions = async (network: Network, connections: any): Promise<R
 
 const fetchRegionData = async (
   network: Network,
-  connection: any,
+  connections: Record<ChainId, Connection>,
+  chainIds: NetworkChainIds,
   regionId: RegionId
 ): Promise<Region | null> => {
   const metadata = getNetworkMetadata(network);
   if (!metadata) return null;
 
-  const api = connection.client.getTypedApi(metadata.regionxChain);
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
 
-  const { value } = (await api.query.Regions.Regions.getValue(regionId)).record;
+  // TODO: fetch metadata from the RegionX chain.
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
+
+  const value = await api.query.Broker.Regions.getValue(regionId);
+
+  if (!value) return null;
 
   return {
-    ...regionId,
-    ...value,
+    id: '',
+    begin: regionId.begin,
+    core: regionId.core,
+    mask: regionId.mask.asHex(),
+    end: value.end,
+    paid: value.paid?.toString() ?? undefined,
+    owner: value.owner?.toString() || '',
+    task: 0,
   };
 };
