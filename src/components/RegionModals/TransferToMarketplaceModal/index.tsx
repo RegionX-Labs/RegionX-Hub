@@ -36,7 +36,7 @@ interface Props {
   onClose: () => void;
 }
 
-const encodeRegionId = (regionId: RegionId): BigInt => {
+const encodeRegionId = (regionId: RegionId): bigint => {
   const encodeBegin = u8aToHex(u32.enc(regionId.begin)).substring(2);
   const encodeCore = u8aToHex(u16.enc(regionId.core)).substring(2);
 
