@@ -19,6 +19,9 @@ export type * from './wnd';
 import { default as wnd_coretime } from './wnd_coretime';
 export { wnd_coretime };
 export type * from './wnd_coretime';
+import { default as rx_ksm } from './rx_ksm';
+export { rx_ksm };
+export type * from './rx_ksm';
 import { default as ksm_people } from './ksm_people';
 export { ksm_people };
 export type * from './ksm_people';
@@ -199,5 +202,6 @@ export {
   WestendRuntimeGovernanceOriginsPalletCustomOriginsOrigin,
   PolkadotRuntimeCommonAssignedSlotsSlotLeasePeriodStart,
   XcmVersionedAsset,
+  WestendRuntimeRuntimeHoldReason,
 } from './common-types';
 export declare const getMetadata: (codeHash: string) => Promise<Uint8Array | null>;

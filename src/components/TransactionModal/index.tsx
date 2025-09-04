@@ -55,6 +55,7 @@ const TransactionModal: React.FC<Props> = ({
 
   const relayFree = toUnitFormatted(network, accountData.relayChainData.free);
   const coretimeFree = toUnitFormatted(network, accountData.coretimeChainData.free);
+  const regionxFree = toUnitFormatted(network, accountData.regionxChainData?.free || BigInt(0));
   const feeFormatted = estimatedFeeRelay ? toUnitFormatted(network, estimatedFeeRelay) : null;
 
   return (
@@ -89,6 +90,10 @@ const TransactionModal: React.FC<Props> = ({
             <div className={styles.balanceCard}>
               <div className={styles.balanceLabel}>Coretime Chain</div>
               <div className={styles.balanceValue}>{coretimeFree}</div>
+            </div>
+            <div className={styles.balanceCard}>
+              <div className={styles.balanceLabel}>RegionX Chain</div>
+              <div className={styles.balanceValue}>{regionxFree}</div>
             </div>
           </div>
         </div>

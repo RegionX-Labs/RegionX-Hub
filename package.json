@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx papi && next build",
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
@@ -33,6 +33,8 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-tooltip": "^5.28.0",
+    "recharts": "^2.15.3",
+    "scale-ts": "^1.6.1",
     "sass": "^1.85.0",
     "sharp": "^0.34.3"
   },

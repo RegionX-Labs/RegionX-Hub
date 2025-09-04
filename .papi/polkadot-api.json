@@ -40,6 +40,11 @@
       "genesis": "0xf938510edee7c23efa6e9db74f227c827a1b518bffe92e2f6c9842dc53d38840",
       "codeHash": "0xa6a409a4fd66a4b5d1e96024b5ddedf814532b7eec8cea72f537ff8acdf7cfe5"
     },
+    "rx_ksm": {
+      "wsUrl": "ws://127.0.0.1:8001",
+      "metadata": ".papi/metadata/rx_ksm.scale",
+      "genesis": "0x4545454545454545454545454545454545454545454545454545454545454545"
+    },
     "ksm_people": {
       "wsUrl": "wss://sys.ibp.network/people-kusama",
       "metadata": ".papi/metadata/ksm_people.scale",

@@ -7,6 +7,7 @@ import {
   ksm_coretime,
   pas,
   pas_coretime,
+  rx_ksm,
   wnd,
   wnd_coretime,
   dot_people,
@@ -18,6 +19,7 @@ import {
 type NetworkChainIds = {
   relayChain: ChainId;
   coretimeChain: ChainId;
+  regionxChain: ChainId | null;
   peopleChain: ChainId;
 };
 
@@ -28,6 +30,7 @@ export type CoretimeMetadata =
   | typeof pas_coretime
   | typeof wnd_coretime;
 
+export type RegionXMetadata = typeof rx_ksm;
 export type PeopleMetadata =
   | typeof dot_people
   | typeof ksm_people
@@ -37,6 +40,7 @@ export type PeopleMetadata =
 export type NetworkMetadata = {
   relayChain: RelayMetadata;
   coretimeChain: CoretimeMetadata;
+  regionxChain: RegionXMetadata | null;
   peopleChain: PeopleMetadata;
 };
 
@@ -49,24 +53,28 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
       return {
         relayChain: chains.polkadot.chainId,
         coretimeChain: chains.polkadotCoretime.chainId,
+        regionxChain: null,
         peopleChain: chains.polkadotPeople.chainId,
       };
     case Network.KUSAMA:
       return {
         relayChain: chains.kusama.chainId,
         coretimeChain: chains.kusamaCoretime.chainId,
+        regionxChain: chains.regionxKusama.chainId,
         peopleChain: chains.peopleKusama.chainId,
       };
     case Network.PASEO:
       return {
         relayChain: chains.paseo.chainId,
         coretimeChain: chains.paseoCoretime.chainId,
+        regionxChain: null,
         peopleChain: chains.peoplePaseo.chainId,
       };
     case Network.WESTEND:
       return {
         relayChain: chains.westend.chainId,
         coretimeChain: chains.westendCoretime.chainId,
+        regionxChain: null,
         peopleChain: chains.peopleWestend.chainId,
       };
     default:
@@ -96,24 +104,28 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: dot,
         coretimeChain: dot_coretime,
+        regionxChain: null,
         peopleChain: dot_people,
       };
     case Network.KUSAMA:
       return {
         relayChain: ksm,
         coretimeChain: ksm_coretime,
+        regionxChain: rx_ksm,
         peopleChain: ksm_people,
       };
     case Network.PASEO:
       return {
         relayChain: pas,
         coretimeChain: pas_coretime,
+        regionxChain: null,
         peopleChain: pas_people,
       };
     case Network.WESTEND:
       return {
         relayChain: wnd,
         coretimeChain: wnd_coretime,
+        regionxChain: null,
         peopleChain: wnd_people,
       };
     default:

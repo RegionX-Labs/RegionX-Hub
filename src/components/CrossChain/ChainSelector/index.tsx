@@ -7,6 +7,7 @@ import {
   Paseo as PaseoIcon,
   Polkadot as PolkadotIcon,
   Westend as WestendIcon,
+  RegionX as RegionXIcon,
   KusamaCoretime,
   PaseoCoretime,
   PolkadotCoretime,
@@ -104,6 +105,19 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
       ),
     },
     {
+      value: chains.regionxKusama.chainId,
+      label: 'RegionX Kusama',
+      icon: (
+        <Image
+          src={RegionXIcon.src}
+          alt='RegionX Chain'
+          className={styles.smallIcon}
+          width={20}
+          height={20}
+        />
+      ),
+    },
+    {
       value: chains.paseoCoretime.chainId,
       label: 'Paseo Coretime',
       icon: (
@@ -132,12 +146,25 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
   ];
 
   const isCoretimeChain = (chainId: string): boolean => {
+    console.log(chains);
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
+  };
+
+  const isRegionXChain = (chainId: string): boolean => {
+    const capitalize = (str: string): string => {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    return chainId === chains[`regionx${capitalize(network)}` as keyof typeof chains]?.chainId;
   };
 
   const filteredNetworks = networks.filter((n) => {
     if (!network) return true;
-    return n.value === chains[network as keyof typeof chains]?.chainId || isCoretimeChain(n.value);
+    return (
+      n.value === chains[network as keyof typeof chains]?.chainId ||
+      isCoretimeChain(n.value) ||
+      isRegionXChain(n.value)
+    );
   });
 
   useEffect(() => {
