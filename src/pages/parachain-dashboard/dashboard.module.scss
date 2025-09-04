@@ -102,3 +102,18 @@
     color: var(--green-primary);
   }
 }
+
+.renewalStatus {
+  @include Inter;
+  color: white;
+  padding: 5px 15px;
+  @include Inter;
+  font-size: 14px;
+  line-height: 20px;
+  background-color: var(--label-color);
+  border-radius: 6px;
+  white-space: nowrap;
+  display: inline-block;
+  min-width: 108px;
+  text-align: center;
+}

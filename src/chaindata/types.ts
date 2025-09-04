@@ -20,4 +20,10 @@ export type BaseChainInfo = {
   name: string;
   logo?: string;
   homepage?: string;
+  color?: string;
+  providers?: Record<string, string>;
+  isUnreachable?: boolean;
+  isPeople?: boolean;
+  isPeopleForIdentity?: boolean;
+  teleport?: number[];
 };

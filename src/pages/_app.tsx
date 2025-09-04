@@ -178,6 +178,7 @@ function App({ Component, pageProps }: AppProps) {
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
 
+      {/* FLOATING BUTTONS: show only on desktop */}
       <div
         style={{
           position: 'fixed',
@@ -185,7 +186,7 @@ function App({ Component, pageProps }: AppProps) {
           right: 20,
           zIndex: 9999,
         }}
-        className='mobile-theme-buttons'
+        className='floating-settings'
       >
         <div
           style={{
@@ -245,8 +246,11 @@ function App({ Component, pageProps }: AppProps) {
       </div>
 
       <style jsx>{`
+        .floating-settings {
+          display: none;
+        }
         @media (min-width: 768px) {
-          .mobile-theme-buttons {
+          .floating-settings {
             display: block !important;
           }
         }

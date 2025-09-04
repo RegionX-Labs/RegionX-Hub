@@ -94,9 +94,10 @@ Use this chart to:
 💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase opportunity  — especially in high-demand cycles.
 `,
       images: [
-        '/help/DutchAuctionChart2.png',
         '/help/DutchAuctionChart3.png',
+        '/help/DutchAuctionChart2.png',
         '/help/DutchAuctionChart4.png',
+        '/help/DutchAuctionChart.png',
       ],
     },
     {
@@ -175,9 +176,10 @@ Use this chart to:
 💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase opportunity  — especially in high-demand cycles.
 `,
       images: [
-        '/help/DutchAuctionChart2.png',
         '/help/DutchAuctionChart3.png',
+        '/help/DutchAuctionChart2.png',
         '/help/DutchAuctionChart4.png',
+        '/help/DutchAuctionChart.png',
       ],
     },
     {
@@ -200,19 +202,19 @@ Click through pages using the pagination at the bottom.
   'Managing Existing Project': [
     {
       text: `**Renewal Info Card**
-
 This section allows you to manage and renew core allocations for your selected parachain.
 
 Here's what you can do:
 - Select a parachain from the dropdown to view its status
+- Each parachain in the dropdown shows its renewal status (e.g., "Renewed" in green or "Needs Renewal" in red) so you can instantly see if action is required
 - See the current state of the parachain (e.g., Active, Idle, Renewable) along with a description of what that means
-- In case the parachain has the potential to renew it will display renewal cost and the deadline to submit the renewal
+- If the parachain has the potential to renew, it will display the renewal cost and the deadline to submit the renewal
 - Use the **Renew** button to directly initiate a core renewal transaction for the selected parachain
 
 If no core is available for renewal, the Renew button will not appear.
 
-💡 Tip:  Submitting your renewal during the interlude phase ensures that a core will be allocated to the project. Missing the renewal can result in the project failing to secure a core, leading to stalling block production.`,
-      images: ['/help/ParachainInfoCard.png', '/help/RenewalInfoCard2.png'],
+💡 Tip: Submitting your renewal during the interlude phase ensures that a core will be allocated to the project. Missing the renewal can result in the project failing to secure a core, leading to stalled block production.`,
+      images: ['/help/RenewalInfoCard2.png', '/help/RenewalInfoCard.png'],
     },
     {
       text: `**Renewal vs New Core Price Comparison**
@@ -262,9 +264,10 @@ Use this chart to:
 💡 Tip: Many buyers place bulk orders once prices hit a psychological threshold. If you're waiting too long, you may miss the purchase opportunity  — especially in high-demand cycles.
 `,
       images: [
-        '/help/DutchAuctionChart2.png',
         '/help/DutchAuctionChart3.png',
+        '/help/DutchAuctionChart2.png',
         '/help/DutchAuctionChart4.png',
+        '/help/DutchAuctionChart.png',
       ],
     },
   ],

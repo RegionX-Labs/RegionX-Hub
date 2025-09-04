@@ -93,7 +93,10 @@ const CrossChain = () => {
     const metadata = getNetworkMetadata(network);
     if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
 
-    if (accountData && accountData.relayChainData.free < BigInt(amount)) {
+    if (
+      accountData &&
+      accountData.relayChainData.free < BigInt(fromUnit(network, Number(amount)))
+    ) {
       toast.error('Insufficient balance');
       return;
     }
@@ -164,7 +167,10 @@ const CrossChain = () => {
     const metadata = getNetworkMetadata(network);
     if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
 
-    if (accountData && accountData.coretimeChainData.free < BigInt(amount)) {
+    if (
+      accountData &&
+      accountData.coretimeChainData.free < BigInt(fromUnit(network, Number(amount)))
+    ) {
       toast.error('Insufficient balance');
       return;
     }
