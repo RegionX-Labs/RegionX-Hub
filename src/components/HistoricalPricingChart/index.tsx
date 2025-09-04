@@ -60,7 +60,6 @@ const fetchHistoricalSalePrices = async (network: Network): Promise<SalePoint[]>
     if (purchaseRes.status !== 200) continue;
 
     const purchases = purchaseRes.data.purchases.nodes;
-    console.log(`Cycle ${saleCycle} raw purchases:`, purchases);
 
     if (!purchases || purchases.length === 0) continue;
 
@@ -108,7 +107,6 @@ export default function HistoricalPricingChart() {
     setLoading(true);
     fetchHistoricalSalePrices(network)
       .then((result) => {
-        console.log('Final chart data:', result);
         setData(result);
       })
       .finally(() => setLoading(false));

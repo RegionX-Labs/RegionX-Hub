@@ -99,7 +99,7 @@ const fetchRegionData = async (
   if (!value) return null;
 
   return {
-    id: '',
+    id: `${regionId.begin}-${regionId.core}-${regionId.mask.asHex()}`,
     begin: regionId.begin,
     core: regionId.core,
     mask: regionId.mask.asHex(),
