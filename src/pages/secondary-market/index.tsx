@@ -89,7 +89,7 @@ export default function SecondaryMarket() {
 
             <div className={styles.netWarnFooter}>
               <button className={styles.btnGhost} onClick={closeModal}>
-                Cancel
+                Close
               </button>
             </div>
           </div>
