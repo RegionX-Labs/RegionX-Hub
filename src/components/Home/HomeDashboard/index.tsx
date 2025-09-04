@@ -147,6 +147,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
                 router.push(`?${params.toString()}`, { scroll: false });
               }}
             />
+            <CorePurchaseCard view={selected} />
             <CoreComparison view={selected} />
             <AuctionPhaseStatus view={selected} />
             <DutchAuctionChart theme={theme} view={selected} />

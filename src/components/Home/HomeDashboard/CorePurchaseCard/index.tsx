@@ -26,11 +26,15 @@ export default function CorePurchaseCard({ view }: Props) {
     $selectedAccount,
   ]);
 
+  const isCompact = view === 'Deploying a new project';
+  const isExtended = view === 'Managing Existing Project';
+
   const [corePrice, setCorePrice] = useState<number | null>(null);
   const [coresSold, setCoresSold] = useState<number>(0);
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [buyMultiple, setBuyMultiple] = useState(false);
   const [numCores, setNumCores] = useState<number | null>(null);
 
@@ -38,35 +42,34 @@ export default function CorePurchaseCard({ view }: Props) {
     if (network && saleInfo) {
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
+        if (!networkChainIds) return;
 
-        if (!networkChainIds) return null;
         const connection = connections[networkChainIds.relayChain];
-        if (!connection || !connection.client || connection.status !== 'connected') return null;
+        if (!connection || !connection.client || connection.status !== 'connected') return;
 
         const client = connection.client;
         const metadata = getNetworkMetadata(network);
         if (!metadata) return;
 
-        purchaseHistoryRequested({
-          network,
-          saleCycle: saleInfo.saleCycle,
-        });
+        purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
 
         const currentBlockNumber = await client
           .getTypedApi(metadata.relayChain)
           .query.System.Number.getValue();
         setCurrentHeight(currentBlockNumber);
+
         const price = getCorePriceAt(currentBlockNumber, saleInfo, network);
         setCorePrice(price);
+
         const sold = await fetchCoresSold(network, connections);
         setCoresSold(sold || 0);
       })();
     }
-  }, [saleInfo?.network, connections]);
+  }, [saleInfo?.network, connections, network]);
 
   useEffect(() => {
     (async () => {
-      if (!saleInfo) return;
+      if (!saleInfo || !network) return;
       const networkChainIds = getNetworkChainIds(network);
       if (!networkChainIds) return;
 
@@ -83,7 +86,7 @@ export default function CorePurchaseCard({ view }: Props) {
       const phase = getCurrentPhase(saleInfo, currentBlockNumber);
       setCurrentPhase(phase);
     })();
-  }, [network, saleInfo]);
+  }, [network, saleInfo, connections]);
 
   const coresOffered = saleInfo?.coresOffered ?? 0;
   const coresRemaining = coresOffered - coresSold;
@@ -93,8 +96,11 @@ export default function CorePurchaseCard({ view }: Props) {
     if (currentPhase === SalePhase.Interlude)
       return toast.error('Cannot purchase during interlude');
     if (coresRemaining === 0) return toast.error('No more cores remaining');
-    if (buyMultiple && (numCores === null || numCores <= 0 || numCores > coresRemaining)) {
-      return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
+
+    if (isExtended && buyMultiple) {
+      if (numCores === null || numCores <= 0 || numCores > coresRemaining) {
+        return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
+      }
     }
     setIsModalOpen(true);
   };
@@ -120,7 +126,8 @@ export default function CorePurchaseCard({ view }: Props) {
     if (!metadata) return toast.error('Failed to find metadata');
 
     const api = connection.client.getTypedApi(metadata.coretimeChain);
-    const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
+
+    const times = isExtended && buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
 
     const calls = Array.from(
       { length: times },
@@ -158,8 +165,8 @@ export default function CorePurchaseCard({ view }: Props) {
 
   return (
     <div
-      className={`${styles.coreRemainingCard} ${
-        view === 'Deploying a new project' ? styles.compact : ''
+      className={`${styles.coreRemainingCard} ${isCompact ? styles.compact : ''} ${
+        isExtended ? styles.extended : ''
       }`}
     >
       <p className={styles.title}>Cores Offered</p>
@@ -177,43 +184,41 @@ export default function CorePurchaseCard({ view }: Props) {
       </div>
 
       <div className={styles.multiCoreWrapper}>
-        <div className={styles.multiCoreRow}>
-          <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((prev) => !prev)}>
-            <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
-            <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
-              Single
+        {isExtended && (
+          <div className={styles.multiCoreRow}>
+            <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((p) => !p)}>
+              <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
+              <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
+                Single
+              </div>
+              <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
+                Multiple
+              </div>
             </div>
-            <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
-              Multiple
-            </div>
-          </div>
 
-          {buyMultiple && (
-            <input
-              type='text'
-              inputMode='numeric'
-              pattern='[0-9]*'
-              className={styles.coreInput}
-              value={numCores === null ? '' : String(numCores)}
-              onChange={(e) => {
-                const raw = e.target.value;
-                if (/^\d*$/.test(raw)) {
-                  setNumCores(raw === '' ? null : parseInt(raw, 10));
-                }
-              }}
-              onKeyDown={(e) => {
-                if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-              placeholder='Amount'
-            />
-          )}
-        </div>
+            {buyMultiple && (
+              <input
+                type='text'
+                inputMode='numeric'
+                pattern='[0-9]*'
+                className={styles.coreInput}
+                value={numCores === null ? '' : String(numCores)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (/^\d*$/.test(raw)) setNumCores(raw === '' ? null : parseInt(raw, 10));
+                }}
+                onKeyDown={(e) => {
+                  if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) e.preventDefault();
+                }}
+                placeholder='Amount'
+              />
+            )}
+          </div>
+        )}
 
         <button onClick={openModal} className={styles.buyButton}>
           Purchase New Core
-          {buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
+          {isExtended && buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
         </button>
       </div>
 
