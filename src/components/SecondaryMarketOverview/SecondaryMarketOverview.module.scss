@@ -6,7 +6,7 @@
   background-color: $darkBackground3;
   padding: 25px;
   border-radius: 12px;
-  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--card-border);
   text-align: left;
   color: $white;
   display: flex;
@@ -17,9 +17,10 @@
 }
 
 .title {
-  color: $gray6;
+  color: var(--text-muted);
   font-size: 0.95rem;
   font-weight: 500;
+  text-align: left;
 }
 
 .averagePrice {
