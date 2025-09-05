@@ -53,10 +53,6 @@ const RawRegionDataModal: React.FC<RawRegionDataModalProps> = ({ isOpen, onClose
 
         <div className={styles.kvGrid}>
           <div className={styles.kvRow}>
-            <span>Region ID</span>
-            <code>{String(payload.regionId)}</code>
-          </div>
-          <div className={styles.kvRow}>
             <span>Core index</span>
             <code>{payload.coreIndex}</code>
           </div>
