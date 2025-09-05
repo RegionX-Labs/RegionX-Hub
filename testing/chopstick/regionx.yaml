@@ -13,7 +13,7 @@ import-storage:
     Regions:
       [
         [
-          [{ core: 101, begin: 371448, mask: "0xffffffffffffffffffff" }],
+          [{ core: 101, begin: 371448, mask: '0xffffffffffffffffffff' }],
           {
             owner: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY,
             locked: true,
@@ -22,7 +22,7 @@ import-storage:
                 Available:
                   {
                     end: 376488,
-                    owner: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+                    owner: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     paid: null,
                   },
               },
@@ -32,11 +32,11 @@ import-storage:
   Market:
     Listings: [
         [
-          [{ core: 101, begin: 371448, mask: "0xffffffffffffffffffff" }],
+          [{ core: 101, begin: 371448, mask: '0xffffffffffffffffffff' }],
           {
             seller: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY,
             timeslice_price: 1000000000, # 0.001 KSM / timeslice
             sale_recipient: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY,
           },
         ],
-    ]
+      ]
