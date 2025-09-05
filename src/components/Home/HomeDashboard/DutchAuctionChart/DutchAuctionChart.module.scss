@@ -43,7 +43,6 @@
     @media (max-width: 3000px) {
       width: 97%;
     }
-
     @media (max-width: 1300px) {
       width: 97%;
     }
@@ -68,7 +67,6 @@
     @media (max-width: 750px) {
       max-width: 91%;
     }
-
     @media (max-width: 700px) {
       max-width: 91%;
     }
@@ -119,7 +117,6 @@
   color: var(--text-primary);
   margin-left: 20%;
   margin-bottom: 5%;
-
   @media (max-width: 525px) {
     margin-left: 30%;
   }
@@ -135,4 +132,15 @@
   color: var(--text-primary);
   margin-right: 10%;
   text-align: right;
+}
+
+.modalChart {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
