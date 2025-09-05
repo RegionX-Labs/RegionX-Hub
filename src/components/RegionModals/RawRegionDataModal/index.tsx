@@ -22,6 +22,16 @@ interface RawRegionDataModalProps {
 }
 
 const RawRegionDataModal: React.FC<RawRegionDataModalProps> = ({ isOpen, onClose, payload }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onEsc);
+    return () => document.removeEventListener('keydown', onEsc);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const copyAll = () => navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
@@ -30,25 +40,24 @@ const RawRegionDataModal: React.FC<RawRegionDataModalProps> = ({ isOpen, onClose
     if ((e.target as HTMLDivElement).classList.contains(styles.modalOverlay)) onClose();
   };
 
-  useEffect(() => {
-    const onEsc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    document.addEventListener('keydown', onEsc);
-    return () => document.removeEventListener('keydown', onEsc);
-  }, [onClose]);
-
   return (
-    <div className={styles.modalOverlay} onClick={handleOverlayClick}>
+    <div
+      className={styles.modalOverlay}
+      onClick={handleOverlayClick}
+      role='dialog'
+      aria-modal='true'
+      aria-label='Raw region data'
+    >
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2>Raw region data</h2>
-          <button aria-label='Close' className={styles.closeIcon} onClick={onClose}>
+          <button aria-label='Close' className={styles.closeIcon} onClick={onClose} type='button'>
             <X size={16} />
           </button>
         </div>
 
         <p className={styles.subText}>
-          Times are expressed in
-          <b> timeslices</b>. Copy JSON for scripts or debugging.
+          Times are expressed in <b>timeslices</b>. Copy JSON for scripts or debugging.
         </p>
 
         <div className={styles.kvGrid}>
@@ -93,10 +102,10 @@ const RawRegionDataModal: React.FC<RawRegionDataModalProps> = ({ isOpen, onClose
         </div>
 
         <div className={styles.actions}>
-          <button className={styles.secondaryBtn} onClick={onClose}>
+          <button className={styles.secondaryBtn} onClick={onClose} type='button'>
             Close
           </button>
-          <button className={styles.primaryBtn} onClick={copyAll}>
+          <button className={styles.primaryBtn} onClick={copyAll} type='button'>
             Copy JSON
           </button>
         </div>
