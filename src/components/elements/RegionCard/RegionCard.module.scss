@@ -30,3 +30,41 @@
     color: $gray6;
   }
 }
+
+.rawData {
+  background: var(--dark-background-2);
+  border: 1px solid var(--border-modal);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0 6px 0;
+}
+
+.rawHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.copyBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.copyBtn:hover {
+  border-color: var(--text-secondary);
+}
+
+.rawPre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
