@@ -204,7 +204,7 @@ export default function SecondaryMarketplaceTable() {
       <div className={styles.secondaryMarketTableInner}>
         <div className={styles.tableWrapper}>
           <div className={styles.headerRow}>
-            <h2 className={styles.marketHeading}>Secondary Marketplace Snapshot</h2>
+            <h2 className={styles.marketHeading}>Secondary Marketplace Listings</h2>
             <div className={styles.filterWrapper} ref={panelRef}>
               <button className={styles.filterButton} onClick={() => setOpen((prev) => !prev)}>
                 <Filter size={16} />

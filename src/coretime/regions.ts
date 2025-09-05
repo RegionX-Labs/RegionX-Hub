@@ -18,7 +18,7 @@ export type Region = {
   mask: string;
   end: number;
   owner: string;
-  paid: string;
+  paid: string | undefined;
   task: number;
 };
 

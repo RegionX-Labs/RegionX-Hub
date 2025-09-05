@@ -37,10 +37,10 @@ interface Props {
 }
 
 const encodeRegionId = (regionId: RegionId): bigint => {
-  const encodeBegin = u8aToHex(u32.enc(regionId.begin)).substring(2);
-  const encodeCore = u8aToHex(u16.enc(regionId.core)).substring(2);
+  const encodedBegin = u8aToHex(Uint8Array.from(u32.enc(regionId.begin)).reverse()).substring(2);
+  const encodedCore = u8aToHex(Uint8Array.from(u16.enc(regionId.core)).reverse()).substring(2);
 
-  const hex = encodeBegin + encodeCore + regionId.mask.asHex().substring(2);
+  const hex = encodedBegin + encodedCore + regionId.mask.asHex().substring(2);
   return BigInt('0x' + hex);
 };
 
@@ -53,6 +53,8 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!isOpen) return null;
+
+  encodeRegionId(regionId);
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {

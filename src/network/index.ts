@@ -16,7 +16,7 @@ import {
   pas_people,
 } from '@polkadot-api/descriptors';
 
-type NetworkChainIds = {
+export type NetworkChainIds = {
   relayChain: ChainId;
   coretimeChain: ChainId;
   regionxChain: ChainId | null;
