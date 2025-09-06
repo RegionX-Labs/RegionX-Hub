@@ -98,7 +98,16 @@ const RawRegionDataModal: React.FC<RawRegionDataModalProps> = ({ isOpen, onClose
               <Copy size={14} /> Copy
             </button>
           </div>
-          <pre className={styles.pre}>{JSON.stringify(payload, null, 2)}</pre>
+          <pre className={styles.pre}>
+            {JSON.stringify(
+              {
+                ...payload,
+                regionId: { ...payload.regionId, mask: payload.regionId.mask.asHex() },
+              },
+              null,
+              2
+            )}
+          </pre>
         </div>
 
         <div className={styles.actions}>
