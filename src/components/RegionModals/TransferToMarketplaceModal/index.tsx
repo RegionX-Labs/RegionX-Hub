@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './TransferToMarketplaceModal.module.scss';
 import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
@@ -6,7 +6,7 @@ import { $accountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
-import { fromUnit, RegionId, REGIONX_KUSAMA_PARA_ID } from '@/utils';
+import { RegionId, REGIONX_KUSAMA_PARA_ID } from '@/utils';
 import Image from 'next/image';
 import {
   PolkadotCoretime,
@@ -25,7 +25,7 @@ import {
   XcmVersionedLocation,
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
-import { SUBSCAN_RELAY_URL } from '@/pages/coretime/sale-history';
+import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 import { X } from 'lucide-react';
 import { u16, u32 } from 'scale-ts';
 import { u8aToHex } from '@polkadot/util';
@@ -54,8 +54,6 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
 
   if (!isOpen) return null;
 
-  encodeRegionId(regionId);
-
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
       onClose();
@@ -81,9 +79,9 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
 
     const tx = connection.client
       .getTypedApi(metadata.coretimeChain)
-      .tx.PolkadotXcm.transfer_assets({
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
         dest: XcmVersionedLocation.V3({
-          parents: 0,
+          parents: 1,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(REGIONX_KUSAMA_PARA_ID)),
         }),
         beneficiary: XcmVersionedLocation.V3({
@@ -98,19 +96,19 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
         assets: XcmVersionedAssets.V3([
           {
             // fee payment
-            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number('2500000000'))),
+            fun: XcmV3MultiassetFungibility.Fungible(BigInt(250000000)),
             id: XcmV3MultiassetAssetId.Concrete({
-              interior: XcmV3Junctions.Here(), // Not here, pallet broker
+              interior: XcmV3Junctions.Here(),
               parents: 1,
             }),
           },
           {
             fun: XcmV3MultiassetFungibility.NonFungible({
               type: 'Index',
-              value: encodeRegionId(regionId) as bigint,
+              value: encodeRegionId(regionId),
             }),
             id: XcmV3MultiassetAssetId.Concrete({
-              interior: XcmV3Junctions.Here(),
+              interior: XcmV3Junctions.X1(XcmV3Junction.PalletInstance(50)),
               parents: 0,
             }),
           },
@@ -126,7 +124,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
           <span>
             Transaction submitted:&nbsp;
             <a
-              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
               target='_blank'
               rel='noopener noreferrer'
               style={{ textDecoration: 'underline', color: '#60a5fa' }}
