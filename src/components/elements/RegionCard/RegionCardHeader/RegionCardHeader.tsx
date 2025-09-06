@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './RegionCardHeader.module.scss';
-import LabelCard from '../../LabelCard/LabelCard';
 import Identicon from '@polkadot/react-identicon';
 import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { MoreHorizontal } from 'lucide-react';
@@ -32,6 +31,7 @@ interface RegionCardHeaderProps {
   task: string;
   owner?: string;
   paid?: string | bigint;
+  onToggleRaw?: () => void;
 }
 
 const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
@@ -47,6 +47,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   owner,
   paid,
   task,
+  onToggleRaw,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
   const ss58Address = encodeAddress(publicKey, 42);
@@ -173,6 +174,14 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
               {isKusama && (
                 <div onClick={() => setMarketplaceModalOpen(true)}>Transfer to RegionX</div>
               )}
+              <div
+                onClick={() => {
+                  onToggleRaw?.();
+                  setShowDropdown(false);
+                }}
+              >
+                Raw data
+              </div>
             </div>
           )}
         </div>
