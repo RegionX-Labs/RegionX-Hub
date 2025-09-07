@@ -281,19 +281,39 @@ const TransferToMarketplaceModal: React.FC<Props> = ({
         </p>
 
         <div className={styles.visualRepresentation}>
-          <div className={styles.chainBox}>
-            <div className={styles.iconLabelWrapper}>
-              <Image src={getNetworkIcon()} alt='network icon' width={20} height={20} />
-              <span>{getFormattedSource()}</span>
-            </div>
-          </div>
-          <div className={styles.arrow}>→</div>
-          <div className={styles.chainBox}>
-            <div className={styles.regionxLabelWrapper}>
-              <Image src='/favicon.ico' alt='RegionX icon' width={20} height={20} />
-              <span>RegionX</span>
-            </div>
-          </div>
+          {regionLocation === RegionLocation.CoretimeChain ? (
+            <>
+              <div className={styles.chainBox}>
+                <div className={styles.iconLabelWrapper}>
+                  <Image src={getNetworkIcon()} alt='network icon' width={20} height={20} />
+                  <span>{getFormattedSource()}</span>
+                </div>
+              </div>
+              <div className={styles.arrow}>→</div>
+              <div className={styles.chainBox}>
+                <div className={styles.regionxLabelWrapper}>
+                  <Image src='/favicon.ico' alt='RegionX icon' width={20} height={20} />
+                  <span>RegionX</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.chainBox}>
+                <div className={styles.regionxLabelWrapper}>
+                  <Image src='/favicon.ico' alt='RegionX icon' width={20} height={20} />
+                  <span>RegionX</span>
+                </div>
+              </div>
+              <div className={styles.arrow}>→</div>
+              <div className={styles.chainBox}>
+                <div className={styles.iconLabelWrapper}>
+                  <Image src={getNetworkIcon()} alt='network icon' width={20} height={20} />
+                  <span>{getFormattedSource()}</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {selectedAccount && accountData[selectedAccount.address] !== null && (

@@ -17,6 +17,7 @@ import ModalPortal from '@/components/ModalPortal';
 import { RegionId, toUnitFormatted } from '@/utils';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
+import { RegionLocation } from '@/coretime/regions';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -29,6 +30,7 @@ interface RegionCardHeaderProps {
   regionStartTimeslice: number;
   regionEndTimeslice: number;
   task: string;
+  location?: RegionLocation;
   owner?: string;
   paid?: string | bigint;
   onToggleRaw?: () => void;
@@ -47,6 +49,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   owner,
   paid,
   task,
+  location,
   onToggleRaw,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
@@ -172,7 +175,15 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
               <div onClick={handleAssignClick}>Assign</div>
               <div onClick={() => setSellModalOpen(true)}>Sell</div>
               {isKusama && (
-                <div onClick={() => setMarketplaceModalOpen(true)}>Transfer to RegionX</div>
+                <>
+                  {location === RegionLocation.RegionxChain ? (
+                    <div onClick={() => setMarketplaceModalOpen(true)}>
+                      Transfer to Coretime chain
+                    </div>
+                  ) : (
+                    <div onClick={() => setMarketplaceModalOpen(true)}>Transfer to RegionX</div>
+                  )}
+                </>
               )}
               <div
                 onClick={() => {
@@ -285,6 +296,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           <TransferToMarketplaceModal
             isOpen={isMarketplaceModalOpen}
             onClose={() => setMarketplaceModalOpen(false)}
+            regionLocation={location || RegionLocation.CoretimeChain}
             regionId={regionId}
           />
         </ModalPortal>
