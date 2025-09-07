@@ -18,6 +18,7 @@ import { RegionId, toUnitFormatted } from '@/utils';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import { RegionLocation } from '@/coretime/regions';
+import { $selectedAccount } from '@/wallet';
 
 interface RegionCardHeaderProps {
   name: string;
@@ -66,6 +67,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   const [isInterlaceModalOpen, setInterlaceModalOpen] = useState(false);
   const [isMarketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
 
+  const selectedAccount = useUnit($selectedAccount);
   const network = useUnit($network);
   const isKusama = network === 'kusama';
   const paidFormatted =
@@ -74,6 +76,11 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
       : '-';
 
   const [copied, setCopied] = useState(false);
+
+  const isSelectedAccRegionOwner = (): boolean => {
+    if (!selectedAccount || !owner) return false;
+    return encodeAddress(selectedAccount.address, 42) === encodeAddress(owner, 42);
+  };
 
   const handleTransferClick = () => {
     setTransferModalOpen(true);
@@ -169,12 +176,27 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
             <div className={styles.dropdownMenu}>
-              <div onClick={() => setPartitionModalOpen(true)}>Partition</div>
-              <div onClick={() => setInterlaceModalOpen(true)}>Interlace</div>
-              <div onClick={handleTransferClick}>Transfer</div>
-              <div onClick={handleAssignClick}>Assign</div>
-              <div onClick={() => setSellModalOpen(true)}>Sell</div>
-              {isKusama && (
+              {isSelectedAccRegionOwner() && (
+                <>
+                  {location !== RegionLocation.RegionxChain && (
+                    <div onClick={() => setPartitionModalOpen(true)}>Partition</div>
+                  )}
+                  {location !== RegionLocation.RegionxChain && (
+                    <div onClick={() => setInterlaceModalOpen(true)}>Interlace</div>
+                  )}
+                  {/* TODO: support transfer on regionx chain */}
+                  {location !== RegionLocation.RegionxChain && (
+                    <div onClick={handleTransferClick}>Transfer</div>
+                  )}
+                  {location !== RegionLocation.RegionxChain && (
+                    <div onClick={handleAssignClick}>Assign</div>
+                  )}
+                  {location === RegionLocation.RegionxChain && (
+                    <div onClick={() => setSellModalOpen(true)}>Sell</div>
+                  )}
+                </>
+              )}
+              {isSelectedAccRegionOwner() && isKusama && (
                 <>
                   {location === RegionLocation.RegionxChain ? (
                     <div onClick={() => setMarketplaceModalOpen(true)}>
