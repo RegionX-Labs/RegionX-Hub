@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './my-regions.module.scss';
 import { useUnit } from 'effector-react';
-import { $regions, Region } from '@/coretime/regions';
+import { $regions, Region, RegionLocation } from '@/coretime/regions';
 import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '../../../components/elements/RegionCard';
 import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
@@ -366,8 +366,12 @@ function DraggableGrid(props: {
                   mask: new FixedSizeBinary(bitStringToUint8Array(maskToBin(region.mask))),
                 }}
                 regionData={{
-                  chainColor: 'greenDark',
-                  chainLabel: 'Coretime Chain',
+                  chainColor:
+                    region.location === RegionLocation.RegionxChain ? 'blueDark' : 'greenDark',
+                  chainLabel:
+                    region.location === RegionLocation.RegionxChain
+                      ? 'RegionX Chain'
+                      : 'Coretime Chain',
                   coreIndex: region.core,
                   consumed: 0,
                   coreOcupaccy: ((countBits(region.mask) * 720) / 57600) * 100,

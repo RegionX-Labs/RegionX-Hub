@@ -18,7 +18,7 @@ export const regionsRequested = createEvent<RegionsRequestPayload>();
 
 export const $regions = createStore<Region[]>([]);
 
-enum RegionLocation {
+export enum RegionLocation {
   CoretimeChain,
   RegionxChain,
 }
@@ -78,7 +78,7 @@ const getRegionsFx = createEffect(async (payload: RegionsRequestPayload): Promis
       (_r) => _r.begin === r.begin && _r.core === r.core && _r.mask === r.mask
     );
     console.log(match);
-  
+
     return {
       ...r,
       location: match ? RegionLocation.RegionxChain : RegionLocation.CoretimeChain,
