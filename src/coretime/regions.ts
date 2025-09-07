@@ -61,27 +61,20 @@ const getRegionsFx = createEffect(async (payload: RegionsRequestPayload): Promis
 
   const regions = data.regions.nodes;
 
-  // TODO: actually why i don't just filter regions from coretime chain based on if it is owned
-  // by the sovereign account?
-  // ANSWER: Because I can't see if it is locked or not. Based on if it is locked we should show
-  // the region bit differently.
-  // Also, I need to see the actual owner from the RegionX chain.
   let regionxRegions: Region[] = [];
   if (payload.network === Network.KUSAMA) {
     regionxRegions = await getRegionxRegions(payload.connections, payload.network);
   }
 
-  console.log(regionxRegions);
-
   return regions.map((r: Region) => {
     const match = regionxRegions.find(
       (_r) => _r.begin === r.begin && _r.core === r.core && _r.mask === r.mask
     );
-    console.log(match);
 
     return {
       ...r,
       location: match ? RegionLocation.RegionxChain : RegionLocation.CoretimeChain,
+      owner: match?.owner ?? r.owner,
       locked: match?.locked ?? false,
     };
   });

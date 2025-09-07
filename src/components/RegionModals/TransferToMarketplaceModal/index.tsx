@@ -29,10 +29,12 @@ import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 import { X } from 'lucide-react';
 import { u16, u32 } from 'scale-ts';
 import { u8aToHex } from '@polkadot/util';
+import { RegionLocation } from '@/coretime/regions';
 
 interface Props {
   isOpen: boolean;
   regionId: RegionId;
+  regionLocation: RegionLocation;
   onClose: () => void;
 }
 
@@ -44,7 +46,12 @@ const encodeRegionId = (regionId: RegionId): bigint => {
   return BigInt('0x' + hex);
 };
 
-const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose }) => {
+const TransferToMarketplaceModal: React.FC<Props> = ({
+  isOpen,
+  regionId,
+  regionLocation,
+  onClose,
+}) => {
   const accountData = useUnit($accountData);
   const selectedAccount = useUnit($selectedAccount);
   const network = useUnit($network);
@@ -53,7 +60,6 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!isOpen) return null;
-  console.log(encodeRegionId(regionId));
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
@@ -70,7 +76,14 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
   };
 
   const onModalConfirm = async () => {
-    toast.success('Pretend transfer to RegionX initiated');
+    if (regionLocation === RegionLocation.RegionxChain) {
+      await transferToCoretimeChain();
+    } else {
+      await transferToRegionxChain();
+    }
+  };
+
+  const transferToRegionxChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) return toast.error('Unknown network');
@@ -148,8 +161,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
     setIsModalOpen(false);
   };
 
-  const transferToCoretimeChain = () => {
-    toast.success('Pretend transfer to RegionX initiated');
+  const transferToCoretimeChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds || !networkChainIds.regionxChain) return toast.error('Unknown network');
@@ -254,7 +266,11 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2>Transfer to Marketplace Chain</h2>
+          <h2>
+            {regionLocation === RegionLocation.RegionxChain
+              ? `Transfer to Coretime chain`
+              : `Transfer to Marketplace Chain`}
+          </h2>
           <X size={20} className={styles.closeIcon} onClick={onClose} />
         </div>
 
