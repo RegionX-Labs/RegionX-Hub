@@ -6,7 +6,7 @@ import { $accountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
 import TransactionModal from '@/components/TransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
-import { RegionId, REGIONX_KUSAMA_PARA_ID } from '@/utils';
+import { CORETIME_PARA_ID, RegionId, REGIONX_KUSAMA_PARA_ID } from '@/utils';
 import Image from 'next/image';
 import {
   PolkadotCoretime,
@@ -53,6 +53,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!isOpen) return null;
+  console.log(encodeRegionId(regionId));
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
@@ -110,6 +111,89 @@ const TransferToMarketplaceModal: React.FC<Props> = ({ isOpen, regionId, onClose
             id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.X1(XcmV3Junction.PalletInstance(50)),
               parents: 0,
+            }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
+    setIsModalOpen(false);
+  };
+
+  const transferToCoretimeChain = () => {
+    toast.success('Pretend transfer to RegionX initiated');
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds || !networkChainIds.regionxChain) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.regionxChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata || !metadata.regionxChain)
+      return toast.error('Connection or metadata missing');
+
+    const tx = connection.client
+      .getTypedApi(metadata.regionxChain)
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 1,
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(selectedAccount.address)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            // fee payment
+            fun: XcmV3MultiassetFungibility.Fungible(BigInt(25000000000)), // TODO: NOT ENOUGHT ????
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.Here(),
+              parents: 1,
+            }),
+          },
+          {
+            fun: XcmV3MultiassetFungibility.NonFungible({
+              type: 'Index',
+              value: encodeRegionId(regionId),
+            }),
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.X2([
+                XcmV3Junction.Parachain(CORETIME_PARA_ID),
+                XcmV3Junction.PalletInstance(50),
+              ]),
+              parents: 1,
             }),
           },
         ]),
