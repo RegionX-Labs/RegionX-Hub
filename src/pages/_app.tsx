@@ -128,7 +128,7 @@ function App({ Component, pageProps }: AppProps) {
     if (!saleInfo) return;
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
     const afterTimeslice = saleInfo.regionBegin - regionDuration;
-    regionsRequested({ network, afterTimeslice });
+    regionsRequested({ connections, network, afterTimeslice });
   }, [network, saleInfo]);
 
   useEffect(() => {

@@ -90,6 +90,7 @@ const RegionCard: React.FC<RegionCardProps> = ({
         owner={regionData.owner}
         paid={regionData.paid}
         task={task}
+        location={regionData.location}
         onToggleRaw={() => setShowRawModal(true)}
       />
 

@@ -1,3 +1,4 @@
+import { RegionLocation } from '@/coretime/regions';
 import React from 'react';
 
 export interface SelectOption<T> {
@@ -20,6 +21,7 @@ export interface RegionData {
   consumed: number;
   currentUsage?: number;
   chainLabel: string;
+  location?: RegionLocation;
   chainColor:
     | 'yellowDark'
     | 'greenDark'
