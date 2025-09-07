@@ -169,11 +169,22 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
           <MoreHorizontal className={styles.dropdownIcon} onClick={toggleDropdown} />
           {showDropdown && (
             <div className={styles.dropdownMenu}>
-              <div onClick={() => setPartitionModalOpen(true)}>Partition</div>
-              <div onClick={() => setInterlaceModalOpen(true)}>Interlace</div>
-              <div onClick={handleTransferClick}>Transfer</div>
-              <div onClick={handleAssignClick}>Assign</div>
-              <div onClick={() => setSellModalOpen(true)}>Sell</div>
+              {location !== RegionLocation.RegionxChain && (
+                <div onClick={() => setPartitionModalOpen(true)}>Partition</div>
+              )}
+              {location !== RegionLocation.RegionxChain && (
+                <div onClick={() => setInterlaceModalOpen(true)}>Interlace</div>
+              )}
+              {/* TODO: support transfer on regionx chain */}
+              {location !== RegionLocation.RegionxChain && (
+                <div onClick={handleTransferClick}>Transfer</div>
+              )}
+              {location !== RegionLocation.RegionxChain && (
+                <div onClick={handleAssignClick}>Assign</div>
+              )}
+              {location === RegionLocation.RegionxChain && (
+                <div onClick={() => setSellModalOpen(true)}>Sell</div>
+              )}
               {isKusama && (
                 <>
                   {location === RegionLocation.RegionxChain ? (
