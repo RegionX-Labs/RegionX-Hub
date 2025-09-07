@@ -189,7 +189,7 @@ const TransferToMarketplaceModal: React.FC<Props> = ({
         assets: XcmVersionedAssets.V3([
           {
             // fee payment
-            fun: XcmV3MultiassetFungibility.Fungible(BigInt(25000000000)), // TODO: NOT ENOUGHT ????
+            fun: XcmV3MultiassetFungibility.Fungible(BigInt(25000000000)),
             id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
               parents: 1,
