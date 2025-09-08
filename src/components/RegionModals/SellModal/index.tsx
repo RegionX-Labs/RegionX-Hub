@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './sell-modal.module.scss';
 import { X } from 'lucide-react';
@@ -42,8 +44,6 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
       setPriceError(null);
     }
   }, [isOpen, selectedAccount]);
-
-  if (!isOpen) return null;
 
   const parsedValue = useMemo(() => safeParseNumber(priceInput), [priceInput]);
 
@@ -99,6 +99,8 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
   };
 
   const canSubmit = !priceError && !!address.trim();
+
+  if (!isOpen) return null;
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
