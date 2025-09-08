@@ -15,7 +15,7 @@ export type RegionListing = {
   region: Region;
   sale_recipient: string;
   seller: string;
-  timeslice_price: bigint;
+  price_data: bigint;
 };
 
 type Payload = { network: Network; connections: Record<ChainId, Connection> };

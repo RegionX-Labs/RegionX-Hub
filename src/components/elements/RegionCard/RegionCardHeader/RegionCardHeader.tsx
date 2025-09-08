@@ -309,7 +309,11 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
       {isSellModalOpen && (
         <ModalPortal>
-          <SellModal isOpen={isSellModalOpen} onClose={() => setSellModalOpen(false)} />
+          <SellModal
+            isOpen={isSellModalOpen}
+            regionId={regionId}
+            onClose={() => setSellModalOpen(false)}
+          />
         </ModalPortal>
       )}
 

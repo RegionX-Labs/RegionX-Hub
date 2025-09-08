@@ -10532,13 +10532,7 @@ type IRuntimeCalls = {
      * Get node features.
      * This is a staging method! Do not use on production runtimes!
      */
-    node_features: RuntimeDescriptor<
-      [],
-      {
-        bytes: Uint8Array;
-        bitsLen: number;
-      }
-    >;
+    node_features: RuntimeDescriptor<[], Array<0 | 1>>;
     /**
      * Approval voting configuration parameters
      */
@@ -11015,7 +11009,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-type IDescriptors = {
+export type Pas = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -11025,7 +11019,7 @@ type IDescriptors = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: IDescriptors;
+declare const _allDescriptors: Pas;
 export default _allDescriptors;
 export type PasApis = ApisFromDef<IRuntimeCalls>;
 export type PasQueries = QueryFromPalletsDef<PalletsTypedef>;

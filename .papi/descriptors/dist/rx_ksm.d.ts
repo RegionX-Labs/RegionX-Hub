@@ -20,7 +20,7 @@ import {
   I5sesotjlssv2d,
   Iffmde3ekjedi9,
   I4mddgoa69c0a2,
-  Ie0ispe532hk52,
+  Ia541gouk5rtbg,
   I95g6i7ilua7lq,
   Ieniouoqkq4icf,
   Phase,
@@ -81,7 +81,7 @@ import {
   Ifoca8vrd8ih06,
   I909f4uo6ptsk0,
   I1vf976h89f2ls,
-  I1d0il8190clpo,
+  I6vetompbjofrk,
   I5lbaj9tarv6eo,
   I7svnfko10tq2e,
   In7a38730s6qs,
@@ -102,12 +102,12 @@ import {
   I82nfqfkd48n10,
   I1jm8m1rh9e20v,
   I3o5j3bli1pd8e,
-  If7hr7mooe92bj,
+  Ictcbmisaqskpd,
   I5n4sebgkfr760,
-  I5kv0sb6tj3kh6,
+  Iapv4lbuh5787v,
   Ifs1i5fk9cqvr6,
-  Iag5kh52uta0gm,
-  I2re54ea9gs11l,
+  Ibq2jv2lpd5i04,
+  I3id331jshof60,
   Ieg3fd8p4pkt10,
   I8kg5ll427kfqq,
   I467333262q1l9,
@@ -119,10 +119,10 @@ import {
   I9iq22t0burs89,
   I5u8olqbbvfnvf,
   I5utcetro501ir,
-  Iatqec0cnvonmc,
-  Iel6tb1rt77pj6,
+  I6epbgles1esra,
+  Ibnb216mfum5ak,
   I8k3rnvpeeh4hv,
-  I46ofmh11j4ig7,
+  Ie73urubl0j0fi,
   Ifccifqltb5obi,
   Iadtsfv699cq8b,
   Ialpmgmhr3gk5r,
@@ -130,20 +130,20 @@ import {
   I3sdol54kg5jaq,
   I8fougodaj6di6,
   I81vt5eq60l4b6,
-  I8vkh2nct8vq6t,
-  I60pqn922avrt1,
-  I5ajsjat4kj7hm,
-  Ieru5h9aetrsa1,
-  Ia2flqsdmvbuf3,
+  I8aoudr94e702v,
+  I35tmmi1ruddiu,
+  I31tpdgpmjumiu,
+  I3b3l1d25j5om5,
+  I3pbbhqa4nds30,
   Ideaemvoneh309,
   I3d9o9d7epp66v,
-  Iapmm5piondnum,
+  Id4ms7j9mk02dr,
   I2u5bn94ddrvte,
   I6fuhn9ome8k57,
   I77ultvkvpa63m,
   I2eb501t8s6hsq,
   Ianmuoljk2sk1u,
-  Irus64k3liie5,
+  I59ub2i504dht7,
   I3vh014cqgmrfd,
   Ia5cotcvi888ln,
   I21jsa919m88fd,
@@ -166,8 +166,8 @@ import {
   Ic8hk838gccoml,
   Ia3ebg5qshpkmr,
   I4s60s3v5pfj6u,
-  I71tvvhftodm40,
-  I5vh6ge7pjn8i4,
+  I92fib0qahgaae,
+  I2lbd09aurgbov,
   Idfvl4h7v2kfe2,
   I9a2l9ljhllnnf,
   Ibq6b0nsk23kj8,
@@ -246,7 +246,7 @@ import {
   I43gmj577hn72u,
   I8a4jl4g97g9he,
   I3oso3uq2polk5,
-  I77onrdau864v4,
+  I91jd5rbi4e5af,
   I1iobfv5s47gvd,
   I2s3di2t1fsu8b,
   Ib7p7o0fu7bc1t,
@@ -265,7 +265,7 @@ import {
   Icerf8h8pdu8ss,
   I6spmpef2c7svf,
   Iei2mvq0mjvt81,
-  Ifeu1d05vd2br7,
+  I5s4igfthmvk0e,
   Ie9sr1iqcg3cgm,
   I1mqgk2tmnn9i2,
   I6lr8sctk0bi4e,
@@ -372,7 +372,7 @@ type IStorage = {
      * Events have a large in-memory size. Box the events to not go out-of-memory
      * just in case someone still reads them from within the runtime.
      */
-    Events: StorageDescriptor<[], Anonymize<Ie0ispe532hk52>, false, never>;
+    Events: StorageDescriptor<[], Anonymize<Ia541gouk5rtbg>, false, never>;
     /**
      * The number of events in the `Events<T>` list.
      */
@@ -1123,7 +1123,7 @@ type IStorage = {
      */
     Listings: StorageDescriptor<
       [Key: Anonymize<I1vf976h89f2ls>],
-      Anonymize<I1d0il8190clpo>,
+      Anonymize<I6vetompbjofrk>,
       true,
       never
     >;
@@ -1305,7 +1305,7 @@ type ICalls = {
     /**
      * Anonymously schedule a task.
      */
-    schedule: TxDescriptor<Anonymize<If7hr7mooe92bj>>;
+    schedule: TxDescriptor<Anonymize<Ictcbmisaqskpd>>;
     /**
      * Cancel an anonymously scheduled task.
      */
@@ -1313,7 +1313,7 @@ type ICalls = {
     /**
      * Schedule a named task.
      */
-    schedule_named: TxDescriptor<Anonymize<I5kv0sb6tj3kh6>>;
+    schedule_named: TxDescriptor<Anonymize<Iapv4lbuh5787v>>;
     /**
      * Cancel a named scheduled task.
      */
@@ -1321,11 +1321,11 @@ type ICalls = {
     /**
      * Anonymously schedule a task after a delay.
      */
-    schedule_after: TxDescriptor<Anonymize<Iag5kh52uta0gm>>;
+    schedule_after: TxDescriptor<Anonymize<Ibq2jv2lpd5i04>>;
     /**
      * Schedule a named task after a delay.
      */
-    schedule_named_after: TxDescriptor<Anonymize<I2re54ea9gs11l>>;
+    schedule_named_after: TxDescriptor<Anonymize<I3id331jshof60>>;
     /**
      * Set a retry configuration for a task so that, in case its scheduled run fails, it will
      * be retried after `period` blocks, for a total amount of `retries` retries or until it
@@ -1454,7 +1454,7 @@ type ICalls = {
     /**
      * Authenticates the sudo key and dispatches a function call with `Root` origin.
      */
-    sudo: TxDescriptor<Anonymize<Iatqec0cnvonmc>>;
+    sudo: TxDescriptor<Anonymize<I6epbgles1esra>>;
     /**
      * Authenticates the sudo key and dispatches a function call with `Root` origin.
      * This function does not check the weight of the call, and instead allows the
@@ -1462,7 +1462,7 @@ type ICalls = {
      *
      * The dispatch origin for this call must be _Signed_.
      */
-    sudo_unchecked_weight: TxDescriptor<Anonymize<Iel6tb1rt77pj6>>;
+    sudo_unchecked_weight: TxDescriptor<Anonymize<Ibnb216mfum5ak>>;
     /**
      * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
      * key.
@@ -1474,7 +1474,7 @@ type ICalls = {
      *
      * The dispatch origin for this call must be _Signed_.
      */
-    sudo_as: TxDescriptor<Anonymize<I46ofmh11j4ig7>>;
+    sudo_as: TxDescriptor<Anonymize<Ie73urubl0j0fi>>;
     /**
      * Permanently removes the sudo key.
      *
@@ -1617,7 +1617,7 @@ type ICalls = {
      * and the error of the failed call. If all were successful, then the `BatchCompleted`
      * event is deposited.
      */
-    batch: TxDescriptor<Anonymize<I8vkh2nct8vq6t>>;
+    batch: TxDescriptor<Anonymize<I8aoudr94e702v>>;
     /**
      * Send a call through an indexed pseudonym of the sender.
      *
@@ -1633,7 +1633,7 @@ type ICalls = {
      *
      * The dispatch origin for this call must be _Signed_.
      */
-    as_derivative: TxDescriptor<Anonymize<I60pqn922avrt1>>;
+    as_derivative: TxDescriptor<Anonymize<I35tmmi1ruddiu>>;
     /**
      * Send a batch of dispatch calls and atomically execute them.
      * The whole transaction will rollback and fail if any of the calls failed.
@@ -1649,7 +1649,7 @@ type ICalls = {
      * ## Complexity
      * - O(C) where C is the number of calls to be batched.
      */
-    batch_all: TxDescriptor<Anonymize<I8vkh2nct8vq6t>>;
+    batch_all: TxDescriptor<Anonymize<I8aoudr94e702v>>;
     /**
      * Dispatches a function call with a provided origin.
      *
@@ -1658,7 +1658,7 @@ type ICalls = {
      * ## Complexity
      * - O(1).
      */
-    dispatch_as: TxDescriptor<Anonymize<I5ajsjat4kj7hm>>;
+    dispatch_as: TxDescriptor<Anonymize<I31tpdgpmjumiu>>;
     /**
      * Send a batch of dispatch calls.
      * Unlike `batch`, it allows errors and won't interrupt.
@@ -1674,7 +1674,7 @@ type ICalls = {
      * ## Complexity
      * - O(C) where C is the number of calls to be batched.
      */
-    force_batch: TxDescriptor<Anonymize<I8vkh2nct8vq6t>>;
+    force_batch: TxDescriptor<Anonymize<I8aoudr94e702v>>;
     /**
      * Dispatch a function call with a specified weight.
      *
@@ -1683,7 +1683,7 @@ type ICalls = {
      *
      * The dispatch origin for this call must be _Root_.
      */
-    with_weight: TxDescriptor<Anonymize<Iel6tb1rt77pj6>>;
+    with_weight: TxDescriptor<Anonymize<Ibnb216mfum5ak>>;
   };
   Multisig: {
     /**
@@ -1700,7 +1700,7 @@ type ICalls = {
      * ## Complexity
      * O(Z + C) where Z is the length of the call and C its execution weight.
      */
-    as_multi_threshold_1: TxDescriptor<Anonymize<Ieru5h9aetrsa1>>;
+    as_multi_threshold_1: TxDescriptor<Anonymize<I3b3l1d25j5om5>>;
     /**
      * Register approval for a dispatch to be made from a deterministic composite account if
      * approved by a total of `threshold - 1` of `other_signatories`.
@@ -1742,7 +1742,7 @@ type ICalls = {
      * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
      * taken for its lifetime of `DepositBase + threshold * DepositFactor`.
      */
-    as_multi: TxDescriptor<Anonymize<Ia2flqsdmvbuf3>>;
+    as_multi: TxDescriptor<Anonymize<I3pbbhqa4nds30>>;
     /**
      * Register approval for a dispatch to be made from a deterministic composite account if
      * approved by a total of `threshold - 1` of `other_signatories`.
@@ -1813,7 +1813,7 @@ type ICalls = {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    proxy: TxDescriptor<Anonymize<Iapmm5piondnum>>;
+    proxy: TxDescriptor<Anonymize<Id4ms7j9mk02dr>>;
     /**
      * Register a proxy account for the sender that is able to make calls on its behalf.
      *
@@ -1942,7 +1942,7 @@ type ICalls = {
      * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
      * - `call`: The call to be made by the `real` account.
      */
-    proxy_announced: TxDescriptor<Anonymize<Irus64k3liie5>>;
+    proxy_announced: TxDescriptor<Anonymize<I59ub2i504dht7>>;
   };
   XcmpQueue: {
     /**
@@ -2345,7 +2345,7 @@ type ICalls = {
      * - `sale_recipient`: The `AccountId` receiving the payment from the sale. If not
      * specified this will be the caller.
      */
-    list_region: TxDescriptor<Anonymize<I71tvvhftodm40>>;
+    list_region: TxDescriptor<Anonymize<I92fib0qahgaae>>;
     /**
      * Extrinsic for unlisting a region on sale.
      *
@@ -2360,7 +2360,7 @@ type ICalls = {
      * - `region_id`: The region that is listed on sale.
      * - `new_timeslice_price`: The new timeslice price.
      */
-    update_region_price: TxDescriptor<Anonymize<I5vh6ge7pjn8i4>>;
+    update_region_price: TxDescriptor<Anonymize<I2lbd09aurgbov>>;
     /**
      * Extrinsic for purchasing a region listed on sale.
      *
@@ -3061,7 +3061,7 @@ type IEvent = {
     /**
      * A region got listed on sale.
      */
-    Listed: PlainDescriptor<Anonymize<I77onrdau864v4>>;
+    Listed: PlainDescriptor<Anonymize<I91jd5rbi4e5af>>;
     /**
         
          */
@@ -3073,7 +3073,7 @@ type IEvent = {
     /**
         
          */
-    PriceUpdated: PlainDescriptor<Anonymize<I5vh6ge7pjn8i4>>;
+    PriceUpdated: PlainDescriptor<Anonymize<I2lbd09aurgbov>>;
   };
   Orders: {
     /**
@@ -4090,6 +4090,10 @@ type IConstants = {
      * The priority of unsigned transactions.
      */
     UnsignedPriority: PlainDescriptor<bigint>;
+    /**
+        
+         */
+    ConsensusId: PlainDescriptor<FixedSizeBinary<4>>;
   };
   Market: {
     /**
@@ -4320,14 +4324,14 @@ type IRuntimeCalls = {
      * Query information of a dispatch class, weight, and fee of a given encoded `Call`.
      */
     query_call_info: RuntimeDescriptor<
-      [call: Anonymize<Ifeu1d05vd2br7>, len: number],
+      [call: Anonymize<I5s4igfthmvk0e>, len: number],
       Anonymize<I6spmpef2c7svf>
     >;
     /**
      * Query fee details of a given encoded `Call`.
      */
     query_call_fee_details: RuntimeDescriptor<
-      [call: Anonymize<Ifeu1d05vd2br7>, len: number],
+      [call: Anonymize<I5s4igfthmvk0e>, len: number],
       Anonymize<Iei2mvq0mjvt81>
     >;
     /**
@@ -4501,7 +4505,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-type IDescriptors = {
+export type Rx_ksm = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -4511,7 +4515,7 @@ type IDescriptors = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: IDescriptors;
+declare const _allDescriptors: Rx_ksm;
 export default _allDescriptors;
 export type Rx_ksmApis = ApisFromDef<IRuntimeCalls>;
 export type Rx_ksmQueries = QueryFromPalletsDef<PalletsTypedef>;
@@ -4520,7 +4524,7 @@ export type Rx_ksmEvents = EventsFromPalletsDef<PalletsTypedef>;
 export type Rx_ksmErrors = ErrorsFromPalletsDef<PalletsTypedef>;
 export type Rx_ksmConstants = ConstFromPalletsDef<PalletsTypedef>;
 export type Rx_ksmViewFns = ViewFnsFromPalletsDef<PalletsTypedef>;
-export type Rx_ksmCallData = Anonymize<Ifeu1d05vd2br7> & {
+export type Rx_ksmCallData = Anonymize<I5s4igfthmvk0e> & {
   value: {
     type: string;
   };
