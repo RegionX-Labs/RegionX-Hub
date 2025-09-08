@@ -216,13 +216,12 @@
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: $darkBackground2;
+    background-color: $darkBackground1;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
     padding: 8px 0;
     z-index: 10;
     min-width: 170px;
-
     div {
       padding: 8px 16px;
       color: $white;

@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
                 Parachain Dashboard
               </li>
               <li className={styles.navItem} onClick={() => handleNavigation('secondary-market')}>
-                Secondary Market
+                Secondary Market <span className={styles.newLabel}>New</span>
               </li>
             </ul>
           </div>
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
             Parachain Dashboard
           </li>
           <li className={styles.navItem} onClick={() => handleNavigation('secondary-market')}>
-            Secondary Market
+            Secondary Market <span className={styles.newLabel}>New</span>
           </li>
         </ul>
 

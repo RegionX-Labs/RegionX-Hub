@@ -187,20 +187,20 @@ export default function HistoricalPricingChart() {
         {
           name: 'Sellout price',
           type: 'line',
-          smooth: true,
+          smooth: false,
           showSymbol: true,
           symbolSize: 6,
-          lineStyle: { width: 2, color: '#ffef2f' },
-          itemStyle: { color: '#ffef2f' },
+          lineStyle: { width: 2, color: '#eab308' },
+          itemStyle: { color: '#eab308' },
           data: data.map((d) => Number(fmt(d.price))),
         },
         {
           name: 'Average bulk price',
           type: 'line',
-          smooth: true,
+          smooth: false,
           showSymbol: false,
-          lineStyle: { width: 2, type: 'dashed', color: '#00c6ff' },
-          itemStyle: { color: '#00c6ff' },
+          lineStyle: { width: 2, type: 'dashed', color: '#0cc184' },
+          itemStyle: { color: '#0cc184' },
           data: data.map((d) => Number(fmt(d.average))),
         },
       ],
@@ -218,7 +218,7 @@ export default function HistoricalPricingChart() {
       ) : !data.length || !option ? (
         <div className={styles.placeholder}>No data found.</div>
       ) : (
-        <ReactECharts option={option} style={{ height: 315, width: '100%' }} />
+        <ReactECharts option={option} style={{ height: 330, width: '100%' }} />
       )}
     </div>
   );

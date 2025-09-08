@@ -1,14 +1,18 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
 @use 'sass:color';
 
 .card {
   background-color: $darkBackground3;
   border: 1px solid var(--card-border);
   border-radius: 12px;
-  padding: 25px;
+  padding: 18px;
   color: $white;
+
+  @media (max-width: 1285px) and (min-width: 1025px) {
+    padding: 25px;
+  }
+  height: 100%;
   display: flex;
   flex-direction: column;
   @include Inter;
@@ -19,6 +23,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  flex: 0 0 auto;
 }
 
 .title {
@@ -34,4 +39,27 @@
   border-radius: 10px;
   padding: 4px 8px;
   font-size: 0.85rem;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+}
+
+.placeholder {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
 }

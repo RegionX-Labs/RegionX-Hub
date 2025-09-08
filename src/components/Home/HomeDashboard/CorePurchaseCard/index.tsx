@@ -97,7 +97,7 @@ export default function CorePurchaseCard({ view }: Props) {
       return toast.error('Cannot purchase during interlude');
     if (coresRemaining === 0) return toast.error('No more cores remaining');
 
-    if (isExtended && buyMultiple) {
+    if (buyMultiple) {
       if (numCores === null || numCores <= 0 || numCores > coresRemaining) {
         return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
       }
@@ -127,7 +127,7 @@ export default function CorePurchaseCard({ view }: Props) {
 
     const api = connection.client.getTypedApi(metadata.coretimeChain);
 
-    const times = isExtended && buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
+    const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
 
     const calls = Array.from(
       { length: times },
@@ -184,41 +184,39 @@ export default function CorePurchaseCard({ view }: Props) {
       </div>
 
       <div className={styles.multiCoreWrapper}>
-        {isExtended && (
-          <div className={styles.multiCoreRow}>
-            <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((p) => !p)}>
-              <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
-              <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
-                Single
-              </div>
-              <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
-                Multiple
-              </div>
+        <div className={styles.multiCoreRow}>
+          <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((p) => !p)}>
+            <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
+            <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
+              Single
             </div>
-
-            {buyMultiple && (
-              <input
-                type='text'
-                inputMode='numeric'
-                pattern='[0-9]*'
-                className={styles.coreInput}
-                value={numCores === null ? '' : String(numCores)}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (/^\d*$/.test(raw)) setNumCores(raw === '' ? null : parseInt(raw, 10));
-                }}
-                onKeyDown={(e) => {
-                  if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) e.preventDefault();
-                }}
-                placeholder='Amount'
-              />
-            )}
+            <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
+              Multiple
+            </div>
           </div>
-        )}
+
+          {buyMultiple && (
+            <input
+              type='text'
+              inputMode='numeric'
+              pattern='[0-9]*'
+              className={styles.coreInput}
+              value={numCores === null ? '' : String(numCores)}
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (/^\d*$/.test(raw)) setNumCores(raw === '' ? null : parseInt(raw, 10));
+              }}
+              onKeyDown={(e) => {
+                if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) e.preventDefault();
+              }}
+              placeholder='Amount'
+            />
+          )}
+        </div>
 
         <button onClick={openModal} className={styles.buyButton}>
           Purchase New Core
-          {isExtended && buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
+          {buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
         </button>
       </div>
 
