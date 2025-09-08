@@ -367,10 +367,16 @@ function DraggableGrid(props: {
                 }}
                 regionData={{
                   chainColor:
-                    region.location === RegionLocation.RegionxChain ? 'blueDark' : 'greenDark',
+                    region.location === RegionLocation.RegionxChain
+                      ? region.locked
+                        ? 'teal'
+                        : 'blueDark'
+                      : 'greenDark',
                   chainLabel:
                     region.location === RegionLocation.RegionxChain
-                      ? 'RegionX Chain'
+                      ? region.locked
+                        ? 'Listed on Market'
+                        : 'RegionX Chain'
                       : 'Coretime Chain',
                   coreIndex: region.core,
                   consumed: 0,
