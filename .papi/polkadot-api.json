@@ -41,9 +41,10 @@
       "codeHash": "0xa6a409a4fd66a4b5d1e96024b5ddedf814532b7eec8cea72f537ff8acdf7cfe5"
     },
     "rx_ksm": {
-      "wsUrl": "ws://127.0.0.1:8001",
+      "wsUrl": "wss://regionx-kusama-rpc-lb.zeeve.net/ld940yl9c6/rpc",
       "metadata": ".papi/metadata/rx_ksm.scale",
-      "genesis": "0x4545454545454545454545454545454545454545454545454545454545454545"
+      "genesis": "0x086319b29662e34a4f7a3de034afe64c93e3ed477e3aed3ab3ef6e31d33bc179",
+      "codeHash": "0xf0cc7f09f6cd9b9901991b409cb7c2fdb4e7f11a79f0dd30861b1428da66453d"
     },
     "ksm_people": {
       "wsUrl": "wss://sys.ibp.network/people-kusama",

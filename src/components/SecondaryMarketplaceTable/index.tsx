@@ -58,10 +58,6 @@ export default function SecondaryMarketplaceTable() {
     });
   };
 
-  const calculatePrice = (listing: RegionListing): bigint => {
-    return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin);
-  };
-
   const parseNumber = (value: string) => parseFloat(value.replace(/[^\d.]/g, ''));
 
   const filteredData = tableData.filter((row: any) => {
@@ -128,7 +124,7 @@ export default function SecondaryMarketplaceTable() {
     const client = connection.client;
 
     const tx = client.getTypedApi(metadata.regionxChain).tx.Market.purchase_region({
-      max_price: calculatePrice(listing),
+      max_price: listing.price_data,
       region_id: {
         begin: listing.region.begin,
         core: listing.region.core,
@@ -167,7 +163,7 @@ export default function SecondaryMarketplaceTable() {
           Timeline: { cellType: 'text' as const, data: `${beginDate} → ${endDate}` },
           Price: {
             cellType: 'text' as const,
-            data: toUnitFormatted(network, calculatePrice(listing)),
+            data: toUnitFormatted(network, listing.price_data),
           },
           Deployment: { cellType: 'text' as const, data: `Usable from ${beginDate}` },
           CorePercentage: {

@@ -26,19 +26,19 @@ export default function SecondaryMarketOverview() {
     if (listedRegions.length < 1) return;
 
     const averageTimeslicePrice = listedRegions.length
-      ? listedRegions.reduce((sum, r) => sum + r.timeslice_price, BigInt(0)) /
+      ? listedRegions.reduce((sum, r) => sum + r.price_data, BigInt(0)) /
         BigInt(listedRegions.length)
       : BigInt(0);
 
     setAverageBlockPrice(averageTimeslicePrice / BigInt(80));
 
     const lowestPricePerTimeslice = listedRegions.reduce(
-      (min, r) => (r.timeslice_price < min ? r.timeslice_price : min),
-      listedRegions[0].timeslice_price
+      (min, r) => (r.price_data < min ? r.price_data : min),
+      listedRegions[0].price_data
     );
     setLowestBlockPrice(lowestPricePerTimeslice / BigInt(80));
 
-    const _bestListing = listedRegions.find((l) => l.timeslice_price === lowestPricePerTimeslice);
+    const _bestListing = listedRegions.find((l) => l.price_data === lowestPricePerTimeslice);
     setBestListing(_bestListing ?? null);
   }, [listedRegions]);
 
@@ -53,10 +53,6 @@ export default function SecondaryMarketOverview() {
     accountData?.coretimeChainData?.free != null
       ? toUnitFormatted(network, accountData.coretimeChainData.free)
       : '-';
-
-  const calculatePrice = (listing: RegionListing): bigint => {
-    return listing.timeslice_price * BigInt(listing.region.end - listing.region.begin);
-  };
 
   return (
     <div className={styles.card}>
@@ -83,7 +79,7 @@ export default function SecondaryMarketOverview() {
           {bestListing ? `Core ID ${bestListing.region.core}` : '-'}
         </div>
         <div className={styles.listingPrice}>
-          {bestListing ? toUnitFormatted(network, calculatePrice(bestListing)) : '-'}
+          {bestListing ? toUnitFormatted(network, bestListing.price_data) : '-'}
         </div>
         <button className={styles.buyButton}>Buy Now</button>
       </div>
