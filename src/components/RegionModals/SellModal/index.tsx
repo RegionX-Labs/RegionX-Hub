@@ -4,9 +4,13 @@ import { X } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { $connections, $network } from '@/api/connection';
+import { RegionId, fromUnit } from '@/utils';
 
 interface SellModalProps {
   isOpen: boolean;
+  regionId: RegionId;
   onClose: () => void;
 }
 
@@ -22,12 +26,14 @@ const safeParseNumber = (s: string) => {
   return Number(s);
 };
 
-const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose }) => {
+const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
   const [priceInput, setPriceInput] = useState('');
   const [address, setAddress] = useState('');
   const [priceError, setPriceError] = useState<string | null>(null);
 
   const selectedAccount = useUnit($selectedAccount);
+  const network = useUnit($network);
+  const connections = useUnit($connections);
 
   useEffect(() => {
     if (isOpen && selectedAccount?.address) setAddress(selectedAccount.address);
@@ -61,10 +67,35 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, onClose }) => {
       toast.error('Address is required.');
       return;
     }
-    const payload = { type: 'absolute', price: parsedValue, address };
-    console.log('List payload:', payload);
-    toast.success('Not supported yet');
-    onClose();
+
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds || !networkChainIds.regionxChain) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.regionxChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata || !metadata.regionxChain)
+      return toast.error('Connection or metadata missing');
+
+    const tx = connection.client.getTypedApi(metadata.regionxChain).tx.Market.list_region({
+      region_id: regionId,
+      sale_recipient: selectedAccount.address,
+      price_data: fromUnit(network, Number(price)),
+    });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(<span>Transaction submitted.</span>, { id: toastId });
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
   };
 
   const canSubmit = !priceError && !!address.trim();
