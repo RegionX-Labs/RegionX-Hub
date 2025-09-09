@@ -14,6 +14,9 @@
   border-radius: 20px;
   border: 1px solid var(--border-modal);
   overflow-x: auto;
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+  }
 }
 
 .secondaryMarketTableInner {
