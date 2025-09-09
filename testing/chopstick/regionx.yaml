@@ -9,6 +9,8 @@ import-storage:
         - providers: 1
           data:
             free: 1000000000000000
+  Sudo:
+    Key: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
   Regions:
     Regions:
       [
@@ -17,25 +19,18 @@ import-storage:
           {
             owner: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY,
             locked: true,
-            record:
-              {
-                Available:
-                  {
-                    end: 376488,
-                    owner: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    paid: null,
-                  },
-              },
+            record: { Unavailable },
           },
         ],
       ]
   Market:
-    Listings: [
+    Listings:
+      [
         [
           [{ core: 101, begin: 371448, mask: '0xffffffffffffffffffff' }],
           {
             seller: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY,
-            timeslice_price: 1000000000, # 0.001 KSM / timeslice
+            price_data: 1000000000,
             sale_recipient: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY,
           },
         ],

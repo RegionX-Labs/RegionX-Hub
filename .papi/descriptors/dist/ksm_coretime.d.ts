@@ -4339,7 +4339,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-export type Ksm_coretime = {
+type IDescriptors = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -4349,7 +4349,7 @@ export type Ksm_coretime = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: Ksm_coretime;
+declare const _allDescriptors: IDescriptors;
 export default _allDescriptors;
 export type Ksm_coretimeApis = ApisFromDef<IRuntimeCalls>;
 export type Ksm_coretimeQueries = QueryFromPalletsDef<PalletsTypedef>;

@@ -13,6 +13,7 @@ import SellModal from '../../../RegionModals/SellModal';
 import InterlaceModal from '../../../RegionModals/InterlaceModal';
 import TransferToMarketplaceModal from '../../../RegionModals/TransferToMarketplaceModal';
 import ModalPortal from '@/components/ModalPortal';
+import UnlistModal from '@/components/RegionModals/UnlistModal';
 
 import { RegionId, toUnitFormatted } from '@/utils';
 import { useUnit } from 'effector-react';
@@ -66,6 +67,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   const [isSellModalOpen, setSellModalOpen] = useState(false);
   const [isInterlaceModalOpen, setInterlaceModalOpen] = useState(false);
   const [isMarketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
+  const [isUnlistModalOpen, setUnlistModalOpen] = useState(false);
 
   const selectedAccount = useUnit($selectedAccount);
   const network = useUnit($network);
@@ -126,9 +128,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
@@ -179,12 +179,25 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
               {isSelectedAccRegionOwner() && (
                 <>
                   {location !== RegionLocation.RegionxChain && (
-                    <div onClick={() => setPartitionModalOpen(true)}>Partition</div>
+                    <div
+                      onClick={() => {
+                        setPartitionModalOpen(true);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      Partition
+                    </div>
                   )}
                   {location !== RegionLocation.RegionxChain && (
-                    <div onClick={() => setInterlaceModalOpen(true)}>Interlace</div>
+                    <div
+                      onClick={() => {
+                        setInterlaceModalOpen(true);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      Interlace
+                    </div>
                   )}
-                  {/* TODO: support transfer on regionx chain */}
                   {location !== RegionLocation.RegionxChain && (
                     <div onClick={handleTransferClick}>Transfer</div>
                   )}
@@ -192,21 +205,59 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
                     <div onClick={handleAssignClick}>Assign</div>
                   )}
                   {location === RegionLocation.RegionxChain && (
-                    <div onClick={() => setSellModalOpen(true)}>Sell</div>
+                    <div
+                      onClick={() => {
+                        setSellModalOpen(true);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      Sell
+                    </div>
+                  )}
+                  {location === RegionLocation.RegionxChain && (
+                    <div
+                      onClick={() => {
+                        setUnlistModalOpen(true);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      Unlist
+                    </div>
                   )}
                 </>
               )}
+
               {isSelectedAccRegionOwner() && isKusama && (
                 <>
                   {location === RegionLocation.RegionxChain ? (
-                    <div onClick={() => setMarketplaceModalOpen(true)}>
+                    <div
+                      onClick={() => {
+                        setMarketplaceModalOpen(true);
+                        setShowDropdown(false);
+                      }}
+                    >
                       Transfer to Coretime chain
                     </div>
                   ) : (
-                    <div onClick={() => setMarketplaceModalOpen(true)}>Transfer to RegionX</div>
+                    <div
+                      onClick={() => {
+                        setMarketplaceModalOpen(true);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      Transfer to RegionX
+                    </div>
                   )}
                 </>
               )}
+              <div
+                onClick={() => {
+                  setUnlistModalOpen(true);
+                  setShowDropdown(false);
+                }}
+              >
+                Unlist
+              </div>
               <div
                 onClick={() => {
                   onToggleRaw?.();
@@ -325,6 +376,12 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             regionLocation={location || RegionLocation.CoretimeChain}
             regionId={regionId}
           />
+        </ModalPortal>
+      )}
+
+      {isUnlistModalOpen && (
+        <ModalPortal>
+          <UnlistModal isOpen={isUnlistModalOpen} onClose={() => setUnlistModalOpen(false)} />
         </ModalPortal>
       )}
     </>

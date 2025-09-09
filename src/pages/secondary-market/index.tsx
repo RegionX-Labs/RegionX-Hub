@@ -48,9 +48,11 @@ export default function SecondaryMarket() {
         <div className={styles.SecondaryMarketOverview}>
           <SecondaryMarketOverview />
         </div>
+
         <div className={styles.AuctionPriceOverview}>
           <AuctionPriceOverview />
         </div>
+
         <div className={styles.PricingChartCard}>
           <HistoricalPricingChart />
         </div>

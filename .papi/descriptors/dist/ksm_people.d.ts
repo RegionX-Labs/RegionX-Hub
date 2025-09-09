@@ -4136,7 +4136,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-export type Ksm_people = {
+type IDescriptors = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -4146,7 +4146,7 @@ export type Ksm_people = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: Ksm_people;
+declare const _allDescriptors: IDescriptors;
 export default _allDescriptors;
 export type Ksm_peopleApis = ApisFromDef<IRuntimeCalls>;
 export type Ksm_peopleQueries = QueryFromPalletsDef<PalletsTypedef>;

@@ -2,6 +2,18 @@
 @use '../../styles/mixins' as *;
 @use 'sass:color';
 
+.secondaryMarketPage {
+  width: 100%;
+  padding: 100px 0;
+  contain: layout paint;
+
+  @media (min-width: 1135px) {
+    max-width: 97%;
+    margin: 0 auto;
+    padding: 100px 20px;
+  }
+}
+
 .secondaryMarketTableContainer {
   width: 100%;
   margin-top: 200px;
@@ -11,8 +23,6 @@
   @include Inter;
   border-radius: 20px;
   margin-bottom: 45px;
-  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
-
   overflow-x: auto;
 }
 
@@ -46,17 +56,18 @@
   transition: background-color 0.2s;
 }
 
-.secondaryMarketPage {
-  width: 100%;
-  padding: 100px 0px;
-}
-
 .cardsRow {
   display: flex;
   gap: 20px;
-  align-items: stretch;
   justify-content: space-between;
   margin-bottom: 10px;
+  align-items: stretch;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
 
   @media (max-width: 1024px) {
     flex-direction: column;
@@ -67,24 +78,39 @@
   flex: 1.1;
   min-width: 300px;
   max-width: 30%;
-  @media (max-width: 1024px) {
-    max-width: 100%;
-  }
 }
 
 .AuctionPriceOverview {
   flex: 1;
   max-width: 450px;
   width: 100%;
-  @media (max-width: 1024px) {
-    max-width: 100%;
-  }
 }
 
 .PricingChartCard {
   flex: 1;
   height: 100%;
   max-width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .SecondaryMarketOverview,
+  .AuctionPriceOverview,
+  .PricingChartCard {
+    max-width: 100% !important;
+  }
+}
+
+.SecondaryMarketOverview > *,
+.AuctionPriceOverview > *,
+.PricingChartCard > * {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.SecondaryMarketOverview,
+.AuctionPriceOverview,
+.PricingChartCard {
+  min-height: 260px;
 }
 
 .netWarnOverlay {
