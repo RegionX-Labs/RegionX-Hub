@@ -22,6 +22,7 @@ export interface RegionData {
   currentUsage?: number;
   chainLabel: string;
   location?: RegionLocation;
+  locked?: boolean;
   chainColor:
     | 'yellowDark'
     | 'greenDark'

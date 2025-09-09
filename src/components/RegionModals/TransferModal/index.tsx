@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import styles from './transfer-modal.module.scss';
 import AddressInput from '../../elements/AdressInput/AddressInput';
 import { ArrowDown, X } from 'lucide-react';
-import Image from 'next/image';
 import { useUnit } from 'effector-react';
-import { $selectedAccount } from '@/wallet';
+import { $selectedAccount, WalletAccount } from '@/wallet';
 import Identicon from '@polkadot/react-identicon';
 import { $accountData, getAccountData, MultiChainAccountData } from '@/account';
 import { $connections, $network } from '@/api/connection';
@@ -13,14 +12,21 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { RegionId } from '@/utils';
 import TransactionModal from '@/components/TransactionModal';
 import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
+import { RegionLocation } from '@/coretime/regions';
 
 interface TransferModalProps {
   isOpen: boolean;
   regionId: RegionId;
+  regionLocation: RegionLocation;
   onClose: () => void;
 }
 
-const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose }) => {
+const TransferModal: React.FC<TransferModalProps> = ({
+  isOpen,
+  regionId,
+  regionLocation,
+  onClose,
+}) => {
   const accountData = useUnit($accountData);
   const connections = useUnit($connections);
   const network = useUnit($network);
@@ -61,6 +67,14 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
       return;
     }
 
+    if (regionLocation === RegionLocation.CoretimeChain) {
+      transferOnCoretimeChain(selectedAccount, destination);
+    } else if (regionLocation === RegionLocation.RegionxChain) {
+      transferOnRegionxChain(selectedAccount, destination);
+    }
+  };
+
+  const transferOnCoretimeChain = async (account: WalletAccount, new_owner: string) => {
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) {
       toast.error('Unknown network');
@@ -81,11 +95,11 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
 
     const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.transfer({
       region_id: regionId,
-      new_owner: destination,
+      new_owner,
     });
 
     const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+    tx.signSubmitAndWatch(account.polkadotSigner).subscribe(
       (ev) => {
         toast.loading(
           <span>
@@ -108,7 +122,53 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, regionId, onClose
             console.log(err);
           } else {
             toast.success('Transaction succeded!', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
+            getAccountData({ account: account.address, connections, network });
+          }
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
+  };
+
+  const transferOnRegionxChain = async (account: WalletAccount, new_owner: string) => {
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds || !networkChainIds.regionxChain) {
+      toast.error('Unknown network');
+      return;
+    }
+    const connection = connections[networkChainIds.regionxChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+    const metadata = getNetworkMetadata(network);
+    if (!metadata || !metadata.regionxChain) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    const tx = client.getTypedApi(metadata.regionxChain).tx.Regions.transfer({
+      region_id: regionId,
+      new_owner,
+    });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(account.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(<span>Transaction submitted</span>, { id: toastId });
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            const err: any = ev.dispatchError;
+            toast.error('Transaction failed', { id: toastId });
+            console.log(err);
+          } else {
+            toast.success('Transaction succeded!', { id: toastId });
+            getAccountData({ account: account.address, connections, network });
           }
         }
       },
