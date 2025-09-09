@@ -131,21 +131,17 @@ export default function SecondaryMarketplaceTable() {
         mask: new FixedSizeBinary(bitStringToUint8Array(maskToBin(listing.region.mask))),
       },
     });
+    const toastId = toast.loading('Transaction submitted');
     tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
       (ev) => {
+        toast.loading(<span>Transaction submitted.</span>, { id: toastId });
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) {
-            const err: any = ev.dispatchError;
-            toast.error('Transaction failed');
-            console.log(err);
-          } else {
-            toast.success('Transaction succeded!');
-            getAccountData({ account: selectedAccount.address, connections, network });
-          }
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
         }
       },
       (e) => {
-        toast.error('Transaction cancelled');
+        toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
     );
