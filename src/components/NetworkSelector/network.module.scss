@@ -1,3 +1,7 @@
 .smallIcon {
   margin-right: 10px;
 }
+.disabledLook {
+  filter: grayscale(95%);
+  opacity: 1;
+}
