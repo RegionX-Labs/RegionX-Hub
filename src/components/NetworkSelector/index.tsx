@@ -12,21 +12,21 @@ import { $network } from '@/api/connection';
 import styles from './network.module.scss';
 import Select from '../elements/Select';
 
+const DISABLED_NETWORKS = new Set<Network>([Network.WESTEND]);
+
 const NetworkSelector = () => {
   const router = useRouter();
-  const network = useUnit($network);
+  const current = useUnit($network);
+  const selectedValue = DISABLED_NETWORKS.has(current) ? Network.POLKADOT : current;
 
   const handleChange = (value: Network | null) => {
-    if (value) {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, network: value },
-        },
-        undefined,
-        { shallow: false }
-      );
-    }
+    if (!value) return;
+    if (DISABLED_NETWORKS.has(value)) return;
+    router.push(
+      { pathname: router.pathname, query: { ...router.query, network: value } },
+      undefined,
+      { shallow: false }
+    );
   };
 
   const networks = [
@@ -76,11 +76,12 @@ const NetworkSelector = () => {
       key: 'Westend',
       value: Network.WESTEND,
       label: 'Westend',
+      disabled: true,
       icon: (
         <Image
           src={WestendIcon.src}
           alt='Westend'
-          className={styles.smallIcon}
+          className={`${styles.smallIcon} ${styles.disabledLook}`}
           width={20}
           height={20}
         />
@@ -88,7 +89,14 @@ const NetworkSelector = () => {
     },
   ];
 
-  return <Select selectedValue={network} onChange={handleChange} options={networks} />;
+  return (
+    <Select
+      selectedValue={selectedValue}
+      onChange={handleChange}
+      options={networks}
+      isOptionDisabled={(v) => v === Network.WESTEND}
+    />
+  );
 };
 
 export default NetworkSelector;

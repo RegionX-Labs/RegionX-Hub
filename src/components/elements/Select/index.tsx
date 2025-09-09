@@ -17,6 +17,8 @@ interface SelectProps<T> {
   showOnlySelectedIcon?: boolean;
   variant?: 'default' | 'secondary';
   searchPlaceholder?: string;
+  /** NEW: disable specific values (no layout change) */
+  isOptionDisabled?: (value: T | null) => boolean;
 }
 
 const Select = <T,>({
@@ -29,17 +31,25 @@ const Select = <T,>({
   showOnlySelectedIcon = false,
   variant = 'default',
   searchPlaceholder = 'Search...',
+  isOptionDisabled,
 }: SelectProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState<T | null>(selectedValue);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const isDisabledValue = (v: T | null) => !!isOptionDisabled?.(v);
+
   useEffect(() => {
-    setSelected(selectedValue ?? null);
-  }, [selectedValue]);
+    if (isDisabledValue(selectedValue ?? null)) {
+      setSelected(null);
+    } else {
+      setSelected(selectedValue ?? null);
+    }
+  }, [selectedValue, isOptionDisabled]);
 
   const handleOptionClick = (value: T | null) => {
+    if (isDisabledValue(value)) return;
     setSelected(value);
     setIsDropdownOpen(false);
     onChange?.(value);
@@ -129,32 +139,38 @@ const Select = <T,>({
                 No results
               </li>
             )}
-            {filteredOptions.map((option) => (
-              <li
-                key={option.key}
-                onClick={() => handleOptionClick(option.value)}
-                className={`${styles['selectDropdown-optionList-optionItem']} ${
-                  option.value === selected ? styles.selected : ''
-                }`}
-                role='option'
-                aria-selected={option.value === selected}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                  }}
+            {filteredOptions.map((option) => {
+              const isOptDisabled = isDisabledValue(option.value);
+              const isSelected = option.value === selected;
+
+              return (
+                <li
+                  key={option.key}
+                  onClick={() => handleOptionClick(option.value)}
+                  className={`${styles['selectDropdown-optionList-optionItem']} ${
+                    isSelected ? styles.selected : ''
+                  } ${isOptDisabled ? styles['optionDisabled'] : ''}`}
+                  role='option'
+                  aria-selected={isSelected}
+                  aria-disabled={isOptDisabled}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {option.icon}
-                    <span style={{ marginLeft: 8 }}>{option.label}</span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      {option.icon}
+                      <span style={{ marginLeft: 8 }}>{option.label}</span>
+                    </div>
+                    {option.extra && <div style={{ marginLeft: 12 }}>{option.extra}</div>}
                   </div>
-                  {option.extra && <div style={{ marginLeft: 12 }}>{option.extra}</div>}
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
