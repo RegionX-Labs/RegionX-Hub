@@ -61,11 +61,6 @@
   border-radius: 8px;
   gap: 8px;
   margin-top: 6px;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 
 .listingId {
@@ -109,10 +104,6 @@
   flex-direction: column;
   gap: 8px;
   margin-top: 10px;
-
-  @media (max-width: 480px) {
-    align-items: flex-start;
-  }
 }
 
 .balanceItem {
@@ -120,12 +111,6 @@
   justify-content: space-between;
   font-size: 0.85rem;
   font-weight: 500;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
 }
 
 .label {
@@ -136,10 +121,6 @@
   color: $white;
   font-weight: 600;
   text-align: right;
-
-  @media (max-width: 480px) {
-    text-align: left;
-  }
 }
 
 .alignRight {
