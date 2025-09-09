@@ -33,6 +33,7 @@ interface RegionCardHeaderProps {
   regionEndTimeslice: number;
   task: string;
   location?: RegionLocation;
+  locked?: boolean;
   owner?: string;
   paid?: string | bigint;
   onToggleRaw?: () => void;
@@ -52,6 +53,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
   paid,
   task,
   location,
+  locked,
   onToggleRaw,
 }) => {
   const publicKey = blake2AsU8a(`${regionStart}-${regionEnd}-${coreIndex}`);
@@ -198,13 +200,11 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
                       Interlace
                     </div>
                   )}
-                  {location !== RegionLocation.RegionxChain && (
-                    <div onClick={handleTransferClick}>Transfer</div>
-                  )}
+                  {!locked && <div onClick={handleTransferClick}>Transfer</div>}
                   {location !== RegionLocation.RegionxChain && (
                     <div onClick={handleAssignClick}>Assign</div>
                   )}
-                  {location === RegionLocation.RegionxChain && (
+                  {location === RegionLocation.RegionxChain && !locked && (
                     <div
                       onClick={() => {
                         setSellModalOpen(true);
@@ -214,7 +214,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
                       Sell
                     </div>
                   )}
-                  {location === RegionLocation.RegionxChain && (
+                  {location === RegionLocation.RegionxChain && locked && (
                     <div
                       onClick={() => {
                         setUnlistModalOpen(true);
@@ -250,14 +250,6 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
                   )}
                 </>
               )}
-              <div
-                onClick={() => {
-                  setUnlistModalOpen(true);
-                  setShowDropdown(false);
-                }}
-              >
-                Unlist
-              </div>
               <div
                 onClick={() => {
                   onToggleRaw?.();
@@ -322,6 +314,7 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
             isOpen={isTransferModalOpen}
             onClose={() => setTransferModalOpen(false)}
             regionId={regionId}
+            regionLocation={location || RegionLocation.CoretimeChain}
           />
         </ModalPortal>
       )}

@@ -389,6 +389,7 @@ function DraggableGrid(props: {
                   regionEndTimeslice: region.end,
                   currentUsage: 0,
                   location: region.location,
+                  locked: region.locked,
                   onClick: () => setSelectedRegionId(region.id),
                   owner: encodeAddress(region.owner, 42),
                   paid: region.paid,
