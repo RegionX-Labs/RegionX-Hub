@@ -4339,7 +4339,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-export type Dot_coretime = {
+type IDescriptors = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -4349,7 +4349,7 @@ export type Dot_coretime = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: Dot_coretime;
+declare const _allDescriptors: IDescriptors;
 export default _allDescriptors;
 export type Dot_coretimeApis = ApisFromDef<IRuntimeCalls>;
 export type Dot_coretimeQueries = QueryFromPalletsDef<PalletsTypedef>;

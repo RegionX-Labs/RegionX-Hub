@@ -79,7 +79,7 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
     const tx = connection.client.getTypedApi(metadata.regionxChain).tx.Market.list_region({
       region_id: regionId,
       sale_recipient: selectedAccount.address,
-      price_data: fromUnit(network, Number(price)),
+      price_data: fromUnit(network, Number(priceInput)),
     });
 
     const toastId = toast.loading('Transaction submitted');
