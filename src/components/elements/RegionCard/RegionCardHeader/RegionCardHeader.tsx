@@ -381,7 +381,11 @@ const RegionCardHeader: React.FC<RegionCardHeaderProps> = ({
 
       {isUnlistModalOpen && (
         <ModalPortal>
-          <UnlistModal isOpen={isUnlistModalOpen} onClose={() => setUnlistModalOpen(false)} />
+          <UnlistModal
+            regionId={regionId}
+            isOpen={isUnlistModalOpen}
+            onClose={() => setUnlistModalOpen(false)}
+          />
         </ModalPortal>
       )}
     </>
