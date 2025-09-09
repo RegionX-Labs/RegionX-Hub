@@ -12,7 +12,7 @@
   background: $darkBackground2;
   @include Inter;
   border-radius: 20px;
-  // border: 1px solid color.adjust($darkBackground2, $lightness: 10%);
+  border: 1px solid var(--border-modal);
   overflow-x: auto;
 }
 
@@ -66,10 +66,6 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
-
-  &:hover {
-    // background: color.adjust($white, $lightness: -25%);
-  }
 }
 
 $grayDark: #1f1f1f !default;
@@ -96,10 +92,6 @@ $gray: #3a3a3a !default;
 
   svg {
     stroke-width: 2;
-  }
-
-  &:hover {
-    // background: color.adjust($grayDark, $lightness: 5%);
   }
 }
 

@@ -9,16 +9,16 @@ import SecondaryMarketplaceTable from '@/components/SecondaryMarketplaceTable';
 import { latestSaleRequested } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
+import WarningModal from '../secondary-market/WarningModal';
 
 export default function SecondaryMarket() {
   const network = useUnit($network);
 
+  const networkKnown = typeof network === 'string' && network.trim().length > 0;
+
   const isKusama = useMemo(
-    () =>
-      String(network ?? '')
-        .toLowerCase()
-        .includes('kusama'),
-    [network]
+    () => networkKnown && network!.toLowerCase().includes('kusama'),
+    [networkKnown, network]
   );
 
   const [showWarning, setShowWarning] = useState(false);
@@ -28,19 +28,11 @@ export default function SecondaryMarket() {
   }, [network]);
 
   useEffect(() => {
-    if (!isKusama) setShowWarning(true);
-  }, [isKusama]);
+    if (!networkKnown) return;
+    setShowWarning(!isKusama);
+  }, [networkKnown, isKusama]);
 
   const closeModal = useCallback(() => setShowWarning(false), []);
-
-  useEffect(() => {
-    if (!showWarning) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [showWarning, closeModal]);
 
   return (
     <div className={styles.secondaryMarketPage}>
@@ -60,43 +52,11 @@ export default function SecondaryMarket() {
 
       <SecondaryMarketplaceTable />
 
-      {showWarning && (
-        <div
-          className={styles.netWarnOverlay}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeModal();
-          }}
-        >
-          <div
-            className={styles.netWarnModal}
-            role='dialog'
-            aria-modal='true'
-            aria-labelledby='sec-market-warning-title'
-          >
-            <div className={styles.netWarnHeader}>
-              <h3 id='sec-market-warning-title' className={styles.netWarnTitle}>
-                Secondary Marketplace
-              </h3>
-              <button className={styles.netWarnClose} aria-label='Close' onClick={closeModal}>
-                ×
-              </button>
-            </div>
-
-            <div className={styles.netWarnBody}>
-              The Secondary Marketplace is currently <strong>available only on Kusama</strong>.
-              <br />
-              Once we finish testing on Kusama, it will be available on <strong>Polkadot</strong> as
-              well.
-            </div>
-
-            <div className={styles.netWarnFooter}>
-              <button className={styles.btnGhost} onClick={closeModal}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <WarningModal open={showWarning} onClose={closeModal} title='Secondary Marketplace'>
+        The Secondary Marketplace is currently <strong>available only on Kusama</strong>.
+        <br />
+        Once we finish testing on Kusama, it will be available on <strong>Polkadot</strong> as well.
+      </WarningModal>
     </div>
   );
 }
