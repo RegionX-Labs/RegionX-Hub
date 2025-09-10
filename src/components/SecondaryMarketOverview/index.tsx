@@ -4,7 +4,7 @@ import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import { $accountData } from '@/account';
-import { toUnitFormatted } from '@/utils';
+import { TIMESLICE_PERIOD, toUnitFormatted } from '@/utils';
 import { $listedRegions, RegionListing } from '@/marketplace';
 import { Toaster } from 'react-hot-toast';
 
@@ -41,6 +41,13 @@ export default function SecondaryMarketOverview() {
     const _bestListing = listedRegions.find((l) => l.price_data === lowestPricePerTimeslice);
     setBestListing(_bestListing ?? null);
   }, [listedRegions]);
+
+  const getPricePerBlock = (listing: RegionListing): bigint => {
+    const timesliceDuration = listing.region.end - listing.region.begin;
+    const blockDuration = timesliceDuration * TIMESLICE_PERIOD;
+
+    return listing.price_data / BigInt(blockDuration);
+  };
 
   const accountData = selectedAccount?.address ? accountDataMap[selectedAccount.address] : null;
 
@@ -79,7 +86,7 @@ export default function SecondaryMarketOverview() {
           {bestListing ? `Core ID ${bestListing.region.core}` : '-'}
         </div>
         <div className={styles.listingPrice}>
-          {bestListing ? toUnitFormatted(network, bestListing.price_data) : '-'}
+          {bestListing ? toUnitFormatted(network, getPricePerBlock(bestListing)) : '-'}
         </div>
         <button className={styles.buyButton}>Buy Now</button>
       </div>
