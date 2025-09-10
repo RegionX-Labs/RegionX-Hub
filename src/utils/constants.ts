@@ -12,5 +12,5 @@ export type RegionId = {
   mask: FixedSizeBinary<10>;
 };
 
-export const KUSAMA_SALE_CYCLE_WITH_UPDATE = 17;
-export const POLKADOT_SALE_CYCLE_WITH_UPDATE = 11;
+export const KUSAMA_SALE_CYCLE_WITH_UPDATE = 18;
+export const POLKADOT_SALE_CYCLE_WITH_UPDATE = 12;

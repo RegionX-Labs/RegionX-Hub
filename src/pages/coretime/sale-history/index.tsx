@@ -5,16 +5,30 @@ import { useUnit } from 'effector-react';
 import styles from './sale-history.module.scss';
 import { TableComponent } from '../../../components/elements/TableComponent';
 import SaleHistoryModal from '../../../components/SaleHistoryModal';
-import { $saleHistory, saleHistoryRequested, type SaleInfo as Sale } from '@/coretime/saleInfo';
+import {
+  $saleHistory,
+  saleHistoryRequested,
+  type SaleInfo as Sale,
+  fetchBrokerConfig,
+} from '@/coretime/saleInfo';
 import {
   $purchaseHistory,
   purchaseHistoryRequested,
   PurchaseHistoryItem,
 } from '@/coretime/purchaseHistory';
 import { $network, $connections } from '@/api/connection';
-import { timesliceToTimestamp, blockToTimestamp, toUnitFormatted } from '@/utils';
+import {
+  timesliceToTimestamp,
+  blockToTimestamp,
+  toUnitFormatted,
+  RELAY_CHAIN_BLOCK_TIME,
+  TIMESLICE_PERIOD,
+  coretimeChainBlockTime,
+  usesRelayChainBlocks,
+} from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
+import DutchAuctionChart from '../../../components/Home/HomeDashboard/DutchAuctionChart';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -22,6 +36,9 @@ type TableData = {
   link?: string;
   searchKey?: string;
 };
+
+type Endpoints = { start: number; end: number };
+type PhaseEndpoints = { interlude: Endpoints; leadin: Endpoints; fixed: Endpoints };
 
 export const SUBSCAN_RELAY_URL: Record<string, string> = {
   polkadot: 'https://polkadot.subscan.io',
@@ -56,6 +73,9 @@ const SaleHistoryPage = () => {
   const [selectedSaleId, setSelectedSaleId] = useState<number | null>(null);
   const [modalPurchases, setModalPurchases] = useState<Array<Record<string, TableData>>>([]);
   const [tableData, setTableData] = useState<Array<Record<string, TableData>>>([]);
+  const [chartModalOpen, setChartModalOpen] = useState(false);
+  const [chartSale, setChartSale] = useState<Sale | null>(null);
+  const [chartEndpoints, setChartEndpoints] = useState<PhaseEndpoints | null>(null);
 
   const network = useUnit($network);
   const saleInfo = useUnit($saleHistory);
@@ -63,25 +83,60 @@ const SaleHistoryPage = () => {
   const purchaseHistory = useUnit($purchaseHistory);
 
   useEffect(() => {
-    if (network) {
-      saleHistoryRequested(network);
-    }
+    if (network) saleHistoryRequested(network);
   }, [network]);
+
+  const computeEndpointsForSale = useCallback(
+    async (sale: Sale): Promise<PhaseEndpoints | null> => {
+      if (!network) return null;
+      const chainIds = getNetworkChainIds(network);
+      const metadata = getNetworkMetadata(network);
+      if (!chainIds || !metadata) return null;
+      const relayConn = connections[chainIds.relayChain];
+      const coretimeConn = connections[chainIds.coretimeChain];
+      if (!relayConn || !coretimeConn) return null;
+
+      const relayChainBlocks = usesRelayChainBlocks(network, sale);
+      const saleStartTimestamp = Number(
+        await blockToTimestamp(
+          sale.saleStart,
+          relayChainBlocks ? relayConn : coretimeConn,
+          metadata.relayChain
+        )
+      );
+
+      const config = await fetchBrokerConfig(network, connections);
+      if (!config) return null;
+
+      const regionDuration = sale.regionEnd - sale.regionBegin;
+      const blockTime = relayChainBlocks ? RELAY_CHAIN_BLOCK_TIME : 12000;
+
+      const saleEndTimestamp =
+        saleStartTimestamp -
+        config.interlude_length * blockTime +
+        regionDuration * TIMESLICE_PERIOD * RELAY_CHAIN_BLOCK_TIME;
+
+      return {
+        interlude: {
+          start: saleStartTimestamp - config.interlude_length * blockTime,
+          end: saleStartTimestamp,
+        },
+        leadin: {
+          start: saleStartTimestamp,
+          end: saleStartTimestamp + config.leadin_length * blockTime,
+        },
+        fixed: {
+          start: saleStartTimestamp + config.leadin_length * blockTime,
+          end: saleEndTimestamp,
+        },
+      };
+    },
+    [network, connections]
+  );
 
   useEffect(() => {
     const processData = async () => {
       if (!network || !Array.isArray(saleInfo)) return;
-
-      const chainIds = getNetworkChainIds(network);
-      if (!chainIds) return;
-      const connection =
-        network === Network.WESTEND
-          ? connections[chainIds.relayChain]
-          : connections[chainIds.coretimeChain];
-      if (!connection) return;
-      const metadata = getNetworkMetadata(network);
-      if (!metadata) return;
-
       const processed = await Promise.all(
         saleInfo.map(async (sale: Sale) => {
           const regionBeginTimestamp = await timesliceToTimestamp(
@@ -95,18 +150,29 @@ const SaleHistoryPage = () => {
             connections
           );
 
-          const saleStartTimestamp = await blockToTimestamp(
-            sale.saleStart,
-            connection,
-            metadata.relayChain
+          const chainIds = getNetworkChainIds(network)!;
+          const metadata = getNetworkMetadata(network)!;
+          const relayConn = connections[chainIds.relayChain];
+          const coretimeConn = connections[chainIds.coretimeChain];
+          const saleStartTimestamp = Number(
+            await blockToTimestamp(
+              sale.saleStart,
+              usesRelayChainBlocks(network, sale) ? relayConn : coretimeConn,
+              metadata.relayChain
+            )
           );
-          const saleEndTimestamp = sale.leadinLength
-            ? await blockToTimestamp(
-                sale.saleStart + sale.leadinLength,
-                connection,
-                metadata.relayChain
-              )
-            : null;
+
+          const regionDuration = sale.regionEnd - sale.regionBegin;
+          const blockTime = usesRelayChainBlocks(network, sale) ? RELAY_CHAIN_BLOCK_TIME : 12000;
+
+          const config = await fetchBrokerConfig(network, connections);
+
+          const saleEndTimestamp =
+            saleStartTimestamp -
+            (config?.interlude_length ?? 0) * blockTime +
+            regionDuration * TIMESLICE_PERIOD * RELAY_CHAIN_BLOCK_TIME;
+
+          const endpoints = await computeEndpointsForSale(sale);
 
           return {
             SaleID: {
@@ -127,23 +193,45 @@ const SaleHistoryPage = () => {
             },
             SaleStart: {
               cellType: 'text' as const,
-              data: formatDate(saleStartTimestamp),
-              searchKey: formatDate(saleStartTimestamp),
+              data: formatDate(BigInt(saleStartTimestamp)),
+              searchKey: formatDate(BigInt(saleStartTimestamp)),
             },
             SaleEnd: {
               cellType: 'text' as const,
-              data: formatDate(saleEndTimestamp),
-              searchKey: formatDate(saleEndTimestamp),
+              data: formatDate(BigInt(saleEndTimestamp)),
+              searchKey: formatDate(BigInt(saleEndTimestamp)),
+            },
+            Auction: {
+              cellType: 'jsx' as const,
+              data: (
+                <button
+                  className={styles.auctionCell}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setChartSale(sale);
+                    setChartEndpoints(endpoints);
+                    setChartModalOpen(true);
+                  }}
+                  title='Open Dutch auction'
+                >
+                  <DutchAuctionChart
+                    theme='dark'
+                    mode='mini'
+                    height={12}
+                    sale={sale}
+                    endpoints={endpoints ?? null}
+                  />
+                </button>
+              ),
+              searchKey: String(sale.saleCycle),
             },
           };
         })
       );
-
       setTableData(processed);
     };
-
     processData();
-  }, [saleInfo, network, connections]);
+  }, [saleInfo, network, connections, computeEndpointsForSale]);
 
   const handleSaleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -164,51 +252,35 @@ const SaleHistoryPage = () => {
 
   useEffect(() => {
     if (!network) return;
-
     const baseUrl = SUBSCAN_CORETIME_URL[network] || 'https://subscan.io';
-
-    const formatted = purchaseHistory.map((purchase: PurchaseHistoryItem) => ({
+    const formatted = purchaseHistory.map((p: PurchaseHistoryItem) => ({
       ExtrinsicID: {
         cellType: 'jsx' as const,
         data: (
           <a
-            href={`${baseUrl}/extrinsic/${purchase.extrinsicId}`}
+            href={`${baseUrl}/extrinsic/${p.extrinsicId}`}
             target='_blank'
             rel='noopener noreferrer'
           >
-            {purchase.extrinsicId}
+            {p.extrinsicId}
           </a>
         ),
-        searchKey: purchase.extrinsicId,
+        searchKey: p.extrinsicId,
       },
-
-      Account: {
-        cellType: 'address' as const,
-        data: purchase.address,
-        searchKey: purchase.address,
-      },
-      CoreID: {
-        cellType: 'text' as const,
-        data: String(purchase.core),
-        searchKey: String(purchase.core),
-      },
+      Account: { cellType: 'address' as const, data: p.address, searchKey: p.address },
+      CoreID: { cellType: 'text' as const, data: String(p.core), searchKey: String(p.core) },
       Price: {
         cellType: 'text' as const,
-        data: toUnitFormatted(network, BigInt(purchase.price)),
-        searchKey: String(purchase.price),
+        data: toUnitFormatted(network, BigInt(p.price)),
+        searchKey: String(p.price),
       },
-      SalesType: {
-        cellType: 'text' as const,
-        data: purchase.type,
-        searchKey: purchase.type,
-      },
+      SalesType: { cellType: 'text' as const, data: p.type, searchKey: p.type },
       Timestamp: {
         cellType: 'text' as const,
-        data: formatDate(purchase.timestamp),
-        searchKey: formatDate(purchase.timestamp),
+        data: formatDate(p.timestamp),
+        searchKey: formatDate(p.timestamp),
       },
     }));
-
     setModalPurchases(formatted);
   }, [purchaseHistory, network]);
 
@@ -226,7 +298,6 @@ const SaleHistoryPage = () => {
         (() => {
           const sale = saleInfo.find((s) => s.saleCycle === selectedSaleId);
           if (!sale) return null;
-
           return (
             <SaleHistoryModal
               open={modalOpen}
@@ -237,6 +308,28 @@ const SaleHistoryPage = () => {
             />
           );
         })()}
+
+      {chartModalOpen && chartSale && chartEndpoints && (
+        <div className={styles.modalOverlay} onClick={() => setChartModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitle}>Dutch auction</div>
+              <button className={styles.closeBtn} onClick={() => setChartModalOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <DutchAuctionChart
+                theme='dark'
+                mode='full'
+                context='modal'
+                sale={chartSale}
+                endpoints={chartEndpoints}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
