@@ -93,19 +93,23 @@ const SaleHistoryPage = () => {
       const metadata = getNetworkMetadata(network);
       if (!chainIds || !metadata) return null;
       const relayConn = connections[chainIds.relayChain];
-      if (!relayConn) return null;
+      const coretimeConn = connections[chainIds.coretimeChain];
+      if (!relayConn || !coretimeConn) return null;
 
+      const relayChainBlocks = usesRelayChainBlocks(network, sale);
       const saleStartTimestamp = Number(
-        await blockToTimestamp(sale.saleStart, relayConn, metadata.relayChain)
+        await blockToTimestamp(
+          sale.saleStart,
+          relayChainBlocks ? relayConn : coretimeConn,
+          metadata.relayChain
+        )
       );
 
       const config = await fetchBrokerConfig(network, connections);
       if (!config) return null;
 
       const regionDuration = sale.regionEnd - sale.regionBegin;
-      const blockTime = usesRelayChainBlocks(network, sale)
-        ? RELAY_CHAIN_BLOCK_TIME
-        : coretimeChainBlockTime(network);
+      const blockTime = relayChainBlocks ? RELAY_CHAIN_BLOCK_TIME : 12000;
 
       const saleEndTimestamp =
         saleStartTimestamp -
@@ -149,18 +153,24 @@ const SaleHistoryPage = () => {
           const chainIds = getNetworkChainIds(network)!;
           const metadata = getNetworkMetadata(network)!;
           const relayConn = connections[chainIds.relayChain];
-          const saleStartTimestamp = await blockToTimestamp(
-            sale.saleStart,
-            relayConn,
-            metadata.relayChain
+          const coretimeConn = connections[chainIds.coretimeChain];
+          const saleStartTimestamp = Number(
+            await blockToTimestamp(
+              sale.saleStart,
+              usesRelayChainBlocks(network, sale) ? relayConn : coretimeConn,
+              metadata.relayChain
+            )
           );
-          const saleEndTimestamp = sale.leadinLength
-            ? await blockToTimestamp(
-                sale.saleStart + sale.leadinLength,
-                relayConn,
-                metadata.relayChain
-              )
-            : null;
+
+          const regionDuration = sale.regionEnd - sale.regionBegin;
+          const blockTime = usesRelayChainBlocks(network, sale) ? RELAY_CHAIN_BLOCK_TIME : 12000;
+
+          const config = await fetchBrokerConfig(network, connections);
+
+          const saleEndTimestamp =
+            saleStartTimestamp -
+            (config?.interlude_length ?? 0) * blockTime +
+            regionDuration * TIMESLICE_PERIOD * RELAY_CHAIN_BLOCK_TIME;
 
           const endpoints = await computeEndpointsForSale(sale);
 
@@ -183,13 +193,13 @@ const SaleHistoryPage = () => {
             },
             SaleStart: {
               cellType: 'text' as const,
-              data: formatDate(saleStartTimestamp),
-              searchKey: formatDate(saleStartTimestamp),
+              data: formatDate(BigInt(saleStartTimestamp)),
+              searchKey: formatDate(BigInt(saleStartTimestamp)),
             },
             SaleEnd: {
               cellType: 'text' as const,
-              data: formatDate(saleEndTimestamp),
-              searchKey: formatDate(saleEndTimestamp),
+              data: formatDate(BigInt(saleEndTimestamp)),
+              searchKey: formatDate(BigInt(saleEndTimestamp)),
             },
             Auction: {
               cellType: 'jsx' as const,
