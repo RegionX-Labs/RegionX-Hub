@@ -4203,7 +4203,7 @@ type PalletsTypedef = {
   __const: IConstants;
   __view: IViewFns;
 };
-type IDescriptors = {
+export type Pas_people = {
   descriptors: {
     pallets: PalletsTypedef;
     apis: IRuntimeCalls;
@@ -4213,7 +4213,7 @@ type IDescriptors = {
   getMetadata: () => Promise<Uint8Array>;
   genesis: string | undefined;
 };
-declare const _allDescriptors: IDescriptors;
+declare const _allDescriptors: Pas_people;
 export default _allDescriptors;
 export type Pas_peopleApis = ApisFromDef<IRuntimeCalls>;
 export type Pas_peopleQueries = QueryFromPalletsDef<PalletsTypedef>;

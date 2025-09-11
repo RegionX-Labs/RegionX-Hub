@@ -21,7 +21,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   paraId: number;
-  coreId?: number;
+  coreId: number;
 };
 
 type CheckState = {
@@ -81,7 +81,7 @@ const AutoRenewalModal: React.FC<Props> = ({ isOpen, onClose, paraId, coreId }) 
 
         try {
           const encoded = await (coretimeApi as any).tx.Broker.enable_auto_renew({
-            core: typeof coreId === 'number' ? coreId : 0,
+            core: coreId,
             task: paraId,
             workload_end_hint: undefined,
           }).getEncodedData();

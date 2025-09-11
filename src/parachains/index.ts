@@ -5,7 +5,7 @@ import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { PolkadotClient } from 'polkadot-api';
 
-type Parachain = {
+export type Parachain = {
   id: number;
   state: ParaState;
   network: Network;
@@ -67,3 +67,27 @@ sample({
   clock: getParachainsFx.doneData,
   target: $parachains,
 });
+
+export const getParaCoreId = async (
+  paraId: number,
+  connections: Record<ChainId, Connection>,
+  network: Network
+): Promise<number | null> => {
+  const networkChainIds = getNetworkChainIds(network);
+
+  if (!networkChainIds) return null;
+  const connection = connections[networkChainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return null;
+
+  const client = connection.client;
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return null;
+  const typedApi = client.getTypedApi(metadata.coretimeChain);
+
+  const workload = await typedApi.query.Broker.Workload.getEntries();
+
+  const filtered = workload.filter((w) => w.value[0].assignment.value === paraId);
+  console.log(filtered);
+
+  return null;
+};

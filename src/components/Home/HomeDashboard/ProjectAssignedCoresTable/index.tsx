@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { CoretimeMetadata, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { TableComponent } from '@/components/elements/TableComponent';
 import { $parachains } from '@/parachains';
 import { ParaState } from '@/components/ParaStateCard';
@@ -51,9 +51,10 @@ export default function ProjectAssignedCoresTable({ taskId, pageSize = 8 }: Prop
         const metadata = getNetworkMetadata(network);
         if (!metadata) return setRows([]);
         const typedApi = connection.client.getTypedApi(metadata.coretimeChain);
+        if (!typedApi) return setRows([]);
         const [workloadEntries, workplanEntries] = await Promise.all([
-          typedApi?.query?.Broker?.Workload?.getEntries?.() ?? [],
-          typedApi?.query?.Broker?.Workplan?.getEntries?.() ?? [],
+          typedApi.query.Broker.Workload.getEntries(),
+          typedApi.query.Broker.Workplan.getEntries(),
         ]);
 
         const normalize = (pallet: 'workload' | 'workplan', e: any): RawEntry => {
