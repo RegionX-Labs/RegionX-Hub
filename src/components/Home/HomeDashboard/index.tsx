@@ -20,6 +20,7 @@ import SpecificDashboardModal from './DashboardHeader/SpecificDashboardModal';
 import OwnedRegionsTable from './OwnedRegionsTable';
 import AutoRenewalTable from './AutoRenewalTable';
 import ProjectAssignedCoresTable from './ProjectAssignedCoresTable';
+import RegionPriceCalculator from './RegionPriceCalculator';
 
 interface HomeDashboardProps {
   theme: 'light' | 'dark';
@@ -110,6 +111,7 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       <div className={styles.dashboard}>
         {selected === 'Overview' && (
           <>
+            <RegionPriceCalculator />
             <UrgentRenewals view={selected} />
             <CoreComparison view={selected} />
             <CorePurchaseCard />
