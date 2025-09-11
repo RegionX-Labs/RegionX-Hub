@@ -3,7 +3,6 @@ import { ParaState } from '@/components/ParaStateCard';
 import { ChainId, CoretimeMetadata, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { PolkadotClient } from 'polkadot-api';
 
 export type Parachain = {
   id: number;

@@ -2,7 +2,7 @@ import { $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
 import { $potentialRenewals } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
-import { $parachains } from '@/parachains';
+import { $parachains, Parachain } from '@/parachains';
 import { SelectOption } from '@/types/type';
 import { useUnit } from 'effector-react';
 import Identicon from '@polkadot/react-identicon';
@@ -11,9 +11,9 @@ import Select from '@/components/elements/Select';
 import styles from './ParachainInfoCard.module.scss';
 
 interface Props {
-  selected: number;
-  setSelected: (id: number) => void;
-  onSelectParaId: (id: string) => void;
+  selected: Parachain;
+  setSelected: (id: Parachain) => void;
+  onSelectParaId?: (id: string) => void;
 }
 
 export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props) => {
@@ -22,7 +22,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
   const potentialRenewals = useUnit($potentialRenewals);
   const saleInfo = useUnit($latestSaleInfo);
 
-  const selectOptions: SelectOption<any>[] = parachains
+  const selectOptions: SelectOption<Parachain>[] = parachains
     .filter((p) => p.network === network)
     .map((item) => {
       const meta = chainData[network]?.[item.id];

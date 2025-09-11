@@ -51,6 +51,15 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
     dashboards.find((d) => d.key === localStorage.getItem('dashboardSelection'))?.name ||
     'Overview';
 
+  const setSelected = (newSelection: string) => {
+    const entry = dashboards.find((d) => d.name === newSelection);
+    const basePath = entry?.key || 'overview';
+    const paraPart =
+      basePath === 'managing-existing-project' && selectedParaId ? `&paraId=${selectedParaId}` : '';
+    localStorage.setItem('dashboardSelection', basePath);
+    router.push(`?dashboard=${basePath}&network=${network}${paraPart}`, { scroll: false });
+  };
+
   useEffect(() => {
     const stored = localStorage.getItem('dashboardSelection');
     if (!stored) {

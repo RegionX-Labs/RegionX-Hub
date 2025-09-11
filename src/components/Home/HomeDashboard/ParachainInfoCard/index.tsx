@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './ParachainInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
-import { $parachains, getParaCoreId, parachainsRequested } from '@/parachains';
+import { $parachains, Parachain, parachainsRequested } from '@/parachains';
 import { chainData } from '@/chaindata';
 import Identicon from '@polkadot/react-identicon';
 import { blake2AsHex } from '@polkadot/util-crypto';
@@ -17,46 +17,28 @@ import {
   fetchAutoRenewals,
 } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
-import { $selectedAccount } from '@/wallet';
-import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import TransactionModal from '@/components/TransactionModal';
-import toast, { Toaster } from 'react-hot-toast';
-import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
-import AutoRenewalModal from '@/components/AutoRenewalModal';
 import { ParachainSelect } from './ParachainSelect';
+import { ParaActions } from './ParaActions';
 
 type Props = {
-  onSelectParaId: (id: string) => void;
+  onSelectParaId?: (id: string) => void;
   initialParaId?: string;
 };
 
 export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Props) {
-  const [selected, setSelected] = useState<any | null>(null);
-  const [hasSetInitial, setHasSetInitial] = useState(false);
+  const [selected, setSelected] = useState<Parachain | null>(null);
   const [renewalEntry, setRenewalEntry] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [deadline, setDeadline] = useState<string>('-');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
-  const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
+  const [parasWithAutoRenewal, setParasWithAutoRenewal] = useState<Set<number>>(new Set());
+  const [hasSetInitial, setHasSetInitial] = useState(false);
 
-  const [
-    network,
-    connections,
-    parachains,
-    potentialRenewals,
-    saleInfo,
-    selectedAccount,
-    accountData,
-  ] = useUnit([
+  const [network, connections, potentialRenewals, saleInfo, parachains] = useUnit([
     $network,
     $connections,
-    $parachains,
     $potentialRenewals,
     $latestSaleInfo,
-    $selectedAccount,
-    $accountData,
+    $parachains,
   ]);
 
   useEffect(() => {
@@ -65,23 +47,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     void refreshAutoRenewals();
   }, [network, connections]);
 
-  const refreshAutoRenewals = async () => {
-    try {
-      const list = await fetchAutoRenewals(network, connections);
-      const set = new Set<number>(list.map((e: any) => Number(e.task)));
-      setAutoRenewSet(set);
-    } catch {}
-  };
-
   useEffect(() => {
-    if (!isAutoRenewOpen) {
-      void refreshAutoRenewals();
-    }
-  }, [isAutoRenewOpen]);
-
-  useEffect(() => {
-    if (parachains.length === 0 || !potentialRenewals || !saleInfo) return;
-
     const selectedIsForNetwork = selected?.network === network;
     const urlMatch =
       initialParaId && parachains.find((p) => `${p.id}` === initialParaId && p.network === network);
@@ -97,16 +63,15 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       }
       setHasSetInitial(true);
     }
-  }, [
-    network,
-    parachains,
-    potentialRenewals,
-    saleInfo,
-    initialParaId,
-    hasSetInitial,
-    selected?.network,
-    onSelectParaId,
-  ]);
+  }, [network, parachains, initialParaId, hasSetInitial, selected?.network, onSelectParaId]);
+
+  const refreshAutoRenewals = async () => {
+    try {
+      const list = await fetchAutoRenewals(network, connections);
+      const set = new Set<number>(list.map((e: any) => Number(e.task)));
+      setParasWithAutoRenewal(set);
+    } catch {}
+  };
 
   useEffect(() => {
     if (!saleInfo || !selected) return;
@@ -144,10 +109,10 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   }, [renewalEntry, network, connections]);
 
   const paraId = selected?.id as number | undefined;
-  const state: ParaState | undefined = selected?.state;
+  const state = selected?.state ?? undefined;
   const chain = paraId !== undefined ? chainData[network]?.[paraId] : null;
   const name = chain?.name || (paraId !== undefined ? `Parachain ${paraId}` : 'Parachain');
-  const logoSrc = (chain?.logo as string | undefined) || undefined;
+  const logoSrc = chain?.logo;
 
   const pickSolid = (c?: string) => {
     if (!c) return undefined;
@@ -159,60 +124,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   };
   const solidAccent = pickSolid((chain as any)?.color);
 
-  const openModal = () => {
-    if (!selectedAccount) return toast.error('Account not selected');
-    if (!renewalEntry) return toast.error('No renewal available');
-    setIsModalOpen(true);
-  };
-
-  const onModalConfirm = async () => {
-    if (!renewalEntry || !selectedAccount) return;
-    const [key] = renewalEntry;
-
-    const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) return toast.error('Unknown network');
-
-    const connection = connections[networkChainIds.coretimeChain];
-    const client = connection?.client;
-    const metadata = getNetworkMetadata(network);
-    if (!client || !metadata) return toast.error('API error');
-
-    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({ core: key.core });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev: any) => {
-        toast.loading(
-          <span>
-            Transaction submitted:&nbsp;
-            <a
-              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ textDecoration: 'underline', color: '#60a5fa' }}
-            >
-              view transaction
-            </a>
-          </span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (ev.ok) {
-            toast.success('Renewal successful', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
-          } else {
-            toast.error('Transaction failed', { id: toastId });
-          }
-        }
-      },
-      () => {
-        toast.error('Transaction error', { id: toastId });
-      }
-    );
-
-    setIsModalOpen(false);
-  };
-
   const logo = logoSrc ? (
     <img src={logoSrc} alt='logo' className={styles.largeLogo} />
   ) : (
@@ -223,11 +134,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       className={styles.largeLogo}
     />
   );
-
-  const autoRenewEnabled = useMemo(() => {
-    if (!selected?.id) return false;
-    return autoRenewSet.has(Number(selected.id));
-  }, [autoRenewSet, selected?.id]);
 
   const dateTitle = renewalEntry ? 'Renewal deadline' : 'End of sale cycle';
 
@@ -259,7 +165,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           <p />
         )}
 
-        {typeof state === 'number' && (
+        {state && (
           <div className={styles.stateTooltip}>
             <ParaStateCard
               state={state}
@@ -310,49 +216,13 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         </div>
       )}
 
-      <div className={styles.actionRow}>
-        <div className={styles.leftAction}>
-          {renewalEntry && (
-            <button className={styles.renewButton} onClick={openModal}>
-              Renew
-            </button>
-          )}
-        </div>
-        <div className={styles.rightAction}>
-          {state !== ParaState.SYSTEM && selected && (
-            <button
-              className={
-                autoRenewEnabled
-                  ? `${styles.autoRenewBtn} ${styles.autoRenewBtnEnabled}`
-                  : styles.autoRenewBtn
-              }
-              onClick={() => setIsAutoRenewOpen(true)}
-            >
-              {autoRenewEnabled ? 'Auto-Renewal Enabled' : 'Enable Auto-Renewal'}
-            </button>
-          )}
-        </div>
-      </div>
-
-      {selectedAccount && accountData[selectedAccount.address] && (
-        <TransactionModal
-          isOpen={isModalOpen}
-          accountData={accountData[selectedAccount.address] as MultiChainAccountData}
-          onClose={() => setIsModalOpen(false)}
-          onConfirm={onModalConfirm}
+      {selected && (
+        <ParaActions
+          paraState={state}
+          parasWithAutoRenewal={parasWithAutoRenewal}
+          paraId={selected.id}
         />
       )}
-
-      {renewalEntry && paraId && (
-        <AutoRenewalModal
-          isOpen={isAutoRenewOpen}
-          onClose={() => setIsAutoRenewOpen(false)}
-          paraId={paraId}
-          coreId={renewalEntry[0].core}
-        />
-      )}
-
-      <Toaster />
     </div>
   );
 }
