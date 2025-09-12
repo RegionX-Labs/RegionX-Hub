@@ -335,12 +335,12 @@ export default function UrgentRenewals({ view }: Props) {
         />
       )}
 
-      {typeof paraId === 'number' && (
+      {selected && (
         <AutoRenewalModal
           isOpen={isAutoRenewOpen}
           onClose={() => setIsAutoRenewOpen(false)}
           paraId={paraId}
-          coreId={selected?.[0]?.core}
+          coreId={selected[0].core}
         />
       )}
       <Toaster />
