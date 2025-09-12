@@ -31,7 +31,7 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
   const [paraCore, setParaCore] = useState<number | null>(null);
 
   useEffect(() => {
-    if(!paraId) return;
+    if (!paraId) return;
     (async () => {
       const core = await getParaCoreId(paraId, connections, network);
       setParaCore(core);
