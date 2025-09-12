@@ -50,10 +50,7 @@ export default function OwnedRegionsTable() {
 
           const icon = (
             <Identicon
-              value={encodeAddress(
-                blake2AsU8a(`${region.begin}-${region.end}-${region.core}`),
-                getNetworkSS58Prefix(network)
-              )}
+              value={encodeAddress(blake2AsU8a(`${region.begin}-${region.end}-${region.core}`), 42)}
               size={24}
               style={{ borderRadius: '50%' }}
             />
