@@ -24,10 +24,10 @@ type OkResult = {
   targetBlockCoretime: number | null;
   blocksToWait: number;
   targetPrice: bigint;
-  etaMs: number | null;
+  targetTimestampMs: number | null;
 };
 
-type ChainCtx = {
+type ChainContext = {
   ids: NonNullable<ReturnType<typeof getNetworkChainIds>>;
   meta: NonNullable<ReturnType<typeof getNetworkMetadata>>;
   priceUsesRelay: boolean;
@@ -43,10 +43,10 @@ export default function RegionPriceCalculator() {
 
   const [currentBlock, setCurrentBlock] = useState<number | null>(null);
   const [phase, setPhase] = useState<SalePhase | null>(null);
-  const [inputStr, setInputStr] = useState<string>('');
+  const [priceInput, setPriceInput] = useState<string>('');
 
-  const targetPlanck: bigint | null = useMemo(() => {
-    const s = inputStr.trim().replace(',', '.');
+  const targetPlanckValue: bigint | null = useMemo(() => {
+    const s = priceInput.trim().replace(',', '.');
     if (!s) return null;
     if (!/^\d*\.?\d*$/.test(s)) return null;
     const n = parseFloat(s);
@@ -56,17 +56,15 @@ export default function RegionPriceCalculator() {
     } catch {
       return null;
     }
-  }, [inputStr, network]);
+  }, [priceInput, network]);
+
   useEffect(() => {
     (async () => {
       if (!network || !saleInfo) return;
       const ctx = getChainContext(network as Network, saleInfo as any, connections);
       if (!ctx) return;
-
       const api = ctx.conn.client!.getTypedApi(ctx.chainMeta) as any;
-
       const nowBlock: number = await (api.query.System.Number.getValue() as Promise<number>);
-
       setCurrentBlock(nowBlock);
       setPhase(getCurrentPhase(saleInfo, nowBlock));
     })();
@@ -82,7 +80,14 @@ export default function RegionPriceCalculator() {
 
   useEffect(() => {
     (async () => {
-      const early = getEarlyState(network, saleInfo, inputStr, targetPlanck, currentBlock, phase);
+      const early = getEarlyState(
+        network,
+        saleInfo,
+        priceInput,
+        targetPlanckValue,
+        currentBlock,
+        phase
+      );
       if (early) {
         setResult(early);
         return;
@@ -95,11 +100,11 @@ export default function RegionPriceCalculator() {
         return;
       }
 
-      const priceAt = mkPriceAt(saleInfo, net);
-      const nowPrice = priceAt(currentBlock!);
+      const priceAt = createPriceAt(saleInfo, net);
+      const currentPrice = priceAt(currentBlock!);
 
-      const finishOk = async (targetBlockInternal: number) => {
-        const ok = await mkOkResult({
+      const finalizeOk = async (targetBlockInternal: number) => {
+        const ok = await buildOkResult({
           targetBlockInternal,
           currentBlock: currentBlock!,
           network: net,
@@ -110,21 +115,26 @@ export default function RegionPriceCalculator() {
         setResult(ok);
       };
 
-      if (nowPrice <= targetPlanck!) {
-        await finishOk(currentBlock!);
+      if (currentPrice <= targetPlanckValue!) {
+        await finalizeOk(currentBlock!);
         return;
       }
 
-      const range = expandSearchRange(currentBlock!, targetPlanck!, priceAt);
+      const range = expandSearchRange(currentBlock!, targetPlanckValue!, priceAt);
       if (!range.reachable) {
         setResult({ kind: 'unreachable' });
         return;
       }
 
-      const targetBlock = lowerBoundBlock(range.low, range.high, targetPlanck!, priceAt);
-      await finishOk(targetBlock);
+      const targetBlock = findFirstAffordableBlock(
+        range.low,
+        range.high,
+        targetPlanckValue!,
+        priceAt
+      );
+      await finalizeOk(targetBlock);
     })();
-  }, [network, saleInfo, currentBlock, targetPlanck, inputStr, connections, phase]);
+  }, [network, saleInfo, currentBlock, targetPlanckValue, priceInput, connections, phase]);
 
   const unit = network ? getTokenSymbol(network as Network) : '';
   const currentPriceStr =
@@ -148,10 +158,10 @@ export default function RegionPriceCalculator() {
             className={styles.input}
             placeholder={`Enter desired price in ${unit}`}
             inputMode='decimal'
-            value={inputStr}
+            value={priceInput}
             onChange={(e) => {
               const val = e.target.value.replace(',', '.');
-              if (/^\d*\.?\d*$/.test(val)) setInputStr(val);
+              if (/^\d*\.?\d*$/.test(val)) setPriceInput(val);
             }}
           />
           <span className={styles.unit}>{unit}</span>
@@ -164,7 +174,7 @@ export default function RegionPriceCalculator() {
       <div className={styles.resultBox}>
         <div className={styles.resultContent}>
           {result.kind === 'idle' && (
-            <p className={styles.muted}>Enter a target price to calculate ETA.</p>
+            <p className={styles.muted}>Enter a target price to calculate the time estimate.</p>
           )}
           {result.kind === 'loading' && <p className={styles.muted}>Calculating…</p>}
           {result.kind === 'disabled' && <p className={styles.warn}>{result.reason}</p>}
@@ -205,9 +215,11 @@ export default function RegionPriceCalculator() {
                   <span className={`${styles.val} ${styles.nowrap}`}>{result.blocksToWait}</span>
                 </div>
                 <div className={styles.kv}>
-                  <span className={`${styles.key} ${styles.nowrap}`}>Approx. time</span>
+                  <span className={`${styles.key} ${styles.nowrap}`}>Estimated time</span>
                   <span className={`${styles.val} ${styles.nowrap}`}>
-                    {result.etaMs != null ? new Date(result.etaMs).toLocaleString() : '~'}
+                    {result.targetTimestampMs != null
+                      ? formatDateTime(new Date(result.targetTimestampMs))
+                      : '~'}
                   </span>
                 </div>
               </div>
@@ -221,8 +233,6 @@ export default function RegionPriceCalculator() {
     </div>
   );
 }
-
-/* ---------- helpers ---------- */
 
 function phaseLabel(p: SalePhase) {
   if (p === SalePhase.Interlude) return 'Interlude';
@@ -249,13 +259,13 @@ function getCoretimeSubscanBase(network?: string | null): string {
 function getEarlyState(
   network: string | null | undefined,
   saleInfo: any,
-  inputStr: string,
-  targetPlanck: bigint | null,
+  priceInput: string,
+  targetPlanckValue: bigint | null,
   currentBlock: number | null,
   phase: SalePhase | null
 ): { kind: 'idle' } | { kind: 'disabled'; reason: string } | { kind: 'loading' } | null {
   if (!network || !saleInfo) return { kind: 'idle' };
-  if (!inputStr || !targetPlanck) return { kind: 'idle' };
+  if (!priceInput || !targetPlanckValue) return { kind: 'idle' };
   if (currentBlock == null) return { kind: 'loading' };
   if (phase === SalePhase.Interlude)
     return { kind: 'disabled', reason: 'Purchases are disabled during interlude.' };
@@ -266,35 +276,32 @@ function getChainContext(
   network: Network,
   saleInfo: any,
   connections: Record<string, Connection>
-): ChainCtx | null {
+): ChainContext | null {
   const ids = getNetworkChainIds(network);
   const meta = getNetworkMetadata(network);
   if (!ids || !meta) return null;
-
   const priceUsesRelay = usesRelayChainBlocks(network, saleInfo);
   const chainId = priceUsesRelay ? ids.relayChain : ids.coretimeChain;
   const chainMeta = priceUsesRelay ? meta.relayChain : meta.coretimeChain;
   const conn = connections[chainId];
-
   if (!conn?.client || conn.status !== 'connected') return null;
-
   return { ids, meta, priceUsesRelay, chainId, chainMeta, conn };
 }
 
-function mkPriceAt(saleInfo: any, network: Network) {
+function createPriceAt(saleInfo: any, network: Network) {
   return (b: number) => BigInt(getCorePriceAt(b, saleInfo, network));
 }
 
 function expandSearchRange(
   currentBlock: number,
-  targetPlanck: bigint,
+  targetPlanckValue: bigint,
   priceAt: (b: number) => bigint
 ): { low: number; high: number; reachable: boolean } {
   let low = currentBlock;
   let high = Math.min(currentBlock + 2048, currentBlock + MAX_BLOCK_LOOKAHEAD);
   let pHigh = priceAt(high);
 
-  while (pHigh > targetPlanck && high - currentBlock < MAX_BLOCK_LOOKAHEAD) {
+  while (pHigh > targetPlanckValue && high - currentBlock < MAX_BLOCK_LOOKAHEAD) {
     const nextHigh = Math.min(high * 2 - low, currentBlock + MAX_BLOCK_LOOKAHEAD);
     if (nextHigh === high) break;
     low = high;
@@ -302,14 +309,14 @@ function expandSearchRange(
     pHigh = priceAt(high);
   }
 
-  if (pHigh > targetPlanck) return { low, high, reachable: false };
+  if (pHigh > targetPlanckValue) return { low, high, reachable: false };
   return { low, high, reachable: true };
 }
 
-function lowerBoundBlock(
+function findFirstAffordableBlock(
   low: number,
   high: number,
-  targetPlanck: bigint,
+  targetPlanckValue: bigint,
   priceAt: (b: number) => bigint
 ): number {
   let L = low;
@@ -317,39 +324,38 @@ function lowerBoundBlock(
   while (L < R) {
     const mid = L + Math.floor((R - L) / 2);
     const p = priceAt(mid);
-    if (p <= targetPlanck) R = mid;
+    if (p <= targetPlanckValue) R = mid;
     else L = mid + 1;
   }
   return R;
 }
 
-async function mkOkResult(args: {
+async function buildOkResult(args: {
   targetBlockInternal: number;
   currentBlock: number;
   network: Network;
-  ctx: ChainCtx;
+  ctx: ChainContext;
   connections: any;
   priceAt: (b: number) => bigint;
 }): Promise<OkResult> {
   const { targetBlockInternal, currentBlock, network, ctx, connections, priceAt } = args;
 
-  const etaBig = await blockToTimestamp(targetBlockInternal, ctx.conn, ctx.chainMeta);
-  const etaMs = etaBig ? Number(etaBig) : null;
+  const targetTimestampBig = await blockToTimestamp(targetBlockInternal, ctx.conn, ctx.chainMeta);
+  const targetTimestampMs = targetTimestampBig ? Number(targetTimestampBig) : null;
 
   let targetBlockCoretime: number | null = null;
 
   try {
     const coreConn = connections[ctx.ids.coretimeChain];
     const coreMeta = ctx.meta.coretimeChain;
-    if (etaMs != null && coreConn?.client && coreConn.status === 'connected') {
+    if (targetTimestampMs != null && coreConn?.client && coreConn.status === 'connected') {
       const coreApi = coreConn.client.getTypedApi(coreMeta);
       const nowCoreBlock = await coreApi.query.System.Number.getValue();
-      const nowCoreMsBig = await blockToTimestamp(nowCoreBlock, coreConn, coreMeta);
-
-      if (nowCoreMsBig != null) {
-        const nowCoreMs = Number(nowCoreMsBig);
+      const nowCoreTimestampBig = await blockToTimestamp(nowCoreBlock, coreConn, coreMeta);
+      if (nowCoreTimestampBig != null) {
+        const nowCoreMs = Number(nowCoreTimestampBig);
         const msPerBlock = coretimeChainBlockTime(network);
-        const delta = etaMs - nowCoreMs;
+        const delta = targetTimestampMs - nowCoreMs;
         const deltaBlocks =
           delta >= 0 ? Math.round(delta / msPerBlock) : -Math.round(-delta / msPerBlock);
         targetBlockCoretime = Math.max(0, nowCoreBlock + deltaBlocks);
@@ -365,6 +371,17 @@ async function mkOkResult(args: {
     targetBlockCoretime,
     blocksToWait: targetBlockInternal - currentBlock,
     targetPrice: priceAt(targetBlockInternal),
-    etaMs,
+    targetTimestampMs,
   };
+}
+
+function formatDateTime(d: Date) {
+  const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+  const day = pad(d.getDate());
+  const month = pad(d.getMonth() + 1);
+  const year = d.getFullYear();
+  const hours = pad(d.getHours());
+  const minutes = pad(d.getMinutes());
+  const seconds = pad(d.getSeconds());
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
