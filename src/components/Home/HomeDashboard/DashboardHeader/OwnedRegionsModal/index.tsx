@@ -6,7 +6,7 @@ import { $regions } from '@/coretime/regions';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
+import { bitStringToUint8Array, getNetworkSS58Prefix, maskToBin, timesliceToTimestamp } from '@/utils';
 import { FixedSizeBinary } from 'polkadot-api';
 import AssignModal from '@/components/RegionModals/AssignModal';
 import styles from './OwnedRegionsModal.module.scss';
@@ -93,7 +93,7 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
       };
       const address = encodeAddress(
         blake2AsU8a(`${region.begin}-${region.end}-${region.core}`),
-        42
+        getNetworkSS58Prefix(network)
       );
       return {
         key: region.id,
