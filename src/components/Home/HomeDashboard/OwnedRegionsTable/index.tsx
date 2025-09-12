@@ -7,7 +7,7 @@ import { encodeAddress, blake2AsU8a } from '@polkadot/util-crypto';
 import { $regions } from '@/coretime/regions';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
+import { getNetworkSS58Prefix, timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { TableComponent } from '@/components/elements/TableComponent';
 import styles from './OwnedRegionsTable.module.scss';
 
