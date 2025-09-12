@@ -98,7 +98,7 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
       };
       const address = encodeAddress(
         blake2AsU8a(`${region.begin}-${region.end}-${region.core}`),
-        getNetworkSS58Prefix(network)
+        42
       );
       return {
         key: region.id,
