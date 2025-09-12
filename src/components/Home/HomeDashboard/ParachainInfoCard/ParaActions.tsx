@@ -2,7 +2,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import styles from './ParachainInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { RenewalKey, RenewalRecord } from '@/coretime/renewals';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
@@ -11,14 +11,16 @@ import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
 import AutoRenewalModal from '@/components/AutoRenewalModal';
 import TransactionModal from '@/components/TransactionModal';
 import { ParaState } from '@/components/ParaStateCard';
+import { getParaCoreId } from '@/parachains';
 
 interface Props {
   paraId?: number;
   paraState?: ParaState;
+  renewalEntry: [RenewalKey, RenewalRecord] | null;
   parasWithAutoRenewal: Set<number>;
 }
 
-export const ParaActions = ({ paraId, paraState, parasWithAutoRenewal }: Props) => {
+export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRenewal }: Props) => {
   const selectedAccount = useUnit($selectedAccount);
   const accountData = useUnit($accountData);
   const network = useUnit($network);
@@ -26,7 +28,15 @@ export const ParaActions = ({ paraId, paraState, parasWithAutoRenewal }: Props) 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
-  const [renewalEntry, setRenewalEntry] = useState<[RenewalKey, RenewalRecord] | null>(null);
+  const [paraCore, setParaCore] = useState<number | null>(null);
+
+  useEffect(() => {
+    if(!paraId) return;
+    (async () => {
+      const core = await getParaCoreId(paraId, connections, network);
+      setParaCore(core);
+    })();
+  }, [paraId, network, connections]);
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
@@ -120,12 +130,12 @@ export const ParaActions = ({ paraId, paraState, parasWithAutoRenewal }: Props) 
         />
       )}
 
-      {renewalEntry && paraId && (
+      {paraCore !== null && paraId && (
         <AutoRenewalModal
           isOpen={isAutoRenewOpen}
           onClose={() => setIsAutoRenewOpen(false)}
           paraId={paraId}
-          coreId={renewalEntry[0].core}
+          coreId={paraCore}
         />
       )}
 

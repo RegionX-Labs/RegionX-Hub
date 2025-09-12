@@ -84,9 +84,7 @@ export const getParaCoreId = async (
   const typedApi = client.getTypedApi(metadata.coretimeChain);
 
   const workload = await typedApi.query.Broker.Workload.getEntries();
-
   const filtered = workload.filter((w) => w.value[0].assignment.value === paraId);
-  console.log(filtered);
 
-  return null;
+  return filtered[0].keyArgs[0];
 };

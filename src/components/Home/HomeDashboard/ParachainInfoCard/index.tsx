@@ -165,7 +165,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           <p />
         )}
 
-        {state && (
+        {state !== undefined && (
           <div className={styles.stateTooltip}>
             <ParaStateCard
               state={state}
@@ -220,6 +220,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
         <ParaActions
           paraState={state}
           parasWithAutoRenewal={parasWithAutoRenewal}
+          renewalEntry={renewalEntry}
           paraId={selected.id}
         />
       )}

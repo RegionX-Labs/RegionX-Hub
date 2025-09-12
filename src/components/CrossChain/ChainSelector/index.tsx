@@ -146,7 +146,6 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
   ];
 
   const isCoretimeChain = (chainId: string): boolean => {
-    console.log(chains);
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
 
