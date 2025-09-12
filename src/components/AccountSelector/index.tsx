@@ -9,7 +9,7 @@ import Select from '../elements/Select';
 import WalletModal from '../WalletModal/WalletModal';
 import { $accountIdentities } from '@/account/accountIdentity';
 import { $loadedAccounts, $selectedAccount, accountSelected, disconnectWallets } from '@/wallet';
-import { encodeAddress } from '@polkadot/util-crypto'
+import { encodeAddress } from '@polkadot/util-crypto';
 
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
 import { getNetworkSS58Prefix } from '@/utils';
@@ -86,7 +86,9 @@ const AccountSelector = () => {
 
         <span className={styles.accountName}>{identity?.name || account.name || 'Unknown'}</span>
 
-        <span className={styles.addressLine}>{formatAddress(encodeAddress(account.address, getNetworkSS58Prefix(network)))}</span>
+        <span className={styles.addressLine}>
+          {formatAddress(encodeAddress(account.address, getNetworkSS58Prefix(network)))}
+        </span>
 
         <Image
           src={walletIconSrc}
@@ -100,7 +102,7 @@ const AccountSelector = () => {
 
     return {
       key: encodeAddress(account.address, getNetworkSS58Prefix(network)),
-      value: encodeAddress(account.address, getNetworkSS58Prefix(network)),
+      value: account.address,
       label: '',
       icon,
     };

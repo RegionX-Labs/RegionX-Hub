@@ -6,7 +6,12 @@ import { $regions } from '@/coretime/regions';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { bitStringToUint8Array, getNetworkSS58Prefix, maskToBin, timesliceToTimestamp } from '@/utils';
+import {
+  bitStringToUint8Array,
+  getNetworkSS58Prefix,
+  maskToBin,
+  timesliceToTimestamp,
+} from '@/utils';
 import { FixedSizeBinary } from 'polkadot-api';
 import AssignModal from '@/components/RegionModals/AssignModal';
 import styles from './OwnedRegionsModal.module.scss';

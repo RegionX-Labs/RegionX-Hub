@@ -1,4 +1,4 @@
-import { Network } from "@/types";
+import { Network } from '@/types';
 
 export function maskToBin(mask: string): string {
   let bin = '';
@@ -39,7 +39,7 @@ export const countBits = (regionMask: string) => {
 };
 
 export const getNetworkSS58Prefix = (network: Network): number => {
-  switch(network) {
+  switch (network) {
     case Network.POLKADOT:
       return 0;
     case Network.KUSAMA:
@@ -49,6 +49,6 @@ export const getNetworkSS58Prefix = (network: Network): number => {
     case Network.WESTEND:
       return 42;
     default:
-      throw Error('unknown network')
-  } 
-}
+      throw Error('unknown network');
+  }
+};
