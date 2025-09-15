@@ -95,6 +95,7 @@ const NetworkSelector = () => {
       onChange={handleChange}
       options={networks}
       isOptionDisabled={(v) => v === Network.WESTEND}
+      searchable={false}
     />
   );
 };

@@ -17,13 +17,12 @@ interface SelectProps<T> {
   showOnlySelectedIcon?: boolean;
   variant?: 'default' | 'secondary';
   searchPlaceholder?: string;
-  /** NEW: disable specific values (no layout change) */
   isOptionDisabled?: (value: T | null) => boolean;
 }
 
 const Select = <T,>({
   options,
-  searchable = false,
+  searchable = true,
   onChange,
   placeholder = 'Select an option',
   disabled = false,
@@ -85,7 +84,7 @@ const Select = <T,>({
   const selectClassName = `
     ${styles.selectBox}
     ${disabled ? styles['selectBox-disabled'] : ''}
-    ${styles[`selectBox--${variant}`]}
+    ${styles['selectBox--' + variant]}
   `;
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +118,7 @@ const Select = <T,>({
       </div>
 
       {isDropdownOpen && !disabled && (
-        <div className={`${styles.selectDropdown} ${styles[`selectDropdown--${variant}`]}`}>
+        <div className={`${styles.selectDropdown} ${styles['selectDropdown--' + variant]}`}>
           {searchable && (
             <div style={{ padding: 8 }}>
               <Input
