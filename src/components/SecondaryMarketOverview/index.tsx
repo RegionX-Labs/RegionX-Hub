@@ -17,7 +17,7 @@ export default function SecondaryMarketOverview() {
     $selectedAccount,
     $accountData,
     $listedRegions,
-    $connections
+    $connections,
   ]);
 
   const [averageBlockPrice, setAverageBlockPrice] = useState(BigInt(0));
@@ -56,22 +56,22 @@ export default function SecondaryMarketOverview() {
   const _accountData = selectedAccount?.address ? accountData[selectedAccount.address] : null;
 
   const formattedRegionX =
-  _accountData?.regionxChainData?.free != null
+    _accountData?.regionxChainData?.free != null
       ? toUnitFormatted(network, _accountData.regionxChainData.free)
       : '-';
 
   const formattedCoretime =
-  _accountData?.coretimeChainData?.free != null
+    _accountData?.coretimeChainData?.free != null
       ? toUnitFormatted(network, _accountData.coretimeChainData.free)
       : '-';
-    
+
   const openBuyModal = () => {
     if (!selectedAccount) {
       toast.error('Account not selected');
       return;
     }
     setIsModalOpen(true);
-  }
+  };
 
   const onBuyModalConfirm = async (listing: RegionListing) => {
     await buyRegion(listing);
@@ -160,7 +160,9 @@ export default function SecondaryMarketOverview() {
         <div className={styles.listingPrice}>
           {bestListing ? toUnitFormatted(network, getPricePerBlock(bestListing)) : '-'}
         </div>
-        <button onClick={openBuyModal} className={styles.buyButton}>Buy Now</button>
+        <button onClick={openBuyModal} className={styles.buyButton}>
+          Buy Now
+        </button>
         {selectedAccount && bestListing && accountData[selectedAccount.address] !== null && (
           <TransactionModal
             isOpen={isModalOpen}
