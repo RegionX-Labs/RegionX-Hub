@@ -9,6 +9,7 @@ import Identicon from '@polkadot/react-identicon';
 import { blake2AsHex } from '@polkadot/util-crypto';
 import Select from '@/components/elements/Select';
 import styles from './ParachainInfoCard.module.scss';
+import { useMemo } from 'react';
 
 interface Props {
   selected: Parachain;
@@ -22,11 +23,21 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
   const potentialRenewals = useUnit($potentialRenewals);
   const saleInfo = useUnit($latestSaleInfo);
 
-  const selectOptions: SelectOption<Parachain>[] = parachains
-    .filter((p) => p.network === network)
-    .map((item) => {
+  const uniqueParas = useMemo(() => {
+    const seen = new Set<number>();
+    return parachains
+      .filter((p) => p.network === network)
+      .filter((p) => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
+  }, [parachains, network]);
+
+  const selectOptions: SelectOption<Parachain>[] = useMemo(() => {
+    return uniqueParas.map((item) => {
       const meta = chainData[network]?.[item.id];
-      const pname = meta?.name || `Parachain ${item.id}`;
+      const pname = meta?.name || `Parachain`;
       const logo = meta?.logo as string | undefined;
 
       const renewalMatch = Array.from(potentialRenewals.entries()).find(
@@ -73,6 +84,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
         ),
       };
     });
+  }, [uniqueParas, network, potentialRenewals, saleInfo]);
 
   return (
     <div className={styles.inputSection}>
@@ -80,6 +92,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
       <Select
         options={selectOptions}
         selectedValue={selected}
+        valueEquals={(a, b) => (a && b ? a.id === b.id : a === b)}
         searchable
         searchPlaceholder='Search by name or ParaID…'
         onChange={(value) => {
