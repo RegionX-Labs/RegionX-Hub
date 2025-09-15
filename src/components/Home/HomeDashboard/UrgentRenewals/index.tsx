@@ -152,16 +152,19 @@ export default function UrgentRenewals({ view }: Props) {
   const allCoresSold = (saleInfo?.coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0);
 
   const bannerMsg = useMemo(() => {
-    if (allCoresSold) return 'All cores are sold — renewals are unavailable this cycle.';
+    if (allCoresSold)
+      return 'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.';
     if (interludeEnded)
-      return 'Sale has started — you will not be able to renew if all cores are sold';
+      return 'The sale is ongoing; you won’t be able to renew if all cores are sold.';
     return null;
   }, [allCoresSold, interludeEnded]);
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
     if (allCoresSold)
-      return toast.error('All cores are sold — renewals are unavailable this cycle.');
+      return toast.error(
+        'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.'
+      );
     setIsModalOpen(true);
   };
 
@@ -174,7 +177,9 @@ export default function UrgentRenewals({ view }: Props) {
     if (!selected) return toast.error('Core not selected');
     if (!selectedAccount) return toast.error('Account not selected');
     if (allCoresSold)
-      return toast.error('All cores are sold — renewals are unavailable this cycle.');
+      return toast.error(
+        'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.'
+      );
 
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) return toast.error('Unknown network');
