@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import styles from './SecondaryMarketOverview.module.scss';
 import { useUnit } from 'effector-react';
-import { $network } from '@/api/connection';
+import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
-import { $accountData } from '@/account';
-import { TIMESLICE_PERIOD, toUnitFormatted } from '@/utils';
+import { $accountData, MultiChainAccountData } from '@/account';
+import { TIMESLICE_PERIOD, bitStringToUint8Array, maskToBin, toUnitFormatted } from '@/utils';
 import { $listedRegions, RegionListing } from '@/marketplace';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import TransactionModal from '../TransactionModal';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { FixedSizeBinary } from 'polkadot-api';
 
 export default function SecondaryMarketOverview() {
-  const [network, selectedAccount, accountDataMap, listedRegions] = useUnit([
+  const [network, selectedAccount, accountData, listedRegions, connections] = useUnit([
     $network,
     $selectedAccount,
     $accountData,
     $listedRegions,
+    $connections
   ]);
 
   const [averageBlockPrice, setAverageBlockPrice] = useState(BigInt(0));
   const [lowestBlockPrice, setLowestBlockPrice] = useState(BigInt(0));
-
   // Based on price per timeslice.
   const [bestListing, setBestListing] = useState<RegionListing | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (listedRegions.length < 1) return;
@@ -49,17 +53,85 @@ export default function SecondaryMarketOverview() {
     return listing.price_data / BigInt(blockDuration);
   };
 
-  const accountData = selectedAccount?.address ? accountDataMap[selectedAccount.address] : null;
+  const _accountData = selectedAccount?.address ? accountData[selectedAccount.address] : null;
 
   const formattedRegionX =
-    accountData?.regionxChainData?.free != null
-      ? toUnitFormatted(network, accountData.regionxChainData.free)
+  _accountData?.regionxChainData?.free != null
+      ? toUnitFormatted(network, _accountData.regionxChainData.free)
       : '-';
 
   const formattedCoretime =
-    accountData?.coretimeChainData?.free != null
-      ? toUnitFormatted(network, accountData.coretimeChainData.free)
+  _accountData?.coretimeChainData?.free != null
+      ? toUnitFormatted(network, _accountData.coretimeChainData.free)
       : '-';
+    
+  const openBuyModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  }
+
+  const onBuyModalConfirm = async (listing: RegionListing) => {
+    await buyRegion(listing);
+    setIsModalOpen(false);
+  };
+
+  const buyRegion = async (listing: RegionListing) => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) {
+      toast.error('Unknown network');
+      return;
+    }
+
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) {
+      toast.error('Failed to find metadata of the chains');
+      return;
+    }
+
+    if (!networkChainIds.regionxChain || !metadata.regionxChain) {
+      toast.error(`RegionX doesn't support this network yet`);
+      return;
+    }
+
+    const connection = connections[networkChainIds.regionxChain];
+    if (!connection || !connection.client || connection.status !== 'connected') {
+      toast.error('Failed to connect to the API');
+      return;
+    }
+
+    const client = connection.client;
+
+    const tx = client.getTypedApi(metadata.regionxChain).tx.Market.purchase_region({
+      max_price: listing.price_data,
+      region_id: {
+        begin: listing.region.begin,
+        core: listing.region.core,
+        mask: new FixedSizeBinary(bitStringToUint8Array(maskToBin(listing.region.mask))),
+      },
+    });
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(<span>Transaction submitted.</span>, { id: toastId });
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
+  };
 
   return (
     <div className={styles.card}>
@@ -88,7 +160,15 @@ export default function SecondaryMarketOverview() {
         <div className={styles.listingPrice}>
           {bestListing ? toUnitFormatted(network, getPricePerBlock(bestListing)) : '-'}
         </div>
-        <button className={styles.buyButton}>Buy Now</button>
+        <button onClick={openBuyModal} className={styles.buyButton}>Buy Now</button>
+        {selectedAccount && bestListing && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={() => onBuyModalConfirm(bestListing)}
+          />
+        )}
       </div>
 
       <Toaster />

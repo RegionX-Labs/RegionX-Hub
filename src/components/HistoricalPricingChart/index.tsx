@@ -210,7 +210,7 @@ export default function HistoricalPricingChart() {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <span className={styles.title}>Last 3 Sale Prices</span>
+        <span className={styles.title}>Last 3 Sale Cycle Prices</span>
       </div>
 
       {loading ? (

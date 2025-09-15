@@ -9,6 +9,7 @@ import { $listedRegions, listedRegionsRequested, RegionListing } from '@/marketp
 import {
   bitStringToUint8Array,
   countBits,
+  getTokenSymbol,
   maskToBin,
   timesliceToTimestamp,
   toUnitFormatted,
@@ -206,7 +207,7 @@ export default function SecondaryMarketplaceTable() {
               {open && (
                 <div className={styles.filterDropdown}>
                   <div className={styles.filterInputGroup}>
-                    <label>Max Price (DOT)</label>
+                    <label>Max Price ({getTokenSymbol(network)})</label>
                     <input
                       type='number'
                       min='0'
@@ -214,7 +215,7 @@ export default function SecondaryMarketplaceTable() {
                       onChange={(e) =>
                         setMaxPrice(e.target.value ? Math.max(0, parseFloat(e.target.value)) : null)
                       }
-                      placeholder='Maximum price in DOT'
+                      placeholder={`Maximum price in ${getTokenSymbol(network)}`}
                     />
                   </div>
                   <div className={styles.filterInputGroup}>
