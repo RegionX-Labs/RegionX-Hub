@@ -325,7 +325,7 @@ export default function DutchAuctionChart({
       }
     >
       {mode === 'full' && context !== 'modal' && (
-        <div className={styles.title}>Dutch Auction Chart</div>
+        <div className={styles.title}>Sale Cycle Chart</div>
       )}
       {chartContent}
     </div>
