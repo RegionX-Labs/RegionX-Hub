@@ -70,7 +70,8 @@ export default function CoreComparison({ view }: Props) {
         {priceDiffFormatted}
       </h2>
       <p className={styles.note}>
-        Renewing during the interlude phase guarantees core procurement. Purchasing a core during the sale carries the risk that all cores will be sold out.
+        Renewing during the interlude phase guarantees core procurement. Purchasing a core during
+        the sale carries the risk that all cores will be sold out.
       </p>
       <div className={styles.bottomSection}>
         <p className={styles.subtext}>
