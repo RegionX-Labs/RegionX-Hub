@@ -91,7 +91,7 @@ export default function UrgentRenewals({ view }: Props) {
 
         return {
           key: `${renewal[0].when}-${renewal[0].core}`,
-          label: `Core ${renewal[0].core} | ${name}`,
+          label: ` ${name} | Core ${renewal[0].core} `,
           value: renewal,
           icon: logo ? (
             <img
