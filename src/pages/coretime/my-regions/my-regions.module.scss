@@ -25,6 +25,7 @@
     color: $white;
     margin: 0 0 8px;
   }
+
   .subtitle {
     font-size: 1rem;
     color: var(--muted);
@@ -34,14 +35,15 @@
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   padding: 0 8px;
   margin: 10px 0 18px;
   flex-wrap: nowrap;
 
   .search {
     position: relative;
-    width: 200px;
+    flex: 0 1 220px;
+    min-width: 180px;
 
     .icon {
       position: absolute;
@@ -72,26 +74,43 @@
         border-color: rgba(255, 255, 255, 0.18);
         box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
       }
+
       &::placeholder {
         color: var(--muted);
       }
     }
   }
 
-  .segmented {
+  .segmented,
+  .segmentedTriplet {
     position: relative;
     display: inline-grid;
-    grid-template-columns: 1fr 1fr;
     align-items: center;
-    flex: 0 0 220px;
-    width: 220px;
     height: 38px;
     padding: 3px;
-    margin-left: 60px;
     border-radius: 14px;
     border: 1px solid var(--card-border);
     background: rgba(255, 255, 255, 0.04);
     overflow: hidden;
+  }
+
+  .segmented {
+    grid-template-columns: 1fr 1fr;
+    flex: 0 0 220px;
+    width: 220px;
+    margin-left: 60px;
+  }
+
+  .segmentedTriplet {
+    grid-template-columns: 1fr 1fr 1fr;
+    flex: 0 1 360px;
+    width: auto;
+    margin-left: 10px;
+
+    @media (max-width: 656px) {
+      width: 100%;
+      margin-left: 0;
+    }
   }
 
   .segmentedBtn {
@@ -121,6 +140,7 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
   }
 
   .chip {
@@ -154,31 +174,73 @@
       inset 0 0 0 1px var(--card-border);
     transition: transform 160ms ease;
     pointer-events: none;
+
+    &.right {
+      transform: translateX(calc(100% + 6px));
+    }
   }
-  .segmentedThumb.right {
-    transform: translateX(calc(100% + 6px));
+
+  .segmentedThumbTriplet {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: calc(33.333% - 6px);
+    height: calc(100% - 6px);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 4px 18px rgba(0, 0, 0, 0.25),
+      inset 0 0 0 1px var(--card-border);
+    transition: transform 160ms ease;
+    pointer-events: none;
   }
 
   .spacer {
     flex: 1;
   }
 
-  @media (max-width: 656px) {
+  @media (max-width: 1214px) {
     flex-wrap: wrap;
     gap: 10px;
-    @media (max-width: 356px) {
-      .search {
-        width: 73%;
-      }
-    }
 
+    .search {
+      position: relative;
+      display: flex;
+      align-items: center;
+      order: 1;
+      flex: 1 1 100%;
+      min-width: 10px;
+      max-width: 100%;
+    }
     .segmented {
+      order: 2;
+      flex: 1 1 100%;
       width: 100%;
-      margin-left: 0px;
-      margin-right: 300px;
+      margin-left: 0;
+    }
+    .segmentedTriplet {
+      order: 3;
+      flex: 1 1 100%;
+      width: 100%;
+      margin-left: 0;
     }
     .spacer {
       display: none;
+    }
+    .metrics {
+      order: 4;
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 456px) {
+    .search {
+      flex: 1 1 100%;
+    }
+    .segmented,
+    .segmentedTriplet {
+      width: 100%;
     }
   }
 }
@@ -219,6 +281,11 @@
       width: 100%;
       margin-left: 0;
       order: 2;
+    }
+    .segmentedTriplet {
+      width: 100%;
+      margin-left: 0;
+      order: 3;
     }
     .spacer {
       display: none;
