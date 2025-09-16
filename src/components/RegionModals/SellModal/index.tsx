@@ -9,6 +9,8 @@ import { $selectedAccount } from '@/wallet';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
 import { RegionId, fromUnit } from '@/utils';
+import TransactionModal from '@/components/TransactionModal';
+import { $accountData, MultiChainAccountData } from '@/account';
 
 interface SellModalProps {
   isOpen: boolean;
@@ -32,7 +34,9 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
   const [priceInput, setPriceInput] = useState('');
   const [address, setAddress] = useState('');
   const [priceError, setPriceError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const accountData = useUnit($accountData);
   const selectedAccount = useUnit($selectedAccount);
   const network = useUnit($network);
   const connections = useUnit($connections);
@@ -58,7 +62,20 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
     if ((e.target as HTMLDivElement).classList.contains(styles.modalOverlay)) onClose();
   };
 
-  const onSell = () => {
+  const openModal = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
+  const onModalConfirm = async () => {
+    await sell();
+    setIsModalOpen(false);
+  };
+
+  const sell = async () => {
     if (priceError) {
       toast.error(priceError);
       return;
@@ -142,7 +159,15 @@ const SellModal: React.FC<SellModalProps> = ({ isOpen, regionId, onClose }) => {
           />
         </div>
 
-        <button className={styles.assignBtn} onClick={onSell} disabled={!canSubmit}>
+        {selectedAccount && accountData[selectedAccount.address] !== null && (
+          <TransactionModal
+            isOpen={isModalOpen}
+            accountData={accountData[selectedAccount.address] as MultiChainAccountData}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={onModalConfirm}
+          />
+        )}
+        <button className={styles.assignBtn} onClick={openModal} disabled={!canSubmit}>
           List on sale
         </button>
       </div>
