@@ -250,14 +250,20 @@ export default function MyRegionsPage() {
           </div>
         </div>
 
-        {!loading && selectedAccount && ownedRegions.length === 0 && showOwned && (
+        {/* ✅ Empty states now respect filters */}
+        {!loading && showOwned && filteredOwned.length === 0 && (
           <div className={styles.messageNote}>No regions owned by the selected account.</div>
         )}
-        {!loading && regionsAll.length === 0 && showAll && (
-          <div className={styles.messageNote}>There are no regions available.</div>
+
+        {!loading && showAll && filteredAll.length === 0 && (
+          <div className={styles.messageNote}>
+            {selectedAccount && chainFilter !== 'all'
+              ? 'No regions owned by the selected account.'
+              : 'There are no regions available.'}
+          </div>
         )}
 
-        {showOwned && ownedRegions.length > 0 && (
+        {showOwned && filteredOwned.length > 0 && (
           <>
             <div className={styles.sectionTitle}>Owned</div>
             <DraggableGrid
@@ -272,7 +278,7 @@ export default function MyRegionsPage() {
           </>
         )}
 
-        {showAll && regionsAll.length > 0 && (
+        {showAll && filteredAll.length > 0 && (
           <>
             <div className={styles.sectionTitle}>All regions</div>
             <DraggableGrid
