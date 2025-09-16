@@ -1,6 +1,6 @@
 import { $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
-import { $potentialRenewals } from '@/coretime/renewals';
+import { $potentialRenewals, RenewalKey } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $parachains, Parachain } from '@/parachains';
 import { SelectOption } from '@/types/type';
@@ -23,36 +23,37 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
   const potentialRenewals = useUnit($potentialRenewals);
   const saleInfo = useUnit($latestSaleInfo);
 
-  const uniqueParas = useMemo(() => {
-    const seen = new Set<number>();
-    return parachains
-      .filter((p) => p.network === network)
-      .filter((p) => {
-        if (seen.has(p.id)) return false;
-        seen.add(p.id);
-        return true;
-      });
-  }, [parachains, network]);
+  const itemsForNetwork = useMemo(
+    () => parachains.filter((p) => p.network === network),
+    [parachains, network]
+  );
 
   const selectOptions: SelectOption<Parachain>[] = useMemo(() => {
-    return uniqueParas.map((item) => {
+    return itemsForNetwork.map((item) => {
       const meta = chainData[network]?.[item.id];
       const pname = meta?.name || `Parachain`;
       const logo = meta?.logo as string | undefined;
 
-      const renewalMatch = Array.from(potentialRenewals.entries()).find(
+      const match = Array.from(potentialRenewals.entries()).find(
         ([key, record]) =>
           (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
           saleInfo?.regionBegin === key.when
       );
+      const coreForLabel =
+        (match?.[0] as RenewalKey | undefined)?.core !== undefined
+          ? Number((match![0] as RenewalKey).core)
+          : undefined;
 
-      const renewalStatus = renewalMatch ? 'Needs Renewal' : 'Renewed';
-      const badgeColor = renewalMatch ? '#dc2626' : '#0cc184';
+      const renewalStatus = match ? 'Needs Renewal' : 'Renewed';
+      const badgeColor = match ? '#dc2626' : '#0cc184';
 
       return {
-        key: item.id.toString(),
+        key: `${item.id}-${coreForLabel ?? 'current'}`,
         value: item,
-        label: `${pname} ${item.id}`,
+        label:
+          coreForLabel !== undefined
+            ? `${pname} · ParaID ${item.id} · Core ${coreForLabel}`
+            : `${pname} · ParaID ${item.id}`,
         icon: logo ? (
           <img
             src={logo}
@@ -84,7 +85,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
         ),
       };
     });
-  }, [uniqueParas, network, potentialRenewals, saleInfo]);
+  }, [itemsForNetwork, network, potentialRenewals, saleInfo]);
 
   return (
     <div className={styles.inputSection}>
