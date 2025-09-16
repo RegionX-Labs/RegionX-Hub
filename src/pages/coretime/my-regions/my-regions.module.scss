@@ -94,6 +94,27 @@
     overflow: hidden;
   }
 
+  .segmentedTriplet {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    flex: 0 0 350px;
+    width: 330px;
+    height: 38px;
+    padding: 3px;
+    margin-left: 10px;
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    background: rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+
+    @media (max-width: 656px) {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
   .segmentedBtn {
     position: relative;
     border: 0;
@@ -159,6 +180,21 @@
     transform: translateX(calc(100% + 6px));
   }
 
+  .segmentedThumbTriplet {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: calc(33.333% - 6px);
+    height: calc(100% - 6px);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 4px 18px rgba(0, 0, 0, 0.25),
+      inset 0 0 0 1px var(--card-border);
+    transition: transform 160ms ease;
+    pointer-events: none;
+  }
+
   .spacer {
     flex: 1;
   }
@@ -176,6 +212,10 @@
       width: 100%;
       margin-left: 0px;
       margin-right: 300px;
+    }
+    .segmentedTriplet {
+      width: 100%;
+      margin-left: 0;
     }
     .spacer {
       display: none;
@@ -219,6 +259,11 @@
       width: 100%;
       margin-left: 0;
       order: 2;
+    }
+    .segmentedTriplet {
+      width: 100%;
+      margin-left: 0;
+      order: 3;
     }
     .spacer {
       display: none;
