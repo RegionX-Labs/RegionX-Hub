@@ -244,8 +244,10 @@ export default function MyRegionsPage() {
           </div>
 
           <div className={styles.spacer} />
-          <div className={styles.chip}>Total: {regionsAll.length}</div>
-          {selectedAccount && <div className={styles.chip}>Owned: {ownedRegions.length}</div>}
+          <div className={styles.metrics}>
+            <div className={styles.chip}>Total: {regionsAll.length}</div>
+            {selectedAccount && <div className={styles.chip}>Owned: {ownedRegions.length}</div>}
+          </div>
         </div>
 
         {!loading && selectedAccount && ownedRegions.length === 0 && showOwned && (
