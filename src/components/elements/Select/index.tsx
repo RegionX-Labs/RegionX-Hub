@@ -17,13 +17,14 @@ interface SelectProps<T> {
   showOnlySelectedIcon?: boolean;
   variant?: 'default' | 'secondary';
   searchPlaceholder?: string;
-  /** NEW: disable specific values (no layout change) */
   isOptionDisabled?: (value: T | null) => boolean;
+  /** Optional custom comparator for complex values (fallback is JSON stringify) */
+  valueEquals?: (a: T | null, b: T | null) => boolean;
 }
 
 const Select = <T,>({
   options,
-  searchable = false,
+  searchable = false, // default OFF unless you explicitly turn it on
   onChange,
   placeholder = 'Select an option',
   disabled = false,
@@ -32,6 +33,7 @@ const Select = <T,>({
   variant = 'default',
   searchPlaceholder = 'Search...',
   isOptionDisabled,
+  valueEquals,
 }: SelectProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState<T | null>(selectedValue);
@@ -40,13 +42,36 @@ const Select = <T,>({
 
   const isDisabledValue = (v: T | null) => !!isOptionDisabled?.(v);
 
+  // De-duplicate options by key (prevents repeated para IDs etc.)
+  const uniqueOptions = useMemo(() => {
+    const seen = new Set<string | number>();
+    const out: SelectOption<T | null>[] = [];
+    for (const opt of options) {
+      if (opt == null) continue;
+      const k = opt.key as string | number;
+      if (k == null) continue;
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push(opt);
+    }
+    return out;
+  }, [options]);
+
+  // Keep local selected in sync with selectedValue, but clear if disabled
   useEffect(() => {
     if (isDisabledValue(selectedValue ?? null)) {
       setSelected(null);
     } else {
       setSelected(selectedValue ?? null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedValue, isOptionDisabled]);
+
+  const equals = useMemo(() => {
+    if (valueEquals) return valueEquals;
+    // Safe fallback for tuples/POJOs used in your app
+    return (a: T | null, b: T | null) => JSON.stringify(a) === JSON.stringify(b);
+  }, [valueEquals]);
 
   const handleOptionClick = (value: T | null) => {
     if (isDisabledValue(value)) return;
@@ -58,18 +83,21 @@ const Select = <T,>({
   const term = searchTerm.trim().toLowerCase();
 
   const filteredOptions = useMemo(() => {
-    if (!term) return options;
-    return options.filter((option) => {
+    if (!term) return uniqueOptions;
+    return uniqueOptions.filter((option) => {
       const labelMatch = option.label.toLowerCase().includes(term);
-      const idMatch = typeof option.key === 'string' && option.key.toLowerCase().includes(term);
+      const keyStr =
+        typeof option.key === 'string'
+          ? option.key.toLowerCase()
+          : String(option.key).toLowerCase();
+      const idMatch = keyStr.includes(term);
       return labelMatch || idMatch;
     });
-  }, [options, term]);
+  }, [uniqueOptions, term]);
 
   const selectedOption = useMemo(
-    () =>
-      options.find((option) => JSON.stringify(option.value) === JSON.stringify(selected)) ?? null,
-    [options, selected]
+    () => uniqueOptions.find((option) => equals(option.value as T | null, selected)) ?? null,
+    [uniqueOptions, selected, equals]
   );
 
   useEffect(() => {
@@ -85,7 +113,7 @@ const Select = <T,>({
   const selectClassName = `
     ${styles.selectBox}
     ${disabled ? styles['selectBox-disabled'] : ''}
-    ${styles[`selectBox--${variant}`]}
+    ${styles['selectBox--' + variant]}
   `;
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +147,7 @@ const Select = <T,>({
       </div>
 
       {isDropdownOpen && !disabled && (
-        <div className={`${styles.selectDropdown} ${styles[`selectDropdown--${variant}`]}`}>
+        <div className={`${styles.selectDropdown} ${styles['selectDropdown--' + variant]}`}>
           {searchable && (
             <div style={{ padding: 8 }}>
               <Input
@@ -140,13 +168,13 @@ const Select = <T,>({
               </li>
             )}
             {filteredOptions.map((option) => {
-              const isOptDisabled = isDisabledValue(option.value);
-              const isSelected = option.value === selected;
+              const isOptDisabled = isDisabledValue(option.value as T | null);
+              const isSelected = equals(option.value as T | null, selected);
 
               return (
                 <li
                   key={option.key}
-                  onClick={() => handleOptionClick(option.value)}
+                  onClick={() => handleOptionClick(option.value as T | null)}
                   className={`${styles['selectDropdown-optionList-optionItem']} ${
                     isSelected ? styles.selected : ''
                   } ${isOptDisabled ? styles['optionDisabled'] : ''}`}

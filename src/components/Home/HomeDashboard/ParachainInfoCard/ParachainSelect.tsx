@@ -1,6 +1,6 @@
 import { $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
-import { $potentialRenewals } from '@/coretime/renewals';
+import { $potentialRenewals, RenewalKey } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $parachains, Parachain } from '@/parachains';
 import { SelectOption } from '@/types/type';
@@ -9,6 +9,7 @@ import Identicon from '@polkadot/react-identicon';
 import { blake2AsHex } from '@polkadot/util-crypto';
 import Select from '@/components/elements/Select';
 import styles from './ParachainInfoCard.module.scss';
+import { useMemo } from 'react';
 
 interface Props {
   selected: Parachain;
@@ -22,26 +23,37 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
   const potentialRenewals = useUnit($potentialRenewals);
   const saleInfo = useUnit($latestSaleInfo);
 
-  const selectOptions: SelectOption<Parachain>[] = parachains
-    .filter((p) => p.network === network)
-    .map((item) => {
+  const itemsForNetwork = useMemo(
+    () => parachains.filter((p) => p.network === network),
+    [parachains, network]
+  );
+
+  const selectOptions: SelectOption<Parachain>[] = useMemo(() => {
+    return itemsForNetwork.map((item) => {
       const meta = chainData[network]?.[item.id];
-      const pname = meta?.name || `Parachain ${item.id}`;
+      const pname = meta?.name || `Parachain`;
       const logo = meta?.logo as string | undefined;
 
-      const renewalMatch = Array.from(potentialRenewals.entries()).find(
+      const match = Array.from(potentialRenewals.entries()).find(
         ([key, record]) =>
           (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
           saleInfo?.regionBegin === key.when
       );
+      const coreForLabel =
+        (match?.[0] as RenewalKey | undefined)?.core !== undefined
+          ? Number((match![0] as RenewalKey).core)
+          : undefined;
 
-      const renewalStatus = renewalMatch ? 'Needs Renewal' : 'Renewed';
-      const badgeColor = renewalMatch ? '#dc2626' : '#0cc184';
+      const renewalStatus = match ? 'Needs Renewal' : 'Renewed';
+      const badgeColor = match ? '#dc2626' : '#0cc184';
 
       return {
-        key: item.id.toString(),
+        key: `${item.id}-${coreForLabel ?? 'current'}`,
         value: item,
-        label: `${pname} ${item.id}`,
+        label:
+          coreForLabel !== undefined
+            ? `${pname} · ParaID ${item.id} · Core ${coreForLabel}`
+            : `${pname} · ParaID ${item.id}`,
         icon: logo ? (
           <img
             src={logo}
@@ -73,6 +85,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
         ),
       };
     });
+  }, [itemsForNetwork, network, potentialRenewals, saleInfo]);
 
   return (
     <div className={styles.inputSection}>
@@ -80,6 +93,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
       <Select
         options={selectOptions}
         selectedValue={selected}
+        valueEquals={(a, b) => (a && b ? a.id === b.id : a === b)}
         searchable
         searchPlaceholder='Search by name or ParaID…'
         onChange={(value) => {
