@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { useUnit } from 'effector-react';
 import Image from 'next/image';
@@ -8,6 +10,8 @@ import NetworkSelector from '@/components/NetworkSelector';
 import WalletModal from '../WalletModal/WalletModal';
 import { $loadedAccounts } from '@/wallet';
 import DownArrow from '../../../public/DownArrow.svg';
+import { Bell } from 'lucide-react';
+import ActivityDrawer from '@/components/ActivityDrawer';
 
 interface HeaderProps {
   theme: 'light' | 'dark';
@@ -20,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCoretimeMenuOpen, setIsCoretimeMenuOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -102,9 +107,19 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
         </div>
 
         <div className={styles.desktopContent}>
+          {/* Bell – left of NetworkSelector */}
+          <button
+            className={styles.iconBtn}
+            aria-label='Open activity'
+            onClick={() => setActivityOpen(true)}
+          >
+            <Bell size={18} />
+          </button>
+
           <div className={styles.networkSelector}>
             <NetworkSelector />
           </div>
+
           {accounts.length > 0 ? (
             <div className={styles.accSelector}>
               <AccountSelector />
@@ -159,6 +174,14 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
         </ul>
 
         <div className={styles.mobileContent}>
+          <button
+            className={styles.iconBtn}
+            aria-label='Open activity'
+            onClick={() => setActivityOpen(true)}
+          >
+            <Bell size={18} />
+          </button>
+
           <div className={styles.networkSelector}>
             <NetworkSelector />
           </div>
@@ -200,6 +223,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
       </div>
 
       <WalletModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ActivityDrawer open={activityOpen} onClose={() => setActivityOpen(false)} />
     </>
   );
 };
