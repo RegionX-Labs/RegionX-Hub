@@ -18,6 +18,7 @@ import {
   RenewalRecord,
 } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
+import RegisterParaModal from '../parachain-dashboard/RegisterParaModal';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -30,6 +31,7 @@ const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   const network = useUnit($network);
   const connections = useUnit($connections);
@@ -98,10 +100,7 @@ const ParachainDashboard = () => {
     const renewal = getRenewalStatus(item.id);
 
     return {
-      Id: {
-        cellType: 'text',
-        data: String(item.id),
-      },
+      Id: { cellType: 'text', data: String(item.id) },
       Name: {
         cellType: 'jsx',
         data: (
@@ -131,12 +130,7 @@ const ParachainDashboard = () => {
       'Renewal status': {
         cellType: 'jsx',
         data: (
-          <span
-            className={styles.renewalStatus}
-            style={{
-              backgroundColor: renewal.color,
-            }}
-          >
+          <span className={styles.renewalStatus} style={{ backgroundColor: renewal.color }}>
             {renewal.label}
           </span>
         ),
@@ -174,6 +168,12 @@ const ParachainDashboard = () => {
             >
               Reserve New Para
             </button>
+            <button
+              className={`${styles.customButton} ${styles.secondary}`}
+              onClick={() => setIsRegisterOpen(true)}
+            >
+              Register Para
+            </button>
           </div>
         </div>
 
@@ -185,6 +185,11 @@ const ParachainDashboard = () => {
       </div>
 
       <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <RegisterParaModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onConfirm={() => {}}
+      />
     </div>
   );
 };
