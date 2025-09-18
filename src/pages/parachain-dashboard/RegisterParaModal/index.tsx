@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback, useTransition } from 'react';
 import styles from './register-para-modal.module.scss';
 import { X, UploadCloud, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -10,17 +10,22 @@ import { $selectedAccount } from '@/wallet';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { encodeAddress } from '@polkadot/util-crypto';
 
+function useDebouncedValue<T>(value: T, delay = 450) {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setV(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return v;
+}
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (args: { paraId: number; genesisHead: Uint8Array; wasmCode: Uint8Array }) => void;
 };
 
-const RegisterParaModal: React.FC<Props> = ({
-  isOpen,
-  onClose,
-  onConfirm,
-}) => {
+const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
   const [network, connections, selectedAccount] = useUnit([
     $network,
     $connections,
@@ -28,15 +33,22 @@ const RegisterParaModal: React.FC<Props> = ({
   ]);
 
   const [paraId, setParaId] = useState<string>('');
+  const debouncedParaId = useDebouncedValue(paraId, 450);
+
   const [genesisHead, setGenesisHead] = useState<Uint8Array | null>(null);
   const [wasmCode, setWasmCode] = useState<Uint8Array | null>(null);
 
-  const [checkingRole, setCheckingRole] = useState(false);
   const [isParaManager, setIsParaManager] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
+  const [isLocked, setIsLocked] = useState<boolean>(false);
 
+  const [showSlowSpinner, setShowSlowSpinner] = useState(false);
+
+  const [_, startTransition] = useTransition();
   const fileGenesisRef = useRef<HTMLInputElement | null>(null);
   const fileWasmRef = useRef<HTMLInputElement | null>(null);
+
+  const requestIdRef = useRef(0);
+  const slowTimerRef = useRef<number | null>(null);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -47,37 +59,86 @@ const RegisterParaModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    setIsParaManager(false);
-    setGenesisHead(null);
-    setWasmCode(null);
-
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, handleKeyDown]);
 
   useEffect(() => {
-    void checkParaManager();
-  }, [isOpen, network, connections, selectedAccount, paraId]);
+    if (!isOpen) return;
+
+    const idStr = debouncedParaId.trim();
+    if (!idStr || !/^\d+$/.test(idStr)) {
+      if (slowTimerRef.current) window.clearTimeout(slowTimerRef.current);
+      slowTimerRef.current = null;
+      setShowSlowSpinner(false);
+      setIsParaManager(false);
+      setIsLocked(false);
+      return;
+    }
+
+    const currentReq = ++requestIdRef.current;
+
+    if (slowTimerRef.current) window.clearTimeout(slowTimerRef.current);
+    setShowSlowSpinner(false);
+    slowTimerRef.current = window.setTimeout(() => setShowSlowSpinner(true), 600);
+
+    (async () => {
+      try {
+        const ids = getNetworkChainIds(network);
+        const meta = getNetworkMetadata(network);
+        if (!ids || !meta) throw new Error('Missing network metadata');
+        const relayConn = connections[ids.relayChain];
+        if (!relayConn?.client) throw new Error('Relay connection is unavailable');
+
+        const api = relayConn.client.getTypedApi(meta.relayChain);
+        const registrar = await api.query.Registrar.Paras.getValue(Number(idStr));
+
+        if (currentReq !== requestIdRef.current) return;
+
+        if (!registrar) {
+          startTransition(() => {
+            setIsLocked(false);
+            setIsParaManager(false);
+          });
+          return;
+        }
+
+        const lockedNext = !!registrar.locked;
+        const isMgrNext =
+          !!selectedAccount &&
+          encodeAddress(registrar.manager, 42) === encodeAddress(selectedAccount.address, 24);
+
+        startTransition(() => {
+          setIsLocked((p) => (p !== lockedNext ? lockedNext : p));
+          setIsParaManager((p) => (p !== isMgrNext ? isMgrNext : p));
+        });
+      } catch {
+        if (currentReq !== requestIdRef.current) return;
+      } finally {
+        if (currentReq === requestIdRef.current) {
+          if (slowTimerRef.current) window.clearTimeout(slowTimerRef.current);
+          slowTimerRef.current = null;
+          setShowSlowSpinner(false);
+        }
+      }
+    })();
+  }, [debouncedParaId, isOpen, network, connections, selectedAccount, startTransition]);
 
   const canConfirm = useMemo(() => {
     const idOk = /^\d+$/.test(paraId) && Number(paraId) >= 0;
-    return !!(idOk && genesisHead?.length && wasmCode?.length && isParaManager);
-  }, [paraId, genesisHead, wasmCode, isParaManager]);
+    return !!(idOk && genesisHead?.length && wasmCode?.length && isParaManager && !isLocked);
+  }, [paraId, genesisHead, wasmCode, isParaManager, isLocked]);
 
   const pickGenesis = () => fileGenesisRef.current?.click();
   const pickWasm = () => fileWasmRef.current?.click();
 
-  const readAsBytes = async (f: File): Promise<Uint8Array> => {
-    const buf = await f.arrayBuffer();
-    return new Uint8Array(buf);
-  };
+  const readAsBytes = async (f: File): Promise<Uint8Array> => new Uint8Array(await f.arrayBuffer());
 
   const handleGenesisChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
     try {
-      const bytes = await readAsBytes(f);
-      setGenesisHead(bytes);
+      setGenesisHead(await readAsBytes(f));
     } catch {
       toast.error('Failed to read genesis state file');
     }
@@ -87,41 +148,9 @@ const RegisterParaModal: React.FC<Props> = ({
     const f = e.target.files?.[0];
     if (!f) return;
     try {
-      const bytes = await readAsBytes(f);
-      setWasmCode(bytes);
+      setWasmCode(await readAsBytes(f));
     } catch {
       toast.error('Failed to read wasm code file');
-    }
-  };
-
-  const checkParaManager = async () => {
-    if (!selectedAccount || !paraId) {
-      setIsParaManager(false);
-      return;
-    }
-    setCheckingRole(true);
-    try {
-      const ids = getNetworkChainIds(network);
-      const meta = getNetworkMetadata(network);
-      if (!ids || !meta) throw new Error('Missing network metadata');
-      const relayConn = connections[ids.relayChain];
-      if (!relayConn?.client) throw new Error('Relay connection is unavailable');
-
-      const api = relayConn.client.getTypedApi(meta.relayChain);
-
-      const registrar = await api.query.Registrar.Paras.getValue(Number(paraId));
-      if(!registrar) return;
-
-      if(registrar.locked) {
-        // setIsRegistrationAvailable
-      }
-
-      setIsParaManager(encodeAddress(registrar.manager, 42) === encodeAddress(selectedAccount.address, 24))
-    } catch {
-      setIsParaManager(false);
-      toast.error('Could not verify parachain manager role. Check the runtime path.');
-    } finally {
-      setCheckingRole(false);
     }
   };
 
@@ -131,16 +160,8 @@ const RegisterParaModal: React.FC<Props> = ({
     if (!genesisHead?.length) return toast.error('Upload a genesis state file.');
     if (!wasmCode?.length) return toast.error('Upload a wasm code file.');
     if (!isParaManager) return toast.error('Only parachain managers can register a parachain.');
-    try {
-      setLoading(true);
-      onConfirm({
-        paraId: Number(paraId),
-        genesisHead,
-        wasmCode,
-      });
-    } finally {
-      setLoading(false);
-    }
+    if (isLocked) return toast.error('Registration is currently locked by the registrar.');
+    onConfirm({ paraId: Number(paraId), genesisHead, wasmCode });
   };
 
   if (!isOpen) return null;
@@ -185,27 +206,46 @@ const RegisterParaModal: React.FC<Props> = ({
         </div>
 
         <div className={styles.section}>
-          <div className={styles.rowTitle}>Role Check</div>
-          <div className={styles.summaryBox}>
+          <div className={styles.rowTitle}>
+            Role &amp; Status{' '}
+            {showSlowSpinner && <span className={styles.dotSpinner} aria-hidden />}
+          </div>
+          <div className={styles.summaryBox} aria-busy={showSlowSpinner}>
             <div className={styles.summaryRow}>
               <span>Parachain manager</span>
-              <span className={styles.valueMono}>
-                {checkingRole ? 'Checking…' : isParaManager ? 'Yes' : 'No'}
-              </span>
+              <span className={styles.valueMono}>{isParaManager ? 'Yes' : 'No'}</span>
             </div>
-            {!isParaManager && !checkingRole ? (
+            <div className={styles.summaryRow}>
+              <span>Registration status</span>
+              <span className={styles.valueMono}>{isLocked ? 'Locked' : 'Open'}</span>
+            </div>
+
+            {!isParaManager && (
               <div className={styles.note}>
                 <AlertTriangle size={14} style={{ marginRight: 6, verticalAlign: '-2px' }} />
                 Your current account doesn’t appear to have the parachain manager role.
               </div>
-            ) : null}
+            )}
+
+            {isLocked && (
+              <div className={styles.banner} role='status' aria-live='polite'>
+                <AlertTriangle size={14} style={{ marginTop: 2 }} />
+                <div>
+                  Registration for this Para ID is currently <b>locked by the registrar</b>.
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         <div className={styles.section}>
           <div className={styles.rowTitle}>Genesis State</div>
           <div className={styles.fileRow}>
-            <button className={styles.fileBtn} onClick={() => fileGenesisRef.current?.click()}>
+            <button
+              className={styles.fileBtn}
+              onClick={() => fileGenesisRef.current?.click()}
+              disabled={isLocked}
+            >
               <UploadCloud size={16} /> Choose file
             </button>
             <span className={styles.fileName}>
@@ -217,6 +257,7 @@ const RegisterParaModal: React.FC<Props> = ({
               accept='*/*'
               onChange={handleGenesisChange}
               style={{ display: 'none' }}
+              disabled={isLocked}
             />
           </div>
         </div>
@@ -224,7 +265,11 @@ const RegisterParaModal: React.FC<Props> = ({
         <div className={styles.section}>
           <div className={styles.rowTitle}>Wasm Code</div>
           <div className={styles.fileRow}>
-            <button className={styles.fileBtn} onClick={() => fileWasmRef.current?.click()}>
+            <button
+              className={styles.fileBtn}
+              onClick={() => fileWasmRef.current?.click()}
+              disabled={isLocked}
+            >
               <UploadCloud size={16} /> Choose file
             </button>
             <span className={styles.fileName}>
@@ -236,19 +281,16 @@ const RegisterParaModal: React.FC<Props> = ({
               accept='*/*'
               onChange={handleWasmChange}
               style={{ display: 'none' }}
+              disabled={isLocked}
             />
           </div>
         </div>
 
         <div className={styles.actions}>
-          <button className={styles.ghostBtn} onClick={onClose} disabled={loading}>
+          <button className={styles.ghostBtn} onClick={onClose}>
             Cancel
           </button>
-          <button
-            className={styles.primaryBtn}
-            onClick={handleConfirm}
-            disabled={loading || !canConfirm}
-          >
+          <button className={styles.primaryBtn} onClick={handleConfirm} disabled={!canConfirm}>
             Register
           </button>
         </div>

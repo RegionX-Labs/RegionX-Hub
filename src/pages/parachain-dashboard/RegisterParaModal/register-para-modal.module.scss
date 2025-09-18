@@ -68,6 +68,38 @@
     color: var(--text-primary);
   }
 }
+.dotSpinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--text-secondary);
+  border-right-color: var(--text-secondary);
+  animation: spin 0.7s linear infinite;
+  vertical-align: -2px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 0px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--dark-background-1);
+  border: 1px solid var(--border-modal);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+}
 
 .section {
   margin-top: 14px;
@@ -106,6 +138,11 @@
   &:focus {
     border-color: var(--green-primary);
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 .fileRow {
@@ -136,6 +173,11 @@
 
   &:hover {
     background: var(--dark-background-4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
