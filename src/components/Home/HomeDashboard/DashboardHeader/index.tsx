@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './DashboardHeader.module.scss';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown, BookOpenText } from 'lucide-react'; // ⬅️ swap icon
 import { $accountIdentities } from '@/account/accountIdentity';
 import { $regions } from '@/coretime/regions';
 import { $selectedAccount } from '@/wallet';
@@ -60,11 +60,15 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
       </div>
 
       <div className={styles.controlsWrapper}>
-        <button className={styles.helpButton} onClick={() => setIsHelpOpen(true)}>
-          <HelpCircle size={18} />
-          <span className={styles.buttonText} style={{ marginLeft: 6 }}>
-            Help Center
-          </span>
+        {/* Icon-only Help Center */}
+        <button
+          className={styles.helpIconButton}
+          onClick={() => setIsHelpOpen(true)}
+          aria-label='Help Center'
+          title='Help Center'
+          type='button'
+        >
+          <BookOpenText size={18} />
         </button>
 
         {userHasRegions && (
@@ -103,7 +107,6 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
         onClose={() => setIsHelpOpen(false)}
         selected={selected}
       />
-
       <OwnedRegionsModal isOpen={regionsModalOpen} onClose={() => setRegionsModalOpen(false)} />
     </div>
   );
