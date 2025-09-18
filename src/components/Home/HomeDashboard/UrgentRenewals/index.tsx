@@ -254,6 +254,8 @@ export default function UrgentRenewals({ view }: Props) {
               selectedValue={selected}
               onChange={setSelected}
               variant='secondary'
+              searchable
+              searchPlaceholder='Search parachain'
             />
           ) : (
             <p className={styles.noDataMessage}>
