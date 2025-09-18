@@ -7,6 +7,13 @@ import DownArrow from '../../../../public/DownArrow.svg';
 import { SelectOption } from '../../../types/type';
 import Image from 'next/image';
 
+type FontConfig = {
+  family?: string;
+  size?: number | string;
+  weight?: number | string;
+  lineHeight?: number | string;
+};
+
 interface SelectProps<T> {
   options: SelectOption<T | null>[];
   searchable?: boolean;
@@ -18,13 +25,14 @@ interface SelectProps<T> {
   variant?: 'default' | 'secondary';
   searchPlaceholder?: string;
   isOptionDisabled?: (value: T | null) => boolean;
-  /** Optional custom comparator for complex values (fallback is JSON stringify) */
   valueEquals?: (a: T | null, b: T | null) => boolean;
+  className?: string;
+  font?: FontConfig;
 }
 
 const Select = <T,>({
   options,
-  searchable = false, // default OFF unless you explicitly turn it on
+  searchable = false,
   onChange,
   placeholder = 'Select an option',
   disabled = false,
@@ -34,6 +42,8 @@ const Select = <T,>({
   searchPlaceholder = 'Search...',
   isOptionDisabled,
   valueEquals,
+  className,
+  font,
 }: SelectProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState<T | null>(selectedValue);
@@ -42,7 +52,6 @@ const Select = <T,>({
 
   const isDisabledValue = (v: T | null) => !!isOptionDisabled?.(v);
 
-  // De-duplicate options by key (prevents repeated para IDs etc.)
   const uniqueOptions = useMemo(() => {
     const seen = new Set<string | number>();
     const out: SelectOption<T | null>[] = [];
@@ -57,19 +66,16 @@ const Select = <T,>({
     return out;
   }, [options]);
 
-  // Keep local selected in sync with selectedValue, but clear if disabled
   useEffect(() => {
     if (isDisabledValue(selectedValue ?? null)) {
       setSelected(null);
     } else {
       setSelected(selectedValue ?? null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedValue, isOptionDisabled]);
 
   const equals = useMemo(() => {
     if (valueEquals) return valueEquals;
-    // Safe fallback for tuples/POJOs used in your app
     return (a: T | null, b: T | null) => JSON.stringify(a) === JSON.stringify(b);
   }, [valueEquals]);
 
@@ -124,8 +130,21 @@ const Select = <T,>({
     if (e.key === 'Escape') setIsDropdownOpen(false);
   };
 
+  const cssVars: React.CSSProperties = {
+    ['--select-font-family' as any]: font?.family,
+    ['--select-font-size' as any]: typeof font?.size === 'number' ? `${font.size}px` : font?.size,
+    ['--select-line-height' as any]:
+      typeof font?.lineHeight === 'number' ? `${font.lineHeight}px` : font?.lineHeight,
+    ['--select-font-weight' as any]: font?.weight as any,
+  };
+
   return (
-    <div className={styles.selectWrapper} ref={dropdownRef} onKeyDown={onKeyDownTop}>
+    <div
+      className={`${styles.selectWrapper} ${className ?? ''}`}
+      ref={dropdownRef}
+      onKeyDown={onKeyDownTop}
+      style={cssVars}
+    >
       <div
         className={selectClassName}
         onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
@@ -170,7 +189,6 @@ const Select = <T,>({
             {filteredOptions.map((option) => {
               const isOptDisabled = isDisabledValue(option.value as T | null);
               const isSelected = equals(option.value as T | null, selected);
-
               return (
                 <li
                   key={option.key}

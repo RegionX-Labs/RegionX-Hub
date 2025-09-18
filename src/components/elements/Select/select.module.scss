@@ -5,8 +5,10 @@
   position: relative;
   width: 100%;
   @include Inter;
-  font-size: 16px;
-  line-height: 28px;
+  font-family: var(--select-font-family, var(--font-family, Inter, sans-serif));
+  font-size: var(--select-font-size, 16px);
+  line-height: var(--select-line-height, 28px);
+  font-weight: var(--select-font-weight, 400);
 
   .selectedOptionDisplay {
     display: flex;
@@ -92,6 +94,7 @@
         color: var(--white);
       }
     }
+
     &::-webkit-scrollbar {
       width: 6px;
     }
