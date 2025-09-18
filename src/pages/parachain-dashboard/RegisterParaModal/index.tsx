@@ -160,7 +160,8 @@ const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
     if (!genesisHead?.length) return toast.error('Upload a genesis state file.');
     if (!wasmCode?.length) return toast.error('Upload a wasm code file.');
     if (!isParaManager) return toast.error('Only parachain managers can register a parachain.');
-    if (isLocked) return toast.error('The parachain is locked; the code has already been registered.');
+    if (isLocked)
+      return toast.error('The parachain is locked; the code has already been registered.');
     onConfirm({ paraId: Number(paraId), genesisHead, wasmCode });
   };
 
