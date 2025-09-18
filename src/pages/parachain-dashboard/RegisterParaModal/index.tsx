@@ -8,19 +8,18 @@ import { useUnit } from 'effector-react';
 import { $network, $connections } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (args: { paraId: number; genesisHead: Uint8Array; wasmCode: Uint8Array }) => void;
-  defaultParaId?: number | null;
 };
 
 const RegisterParaModal: React.FC<Props> = ({
   isOpen,
   onClose,
   onConfirm,
-  defaultParaId = null,
 }) => {
   const [network, connections, selectedAccount] = useUnit([
     $network,
@@ -28,12 +27,12 @@ const RegisterParaModal: React.FC<Props> = ({
     $selectedAccount,
   ]);
 
-  const [paraId, setParaId] = useState<string>(defaultParaId ? String(defaultParaId) : '');
+  const [paraId, setParaId] = useState<string>('');
   const [genesisHead, setGenesisHead] = useState<Uint8Array | null>(null);
   const [wasmCode, setWasmCode] = useState<Uint8Array | null>(null);
 
   const [checkingRole, setCheckingRole] = useState(false);
-  const [isParaManager, setIsParaManager] = useState<boolean | null>(null);
+  const [isParaManager, setIsParaManager] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const fileGenesisRef = useRef<HTMLInputElement | null>(null);
@@ -48,15 +47,17 @@ const RegisterParaModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    setIsParaManager(null);
+    setIsParaManager(false);
     setGenesisHead(null);
     setWasmCode(null);
-    if (defaultParaId != null) setParaId(String(defaultParaId));
-    void checkParaManager();
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
+
+  useEffect(() => {
+    void checkParaManager();
+  }, [isOpen, network, connections, selectedAccount, paraId]);
 
   const canConfirm = useMemo(() => {
     const idOk = /^\d+$/.test(paraId) && Number(paraId) >= 0;
@@ -94,7 +95,7 @@ const RegisterParaModal: React.FC<Props> = ({
   };
 
   const checkParaManager = async () => {
-    if (!selectedAccount) {
+    if (!selectedAccount || !paraId) {
       setIsParaManager(false);
       return;
     }
@@ -107,31 +108,15 @@ const RegisterParaModal: React.FC<Props> = ({
       if (!relayConn?.client) throw new Error('Relay connection is unavailable');
 
       const api = relayConn.client.getTypedApi(meta.relayChain);
-      const addr = selectedAccount.address;
 
-      const probe = async (path: string[]): Promise<boolean> => {
-        try {
-          const q = path.reduce((acc: any, k) => acc?.[k], (api as any).query);
-          if (!q?.get) return false;
-          const v = await q.get(addr);
-          if (v == null) return false;
-          if (typeof v === 'boolean') return v;
-          return true;
-        } catch {
-          return false;
-        }
-      };
+      const registrar = await api.query.Registrar.Paras.getValue(Number(paraId));
+      if(!registrar) return;
 
-      const ok =
-        (await probe(['Broker', 'para_managers'])) ||
-        (await probe(['Broker', 'paraManagers'])) ||
-        (await probe(['Registrar', 'para_managers'])) ||
-        (await probe(['Registrar', 'paraManagers'])) ||
-        (await probe(['Paras', 'para_managers'])) ||
-        (await probe(['Paras', 'paraManagers']));
+      if(registrar.locked) {
+        // setIsRegistrationAvailable
+      }
 
-      setIsParaManager(ok);
-      if (!ok) toast.error('This account is not a parachain manager.');
+      setIsParaManager(encodeAddress(registrar.manager, 42) === encodeAddress(selectedAccount.address, 24))
     } catch {
       setIsParaManager(false);
       toast.error('Could not verify parachain manager role. Check the runtime path.');
@@ -214,15 +199,6 @@ const RegisterParaModal: React.FC<Props> = ({
                 Your current account doesn’t appear to have the parachain manager role.
               </div>
             ) : null}
-            <div className={styles.actionsRow}>
-              <button
-                className={styles.ghostBtn}
-                onClick={checkParaManager}
-                disabled={checkingRole}
-              >
-                Re-check
-              </button>
-            </div>
           </div>
         </div>
 
