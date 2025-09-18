@@ -235,8 +235,8 @@ const ParachainDashboard = () => {
                 options={stateOptions}
                 selectedValue={stateFilter}
                 onChange={(v) => setStateFilter(v as any)}
-                variant='secondary'
-                font={{ lineHeight: '19px' }}
+                variant='default'
+                font={{ family: 'Inter', size: 14, lineHeight: '19px' }}
               />
             </div>
             <div className={styles.metricsBlock}>

@@ -92,14 +92,12 @@
 }
 
 .btnPrimary {
-  background: var(--green-primary);
-  color: var(--black);
-  border-color: var(--green-primary);
+  background: var(--dark-background-4);
+  color: var(--white);
 }
 
 .btnPrimary:hover {
-  background: var(--green-dark-2);
-  border-color: var(--green-dark-2);
+  filter: brightness(0.78);
 }
 
 .btnAccent {
@@ -109,7 +107,7 @@
 }
 
 .btnAccent:hover {
-  filter: brightness(0.98);
+  filter: brightness(0.78);
 }
 
 .customButton {
@@ -138,6 +136,7 @@
 
 .selectWrap {
   width: 220px;
+
   min-width: 160px;
   max-width: 260px;
   display: flex;
