@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import styles from './register-para-modal.module.scss';
-import { X, UploadCloud, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { X, UploadCloud, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useUnit } from 'effector-react';
 import { $network, $connections } from '@/api/connection';
@@ -39,6 +39,13 @@ const RegisterParaModal: React.FC<Props> = ({
   const fileGenesisRef = useRef<HTMLInputElement | null>(null);
   const fileWasmRef = useRef<HTMLInputElement | null>(null);
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    },
+    [onClose]
+  );
+
   useEffect(() => {
     if (!isOpen) return;
     setIsParaManager(null);
@@ -46,6 +53,9 @@ const RegisterParaModal: React.FC<Props> = ({
     setWasmCode(null);
     if (defaultParaId != null) setParaId(String(defaultParaId));
     void checkParaManager();
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
   const canConfirm = useMemo(() => {
@@ -150,13 +160,18 @@ const RegisterParaModal: React.FC<Props> = ({
 
   if (!isOpen) return null;
 
+  const onOverlayClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
-    <div className={styles.modalOverlay}>
+    <div className={styles.modalOverlay} onClick={onOverlayClick}>
       <div
         className={styles.modalContent}
         role='dialog'
         aria-modal='true'
         aria-labelledby='reg-title'
+        onClick={(e) => e.stopPropagation()}
       >
         <button className={styles.closeButton} onClick={onClose} aria-label='Close'>
           <X size={18} />
