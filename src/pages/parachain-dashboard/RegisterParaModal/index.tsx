@@ -231,7 +231,7 @@ const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
               <div className={styles.banner} role='status' aria-live='polite'>
                 <AlertTriangle size={14} style={{ marginTop: 2 }} />
                 <div>
-                  Registration for this Para ID is currently <b>locked by the registrar</b>.
+                  The parachain is locked; <b>the code has already been registered</b>.
                 </div>
               </div>
             )}
