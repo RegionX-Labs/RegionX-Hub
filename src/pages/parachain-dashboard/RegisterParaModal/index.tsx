@@ -9,6 +9,8 @@ import { $network, $connections } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { encodeAddress } from '@polkadot/util-crypto';
+import { compactAddLength } from '@polkadot/util';
+import { Binary } from 'polkadot-api';
 
 function useDebouncedValue<T>(value: T, delay = 450) {
   const [v, setV] = useState(value);
@@ -22,10 +24,9 @@ function useDebouncedValue<T>(value: T, delay = 450) {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (args: { paraId: number; genesisHead: Uint8Array; wasmCode: Uint8Array }) => void;
 };
 
-const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
+const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [network, connections, selectedAccount] = useUnit([
     $network,
     $connections,
@@ -129,9 +130,6 @@ const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
     return !!(idOk && genesisHead?.length && wasmCode?.length && isParaManager && !isLocked);
   }, [paraId, genesisHead, wasmCode, isParaManager, isLocked]);
 
-  const pickGenesis = () => fileGenesisRef.current?.click();
-  const pickWasm = () => fileWasmRef.current?.click();
-
   const readAsBytes = async (f: File): Promise<Uint8Array> => new Uint8Array(await f.arrayBuffer());
 
   const handleGenesisChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,7 +160,22 @@ const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => {
     if (!isParaManager) return toast.error('Only parachain managers can register a parachain.');
     if (isLocked)
       return toast.error('The parachain is locked; the code has already been registered.');
-    onConfirm({ paraId: Number(paraId), genesisHead, wasmCode });
+    registerParachain(Number(paraId), genesisHead, wasmCode);
+  };
+
+  const registerParachain = async (paraId: number, head: Uint8Array, wasm: Uint8Array) => {
+    const ids = getNetworkChainIds(network);
+    const meta = getNetworkMetadata(network);
+    if (!ids || !meta) throw new Error('Missing network metadata');
+    const relayConn = connections[ids.relayChain];
+    if (!relayConn?.client) throw new Error('Relay connection is unavailable');
+
+    const api = relayConn.client.getTypedApi(meta.relayChain);
+    api.tx.Registrar.register({
+      id: paraId,
+      genesis_head: Binary.fromBytes(compactAddLength(head)),
+      validation_code: Binary.fromBytes(compactAddLength(wasm)),
+    });
   };
 
   if (!isOpen) return null;

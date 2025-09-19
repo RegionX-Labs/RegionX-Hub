@@ -304,11 +304,7 @@ const ParachainDashboard = () => {
       </div>
 
       <DashboardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <RegisterParaModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-        onConfirm={() => {}}
-      />
+      <RegisterParaModal isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} />
     </div>
   );
 };
