@@ -3,6 +3,7 @@
 
 .mainContainer {
   padding: 24px 16px 80px;
+  @include Inter;
 }
 
 .board {
@@ -44,7 +45,6 @@
     position: relative;
     flex: 0 1 220px;
     min-width: 180px;
-
     .icon {
       position: absolute;
       left: 14px;
@@ -57,11 +57,12 @@
     }
 
     input {
+      @include Inter;
       width: 100% !important;
       height: 42px;
       border-radius: 14px;
       border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--dark-background-2);
       color: var(--text);
       padding: 0 14px 0 40px;
       font-size: 0.95rem;
@@ -115,11 +116,12 @@
 
   .segmentedBtn {
     position: relative;
+    z-index: 1;
+    @include Inter;
     border: 0;
     background: transparent;
     color: var(--muted);
     font-size: 0.9rem;
-    font-weight: 500;
     height: 100%;
     border-radius: 10px;
     cursor: pointer;
@@ -134,6 +136,31 @@
     &.active {
       color: var(--text);
     }
+  }
+
+  .segmentedThumb,
+  .segmentedThumbTriplet {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    height: calc(100% - 6px);
+    border-radius: 10px;
+    background: var(--dark-background-6);
+    transition: transform 160ms ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .segmentedThumb {
+    width: calc(50% - 6px);
+  }
+
+  .segmentedThumb.right {
+    transform: translateX(calc(100% + 6px));
+  }
+
+  .segmentedThumbTriplet {
+    width: calc(33.333% - 6px);
   }
 
   .metrics {
@@ -161,40 +188,6 @@
       border-color 0.15s ease;
   }
 
-  .segmentedThumb {
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: calc(50% - 6px);
-    height: calc(100% - 6px);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 4px 18px rgba(0, 0, 0, 0.25),
-      inset 0 0 0 1px var(--card-border);
-    transition: transform 160ms ease;
-    pointer-events: none;
-
-    &.right {
-      transform: translateX(calc(100% + 6px));
-    }
-  }
-
-  .segmentedThumbTriplet {
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: calc(33.333% - 6px);
-    height: calc(100% - 6px);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 4px 18px rgba(0, 0, 0, 0.25),
-      inset 0 0 0 1px var(--card-border);
-    transition: transform 160ms ease;
-    pointer-events: none;
-  }
-
   .spacer {
     flex: 1;
   }
@@ -204,29 +197,31 @@
     gap: 10px;
 
     .search {
-      position: relative;
       display: flex;
       align-items: center;
       order: 1;
       flex: 1 1 100%;
-      min-width: 10px;
       max-width: 100%;
     }
+
     .segmented {
       order: 2;
       flex: 1 1 100%;
       width: 100%;
       margin-left: 0;
     }
+
     .segmentedTriplet {
       order: 3;
       flex: 1 1 100%;
       width: 100%;
       margin-left: 0;
     }
+
     .spacer {
       display: none;
     }
+
     .metrics {
       order: 4;
       width: 100%;
@@ -238,6 +233,7 @@
     .search {
       flex: 1 1 100%;
     }
+
     .segmented,
     .segmentedTriplet {
       width: 100%;
@@ -353,7 +349,7 @@
   justify-content: center;
 
   &:hover {
-    transform: translateY(-4px) rotateZ(-0.3deg);
+    transform: translateY(-4px);
     border-color: rgba(255, 255, 255, 0.14);
   }
 

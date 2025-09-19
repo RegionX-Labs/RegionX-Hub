@@ -137,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openRpcModal }) => {
                 className={styles.navItem}
                 onClick={() => handleNavigation('coretime/my-regions')}
               >
-                My Regions
+                Regions
               </li>
               <li
                 className={styles.navItem}

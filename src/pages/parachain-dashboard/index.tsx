@@ -235,7 +235,7 @@ const ParachainDashboard = () => {
                 options={stateOptions}
                 selectedValue={stateFilter}
                 onChange={(v) => setStateFilter(v as any)}
-                variant='default'
+                variant='secondary'
                 font={{ family: 'Inter', size: 14, lineHeight: '19px' }}
               />
             </div>
