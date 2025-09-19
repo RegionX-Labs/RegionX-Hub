@@ -1,13 +1,22 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
+import { useUnit } from 'effector-react';
 import styles from './GeneralAnalytics.module.scss';
 import BulkSaleSummary from './BulkSaleSummary';
 import TopBuyerCard from './TopBuyerCard';
 import UserBalance from './UserBalance';
 import MarketCompare from './MarketComparison';
+import { $network } from '@/api/connection';
 
 export default function GeneralAnalytics() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'users' | 'market'>('all');
+  const [network] = useUnit([$network]);
+
+  const networkKnown = typeof network === 'string' && network.trim().length > 0;
+  const isKusama = networkKnown && network!.toLowerCase().includes('kusama');
+  const marketEnabled = isKusama;
 
   useEffect(() => {
     const el = cardRef.current;
@@ -18,6 +27,10 @@ export default function GeneralAnalytics() {
     const timeout = setTimeout(scrollUp, 800);
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    if (!marketEnabled && activeTab === 'market') setActiveTab('all');
+  }, [marketEnabled, activeTab]);
 
   return (
     <div className={styles.analyticsCard} ref={cardRef}>
@@ -48,16 +61,19 @@ export default function GeneralAnalytics() {
           >
             Users
           </li>
+
           <li
-            className={`${styles.tab} ${styles.marketTab} ${activeTab === 'market' ? styles.active : ''}`}
-            onClick={() => setActiveTab('market')}
+            className={`${styles.tab} ${styles.marketTab} ${!marketEnabled ? styles.disabled : ''} ${activeTab === 'market' ? styles.active : ''}`}
+            onClick={() => marketEnabled && setActiveTab('market')}
+            aria-disabled={!marketEnabled}
+            title={marketEnabled ? 'Marketplace analytics' : 'Market is available on Kusama only'}
           >
             Market
-            {activeTab !== 'market' && <span className={styles.newBadge}>NEW</span>}
+            {marketEnabled && activeTab !== 'market' && (
+              <span className={styles.newBadge}>NEW</span>
+            )}
           </li>
         </ul>
-
-        <span className={styles.newBadge}>NEW</span>
       </div>
 
       {activeTab === 'all' && <BulkSaleSummary />}
@@ -75,7 +91,7 @@ export default function GeneralAnalytics() {
         </div>
       )}
 
-      {activeTab === 'market' && (
+      {activeTab === 'market' && marketEnabled && (
         <div className={styles.tabContent}>
           <MarketCompare />
         </div>
