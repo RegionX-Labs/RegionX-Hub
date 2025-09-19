@@ -11,6 +11,8 @@ import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { compactAddLength } from '@polkadot/util';
 import { Binary } from 'polkadot-api';
+import { SUBSCAN_RELAY_URL } from '@/pages/coretime/sale-history';
+import { getAccountData } from '@/account';
 
 function useDebouncedValue<T>(value: T, delay = 450) {
   const [v, setV] = useState(value);
@@ -164,6 +166,8 @@ const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose }) => {
   };
 
   const registerParachain = async (paraId: number, head: Uint8Array, wasm: Uint8Array) => {
+    if (!selectedAccount) return toast.error('Account not selected');
+
     const ids = getNetworkChainIds(network);
     const meta = getNetworkMetadata(network);
     if (!ids || !meta) throw new Error('Missing network metadata');
@@ -171,11 +175,42 @@ const RegisterParaModal: React.FC<Props> = ({ isOpen, onClose }) => {
     if (!relayConn?.client) throw new Error('Relay connection is unavailable');
 
     const api = relayConn.client.getTypedApi(meta.relayChain);
-    api.tx.Registrar.register({
+    const tx = api.tx.Registrar.register({
       id: paraId,
       genesis_head: Binary.fromBytes(compactAddLength(head)),
       validation_code: Binary.fromBytes(compactAddLength(wasm)),
     });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) {
+            toast.error('Transaction failed', { id: toastId });
+          } else {
+            toast.success('Transaction succeeded!', { id: toastId });
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      () => {
+        toast.error('Transaction cancelled', { id: toastId });
+      }
+    );
   };
 
   if (!isOpen) return null;
