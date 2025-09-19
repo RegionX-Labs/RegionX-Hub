@@ -76,7 +76,11 @@ export default function GeneralAnalytics() {
         </ul>
       </div>
 
-      {activeTab === 'all' && <BulkSaleSummary />}
+      {activeTab === 'all' && (
+        <>
+          <BulkSaleSummary withMarketCompare />
+        </>
+      )}
 
       {activeTab === 'sales' && (
         <div className={styles.tabContent}>
