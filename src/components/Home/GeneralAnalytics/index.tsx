@@ -3,26 +3,19 @@ import styles from './GeneralAnalytics.module.scss';
 import BulkSaleSummary from './BulkSaleSummary';
 import TopBuyerCard from './TopBuyerCard';
 import UserBalance from './UserBalance';
+import MarketCompare from './MarketComparison';
 
 export default function GeneralAnalytics() {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'users'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'users' | 'market'>('all');
 
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
-
-    const scrollDown = () => {
-      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-    };
-
-    const scrollUp = () => {
-      el.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
+    const scrollDown = () => el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    const scrollUp = () => el.scrollTo({ top: 0, behavior: 'smooth' });
     scrollDown();
     const timeout = setTimeout(scrollUp, 800);
-
     return () => clearTimeout(timeout);
   }, []);
 
@@ -32,6 +25,7 @@ export default function GeneralAnalytics() {
         <h2>General Analytics</h2>
         <p>Overview of all statistics and user-related data</p>
       </div>
+
       <div className={styles.tabsWrapper}>
         <ul className={styles.tabs}>
           <li
@@ -40,20 +34,30 @@ export default function GeneralAnalytics() {
           >
             All stats
           </li>
+
           <li
             className={`${styles.tab} ${activeTab === 'sales' ? styles.active : ''}`}
             onClick={() => setActiveTab('sales')}
           >
             Sales
           </li>
+
           <li
             className={`${styles.tab} ${activeTab === 'users' ? styles.active : ''}`}
             onClick={() => setActiveTab('users')}
           >
             Users
           </li>
-          <li className={`${styles.tab} ${styles.disabled}`}>Market</li>
+          <li
+            className={`${styles.tab} ${styles.marketTab} ${activeTab === 'market' ? styles.active : ''}`}
+            onClick={() => setActiveTab('market')}
+          >
+            Market
+            {activeTab !== 'market' && <span className={styles.newBadge}>NEW</span>}
+          </li>
         </ul>
+
+        <span className={styles.newBadge}>NEW</span>
       </div>
 
       {activeTab === 'all' && <BulkSaleSummary />}
@@ -68,6 +72,12 @@ export default function GeneralAnalytics() {
         <div className={styles.tabContent}>
           <UserBalance />
           <TopBuyerCard />
+        </div>
+      )}
+
+      {activeTab === 'market' && (
+        <div className={styles.tabContent}>
+          <MarketCompare />
         </div>
       )}
     </div>
