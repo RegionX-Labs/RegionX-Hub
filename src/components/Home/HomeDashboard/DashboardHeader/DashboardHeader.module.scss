@@ -9,7 +9,7 @@
   @include Inter;
   color: var(--text-primary);
 
-  @media (max-width: 1284px) and (min-width: 801px) {
+  @media (max-width: 1380px) and (min-width: 801px) {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -39,7 +39,6 @@
   color: var(--text-secondary, #888);
   margin-left: 8px;
 }
-
 .controlsWrapper {
   display: flex;
   flex-wrap: wrap;
@@ -52,11 +51,22 @@
 
   @media (max-width: 800px) {
     width: 100%;
+    display: flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     gap: 10px;
+
+    .timerBadge {
+      order: 1;
+    }
+
+    .helpIconButton {
+      order: 2;
+      margin-left: auto;
+    }
   }
 }
+
 .helpIconButton {
   --size: 37px;
 
@@ -79,7 +89,6 @@
     box-shadow 0.15s ease,
     color 0.15s ease;
 
-  /* keep heights consistent with other controls */
   @media (max-width: 800px) {
     --size: 40px;
   }
@@ -142,6 +151,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  max-height: 36px;
   transition: background-color 0.2s ease;
 
   &:hover {

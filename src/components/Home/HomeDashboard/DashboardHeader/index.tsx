@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './DashboardHeader.module.scss';
-import { ChevronDown, BookOpenText } from 'lucide-react'; // ⬅️ swap icon
+import { ChevronDown, BookOpenText } from 'lucide-react';
 import { $accountIdentities } from '@/account/accountIdentity';
 import { $regions } from '@/coretime/regions';
 import { $selectedAccount } from '@/wallet';
@@ -60,7 +60,6 @@ export default function DashboardHeader({ selected, setSelected }: Props) {
       </div>
 
       <div className={styles.controlsWrapper}>
-        {/* Icon-only Help Center */}
         <button
           className={styles.helpIconButton}
           onClick={() => setIsHelpOpen(true)}
