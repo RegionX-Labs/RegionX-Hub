@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './BulkSaleSummary.module.scss';
@@ -10,13 +12,16 @@ import {
   PurchaseType,
 } from '@/coretime/purchaseHistory';
 import { toUnitFormatted } from '@/utils';
-import RevenueBox from '../RevenueBox/index';
+import RevenueBox from '../RevenueBox';
 import CurrentAuctionPrice from '../CurrentAuctionPrice';
 import UserBalance from '../UserBalance';
 import AuctionPriceOverview from '../AuctionPriceOverview';
 import TopBuyerCard from '../TopBuyerCard';
+import MarketCompare from '../MarketComparison';
 
-export default function BulkSaleSummary() {
+type Props = { withMarketCompare?: boolean };
+
+export default function BulkSaleSummary({ withMarketCompare = false }: Props) {
   const [network, saleInfo, purchaseHistory] = useUnit([
     $network,
     $latestSaleInfo,
@@ -25,6 +30,9 @@ export default function BulkSaleSummary() {
 
   const [previousBulkRevenue, setPreviousBulkRevenue] = useState<number | null>(null);
   const [previousRenewalRevenue, setPreviousRenewalRevenue] = useState<number | null>(null);
+
+  const networkKnown = typeof network === 'string' && network.trim().length > 0;
+  const isKusama = networkKnown && network!.toLowerCase().includes('kusama');
 
   useEffect(() => {
     if (network && saleInfo) {
@@ -83,6 +91,9 @@ export default function BulkSaleSummary() {
     <div className={styles.analyticsCard}>
       <UserBalance />
       <AuctionPriceOverview />
+
+      {withMarketCompare && isKusama && <MarketCompare />}
+
       <TopBuyerCard />
 
       <RevenueBox
