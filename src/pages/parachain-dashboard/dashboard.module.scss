@@ -137,7 +137,6 @@
 
 .selectWrap {
   width: 220px;
-
   min-width: 160px;
   max-width: 260px;
   display: flex;
@@ -150,19 +149,10 @@
 
 .metricsBlock {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
-}
-
-.rightCol {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 0;
-  @media (max-width: 1060px) {
-    justify-content: flex-start;
-  }
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .chipSm {
@@ -174,9 +164,22 @@
   color: var(--text);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-size: 12px;
   line-height: 1;
   white-space: nowrap;
+}
+
+.rightCol {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+  @media (max-width: 1060px) {
+    justify-content: flex-start;
+  }
 }
 
 .segmentedOld {
@@ -229,6 +232,14 @@
   z-index: 0;
 }
 
+.segmentedOld.cols2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.segmentedOld.cols2 .segmentedThumbOld {
+  width: calc(50% - 6px);
+}
+
 .parachainNameContainer {
   display: flex;
   align-items: center;
@@ -270,4 +281,17 @@
   display: inline-block;
   min-width: 108px;
   text-align: center;
+}
+
+.rightCol .segmentedOld + .segmentedOld {
+  margin-left: 12px;
+}
+
+@media (max-width: 1060px) {
+  .rightCol {
+    gap: 8px;
+  }
+  .rightCol .segmentedOld + .segmentedOld {
+    margin-left: 0;
+  }
 }

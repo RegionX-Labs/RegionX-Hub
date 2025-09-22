@@ -21,6 +21,9 @@ import { $latestSaleInfo } from '@/coretime/saleInfo';
 import RegisterParaModal from '../parachain-dashboard/RegisterParaModal';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
+import { BaseChainInfo } from '@/chaindata/types';
+import { $selectedAccount } from '@/wallet';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -29,11 +32,28 @@ type TableData = {
   searchKey?: string;
 };
 
+type Managerish = {
+  manager?: string;
+  owner?: string;
+  contact?: string;
+  accountManager?: string;
+};
+
 type RenewalFilter = 'all' | 'renewed' | 'needs';
 type StateFilter = 'all' | ParaState;
+type ManagerFilter = 'all' | 'with';
 
 const stateLabel = (s: ParaState) => {
   return ParaState[s] ?? 'Unknown';
+};
+
+const normalize = (addr?: string | null, fmt = 42) => {
+  if (!addr) return '';
+  try {
+    return encodeAddress(addr, fmt);
+  } catch {
+    return '';
+  }
 };
 
 const ParachainDashboard = () => {
@@ -43,12 +63,14 @@ const ParachainDashboard = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [stateFilter, setStateFilter] = useState<StateFilter>('all');
   const [renewalFilter, setRenewalFilter] = useState<RenewalFilter>('all');
+  const [managerFilter, setManagerFilter] = useState<ManagerFilter>('all');
 
   const network = useUnit($network);
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
   const potentialRenewals = useUnit($potentialRenewals);
   const saleInfo = useUnit($latestSaleInfo);
+  const selectedAccount = useUnit($selectedAccount);
 
   const toggleWatchlist = (id: number) => {
     const watchlistKey = `watchlist_${network}`;
@@ -92,6 +114,25 @@ const ParachainDashboard = () => {
     return { label: 'Renewed', color: '#15803d', key: 'renewed' };
   };
 
+  const hasManager = (p: { id: number; accountManager?: string }) => {
+    const meta = chainData[network]?.[p.id] as (BaseChainInfo & Managerish) | undefined;
+    return Boolean(p.accountManager || meta?.manager || meta?.owner || meta?.contact);
+  };
+
+  const isManagedBySelected = (p: { id: number; accountManager?: string }) => {
+    if (!selectedAccount?.address) return false;
+    const who = normalize(selectedAccount.address, 42);
+    if (!who) return false;
+    const meta = chainData[network]?.[p.id] as (BaseChainInfo & Managerish) | undefined;
+    const candidates = [p.accountManager, meta?.manager, meta?.owner, meta?.contact].filter(
+      Boolean
+    ) as string[];
+    for (const c of candidates) {
+      if (normalize(c, 42) === who) return true;
+    }
+    return false;
+  };
+
   const baseRows = useMemo(
     () =>
       (showWatchlist
@@ -104,19 +145,28 @@ const ParachainDashboard = () => {
     const byState = new Map<ParaState, number>();
     let renewed = 0;
     let needs = 0;
+    let withMgr = 0;
+    let withoutMgr = 0;
+    let mine = 0;
     for (const p of parachains.filter((x) => x.network === network)) {
       byState.set(p.state, (byState.get(p.state) ?? 0) + 1);
       const r = getRenewalStatus(p.id);
       if (r.key === 'renewed') renewed++;
       else needs++;
+      if (hasManager(p)) withMgr++;
+      else withoutMgr++;
+      if (isManagedBySelected(p)) mine++;
     }
     return {
       total: parachains.filter((x) => x.network === network).length,
       byState,
       renewed,
       needs,
+      withMgr,
+      withoutMgr,
+      mine,
     };
-  }, [parachains, network, potentialRenewals, saleInfo]);
+  }, [parachains, network, potentialRenewals, saleInfo, selectedAccount]);
 
   const availableStates = useMemo(() => {
     const set = new Set<ParaState>();
@@ -129,8 +179,15 @@ const ParachainDashboard = () => {
     if (stateFilter !== 'all') rows = rows.filter((r) => r.state === stateFilter);
     if (renewalFilter !== 'all')
       rows = rows.filter((r) => getRenewalStatus(r.id).key === renewalFilter);
+    if (managerFilter === 'with') {
+      if (selectedAccount?.address) {
+        rows = rows.filter((r) => isManagedBySelected(r));
+      } else {
+        rows = rows.filter((r) => hasManager(r));
+      }
+    }
     return rows;
-  }, [baseRows, stateFilter, renewalFilter]);
+  }, [baseRows, stateFilter, renewalFilter, managerFilter, selectedAccount]);
 
   const stateOptions: SelectOption<StateFilter | 'all'>[] = useMemo(
     () => [
@@ -243,6 +300,10 @@ const ParachainDashboard = () => {
               <div className={styles.chipSm}>Total: {counts.total}</div>
               <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
               <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
+              <div className={styles.chipSm}>
+                {selectedAccount?.address ? 'My projects' : 'With manager'}:{' '}
+                {selectedAccount?.address ? counts.mine : counts.withMgr}
+              </div>
               {availableStates.map((s) => (
                 <div key={s} className={styles.chipSm}>
                   {stateLabel(s)}: {counts.byState.get(s) ?? 0}
@@ -293,11 +354,44 @@ const ParachainDashboard = () => {
                 aria-hidden='true'
               />
             </div>
+
+            <div
+              className={`${styles.segmentedOld} ${styles.cols2}`}
+              role='tablist'
+              aria-label='Manager filter'
+            >
+              <button
+                type='button'
+                role='tab'
+                aria-selected={managerFilter === 'all'}
+                className={`${styles.segmentedBtn} ${managerFilter === 'all' ? styles.active : ''}`}
+                onClick={() => setManagerFilter('all')}
+              >
+                All
+              </button>
+              <button
+                type='button'
+                role='tab'
+                aria-selected={managerFilter === 'with'}
+                className={`${styles.segmentedBtn} ${managerFilter === 'with' ? styles.active : ''}`}
+                onClick={() => setManagerFilter('with')}
+              >
+                {selectedAccount?.address ? 'My projects' : 'With manager'}
+              </button>
+              <span
+                className={styles.segmentedThumbOld}
+                style={{
+                  transform:
+                    managerFilter === 'all' ? 'translateX(0)' : 'translateX(calc(100% + 6px))',
+                }}
+                aria-hidden='true'
+              />
+            </div>
           </div>
         </div>
 
         <TableComponent
-          key={`${network}-${showWatchlist ? 'watch' : 'all'}-${stateFilter}-${renewalFilter}`}
+          key={`${network}-${showWatchlist ? 'watch' : 'all'}-${stateFilter}-${renewalFilter}-${managerFilter}-${selectedAccount?.address ?? 'noacct'}`}
           data={tableData}
           pageSize={8}
         />
