@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './dashboard.module.scss';
 import { TableComponent } from '../../components/elements/TableComponent';
 import { FaStar } from 'react-icons/fa';
@@ -63,11 +63,8 @@ type NetworkKey = keyof typeof chainData;
 
 function useRegistrarManagers(network: Network, connections: any, paraIds: number[]): RegistrarMap {
   const [map, setMap] = useState<RegistrarMap>(new Map());
-  const cacheRef = useRef<RegistrarMap>(new Map());
-  const inflightRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
-    let cancelled = false;
     (async () => {
       const ids = getNetworkChainIds(network);
       const meta = getNetworkMetadata(network);
@@ -75,45 +72,26 @@ function useRegistrarManagers(network: Network, connections: any, paraIds: numbe
       const relayConn = connections[ids.relayChain];
       if (!relayConn?.client) return;
       const api = relayConn.client.getTypedApi(meta.relayChain);
-      const need = paraIds.filter(
-        (id) => !cacheRef.current.has(id) && !inflightRef.current.has(id)
-      );
-      if (need.length === 0) {
-        setMap(new Map(cacheRef.current));
-        return;
-      }
-      const batch = [...need];
-      for (const id of batch) inflightRef.current.add(id);
+
       try {
-        const results = await Promise.all(
-          batch.map(async (id) => {
-            try {
-              const reg = await api.query.Registrar.Paras.getValue(Number(id));
-              const info: RegistrarInfo = reg
-                ? { manager: reg.manager ? String(reg.manager) : undefined, locked: !!reg.locked }
-                : { manager: undefined, locked: false };
-              return [id, info] as const;
-            } catch {
-              return [id, { manager: undefined, locked: false }] as const;
-            }
+        const entries = await Promise.all(
+          paraIds.map(async (id) => {
+            const reg = await api.query.Registrar.Paras.getValue(Number(id));
+            return [
+              id,
+              {
+                manager: reg?.manager ? String(reg.manager) : undefined,
+                locked: !!reg?.locked,
+              },
+            ] as const;
           })
         );
-        if (cancelled) return;
-        const next = new Map(cacheRef.current);
-        for (const [id, info] of results) {
-          next.set(id, info);
-          inflightRef.current.delete(id);
-        }
-        cacheRef.current = next;
-        setMap(new Map(next));
+        setMap(new Map(entries));
       } catch {
-        for (const id of batch) inflightRef.current.delete(id);
+        setMap(new Map());
       }
     })();
-    return () => {
-      cancelled = true;
-    };
-  }, [network, connections, paraIds.join('|')]);
+  }, [network, connections, JSON.stringify(paraIds)]);
 
   return map;
 }
@@ -204,8 +182,6 @@ const ParachainDashboard = () => {
     return '';
   };
 
-  const hasManager = (p: { id: number; accountManager?: string }) => !!pickManager(p);
-
   const isManagedBySelected = (p: { id: number; accountManager?: string }) => {
     if (!selectedAccount?.address) return false;
     const who = normalize(selectedAccount.address, 42);
@@ -217,14 +193,12 @@ const ParachainDashboard = () => {
     const byState = new Map<ParaState, number>();
     let renewed = 0;
     let needs = 0;
-    let withMgr = 0;
     let mine = 0;
     for (const p of parachains.filter((x) => x.network === network)) {
       byState.set(p.state, (byState.get(p.state) ?? 0) + 1);
       const r = getRenewalStatus(p.id);
       if (r.key === 'renewed') renewed++;
       else needs++;
-      if (hasManager(p)) withMgr++;
       if (isManagedBySelected(p)) mine++;
     }
     return {
@@ -232,7 +206,6 @@ const ParachainDashboard = () => {
       byState,
       renewed,
       needs,
-      withMgr,
       mine,
     };
   }, [parachains, network, potentialRenewals, saleInfo, selectedAccount, registrarMap]);
@@ -426,7 +399,6 @@ const ParachainDashboard = () => {
           <div className={styles.chipSm}>Total: {counts.total}</div>
           <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
           <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
-          <div className={styles.chipSm}>With manager: {counts.withMgr}</div>
           {selectedAccount?.address && (
             <div className={styles.chipSm}>My projects: {counts.mine}</div>
           )}
