@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './dashboard.module.scss';
 import { TableComponent } from '../../components/elements/TableComponent';
 import { FaStar } from 'react-icons/fa';
@@ -24,6 +24,8 @@ import { SelectOption } from '@/types/type';
 import { BaseChainInfo } from '@/chaindata/types';
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
+import { getNetworkChainIds, getNetworkMetadata } from '@/network';
+import type { Network } from '@/types';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -32,7 +34,7 @@ type TableData = {
   searchKey?: string;
 };
 
-type Managerish = {
+type ManagementInfo = {
   manager?: string;
   owner?: string;
   contact?: string;
@@ -41,11 +43,9 @@ type Managerish = {
 
 type RenewalFilter = 'all' | 'renewed' | 'needs';
 type StateFilter = 'all' | ParaState;
-type ManagerFilter = 'all' | 'with';
+type ManagerFilter = 'all' | 'with' | 'mine';
 
-const stateLabel = (s: ParaState) => {
-  return ParaState[s] ?? 'Unknown';
-};
+const stateLabel = (s: ParaState) => ParaState[s] ?? 'Unknown';
 
 const normalize = (addr?: string | null, fmt = 42) => {
   if (!addr) return '';
@@ -56,6 +56,68 @@ const normalize = (addr?: string | null, fmt = 42) => {
   }
 };
 
+type RegistrarInfo = { manager?: string; locked: boolean };
+type RegistrarMap = Map<number, RegistrarInfo>;
+
+type NetworkKey = keyof typeof chainData;
+
+function useRegistrarManagers(network: Network, connections: any, paraIds: number[]): RegistrarMap {
+  const [map, setMap] = useState<RegistrarMap>(new Map());
+  const cacheRef = useRef<RegistrarMap>(new Map());
+  const inflightRef = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const ids = getNetworkChainIds(network);
+      const meta = getNetworkMetadata(network);
+      if (!ids || !meta) return;
+      const relayConn = connections[ids.relayChain];
+      if (!relayConn?.client) return;
+      const api = relayConn.client.getTypedApi(meta.relayChain);
+      const need = paraIds.filter(
+        (id) => !cacheRef.current.has(id) && !inflightRef.current.has(id)
+      );
+      if (need.length === 0) {
+        setMap(new Map(cacheRef.current));
+        return;
+      }
+      const batch = [...need];
+      for (const id of batch) inflightRef.current.add(id);
+      try {
+        const results = await Promise.all(
+          batch.map(async (id) => {
+            try {
+              const reg = await api.query.Registrar.Paras.getValue(Number(id));
+              const info: RegistrarInfo = reg
+                ? { manager: reg.manager ? String(reg.manager) : undefined, locked: !!reg.locked }
+                : { manager: undefined, locked: false };
+              return [id, info] as const;
+            } catch {
+              return [id, { manager: undefined, locked: false }] as const;
+            }
+          })
+        );
+        if (cancelled) return;
+        const next = new Map(cacheRef.current);
+        for (const [id, info] of results) {
+          next.set(id, info);
+          inflightRef.current.delete(id);
+        }
+        cacheRef.current = next;
+        setMap(new Map(next));
+      } catch {
+        for (const id of batch) inflightRef.current.delete(id);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [network, connections, paraIds.join('|')]);
+
+  return map;
+}
+
 const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
@@ -65,7 +127,8 @@ const ParachainDashboard = () => {
   const [renewalFilter, setRenewalFilter] = useState<RenewalFilter>('all');
   const [managerFilter, setManagerFilter] = useState<ManagerFilter>('all');
 
-  const network = useUnit($network);
+  const network = useUnit($network) as Network;
+  const networkKey = network as unknown as NetworkKey;
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
   const potentialRenewals = useUnit($potentialRenewals);
@@ -101,6 +164,17 @@ const ParachainDashboard = () => {
     potentialRenewalsRequested({ network, connections });
   }, [network, connections]);
 
+  const baseRows = useMemo(
+    () =>
+      (showWatchlist
+        ? parachains.filter((p) => p.network === network && watchlist.includes(p.id))
+        : parachains.filter((p) => p.network === network)) || [],
+    [showWatchlist, parachains, watchlist, network]
+  );
+
+  const paraIds = useMemo(() => baseRows.map((p) => p.id), [baseRows]);
+  const registrarMap = useRegistrarManagers(network, connections, paraIds);
+
   const getRenewalStatus = (
     paraId: number
   ): { label: 'Renewed' | 'Needs Renewal'; color: string; key: 'renewed' | 'needs' } => {
@@ -114,39 +188,36 @@ const ParachainDashboard = () => {
     return { label: 'Renewed', color: '#15803d', key: 'renewed' };
   };
 
-  const hasManager = (p: { id: number; accountManager?: string }) => {
-    const meta = chainData[network]?.[p.id] as (BaseChainInfo & Managerish) | undefined;
-    return Boolean(p.accountManager || meta?.manager || meta?.owner || meta?.contact);
+  const pickManager = (p: { id: number; accountManager?: string }) => {
+    const reg = registrarMap.get(p.id);
+    const fromRegistrar = reg?.manager ? normalize(reg.manager, 42) : '';
+    if (fromRegistrar) return fromRegistrar;
+    const meta =
+      (chainData[networkKey]?.[p.id] as (BaseChainInfo & ManagementInfo) | undefined) ?? undefined;
+    const candidates = [p.accountManager, meta?.manager, meta?.owner, meta?.contact].filter(
+      Boolean
+    ) as string[];
+    for (const c of candidates) {
+      const n = normalize(c, 42);
+      if (n) return n;
+    }
+    return '';
   };
+
+  const hasManager = (p: { id: number; accountManager?: string }) => !!pickManager(p);
 
   const isManagedBySelected = (p: { id: number; accountManager?: string }) => {
     if (!selectedAccount?.address) return false;
     const who = normalize(selectedAccount.address, 42);
     if (!who) return false;
-    const meta = chainData[network]?.[p.id] as (BaseChainInfo & Managerish) | undefined;
-    const candidates = [p.accountManager, meta?.manager, meta?.owner, meta?.contact].filter(
-      Boolean
-    ) as string[];
-    for (const c of candidates) {
-      if (normalize(c, 42) === who) return true;
-    }
-    return false;
+    return pickManager(p) === who;
   };
-
-  const baseRows = useMemo(
-    () =>
-      (showWatchlist
-        ? parachains.filter((p) => p.network === network && watchlist.includes(p.id))
-        : parachains.filter((p) => p.network === network)) || [],
-    [showWatchlist, parachains, watchlist, network]
-  );
 
   const counts = useMemo(() => {
     const byState = new Map<ParaState, number>();
     let renewed = 0;
     let needs = 0;
     let withMgr = 0;
-    let withoutMgr = 0;
     let mine = 0;
     for (const p of parachains.filter((x) => x.network === network)) {
       byState.set(p.state, (byState.get(p.state) ?? 0) + 1);
@@ -154,7 +225,6 @@ const ParachainDashboard = () => {
       if (r.key === 'renewed') renewed++;
       else needs++;
       if (hasManager(p)) withMgr++;
-      else withoutMgr++;
       if (isManagedBySelected(p)) mine++;
     }
     return {
@@ -163,10 +233,9 @@ const ParachainDashboard = () => {
       renewed,
       needs,
       withMgr,
-      withoutMgr,
       mine,
     };
-  }, [parachains, network, potentialRenewals, saleInfo, selectedAccount]);
+  }, [parachains, network, potentialRenewals, saleInfo, selectedAccount, registrarMap]);
 
   const availableStates = useMemo(() => {
     const set = new Set<ParaState>();
@@ -179,15 +248,10 @@ const ParachainDashboard = () => {
     if (stateFilter !== 'all') rows = rows.filter((r) => r.state === stateFilter);
     if (renewalFilter !== 'all')
       rows = rows.filter((r) => getRenewalStatus(r.id).key === renewalFilter);
-    if (managerFilter === 'with') {
-      if (selectedAccount?.address) {
-        rows = rows.filter((r) => isManagedBySelected(r));
-      } else {
-        rows = rows.filter((r) => hasManager(r));
-      }
-    }
+    if (managerFilter === 'with') rows = rows.filter((r) => hasManager(r));
+    if (managerFilter === 'mine') rows = rows.filter((r) => isManagedBySelected(r));
     return rows;
-  }, [baseRows, stateFilter, renewalFilter, managerFilter, selectedAccount]);
+  }, [baseRows, stateFilter, renewalFilter, managerFilter, selectedAccount, registrarMap]);
 
   const stateOptions: SelectOption<StateFilter | 'all'>[] = useMemo(
     () => [
@@ -207,8 +271,14 @@ const ParachainDashboard = () => {
     { key: 'needs', label: 'Needs Renewal', value: 'needs' },
   ];
 
+  const managerOptions: SelectOption<ManagerFilter>[] = [
+    { key: 'all', label: 'All', value: 'all' },
+    { key: 'with', label: 'With manager', value: 'with' },
+    { key: 'mine', label: 'My projects', value: 'mine' },
+  ];
+
   const tableData: Record<string, TableData>[] = filteredRows.map((item) => {
-    const meta = chainData[network]?.[item.id];
+    const meta = chainData[networkKey]?.[item.id];
     const name = meta?.name || `Parachain ${item.id}`;
     const logo = meta?.logo;
     const renewal = getRenewalStatus(item.id);
@@ -300,10 +370,10 @@ const ParachainDashboard = () => {
               <div className={styles.chipSm}>Total: {counts.total}</div>
               <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
               <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
-              <div className={styles.chipSm}>
-                {selectedAccount?.address ? 'My projects' : 'With manager'}:{' '}
-                {selectedAccount?.address ? counts.mine : counts.withMgr}
-              </div>
+              <div className={styles.chipSm}>With manager: {counts.withMgr}</div>
+              {selectedAccount?.address && (
+                <div className={styles.chipSm}>My projects: {counts.mine}</div>
+              )}
               {availableStates.map((s) => (
                 <div key={s} className={styles.chipSm}>
                   {stateLabel(s)}: {counts.byState.get(s) ?? 0}
@@ -314,33 +384,18 @@ const ParachainDashboard = () => {
 
           <div className={styles.rightCol}>
             <div className={styles.segmentedOld} role='tablist' aria-label='Renewal filter'>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={renewalFilter === 'all'}
-                className={`${styles.segmentedBtn} ${renewalFilter === 'all' ? styles.active : ''}`}
-                onClick={() => setRenewalFilter('all')}
-              >
-                All
-              </button>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={renewalFilter === 'renewed'}
-                className={`${styles.segmentedBtn} ${renewalFilter === 'renewed' ? styles.active : ''}`}
-                onClick={() => setRenewalFilter('renewed')}
-              >
-                Renewed
-              </button>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={renewalFilter === 'needs'}
-                className={`${styles.segmentedBtn} ${renewalFilter === 'needs' ? styles.active : ''}`}
-                onClick={() => setRenewalFilter('needs')}
-              >
-                Needs Renewal
-              </button>
+              {renewalOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  type='button'
+                  role='tab'
+                  aria-selected={renewalFilter === opt.value}
+                  className={`${styles.segmentedBtn} ${renewalFilter === opt.value ? styles.active : ''}`}
+                  onClick={() => setRenewalFilter(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
               <span
                 className={styles.segmentedThumbOld}
                 style={{
@@ -356,33 +411,31 @@ const ParachainDashboard = () => {
             </div>
 
             <div
-              className={`${styles.segmentedOld} ${styles.cols2}`}
+              className={`${styles.segmentedOld} ${styles.cols3}`}
               role='tablist'
               aria-label='Manager filter'
             >
-              <button
-                type='button'
-                role='tab'
-                aria-selected={managerFilter === 'all'}
-                className={`${styles.segmentedBtn} ${managerFilter === 'all' ? styles.active : ''}`}
-                onClick={() => setManagerFilter('all')}
-              >
-                All
-              </button>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={managerFilter === 'with'}
-                className={`${styles.segmentedBtn} ${managerFilter === 'with' ? styles.active : ''}`}
-                onClick={() => setManagerFilter('with')}
-              >
-                {selectedAccount?.address ? 'My projects' : 'With manager'}
-              </button>
+              {managerOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  type='button'
+                  role='tab'
+                  aria-selected={managerFilter === opt.value}
+                  className={`${styles.segmentedBtn} ${managerFilter === opt.value ? styles.active : ''}`}
+                  onClick={() => setManagerFilter(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
               <span
                 className={styles.segmentedThumbOld}
                 style={{
                   transform:
-                    managerFilter === 'all' ? 'translateX(0)' : 'translateX(calc(100% + 6px))',
+                    managerFilter === 'all'
+                      ? 'translateX(0)'
+                      : managerFilter === 'with'
+                        ? 'translateX(calc(100% + 6px))'
+                        : 'translateX(calc(200% + 12px))',
                 }}
                 aria-hidden='true'
               />
