@@ -43,7 +43,7 @@ type ManagementInfo = {
 
 type RenewalFilter = 'all' | 'renewed' | 'needs';
 type StateFilter = 'all' | ParaState;
-type ManagerFilter = 'all' | 'with' | 'mine';
+type ManagerFilter = 'all' | 'mine';
 
 const stateLabel = (s: ParaState) => ParaState[s] ?? 'Unknown';
 
@@ -248,7 +248,6 @@ const ParachainDashboard = () => {
     if (stateFilter !== 'all') rows = rows.filter((r) => r.state === stateFilter);
     if (renewalFilter !== 'all')
       rows = rows.filter((r) => getRenewalStatus(r.id).key === renewalFilter);
-    if (managerFilter === 'with') rows = rows.filter((r) => hasManager(r));
     if (managerFilter === 'mine') rows = rows.filter((r) => isManagedBySelected(r));
     return rows;
   }, [baseRows, stateFilter, renewalFilter, managerFilter, selectedAccount, registrarMap]);
@@ -273,7 +272,6 @@ const ParachainDashboard = () => {
 
   const managerOptions: SelectOption<ManagerFilter>[] = [
     { key: 'all', label: 'All', value: 'all' },
-    { key: 'with', label: 'With manager', value: 'with' },
     { key: 'mine', label: 'My projects', value: 'mine' },
   ];
 
@@ -366,20 +364,6 @@ const ParachainDashboard = () => {
                 font={{ family: 'Inter', size: 14, lineHeight: '19px' }}
               />
             </div>
-            <div className={styles.metricsBlock}>
-              <div className={styles.chipSm}>Total: {counts.total}</div>
-              <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
-              <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
-              <div className={styles.chipSm}>With manager: {counts.withMgr}</div>
-              {selectedAccount?.address && (
-                <div className={styles.chipSm}>My projects: {counts.mine}</div>
-              )}
-              {availableStates.map((s) => (
-                <div key={s} className={styles.chipSm}>
-                  {stateLabel(s)}: {counts.byState.get(s) ?? 0}
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className={styles.rightCol}>
@@ -411,7 +395,7 @@ const ParachainDashboard = () => {
             </div>
 
             <div
-              className={`${styles.segmentedOld} ${styles.cols3}`}
+              className={`${styles.segmentedOld} ${styles.cols2}`}
               role='tablist'
               aria-label='Manager filter'
             >
@@ -431,18 +415,27 @@ const ParachainDashboard = () => {
                 className={styles.segmentedThumbOld}
                 style={{
                   transform:
-                    managerFilter === 'all'
-                      ? 'translateX(0)'
-                      : managerFilter === 'with'
-                        ? 'translateX(calc(100% + 6px))'
-                        : 'translateX(calc(200% + 12px))',
+                    managerFilter === 'all' ? 'translateX(0)' : 'translateX(calc(100% + 6px))',
                 }}
                 aria-hidden='true'
               />
             </div>
           </div>
         </div>
-
+        <div className={styles.metricsBlock}>
+          <div className={styles.chipSm}>Total: {counts.total}</div>
+          <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
+          <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
+          <div className={styles.chipSm}>With manager: {counts.withMgr}</div>
+          {selectedAccount?.address && (
+            <div className={styles.chipSm}>My projects: {counts.mine}</div>
+          )}
+          {availableStates.map((s) => (
+            <div key={s} className={styles.chipSm}>
+              {stateLabel(s)}: {counts.byState.get(s) ?? 0}
+            </div>
+          ))}
+        </div>
         <TableComponent
           key={`${network}-${showWatchlist ? 'watch' : 'all'}-${stateFilter}-${renewalFilter}-${managerFilter}-${selectedAccount?.address ?? 'noacct'}`}
           data={tableData}
