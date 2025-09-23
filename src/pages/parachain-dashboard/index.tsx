@@ -82,6 +82,7 @@ const ParachainDashboard = () => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
   }, [network, connections]);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -97,26 +98,16 @@ const ParachainDashboard = () => {
         if (!cancelled) setManagedIds(new Set());
         return;
       }
-
       try {
         const api = relayConn.client.getTypedApi(meta.relayChain);
-        const visible = parachains.filter((p) => p.network === network).map((p) => p.id);
-
-        const me42 = encodeAddress(addr, 42);
-        const results = await Promise.all(
-          visible.map(async (id) => {
-            try {
-              const registrar = await api.query.Registrar.Paras.getValue(Number(id));
-              if (!registrar) return null;
-              const mgr42 = encodeAddress(registrar.manager, 42);
-              return mgr42 === me42 ? id : null;
-            } catch {
-              return null;
-            }
-          })
-        );
-
-        const mine = new Set(results.filter((x): x is number => x !== null));
+        const me = encodeAddress(addr, 42);
+        const entries = await api.query.Registrar.Paras.getEntries();
+        const mine = new Set<number>();
+        for (const e of entries) {
+          const id = e.keyArgs[0];
+          const manager = encodeAddress(e.value.manager, 42);
+          if (manager === me) mine.add(id);
+        }
         if (!cancelled) setManagedIds(mine);
       } catch {
         if (!cancelled) setManagedIds(new Set());
@@ -125,7 +116,7 @@ const ParachainDashboard = () => {
     return () => {
       cancelled = true;
     };
-  }, [network, connections, parachains, selectedAccount?.address]);
+  }, [network, connections, selectedAccount?.address]);
 
   const getRenewalStatus = (
     paraId: number
@@ -349,7 +340,6 @@ const ParachainDashboard = () => {
               >
                 Needs Renewal
               </button>
-
               <span
                 className={styles.segmentedThumbOld}
                 style={{
@@ -366,6 +356,22 @@ const ParachainDashboard = () => {
               />
             </div>
           </div>
+        </div>
+
+        {/* LABELS BELOW SEARCH */}
+        <div className={styles.metricsBlock}>
+          <div className={styles.chipSm}>Total: {counts.total}</div>
+          <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
+          <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
+          {availableStates.map((s) => (
+            <div key={s} className={styles.chipSm}>
+              {stateLabel(s)}: {counts.byState.get(s) ?? 0}
+            </div>
+          ))}
+          {showMine && selectedAccount?.address && (
+            <div className={styles.chipSm}>Showing: My Projects</div>
+          )}
+          {showWatchlist && <div className={styles.chipSm}>Filter: Watchlist</div>}
         </div>
 
         <TableComponent
