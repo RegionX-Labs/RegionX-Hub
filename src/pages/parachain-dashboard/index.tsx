@@ -358,7 +358,6 @@ const ParachainDashboard = () => {
           </div>
         </div>
 
-        {/* LABELS BELOW SEARCH */}
         <div className={styles.metricsBlock}>
           <div className={styles.chipSm}>Total: {counts.total}</div>
           <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
