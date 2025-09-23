@@ -213,6 +213,9 @@
   transition:
     color 0.15s ease,
     opacity 0.15s ease;
+  @media (max-width: 1210px) {
+    justify-content: flex-start;
+  }
 }
 
 .segmentedBtn.active {
@@ -238,6 +241,13 @@
 
 .segmentedOld.cols2 .segmentedThumbOld {
   width: calc(50% - 6px);
+}
+.segmentedOld.cols4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.segmentedOld.cols4 .segmentedThumbOld {
+  width: calc(25% - 6px);
 }
 
 .parachainNameContainer {

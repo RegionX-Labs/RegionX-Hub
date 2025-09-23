@@ -21,11 +21,9 @@ import { $latestSaleInfo } from '@/coretime/saleInfo';
 import RegisterParaModal from '../parachain-dashboard/RegisterParaModal';
 import Select from '@/components/elements/Select';
 import { SelectOption } from '@/types/type';
-import { BaseChainInfo } from '@/chaindata/types';
 import { $selectedAccount } from '@/wallet';
-import { encodeAddress } from '@polkadot/util-crypto';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import type { Network } from '@/types';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 type TableData = {
   cellType: 'text' | 'link' | 'address' | 'jsx';
@@ -34,79 +32,22 @@ type TableData = {
   searchKey?: string;
 };
 
-type ManagementInfo = {
-  manager?: string;
-  owner?: string;
-  contact?: string;
-  accountManager?: string;
-};
-
 type RenewalFilter = 'all' | 'renewed' | 'needs';
 type StateFilter = 'all' | ParaState;
-type ManagerFilter = 'all' | 'mine';
 
 const stateLabel = (s: ParaState) => ParaState[s] ?? 'Unknown';
 
-const normalize = (addr?: string | null, fmt = 42) => {
-  if (!addr) return '';
-  try {
-    return encodeAddress(addr, fmt);
-  } catch {
-    return '';
-  }
-};
-
-type RegistrarInfo = { manager?: string; locked: boolean };
-type RegistrarMap = Map<number, RegistrarInfo>;
-
-type NetworkKey = keyof typeof chainData;
-
-function useRegistrarManagers(network: Network, connections: any, paraIds: number[]): RegistrarMap {
-  const [map, setMap] = useState<RegistrarMap>(new Map());
-
-  useEffect(() => {
-    (async () => {
-      const ids = getNetworkChainIds(network);
-      const meta = getNetworkMetadata(network);
-      if (!ids || !meta) return;
-      const relayConn = connections[ids.relayChain];
-      if (!relayConn?.client) return;
-      const api = relayConn.client.getTypedApi(meta.relayChain);
-
-      try {
-        const entries = await Promise.all(
-          paraIds.map(async (id) => {
-            const reg = await api.query.Registrar.Paras.getValue(Number(id));
-            return [
-              id,
-              {
-                manager: reg?.manager ? String(reg.manager) : undefined,
-                locked: !!reg?.locked,
-              },
-            ] as const;
-          })
-        );
-        setMap(new Map(entries));
-      } catch {
-        setMap(new Map());
-      }
-    })();
-  }, [network, connections, JSON.stringify(paraIds)]);
-
-  return map;
-}
-
 const ParachainDashboard = () => {
   const [watchlist, setWatchlist] = useState<number[]>([]);
-  const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
+  const [showWatchlist, setShowWatchlist] = useState(false);
+  const [showMine, setShowMine] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [stateFilter, setStateFilter] = useState<StateFilter>('all');
   const [renewalFilter, setRenewalFilter] = useState<RenewalFilter>('all');
-  const [managerFilter, setManagerFilter] = useState<ManagerFilter>('all');
+  const [managedIds, setManagedIds] = useState<Set<number>>(new Set());
 
-  const network = useUnit($network) as Network;
-  const networkKey = network as unknown as NetworkKey;
+  const network = useUnit($network);
   const connections = useUnit($connections);
   const parachains = useUnit($parachains);
   const potentialRenewals = useUnit($potentialRenewals);
@@ -141,17 +82,50 @@ const ParachainDashboard = () => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
   }, [network, connections]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const addr = selectedAccount?.address;
+      if (!addr) {
+        if (!cancelled) setManagedIds(new Set());
+        return;
+      }
+      const ids = getNetworkChainIds(network);
+      const meta = getNetworkMetadata(network);
+      const relayConn = ids ? connections[ids.relayChain] : null;
+      if (!ids || !meta || !relayConn?.client) {
+        if (!cancelled) setManagedIds(new Set());
+        return;
+      }
 
-  const baseRows = useMemo(
-    () =>
-      (showWatchlist
-        ? parachains.filter((p) => p.network === network && watchlist.includes(p.id))
-        : parachains.filter((p) => p.network === network)) || [],
-    [showWatchlist, parachains, watchlist, network]
-  );
+      try {
+        const api = relayConn.client.getTypedApi(meta.relayChain);
+        const visible = parachains.filter((p) => p.network === network).map((p) => p.id);
 
-  const paraIds = useMemo(() => baseRows.map((p) => p.id), [baseRows]);
-  const registrarMap = useRegistrarManagers(network, connections, paraIds);
+        const me42 = encodeAddress(addr, 42);
+        const results = await Promise.all(
+          visible.map(async (id) => {
+            try {
+              const registrar = await api.query.Registrar.Paras.getValue(Number(id));
+              if (!registrar) return null;
+              const mgr42 = encodeAddress(registrar.manager, 42);
+              return mgr42 === me42 ? id : null;
+            } catch {
+              return null;
+            }
+          })
+        );
+
+        const mine = new Set(results.filter((x): x is number => x !== null));
+        if (!cancelled) setManagedIds(mine);
+      } catch {
+        if (!cancelled) setManagedIds(new Set());
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [network, connections, parachains, selectedAccount?.address]);
 
   const getRenewalStatus = (
     paraId: number
@@ -166,49 +140,38 @@ const ParachainDashboard = () => {
     return { label: 'Renewed', color: '#15803d', key: 'renewed' };
   };
 
-  const pickManager = (p: { id: number; accountManager?: string }) => {
-    const reg = registrarMap.get(p.id);
-    const fromRegistrar = reg?.manager ? normalize(reg.manager, 42) : '';
-    if (fromRegistrar) return fromRegistrar;
-    const meta =
-      (chainData[networkKey]?.[p.id] as (BaseChainInfo & ManagementInfo) | undefined) ?? undefined;
-    const candidates = [p.accountManager, meta?.manager, meta?.owner, meta?.contact].filter(
-      Boolean
-    ) as string[];
-    for (const c of candidates) {
-      const n = normalize(c, 42);
-      if (n) return n;
+  const baseRows = useMemo(() => {
+    const rows =
+      (showWatchlist
+        ? parachains.filter((p) => p.network === network && watchlist.includes(p.id))
+        : parachains.filter((p) => p.network === network)) || [];
+    if (showMine && selectedAccount?.address) {
+      return rows.filter((r) => managedIds.has(r.id));
     }
-    return '';
-  };
-
-  const isManagedBySelected = (p: { id: number; accountManager?: string }) => {
-    if (!selectedAccount?.address) return false;
-    const who = normalize(selectedAccount.address, 42);
-    if (!who) return false;
-    return pickManager(p) === who;
-  };
+    return rows;
+  }, [
+    showWatchlist,
+    showMine,
+    parachains,
+    watchlist,
+    network,
+    managedIds,
+    selectedAccount?.address,
+  ]);
 
   const counts = useMemo(() => {
     const byState = new Map<ParaState, number>();
     let renewed = 0;
     let needs = 0;
-    let mine = 0;
-    for (const p of parachains.filter((x) => x.network === network)) {
+    const rows = parachains.filter((x) => x.network === network);
+    for (const p of rows) {
       byState.set(p.state, (byState.get(p.state) ?? 0) + 1);
       const r = getRenewalStatus(p.id);
       if (r.key === 'renewed') renewed++;
       else needs++;
-      if (isManagedBySelected(p)) mine++;
     }
-    return {
-      total: parachains.filter((x) => x.network === network).length,
-      byState,
-      renewed,
-      needs,
-      mine,
-    };
-  }, [parachains, network, potentialRenewals, saleInfo, selectedAccount, registrarMap]);
+    return { total: rows.length, byState, renewed, needs };
+  }, [parachains, network, potentialRenewals, saleInfo]);
 
   const availableStates = useMemo(() => {
     const set = new Set<ParaState>();
@@ -221,9 +184,8 @@ const ParachainDashboard = () => {
     if (stateFilter !== 'all') rows = rows.filter((r) => r.state === stateFilter);
     if (renewalFilter !== 'all')
       rows = rows.filter((r) => getRenewalStatus(r.id).key === renewalFilter);
-    if (managerFilter === 'mine') rows = rows.filter((r) => isManagedBySelected(r));
     return rows;
-  }, [baseRows, stateFilter, renewalFilter, managerFilter, selectedAccount, registrarMap]);
+  }, [baseRows, stateFilter, renewalFilter]);
 
   const stateOptions: SelectOption<StateFilter | 'all'>[] = useMemo(
     () => [
@@ -243,13 +205,8 @@ const ParachainDashboard = () => {
     { key: 'needs', label: 'Needs Renewal', value: 'needs' },
   ];
 
-  const managerOptions: SelectOption<ManagerFilter>[] = [
-    { key: 'all', label: 'All', value: 'all' },
-    { key: 'mine', label: 'My projects', value: 'mine' },
-  ];
-
   const tableData: Record<string, TableData>[] = filteredRows.map((item) => {
-    const meta = chainData[networkKey]?.[item.id];
+    const meta = chainData[network]?.[item.id];
     const name = meta?.name || `Parachain ${item.id}`;
     const logo = meta?.logo;
     const renewal = getRenewalStatus(item.id);
@@ -340,76 +297,79 @@ const ParachainDashboard = () => {
           </div>
 
           <div className={styles.rightCol}>
-            <div className={styles.segmentedOld} role='tablist' aria-label='Renewal filter'>
-              {renewalOptions.map((opt) => (
-                <button
-                  key={opt.key}
-                  type='button'
-                  role='tab'
-                  aria-selected={renewalFilter === opt.value}
-                  className={`${styles.segmentedBtn} ${renewalFilter === opt.value ? styles.active : ''}`}
-                  onClick={() => setRenewalFilter(opt.value)}
-                >
-                  {opt.label}
-                </button>
-              ))}
+            <div
+              className={`${styles.segmentedOld} ${styles.cols4}`}
+              role='tablist'
+              aria-label='Filters'
+            >
+              <button
+                type='button'
+                role='tab'
+                aria-selected={!showMine && renewalFilter === 'all'}
+                className={`${styles.segmentedBtn} ${!showMine && renewalFilter === 'all' ? styles.active : ''}`}
+                onClick={() => {
+                  setShowMine(false);
+                  setRenewalFilter('all');
+                }}
+              >
+                All
+              </button>
+              <button
+                type='button'
+                role='tab'
+                aria-selected={showMine}
+                disabled={!selectedAccount?.address}
+                title={selectedAccount?.address ? '' : 'Connect an account'}
+                className={`${styles.segmentedBtn} ${showMine ? styles.active : ''}`}
+                onClick={() => setShowMine(true)}
+              >
+                My Projects
+              </button>
+              <button
+                type='button'
+                role='tab'
+                aria-selected={!showMine && renewalFilter === 'renewed'}
+                className={`${styles.segmentedBtn} ${!showMine && renewalFilter === 'renewed' ? styles.active : ''}`}
+                onClick={() => {
+                  setShowMine(false);
+                  setRenewalFilter('renewed');
+                }}
+              >
+                Renewed
+              </button>
+              <button
+                type='button'
+                role='tab'
+                aria-selected={!showMine && renewalFilter === 'needs'}
+                className={`${styles.segmentedBtn} ${!showMine && renewalFilter === 'needs' ? styles.active : ''}`}
+                onClick={() => {
+                  setShowMine(false);
+                  setRenewalFilter('needs');
+                }}
+              >
+                Needs Renewal
+              </button>
+
               <span
                 className={styles.segmentedThumbOld}
                 style={{
-                  transform:
-                    renewalFilter === 'all'
+                  transform: showMine
+                    ? 'translateX(calc(100% + 6px))'
+                    : renewalFilter === 'all'
                       ? 'translateX(0)'
                       : renewalFilter === 'renewed'
-                        ? 'translateX(calc(100% + 6px))'
-                        : 'translateX(calc(200% + 12px))',
-                }}
-                aria-hidden='true'
-              />
-            </div>
-
-            <div
-              className={`${styles.segmentedOld} ${styles.cols2}`}
-              role='tablist'
-              aria-label='Manager filter'
-            >
-              {managerOptions.map((opt) => (
-                <button
-                  key={opt.key}
-                  type='button'
-                  role='tab'
-                  aria-selected={managerFilter === opt.value}
-                  className={`${styles.segmentedBtn} ${managerFilter === opt.value ? styles.active : ''}`}
-                  onClick={() => setManagerFilter(opt.value)}
-                >
-                  {opt.label}
-                </button>
-              ))}
-              <span
-                className={styles.segmentedThumbOld}
-                style={{
-                  transform:
-                    managerFilter === 'all' ? 'translateX(0)' : 'translateX(calc(100% + 6px))',
+                        ? 'translateX(calc(200% + 12px))'
+                        : 'translateX(calc(300% + 18px))',
+                  width: 'calc(25% - 6px)',
                 }}
                 aria-hidden='true'
               />
             </div>
           </div>
         </div>
-        <div className={styles.metricsBlock}>
-          <div className={styles.chipSm}>Total: {counts.total}</div>
-          <div className={styles.chipSm}>Renewed: {counts.renewed}</div>
-          <div className={styles.chipSm}>Needs Renewal: {counts.needs}</div>
-          {selectedAccount?.address && (
-            <div className={styles.chipSm}>My projects: {counts.mine}</div>
-          )}
-          {availableStates.map((s) => (
-            <div key={s} className={styles.chipSm}>
-              {stateLabel(s)}: {counts.byState.get(s) ?? 0}
-            </div>
-          ))}
-        </div>
+
         <TableComponent
-          key={`${network}-${showWatchlist ? 'watch' : 'all'}-${stateFilter}-${renewalFilter}-${managerFilter}-${selectedAccount?.address ?? 'noacct'}`}
+          key={`${network}-${showWatchlist ? 'watch' : 'all'}-${showMine ? 'mine' : 'any'}-${stateFilter}-${renewalFilter}`}
           data={tableData}
           pageSize={8}
         />
