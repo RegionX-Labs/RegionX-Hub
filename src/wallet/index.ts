@@ -32,7 +32,12 @@ export const loadedAccountsSet = createEvent<WalletAccount[]>();
 $loadedAccounts.on(loadedAccountsSet, (_, payload) => payload);
 
 const getExtensionsFx = createEffect(async () => {
-  if (window !== window.parent) {
+  const isNova =
+    typeof window !== 'undefined' &&
+    typeof window.walletExtension === 'object' &&
+    window.walletExtension.isNovaWallet === true;
+
+  if (window !== window.parent && !isNova) {
     const origin = await isMimirReady();
     if (origin && MIMIR_REGEXP.test(origin)) {
       inject();
@@ -40,11 +45,6 @@ const getExtensionsFx = createEffect(async () => {
   }
 
   const extensions = getInjectedExtensions();
-
-  const isNova =
-    typeof window !== 'undefined' &&
-    typeof window.walletExtension === 'object' &&
-    window.walletExtension.isNovaWallet === true;
 
   return extensions.map((extName) => {
     if (extName === 'polkadot-js' && isNova) return { name: 'nova' };
