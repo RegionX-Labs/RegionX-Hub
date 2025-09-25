@@ -1,6 +1,6 @@
 import { $network } from '@/api/connection';
 import { chainData } from '@/chaindata';
-import { $potentialRenewals, RenewalKey } from '@/coretime/renewals';
+import { $potentialRenewals, RenewalKey, RenewalRecord } from '@/coretime/renewals';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $parachains, Parachain } from '@/parachains';
 import { SelectOption } from '@/types/type';
@@ -15,13 +15,22 @@ interface Props {
   selected: Parachain;
   setSelected: (id: Parachain) => void;
   onSelectParaId?: (id: string) => void;
+
+  parasWithAutoRenewal: Set<number>;
+  saleCycleRegionBegin: bigint | number | null;
+  potentialRenewals: Map<RenewalKey, RenewalRecord>;
 }
 
-export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props) => {
+export const ParachainSelect = ({
+  selected,
+  setSelected,
+  onSelectParaId,
+  parasWithAutoRenewal,
+  saleCycleRegionBegin,
+  potentialRenewals,
+}: Props) => {
   const parachains = useUnit($parachains);
   const network = useUnit($network);
-  const potentialRenewals = useUnit($potentialRenewals);
-  const saleInfo = useUnit($latestSaleInfo);
 
   const itemsForNetwork = useMemo(
     () => parachains.filter((p) => p.network === network),
@@ -37,15 +46,18 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
       const match = Array.from(potentialRenewals.entries()).find(
         ([key, record]) =>
           (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
-          saleInfo?.regionBegin === key.when
+          saleCycleRegionBegin === key.when
       );
       const coreForLabel =
         (match?.[0] as RenewalKey | undefined)?.core !== undefined
           ? Number((match![0] as RenewalKey).core)
           : undefined;
 
-      const renewalStatus = match ? 'Needs Renewal' : 'Renewed';
-      const badgeColor = match ? '#dc2626' : '#0cc184';
+      const hasWorkplan = parasWithAutoRenewal.has(Number(item.id));
+      const needsRenewal = !!match && !hasWorkplan;
+
+      const badgeText = needsRenewal ? 'Needs Renewal' : 'Renewed';
+      const badgeColor = needsRenewal ? '#dc2626' : '#0cc184';
 
       return {
         key: `${item.id}-${coreForLabel ?? 'current'}`,
@@ -80,12 +92,12 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
               whiteSpace: 'nowrap',
             }}
           >
-            {renewalStatus}
+            {badgeText}
           </span>
         ),
       };
     });
-  }, [itemsForNetwork, network, potentialRenewals, saleInfo]);
+  }, [itemsForNetwork, network, parasWithAutoRenewal, potentialRenewals, saleCycleRegionBegin]);
 
   return (
     <div className={styles.inputSection}>

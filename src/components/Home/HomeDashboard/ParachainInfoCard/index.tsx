@@ -49,6 +49,14 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     void refreshAutoRenewals();
   }, [network, connections]);
 
+  const refreshAutoRenewals = async () => {
+    try {
+      const list = await fetchAutoRenewals(network, connections);
+      const set = new Set<number>(list.map((e: any) => Number(e.task)));
+      setParasWithAutoRenewal(set);
+    } catch {}
+  };
+
   useEffect(() => {
     const selectedIsForNetwork = selected?.network === network;
     const urlMatch =
@@ -66,14 +74,6 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       setHasSetInitial(true);
     }
   }, [network, parachains, initialParaId, hasSetInitial, selected?.network, onSelectParaId]);
-
-  const refreshAutoRenewals = async () => {
-    try {
-      const list = await fetchAutoRenewals(network, connections);
-      const set = new Set<number>(list.map((e: any) => Number(e.task)));
-      setParasWithAutoRenewal(set);
-    } catch {}
-  };
 
   useEffect(() => {
     if (!saleInfo || !selected) return;
@@ -156,6 +156,9 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     />
   );
 
+  const hasWorkplanForSelected = !!(selected && parasWithAutoRenewal.has(Number(selected.id)));
+  const needsRenewal = !!renewalEntry && !hasWorkplanForSelected;
+
   const dateTitle = renewalEntry ? 'Renewal deadline' : 'End of sale cycle';
 
   return (
@@ -195,7 +198,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
               state={state}
               withTooltip={state === ParaState.SYSTEM}
               renewalStatus={
-                state !== ParaState.SYSTEM ? (renewalEntry ? 'needed' : 'done') : undefined
+                state !== ParaState.SYSTEM ? (needsRenewal ? 'needed' : 'done') : undefined
               }
             />
             <div className={styles.stateText}>
@@ -203,16 +206,19 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
                 if (state === ParaState.SYSTEM) {
                   return paraStateProperties[state]?.description;
                 }
-                const renewalStatus = renewalEntry ? 'needed' : 'done';
-                if (renewalStatus === 'done') {
-                  return 'This parachain has renewed the core on time and doesn’t need to do anything until the beginning of the next sale cycle.';
+                if (!needsRenewal) {
+                  return 'This parachain has a workplan entry scheduled for renewal, so no immediate action is required.';
                 }
-                if (renewalStatus === 'needed') {
-                  return 'This parachain needs to renew the core, otherwise it may stop if not renewed on time.';
-                }
-                return paraStateProperties[state]?.description;
+                return 'This parachain needs to renew the core, otherwise it may stop if not renewed on time.';
               })()}
             </div>
+
+            {!needsRenewal && renewalEntry && (
+              <div className={styles.helperNote}>
+                A renewal task is present in the workplan for this parachain, which overrides the
+                “Needs renewal” status for the current cycle.
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -222,10 +228,13 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
           onSelectParaId={onSelectParaId}
           selected={selected}
           setSelected={setSelected}
+          parasWithAutoRenewal={parasWithAutoRenewal}
+          saleCycleRegionBegin={saleInfo?.regionBegin ?? null}
+          potentialRenewals={potentialRenewals}
         />
       )}
 
-      {renewalEntry && (
+      {needsRenewal && renewalEntry && (
         <div className={styles.summaryRow}>
           <div className={styles.priceBox}>
             <span className={styles.priceLabel}>Renewal Price</span>
