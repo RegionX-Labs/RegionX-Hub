@@ -101,7 +101,7 @@ const AccountSelector = () => {
     );
 
     return {
-      key: encodeAddress(account.address, getNetworkSS58Prefix(network)),
+      key: account.address,
       value: account.address,
       label: '',
       icon,
