@@ -9,11 +9,8 @@ import Select from '../elements/Select';
 import WalletModal from '../WalletModal/WalletModal';
 import { $accountIdentities } from '@/account/accountIdentity';
 import { $loadedAccounts, $selectedAccount, accountSelected, disconnectWallets } from '@/wallet';
-import { encodeAddress } from '@polkadot/util-crypto';
 
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
-import { getNetworkSS58Prefix } from '@/utils';
-import { $network } from '@/api/connection';
 
 const WALLET_ICONS: Record<string, string> = {
   'polkadot-js': polkadotIcon.src,
@@ -25,7 +22,6 @@ const WALLET_ICONS: Record<string, string> = {
 const AccountSelector = () => {
   const [isWalletModalOpen, setWalletModalOpen] = useState(false);
 
-  const network = useUnit($network);
   const accounts = useUnit($loadedAccounts);
   const selectedAccount = useUnit($selectedAccount);
   const identities = useUnit($accountIdentities);
@@ -59,7 +55,7 @@ const AccountSelector = () => {
     const icon = (
       <div className={styles.inlineWrapper}>
         <Identicon
-          value={encodeAddress(account.address, getNetworkSS58Prefix(network))}
+          value={account.address}
           size={24}
           theme='polkadot'
           className={styles.identicon}
@@ -86,9 +82,7 @@ const AccountSelector = () => {
 
         <span className={styles.accountName}>{identity?.name || account.name || 'Unknown'}</span>
 
-        <span className={styles.addressLine}>
-          {formatAddress(encodeAddress(account.address, getNetworkSS58Prefix(network)))}
-        </span>
+        <span className={styles.addressLine}>{formatAddress(account.address)}</span>
 
         <Image
           src={walletIconSrc}
@@ -101,7 +95,7 @@ const AccountSelector = () => {
     );
 
     return {
-      key: encodeAddress(account.address, getNetworkSS58Prefix(network)),
+      key: account.address,
       value: account.address,
       label: '',
       icon,

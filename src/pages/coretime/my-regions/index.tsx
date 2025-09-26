@@ -6,12 +6,7 @@ import { useUnit } from 'effector-react';
 import { $regions, Region, RegionLocation } from '@/coretime/regions';
 import { $connections, $network } from '@/api/connection';
 import { RegionCard } from '../../../components/elements/RegionCard';
-import {
-  bitStringToUint8Array,
-  getNetworkSS58Prefix,
-  maskToBin,
-  timesliceToTimestamp,
-} from '@/utils';
+import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
 import { getRelativeTime } from '@/utils/time';
 import { $selectedAccount } from '@/wallet';
 import { encodeAddress } from '@polkadot/util-crypto';
@@ -306,10 +301,15 @@ function DraggableGrid(props: {
   selectedRegionId: string | null;
   setSelectedRegionId: (id: string) => void;
 }) {
-  const { className, regions, setOrder, regionDateInfos, selectedRegionId, setSelectedRegionId } =
-    props;
-
-  const network = useUnit($network);
+  const {
+    className,
+    regions,
+    order,
+    setOrder,
+    regionDateInfos,
+    selectedRegionId,
+    setSelectedRegionId,
+  } = props;
 
   const dragFromIdx = useRef<number | null>(null);
   const dragOverIdx = useRef<number | null>(null);
@@ -443,7 +443,7 @@ function DraggableGrid(props: {
                   location: region.location,
                   locked: region.locked,
                   onClick: () => setSelectedRegionId(region.id),
-                  owner: encodeAddress(region.owner, getNetworkSS58Prefix(network)),
+                  owner: encodeAddress(region.owner, 42),
                   paid: region.paid,
                 }}
                 task={region.task === 0 ? 'Unassigned' : region.task.toString()}
