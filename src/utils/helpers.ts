@@ -1,5 +1,3 @@
-import { Network } from '@/types';
-
 export function maskToBin(mask: string): string {
   let bin = '';
   for (let i = 2; i < mask.length; ++i) {
@@ -36,19 +34,4 @@ export const countBits = (regionMask: string) => {
     }
   }
   return count;
-};
-
-export const getNetworkSS58Prefix = (network: Network): number => {
-  switch (network) {
-    case Network.POLKADOT:
-      return 0;
-    case Network.KUSAMA:
-      return 2;
-    case Network.PASEO:
-      return 0;
-    case Network.WESTEND:
-      return 42;
-    default:
-      throw Error('unknown network');
-  }
 };
