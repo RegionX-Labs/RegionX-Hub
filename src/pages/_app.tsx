@@ -19,6 +19,7 @@ import {
   $loadedAccounts,
   loadedAccountsSet,
   walletAddedFx,
+  $walletExtensions,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
@@ -40,6 +41,7 @@ function App({ Component, pageProps }: AppProps) {
   const selectedAccount = useUnit($selectedAccount);
   const loadedAccounts = useUnit($loadedAccounts);
   const saleInfo = useUnit($latestSaleInfo);
+  const walletExtensions = useUnit($walletExtensions);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -81,7 +83,9 @@ function App({ Component, pageProps }: AppProps) {
 
     networkStarted(_network);
     getExtensions();
+  }, [networkFromRouter, router]);
 
+  useEffect(() => {
     const savedWallets = localStorage.getItem('connected_wallets');
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
     const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
@@ -109,7 +113,7 @@ function App({ Component, pageProps }: AppProps) {
         }
       });
     }
-  }, [networkFromRouter, router]);
+  }, [walletExtensions]);
 
   useEffect(() => {
     if (!selectedAccount) return;
