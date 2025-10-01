@@ -84,13 +84,19 @@ function App({ Component, pageProps }: AppProps) {
   }, [networkFromRouter, router]);
 
   useEffect(() => {
-    const _savedWallets = localStorage.getItem('connected_wallets');
-    if (_savedWallets) {
-      const savedWallets: string[] = JSON.parse(_savedWallets);
-      savedWallets.map((wallet) => {
-        walletAdded(wallet);
-      });
-    }
+    (async() => {
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+      // takes some time to load extensions.
+      await sleep(250);
+      const _savedWallets = localStorage.getItem('connected_wallets');
+      if (_savedWallets) {
+        const savedWallets: string[] = JSON.parse(_savedWallets);
+        savedWallets.map((wallet) => {
+          walletAdded(wallet);
+        });
+      }
+    })();
   }, [connectedWallets]);
 
   useEffect(() => {
@@ -98,9 +104,6 @@ function App({ Component, pageProps }: AppProps) {
     const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
 
     const allAccounts = loadedAccounts.flat();
-    const uniqueAccounts = allAccounts.filter(
-      (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
-    );
 
     if (selectedWallet && selectedAddress) {
       const match = allAccounts.find((a) => a.address === selectedAddress);
