@@ -11,14 +11,9 @@ import { Network } from '@/types';
 import { $connections, $network, networkStarted } from '@/api/connection';
 import {
   getExtensions,
-  SELECTED_WALLET_KEY,
-  SELECTED_ACCOUNT_KEY,
-  walletAdded,
-  accountSelected,
   $selectedAccount,
   $loadedAccounts,
-  loadedAccountsSet,
-  walletAddedFx,
+  restoreAllFromStorageFx,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
@@ -45,9 +40,7 @@ function App({ Component, pageProps }: AppProps) {
   const [hasMounted, setHasMounted] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  useEffect(() => setHasMounted(true), []);
 
   useEffect(() => {
     const stored = localStorage.getItem('theme');
@@ -81,34 +74,7 @@ function App({ Component, pageProps }: AppProps) {
 
     networkStarted(_network);
     getExtensions();
-
-    const savedWallets = localStorage.getItem('connected_wallets');
-    const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
-
-    if (savedWallets) {
-      const wallets: string[] = JSON.parse(savedWallets);
-
-      Promise.all(
-        wallets.map((wallet) => {
-          walletAdded(wallet);
-          return walletAddedFx(wallet);
-        })
-      ).then((results) => {
-        const allAccounts = results.flat();
-        const uniqueAccounts = allAccounts.filter(
-          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
-        );
-        loadedAccountsSet(uniqueAccounts);
-
-        if (selectedWallet && selectedAddress) {
-          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
-          if (match) {
-            accountSelected(match.address);
-          }
-        }
-      });
-    }
+    restoreAllFromStorageFx();
   }, [networkFromRouter, router]);
 
   useEffect(() => {
@@ -117,6 +83,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [connections, network, selectedAccount]);
 
   useEffect(() => {
+    if (!loadedAccounts.length) return;
     identityRequested({ accounts: loadedAccounts, network, connections });
   }, [connections, network, loadedAccounts]);
 
@@ -139,9 +106,7 @@ function App({ Component, pageProps }: AppProps) {
       nextUrl.searchParams.delete('dashboard');
       nextUrl.searchParams.delete('paraId');
 
-      const newUrl = `${nextUrl.pathname}${
-        nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''
-      }`;
+      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
       if (newUrl !== window.location.pathname + window.location.search) {
         window.history.replaceState({}, '', newUrl);
       }
@@ -176,14 +141,8 @@ function App({ Component, pageProps }: AppProps) {
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
 
-      {/* FLOATING BUTTONS: show only on desktop */}
       <div
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          zIndex: 9999,
-        }}
+        style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}
         className='floating-settings'
       >
         <div
@@ -232,10 +191,10 @@ function App({ Component, pageProps }: AppProps) {
               transition: 'transform 0.2s ease-in-out',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.15)';
+              (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.15)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
+              (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
             }}
           >
             <img src='/Settings.svg' alt='settings' width={24} height={24} />
