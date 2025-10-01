@@ -17,8 +17,6 @@ import {
   accountSelected,
   $selectedAccount,
   $loadedAccounts,
-  loadedAccountsSet,
-  walletAddedFx,
   $connectedWallets,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
@@ -86,34 +84,31 @@ function App({ Component, pageProps }: AppProps) {
   }, [networkFromRouter, router]);
 
   useEffect(() => {
-    const savedWallets = localStorage.getItem('connected_wallets');
-    const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
-
-    if (savedWallets) {
-      const wallets: string[] = JSON.parse(savedWallets);
-
-      Promise.all(
-        wallets.map((wallet) => {
-          walletAdded(wallet);
-          return walletAddedFx(wallet);
-        })
-      ).then((results) => {
-        const allAccounts = results.flat();
-        const uniqueAccounts = allAccounts.filter(
-          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
-        );
-        loadedAccountsSet(uniqueAccounts);
-
-        if (selectedWallet && selectedAddress) {
-          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
-          if (match) {
-            accountSelected(match.address);
-          }
-        }
+    const _savedWallets = localStorage.getItem('connected_wallets');
+    if (_savedWallets) {
+      const savedWallets: string[] = JSON.parse(_savedWallets);
+      savedWallets.map((wallet) => {
+        walletAdded(wallet);
       });
     }
   }, [connectedWallets]);
+
+  useEffect(() => {
+    const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
+    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
+
+    const allAccounts = loadedAccounts.flat();
+    const uniqueAccounts = allAccounts.filter(
+      (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
+    );
+
+    if (selectedWallet && selectedAddress) {
+      const match = allAccounts.find((a) => a.address === selectedAddress);
+      if (match) {
+        accountSelected(match.address);
+      }
+    }
+  }, [loadedAccounts]);
 
   useEffect(() => {
     if (!selectedAccount) return;
