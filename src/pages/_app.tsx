@@ -84,11 +84,11 @@ function App({ Component, pageProps }: AppProps) {
   }, [networkFromRouter, router]);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
       // takes some time to load extensions.
-      await sleep(250);
+      await sleep(400);
       const _savedWallets = localStorage.getItem('connected_wallets');
       if (_savedWallets) {
         const savedWallets: string[] = JSON.parse(_savedWallets);
