@@ -17,8 +17,7 @@ import {
   accountSelected,
   $selectedAccount,
   $loadedAccounts,
-  loadedAccountsSet,
-  walletAddedFx,
+  $connectedWallets,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
@@ -40,6 +39,7 @@ function App({ Component, pageProps }: AppProps) {
   const selectedAccount = useUnit($selectedAccount);
   const loadedAccounts = useUnit($loadedAccounts);
   const saleInfo = useUnit($latestSaleInfo);
+  const connectedWallets = useUnit($connectedWallets);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -81,35 +81,37 @@ function App({ Component, pageProps }: AppProps) {
 
     networkStarted(_network);
     getExtensions();
+  }, [networkFromRouter, router]);
 
-    const savedWallets = localStorage.getItem('connected_wallets');
+  useEffect(() => {
+    (async () => {
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+      // takes some time to load extensions.
+      await sleep(400);
+      const _savedWallets = localStorage.getItem('connected_wallets');
+      if (_savedWallets) {
+        const savedWallets: string[] = JSON.parse(_savedWallets);
+        savedWallets.map((wallet) => {
+          walletAdded(wallet);
+        });
+      }
+    })();
+  }, [connectedWallets]);
+
+  useEffect(() => {
     const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
     const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
 
-    if (savedWallets) {
-      const wallets: string[] = JSON.parse(savedWallets);
+    const allAccounts = loadedAccounts.flat();
 
-      Promise.all(
-        wallets.map((wallet) => {
-          walletAdded(wallet);
-          return walletAddedFx(wallet);
-        })
-      ).then((results) => {
-        const allAccounts = results.flat();
-        const uniqueAccounts = allAccounts.filter(
-          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
-        );
-        loadedAccountsSet(uniqueAccounts);
-
-        if (selectedWallet && selectedAddress) {
-          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
-          if (match) {
-            accountSelected(match.address);
-          }
-        }
-      });
+    if (selectedWallet && selectedAddress) {
+      const match = allAccounts.find((a) => a.address === selectedAddress);
+      if (match) {
+        accountSelected(match.address);
+      }
     }
-  }, [networkFromRouter, router]);
+  }, [loadedAccounts]);
 
   useEffect(() => {
     if (!selectedAccount) return;
