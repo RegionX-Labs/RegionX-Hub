@@ -8,8 +8,13 @@ import styles from './account.module.scss';
 import Select from '../elements/Select';
 import WalletModal from '../WalletModal/WalletModal';
 import { $accountIdentities } from '@/account/accountIdentity';
-import { $loadedAccounts, $selectedAccount, accountSelected, disconnectWallets } from '@/wallet';
-
+import {
+  $loadedAccounts,
+  $selectedAccount,
+  accountSelected,
+  disconnectWallets,
+  $walletInitDone,
+} from '@/wallet';
 import { polkadotIcon, subwalletIcon, talismanIcon, novaIcon } from '@/assets/wallets';
 
 const WALLET_ICONS: Record<string, string> = {
@@ -21,25 +26,21 @@ const WALLET_ICONS: Record<string, string> = {
 
 const AccountSelector = () => {
   const [isWalletModalOpen, setWalletModalOpen] = useState(false);
-
   const accounts = useUnit($loadedAccounts);
   const selectedAccount = useUnit($selectedAccount);
   const identities = useUnit($accountIdentities);
+  const walletInitDone = useUnit($walletInitDone);
 
   const handleChange = (value: string | null) => {
     if (value === 'disconnect') {
       disconnectWallets();
       return;
     }
-
     if (value === 'connect-another-wallet') {
       setWalletModalOpen(true);
       return;
     }
-
-    if (value) {
-      accountSelected(value);
-    }
+    if (value) accountSelected(value);
   };
 
   const formatAddress = (address: string): string =>
@@ -49,7 +50,6 @@ const AccountSelector = () => {
     const identity = identities[account.address];
     const hasIdentity = !!identity;
     const hasJudgement = identity?.hasJudgement ?? false;
-
     const walletIconSrc = WALLET_ICONS[account.walletSource] || polkadotIcon.src;
 
     const icon = (
@@ -60,7 +60,6 @@ const AccountSelector = () => {
           theme='polkadot'
           className={styles.identicon}
         />
-
         {hasIdentity && hasJudgement && (
           <Image
             src='/verified.png'
@@ -79,11 +78,8 @@ const AccountSelector = () => {
             className={styles.judgement}
           />
         )}
-
         <span className={styles.accountName}>{identity?.name || account.name || 'Unknown'}</span>
-
         <span className={styles.addressLine}>{formatAddress(account.address)}</span>
-
         <Image
           src={walletIconSrc}
           alt={account.walletSource}
@@ -94,12 +90,7 @@ const AccountSelector = () => {
       </div>
     );
 
-    return {
-      key: account.address,
-      value: account.address,
-      label: '',
-      icon,
-    };
+    return { key: account.address, value: account.address, label: '', icon };
   });
 
   options.push({
@@ -108,15 +99,10 @@ const AccountSelector = () => {
     label: 'Connect Multiple Wallets',
     icon: <></>,
   });
+  if (accounts.length > 0)
+    options.push({ key: 'disconnect', value: 'disconnect', label: 'Disconnect', icon: <></> });
 
-  if (accounts.length > 0) {
-    options.push({
-      key: 'disconnect',
-      value: 'disconnect',
-      label: 'Disconnect',
-      icon: <></>,
-    });
-  }
+  const selectedValue = walletInitDone ? (selectedAccount?.address ?? null) : null;
 
   return (
     <div className={styles.selectWrapper}>
@@ -124,7 +110,7 @@ const AccountSelector = () => {
         options={options}
         onChange={handleChange}
         placeholder='Select an account'
-        selectedValue={selectedAccount?.address ?? null}
+        selectedValue={selectedValue}
       />
       <WalletModal isOpen={isWalletModalOpen} onClose={() => setWalletModalOpen(false)} />
     </div>

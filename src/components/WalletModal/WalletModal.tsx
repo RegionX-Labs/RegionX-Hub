@@ -18,33 +18,13 @@ const STANDARD_WALLETS = [
     icon: polkadotIcon,
     url: 'https://polkadot.js.org/extension/',
   },
-  {
-    name: 'Talisman',
-    id: 'talisman',
-    icon: talismanIcon,
-    url: 'https://www.talisman.xyz/',
-  },
-  {
-    name: 'SubWallet',
-    id: 'subwallet-js',
-    icon: subwalletIcon,
-    url: 'https://subwallet.app/',
-  },
-  {
-    name: 'Nova',
-    id: 'nova',
-    icon: novaIcon,
-    url: 'https://novawallet.io/',
-  },
+  { name: 'Talisman', id: 'talisman', icon: talismanIcon, url: 'https://www.talisman.xyz/' },
+  { name: 'SubWallet', id: 'subwallet-js', icon: subwalletIcon, url: 'https://subwallet.app/' },
+  { name: 'Nova', id: 'nova', icon: novaIcon, url: 'https://novawallet.io/' },
 ];
 
 const MULTISIG_WALLETS = [
-  {
-    name: 'Mimir',
-    id: 'mimir',
-    icon: mimirIcon,
-    url: 'https://mimir.global/',
-  },
+  { name: 'Mimir', id: 'mimir', icon: mimirIcon, url: 'https://mimir.global/' },
 ];
 
 interface WalletModalProps {
@@ -55,7 +35,6 @@ interface WalletModalProps {
 const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   const availableWallets = useUnit($walletExtensions);
   const connectedWallets = useUnit($connectedWallets);
-
   const hasSubWallet = availableWallets.some((w) => w.name === 'subwallet-js');
 
   if (!isOpen) return null;
@@ -68,21 +47,19 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) {
-      onClose();
-    }
+    if ((event.target as HTMLDivElement).classList.contains(styles.modalOverlay)) onClose();
   };
 
   const renderWalletButton = (wallet: any) => {
     const isDetected = availableWallets.some((w) => w.name === wallet.id);
     const alreadyConnected = connectedWallets.includes(wallet.id);
-    const mimirAvailable = wallet.id === 'mimir' && window !== window.parent;
+    const mimirAvailable =
+      wallet.id === 'mimir' && typeof window !== 'undefined' && window !== window.parent;
     const shouldDisable =
       alreadyConnected ||
       !isDetected ||
       (wallet.id === 'nova' && isMobile && hasSubWallet) ||
       (wallet.id === 'mimir' && !mimirAvailable);
-
     const buttonClass = `${styles.walletButton} ${shouldDisable ? styles.disabled : ''}`;
 
     return (
@@ -126,19 +103,14 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => {
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.desktopOnly}>Connect Wallet</h2>
-
         <div className={styles.walletContainer}>
-          {STANDARD_WALLETS.filter((wallet) => {
-            if (wallet.id === 'polkadot-js' && isMobile) return false;
-            return true;
-          }).map(renderWalletButton)}
+          {STANDARD_WALLETS.filter((wallet) => !(wallet.id === 'polkadot-js' && isMobile)).map(
+            renderWalletButton
+          )}
         </div>
-
         <hr className={styles.divider} />
-
         <h3 className={styles.subHeader}>Multisig Wallets</h3>
         <div className={styles.walletContainer}>{MULTISIG_WALLETS.map(renderWalletButton)}</div>
-
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>

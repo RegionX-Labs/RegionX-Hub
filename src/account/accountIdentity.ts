@@ -1,11 +1,10 @@
-import { createEffect, createEvent, createStore, sample } from 'effector';
 import { Connection } from '@/api/connection';
 import { ChainId, getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { InjectedPolkadotAccount } from 'polkadot-api/pjs-signer';
+import { createEffect, createEvent, createStore, sample } from 'effector';
 import { Network } from '@/types';
 
 type Payload = {
-  accounts: InjectedPolkadotAccount[];
+  accounts: { address: string }[];
   network: Network;
   connections: Record<ChainId, Connection>;
 };
@@ -41,10 +40,7 @@ export const getAccountIdentitiesFx = createEffect(async (payload: Payload) => {
       Array.isArray(identityOpt?.judgements) && identityOpt.judgements.length > 0;
 
     if (name) {
-      result[address] = {
-        name,
-        hasJudgement,
-      };
+      result[address] = { name, hasJudgement };
     }
   }
 

@@ -1,3 +1,4 @@
+// src/pages/_app.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,14 +12,10 @@ import { Network } from '@/types';
 import { $connections, $network, networkStarted } from '@/api/connection';
 import {
   getExtensions,
-  SELECTED_WALLET_KEY,
-  SELECTED_ACCOUNT_KEY,
-  walletAdded,
-  accountSelected,
   $selectedAccount,
   $loadedAccounts,
-  loadedAccountsSet,
-  walletAddedFx,
+  restoreAllFromStorage,
+  $walletInitDone,
 } from '@/wallet';
 import { Montserrat } from 'next/font/google';
 import RpcSettingsModal from '@/components/RpcSettingsModal';
@@ -40,14 +37,13 @@ function App({ Component, pageProps }: AppProps) {
   const selectedAccount = useUnit($selectedAccount);
   const loadedAccounts = useUnit($loadedAccounts);
   const saleInfo = useUnit($latestSaleInfo);
+  const walletInitDone = useUnit($walletInitDone);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  useEffect(() => setHasMounted(true), []);
 
   useEffect(() => {
     const stored = localStorage.getItem('theme');
@@ -63,7 +59,6 @@ function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     if (!router.isReady) return;
-
     let _network = Network.NONE;
     if (networkFromRouter === 'polkadot') _network = Network.POLKADOT;
     else if (networkFromRouter === 'kusama') _network = Network.KUSAMA;
@@ -78,37 +73,9 @@ function App({ Component, pageProps }: AppProps) {
       );
       return;
     }
-
     networkStarted(_network);
     getExtensions();
-
-    const savedWallets = localStorage.getItem('connected_wallets');
-    const selectedWallet = localStorage.getItem(SELECTED_WALLET_KEY);
-    const selectedAddress = localStorage.getItem(SELECTED_ACCOUNT_KEY);
-
-    if (savedWallets) {
-      const wallets: string[] = JSON.parse(savedWallets);
-
-      Promise.all(
-        wallets.map((wallet) => {
-          walletAdded(wallet);
-          return walletAddedFx(wallet);
-        })
-      ).then((results) => {
-        const allAccounts = results.flat();
-        const uniqueAccounts = allAccounts.filter(
-          (acc, i, arr) => arr.findIndex((a) => a.address === acc.address) === i
-        );
-        loadedAccountsSet(uniqueAccounts);
-
-        if (selectedWallet && selectedAddress) {
-          const match = uniqueAccounts.find((a) => a.address === selectedAddress);
-          if (match) {
-            accountSelected(match.address);
-          }
-        }
-      });
-    }
+    restoreAllFromStorage();
   }, [networkFromRouter, router]);
 
   useEffect(() => {
@@ -117,6 +84,7 @@ function App({ Component, pageProps }: AppProps) {
   }, [connections, network, selectedAccount]);
 
   useEffect(() => {
+    if (loadedAccounts.length === 0) return;
     identityRequested({ accounts: loadedAccounts, network, connections });
   }, [connections, network, loadedAccounts]);
 
@@ -129,24 +97,19 @@ function App({ Component, pageProps }: AppProps) {
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
     const afterTimeslice = saleInfo.regionBegin - regionDuration;
     regionsRequested({ connections, network, afterTimeslice });
-  }, [network, saleInfo]);
+  }, [network, saleInfo, connections]);
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
       const nextUrl = new URL(window.location.origin + url);
       if (nextUrl.pathname === '/') return;
-
       nextUrl.searchParams.delete('dashboard');
       nextUrl.searchParams.delete('paraId');
-
-      const newUrl = `${nextUrl.pathname}${
-        nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''
-      }`;
+      const newUrl = `${nextUrl.pathname}${nextUrl.search ? '?' + nextUrl.searchParams.toString() : ''}`;
       if (newUrl !== window.location.pathname + window.location.search) {
         window.history.replaceState({}, '', newUrl);
       }
     };
-
     router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange);
@@ -154,6 +117,8 @@ function App({ Component, pageProps }: AppProps) {
   }, [router]);
 
   if (!hasMounted) return null;
+
+  const ready = walletInitDone;
 
   return (
     <div className={montserrat.className}>
@@ -169,21 +134,19 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
 
       <Header theme={theme} setTheme={setTheme} openRpcModal={() => setIsRpcModalOpen(true)} />
-      <Component {...pageProps} />
+
+      <div style={{ opacity: ready ? 1 : 0.001, transition: 'opacity .12s ease' }}>
+        <Component {...pageProps} />
+      </div>
+
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
 
-      {/* FLOATING BUTTONS: show only on desktop */}
       <div
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          zIndex: 9999,
-        }}
+        style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}
         className='floating-settings'
       >
         <div
@@ -231,12 +194,8 @@ function App({ Component, pageProps }: AppProps) {
               justifyContent: 'center',
               transition: 'transform 0.2s ease-in-out',
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.15)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
             <img src='/Settings.svg' alt='settings' width={24} height={24} />
           </button>
