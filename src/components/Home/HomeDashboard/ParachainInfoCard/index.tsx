@@ -79,9 +79,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     if (!saleInfo || !selected) return;
 
     const hasRenewalAt = (when: number) =>
-    Array.from(potentialRenewals.entries()).find(
-      ([key, _record]) => key?.when === when
-    );
+      Array.from(potentialRenewals.entries()).find(([key, _record]) => key?.when === when);
 
     const { regionBegin, regionEnd } = saleInfo ?? {};
     const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
@@ -89,7 +87,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
     const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
     const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
 
-    const requiresRenewal = !renewForNext && !! renewForCurrent;
+    const requiresRenewal = !renewForNext && !!renewForCurrent;
 
     setRenewalEntry(requiresRenewal ? renewForCurrent : null);
   }, [potentialRenewals, selected, saleInfo]);

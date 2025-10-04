@@ -34,8 +34,7 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
       const pname = meta?.name || `Parachain`;
       const logo = meta?.logo as string | undefined;
 
-      const getAssignmentId = (record: any) =>
-      record?.completion?.value?.[0]?.assignment?.value;
+      const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
 
       const hasRenewalAt = (when: number) =>
         Array.from(potentialRenewals.entries()).some(
@@ -48,10 +47,10 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
       const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
       const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
 
-      const requiresRenewal = !renewForNext && !! renewForCurrent;
+      const requiresRenewal = !renewForNext && !!renewForCurrent;
 
-      const renewalStatus = requiresRenewal ? "Needs renewal" : "Renewed";
-      const badgeColor = requiresRenewal ? "#dc2626" : "#0cc184";
+      const renewalStatus = requiresRenewal ? 'Needs renewal' : 'Renewed';
+      const badgeColor = requiresRenewal ? '#dc2626' : '#0cc184';
 
       return {
         key: `${item.id}`,

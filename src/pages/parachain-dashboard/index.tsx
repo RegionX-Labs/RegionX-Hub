@@ -122,13 +122,12 @@ const ParachainDashboard = () => {
     paraId: number
   ): { label: 'Renewed' | 'Needs Renewal'; color: string; key: 'renewed' | 'needs' } => {
     if (!saleInfo) return { label: 'Renewed', color: '#8899A8', key: 'renewed' };
-    const getAssignmentId = (record: any) =>
-    record?.completion?.value?.[0]?.assignment?.value;
+    const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
 
     const hasRenewalAt = (when: number) =>
-    Array.from(potentialRenewals.entries()).some(
-      ([key, record]) => getAssignmentId(record) === paraId && key?.when === when
-    );
+      Array.from(potentialRenewals.entries()).some(
+        ([key, record]) => getAssignmentId(record) === paraId && key?.when === when
+      );
 
     const { regionBegin, regionEnd } = saleInfo ?? {};
     const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
@@ -136,7 +135,7 @@ const ParachainDashboard = () => {
     const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
     const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
 
-    const requiresRenewal = !renewForNext && !! renewForCurrent;
+    const requiresRenewal = !renewForNext && !!renewForCurrent;
 
     if (requiresRenewal) return { label: 'Needs Renewal', color: '#dc2626', key: 'needs' };
     return { label: 'Renewed', color: '#15803d', key: 'renewed' };

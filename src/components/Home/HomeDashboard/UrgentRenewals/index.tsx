@@ -80,22 +80,20 @@ export default function UrgentRenewals({ view }: Props) {
         const meta = chainData[network]?.[paraId];
         const name = meta?.name ?? `Parachain ${paraId}`;
         const logo = meta?.logo as string | undefined;
- 
+
         const hasRenewalAt = (when: number) =>
-          Array.from(potentialRenewals.entries()).some(
-            ([key, _record]) => key?.when === when
-          );
-  
+          Array.from(potentialRenewals.entries()).some(([key, _record]) => key?.when === when);
+
         const { regionBegin, regionEnd } = saleInfo ?? {};
         const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
-  
+
         const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
         const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
-  
-        const requiresRenewal = !renewForNext && !! renewForCurrent;
-  
-        const renewalStatus = requiresRenewal ? "Needs renewal" : "Renewed";
-        const badgeColor = requiresRenewal ? "#dc2626" : "#0cc184";
+
+        const requiresRenewal = !renewForNext && !!renewForCurrent;
+
+        const renewalStatus = requiresRenewal ? 'Needs renewal' : 'Renewed';
+        const badgeColor = requiresRenewal ? '#dc2626' : '#0cc184';
 
         return {
           key: `${renewal[0].when}-${renewal[0].core}`,
