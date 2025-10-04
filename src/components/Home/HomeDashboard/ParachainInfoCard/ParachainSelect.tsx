@@ -34,26 +34,28 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
       const pname = meta?.name || `Parachain`;
       const logo = meta?.logo as string | undefined;
 
-      const match = Array.from(potentialRenewals.entries()).find(
-        ([key, record]) =>
-          (record.completion as any)?.value?.[0]?.assignment?.value === item.id &&
-          saleInfo?.regionBegin === key.when
-      );
-      const coreForLabel =
-        (match?.[0] as RenewalKey | undefined)?.core !== undefined
-          ? Number((match![0] as RenewalKey).core)
-          : undefined;
+      const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
 
-      const renewalStatus = match ? 'Needs Renewal' : 'Renewed';
-      const badgeColor = match ? '#dc2626' : '#0cc184';
+      const hasRenewalAt = (when: number) =>
+        Array.from(potentialRenewals.entries()).some(
+          ([key, record]) => getAssignmentId(record) === item.id && key?.when === when
+        );
+
+      const { regionBegin, regionEnd } = saleInfo ?? {};
+      const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
+
+      const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
+      const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
+
+      const requiresRenewal = !renewForNext && !!renewForCurrent;
+
+      const renewalStatus = requiresRenewal ? 'Needs renewal' : 'Renewed';
+      const badgeColor = requiresRenewal ? '#dc2626' : '#0cc184';
 
       return {
-        key: `${item.id}-${coreForLabel ?? 'current'}`,
+        key: `${item.id}`,
         value: item,
-        label:
-          coreForLabel !== undefined
-            ? `${pname} · ParaID ${item.id} · Core ${coreForLabel}`
-            : `${pname} · ParaID ${item.id}`,
+        label: `${pname} · ParaID ${item.id}`,
         icon: logo ? (
           <img
             src={logo}
