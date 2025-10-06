@@ -178,15 +178,14 @@ function App({ Component, pageProps }: AppProps) {
         onRpcChange={(url) => console.log('RPC changed to:', url)}
       />
 
-      {/* FLOATING BUTTONS: show only on desktop */}
       <div
+        className='floating-actions'
         style={{
           position: 'fixed',
-          bottom: 20,
+          bottom: 30,
           right: 20,
           zIndex: 9999,
         }}
-        className='floating-settings'
       >
         <div
           style={{
@@ -245,14 +244,40 @@ function App({ Component, pageProps }: AppProps) {
         </div>
       </div>
 
+      <div
+        className='powered-badge'
+        style={{
+          position: 'fixed',
+          bottom: 10,
+          right: 20,
+          zIndex: 9998,
+        }}
+      >
+        <img
+          src={theme === 'light' ? '/powered_black_pink.png' : '/powered_white_pink.png'}
+          alt='Powered by Polkadot'
+          style={{
+            width: 105,
+            height: 'auto',
+            marginTop: 0,
+            display: 'block',
+          }}
+        />
+      </div>
+
       <style jsx>{`
-        .floating-settings {
+        .floating-actions {
           display: none;
         }
         @media (min-width: 768px) {
-          .floating-settings {
+          .floating-actions {
             display: block !important;
           }
+        }
+
+        /* Badge is always visible */
+        .powered-badge {
+          display: block;
         }
       `}</style>
 
