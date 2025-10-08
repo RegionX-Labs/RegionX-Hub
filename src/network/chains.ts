@@ -60,6 +60,14 @@ export const chains = {
       { url: 'wss://sys.ibp.network/coretime-polkadot' },
     ],
   },
+  kusamaAH: {
+    chainId: '0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a' as ChainId,
+    name: 'Kusama AssetHub',
+    nodes: [
+      { url: 'wss://sys.ibp.network/asset-hub-kusama' },
+      { url: 'wss://kusama-asset-hub-rpc.polkadot.io' },
+    ],
+  },
   kusamaCoretime: {
     chainId: '0x638cd2b9af4b3bb54b8c1f0d22711fc89924ca93300f0caf25a580432b29d050' as ChainId,
     name: 'Kusama Coretime',

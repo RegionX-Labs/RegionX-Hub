@@ -40,12 +40,12 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
       ),
     },
     {
-      value: chains.kusama.chainId,
-      label: 'Kusama',
+      value: chains.kusamaAH.chainId,
+      label: 'Kusama AssetHub',
       icon: (
         <Image
           src={KusamaIcon.src}
-          alt='Kusama'
+          alt='Kusama AssetHub'
           className={styles.smallIcon}
           width={20}
           height={20}
@@ -149,6 +149,10 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
 
+  const isAhChain = (chainId: string): boolean => {
+    return chainId === chains[`${network}AH` as keyof typeof chains]?.chainId;
+  };
+
   const isRegionXChain = (chainId: string): boolean => {
     const capitalize = (str: string): string => {
       if (!str) return '';
@@ -162,7 +166,8 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
     return (
       n.value === chains[network as keyof typeof chains]?.chainId ||
       isCoretimeChain(n.value) ||
-      isRegionXChain(n.value)
+      isRegionXChain(n.value) ||
+      isAhChain(n.value)
     );
   });
 
