@@ -1,5 +1,6 @@
 import { Connection } from '@/api/connection';
 import {
+  AhMetadata,
   ChainId,
   CoretimeMetadata,
   RegionXMetadata,
@@ -21,6 +22,7 @@ export const getAccountData = createEvent<DataRequestPayload>();
 export type MultiChainAccountData = {
   account: string;
   relayChainData: AccountData;
+  ahChainData?: AccountData;
   coretimeChainData: AccountData;
   regionxChainData: AccountData | null;
 };
@@ -49,6 +51,7 @@ const getAccountDataFx = createEffect(
     const regionxConnection = networkChainIds.regionxChain
       ? connections[networkChainIds.regionxChain]
       : undefined;
+    const ahConnection = networkChainIds.ahChain ? connections[networkChainIds.ahChain] : undefined;
 
     if (
       !relayConnection ||
@@ -78,11 +81,22 @@ const getAccountDataFx = createEffect(
       _regionxData = await fetchAccountData(regionxConnection, metadata.regionxChain, account);
     }
 
+    let _ahData: AccountData | undefined = undefined;
+    if (
+      ahConnection &&
+      ahConnection.client &&
+      ahConnection.status === 'connected' &&
+      metadata.ahChain
+    ) {
+      _ahData = (await fetchAccountData(ahConnection, metadata.ahChain, account)) || undefined;
+    }
+
     if (!_relayData || !_coretimeData) return null;
 
     return {
       account,
       relayChainData: _relayData,
+      ahChainData: _ahData,
       coretimeChainData: _coretimeData,
       regionxChainData: _regionxData,
     };
@@ -91,7 +105,7 @@ const getAccountDataFx = createEffect(
 
 const fetchAccountData = async (
   connection: Connection,
-  metadata: RelayMetadata | CoretimeMetadata | RegionXMetadata,
+  metadata: RelayMetadata | AhMetadata | CoretimeMetadata | RegionXMetadata,
   account: string
 ): Promise<AccountData | null> => {
   const client = connection.client;

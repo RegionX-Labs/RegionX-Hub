@@ -37,6 +37,9 @@ export type * from './dot_people';
 import { default as pas_coretime } from './pas_coretime';
 export { pas_coretime };
 export type * from './pas_coretime';
+import { default as ksm_ah } from './ksm_ah';
+export { ksm_ah };
+export type * from './ksm_ah';
 export {
   DigestItem,
   Phase,

@@ -75,6 +75,12 @@
       "metadata": ".papi/metadata/pas_coretime.scale",
       "genesis": "0xc806038cc1d06766f23074ade7c5511326be41646deabc259970ff280c82a464",
       "codeHash": "0x8cbf402012a5e5c37fe1cd8279089b0667fb3ecc3d8d9ae1a90c8aab6291bca9"
+    },
+    "ksm_ah": {
+      "wsUrl": "wss://sys.ibp.network/asset-hub-kusama",
+      "metadata": ".papi/metadata/ksm_ah.scale",
+      "genesis": "0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a",
+      "codeHash": "0x5a0e93172b7d4f2030a3a31c2f1aff1e170a323373a48f7f2bc44328872616fc"
     }
   }
 }

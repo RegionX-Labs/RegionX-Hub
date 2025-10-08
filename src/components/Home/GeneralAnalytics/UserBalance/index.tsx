@@ -26,7 +26,13 @@ export default function UserBalance() {
   const networkKnown = typeof network === 'string' && network.trim().length > 0;
   const isKusama = networkKnown && network!.toLowerCase().includes('kusama');
 
+  let ahFree: string = '';
+  if (accountData.ahChainData) {
+    ahFree = toUnitFormatted(network, accountData.ahChainData.free);
+  }
+
   const relayFree = toUnitFormatted(network, accountData.relayChainData.free);
+
   const coretimeFree = toUnitFormatted(network, accountData.coretimeChainData.free);
   const regionxFree = toUnitFormatted(network, accountData.regionxChainData?.free ?? BigInt(0));
 
@@ -43,8 +49,8 @@ export default function UserBalance() {
 
       <div className={`${styles.balanceGrid} ${gridColsClass}`}>
         <div className={styles.balanceCard}>
-          <div className={styles.balanceLabel}>Relay Chain</div>
-          <div className={styles.balanceValue}>{relayFree}</div>
+          <div className={styles.balanceLabel}>{`${ahFree ? 'Asset Hub' : 'Relay Chain'}`}</div>
+          <div className={styles.balanceValue}>{ahFree ? ahFree : relayFree}</div>
         </div>
 
         <div className={styles.balanceCard}>

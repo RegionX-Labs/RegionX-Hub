@@ -24,6 +24,7 @@ const CrossChainAmountInput = ({ originChain, setAmount }: CrossChainAmountInput
     [chains.westend.chainId]: { symbol: 'WND', icon: WestendIcon },
     [chains.polkadotCoretime.chainId]: { symbol: 'DOT', icon: PolkadotIcon },
     [chains.kusamaCoretime.chainId]: { symbol: 'KSM', icon: KusamaIcon },
+    [chains.kusamaAH.chainId]: { symbol: 'KSM', icon: KusamaIcon },
     [chains.regionxKusama.chainId]: { symbol: 'KSM', icon: KusamaIcon },
     [chains.paseoCoretime.chainId]: { symbol: 'PAS', icon: PaseoIcon },
     [chains.westendCoretime.chainId]: { symbol: 'WND', icon: WestendIcon },
