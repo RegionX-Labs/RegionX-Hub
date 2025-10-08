@@ -49,6 +49,11 @@ const CrossChain = () => {
       ? toUnitFormatted(network, accountData.relayChainData.free)
       : '--';
 
+  const formattedAh =
+    accountData?.ahChainData?.free != null
+      ? toUnitFormatted(network, accountData.ahChainData.free)
+      : '--';
+
   const formattedCoretime =
     accountData?.coretimeChainData?.free != null
       ? toUnitFormatted(network, accountData.coretimeChainData.free)
@@ -79,6 +84,8 @@ const CrossChain = () => {
       await relayChainToRegionXChain();
     } else if (isRegionXChain(originChain) && isRelayChain(destinationChain)) {
       await regionXChainToRelayChain();
+    } else if (isAhChain(originChain) || isAhChain(destinationChain)) {
+      toast.error('Disabled right now');
     } else {
       toast.error('Transfer not supported');
     }
@@ -378,6 +385,9 @@ const CrossChain = () => {
   const isCoretimeChain = (chainId: string): boolean => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
+  const isAhChain = (chainId: string): boolean => {
+    return chainId === chains[`${network}AH` as keyof typeof chains]?.chainId;
+  };
   const isRegionXChain = (chainId: string): boolean => {
     const capitalize = (str: string): string => {
       if (!str) return '';
@@ -451,8 +461,12 @@ const CrossChain = () => {
       {selectedAccount && accountData && (
         <div className={styles.balanceBox}>
           <div className={styles.balanceItem}>
-            <span className={styles.label}>Relay Chain Balance</span>
-            <span className={styles.value}>{formattedRelay}</span>
+            <span className={styles.label}>
+              {accountData.ahChainData ? 'Asset Hub Balance' : 'Relay Chain Balance'}
+            </span>
+            <span className={styles.value}>
+              {accountData.ahChainData ? formattedAh : formattedRelay}
+            </span>
           </div>
           <div className={styles.balanceItem}>
             <span className={styles.label}>Coretime Chain Balance</span>
