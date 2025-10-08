@@ -51,9 +51,7 @@ const getAccountDataFx = createEffect(
     const regionxConnection = networkChainIds.regionxChain
       ? connections[networkChainIds.regionxChain]
       : undefined;
-    const ahConnection = networkChainIds.ahChain
-      ? connections[networkChainIds.ahChain]
-      : undefined;
+    const ahConnection = networkChainIds.ahChain ? connections[networkChainIds.ahChain] : undefined;
 
     if (
       !relayConnection ||
@@ -90,7 +88,7 @@ const getAccountDataFx = createEffect(
       ahConnection.status === 'connected' &&
       metadata.ahChain
     ) {
-      _ahData = await fetchAccountData(ahConnection, metadata.ahChain, account) || undefined;
+      _ahData = (await fetchAccountData(ahConnection, metadata.ahChain, account)) || undefined;
     }
 
     if (!_relayData || !_coretimeData) return null;

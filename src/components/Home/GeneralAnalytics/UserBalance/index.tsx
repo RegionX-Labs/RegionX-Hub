@@ -27,7 +27,7 @@ export default function UserBalance() {
   const isKusama = networkKnown && network!.toLowerCase().includes('kusama');
 
   let ahFree: string = '';
-  if(accountData.ahChainData) {
+  if (accountData.ahChainData) {
     ahFree = toUnitFormatted(network, accountData.ahChainData.free);
   }
 
