@@ -75,22 +75,27 @@ export default function UrgentRenewals({ view }: Props) {
       potentialRenewals.entries()
     )
       .filter((renewal) => renewal[0].when === saleInfo.regionBegin)
-      .map((renewal) => {
+      .flatMap((renewal) => {
         const paraId = (renewal[1].completion as any).value[0].assignment.value as number;
         const meta = chainData[network]?.[paraId];
         const name = meta?.name ?? `Parachain ${paraId}`;
         const logo = meta?.logo as string | undefined;
 
+        const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
+
         const hasRenewalAt = (when: number) =>
-          Array.from(potentialRenewals.entries()).some(([key, _record]) => key?.when === when);
+          Array.from(potentialRenewals.entries()).some(
+            ([key, record]) => key?.when === when && getAssignmentId(record) === paraId
+          );
 
         const { regionBegin, regionEnd } = saleInfo ?? {};
-        const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
 
-        const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
-        const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
+        const renewForNext = hasRenewalAt(regionEnd);
+        const renewForCurrent = hasRenewalAt(regionBegin);
 
-        const requiresRenewal = !renewForNext && !!renewForCurrent;
+        const requiresRenewal = !renewForNext && renewForCurrent;
+
+        if (!requiresRenewal) return [];
 
         const renewalStatus = requiresRenewal ? 'Needs renewal' : 'Renewed';
         const badgeColor = requiresRenewal ? '#dc2626' : '#0cc184';

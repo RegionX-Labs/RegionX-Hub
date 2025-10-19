@@ -78,16 +78,19 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   useEffect(() => {
     if (!saleInfo || !selected) return;
 
+    const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
+
     const hasRenewalAt = (when: number) =>
-      Array.from(potentialRenewals.entries()).find(([key, _record]) => key?.when === when);
+      Array.from(potentialRenewals.entries()).find(
+        ([key, record]) => key?.when === when && getAssignmentId(record) === paraId
+      );
 
     const { regionBegin, regionEnd } = saleInfo ?? {};
-    const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
 
-    const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
-    const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
+    const renewForNext = hasRenewalAt(regionEnd);
+    const renewForCurrent = hasRenewalAt(regionBegin);
 
-    const requiresRenewal = !renewForNext && !!renewForCurrent;
+    const requiresRenewal = !renewForNext && renewForCurrent;
 
     setRenewalEntry(requiresRenewal ? renewForCurrent : null);
   }, [potentialRenewals, selected, saleInfo]);
