@@ -130,10 +130,9 @@ const ParachainDashboard = () => {
       );
 
     const { regionBegin, regionEnd } = saleInfo ?? {};
-    const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
 
-    const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
-    const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
+    const renewForNext = hasRenewalAt(regionEnd);
+    const renewForCurrent = hasRenewalAt(regionBegin);
 
     const requiresRenewal = !renewForNext && !!renewForCurrent;
 

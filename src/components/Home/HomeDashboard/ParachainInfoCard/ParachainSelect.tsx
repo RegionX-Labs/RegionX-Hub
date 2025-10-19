@@ -42,12 +42,11 @@ export const ParachainSelect = ({ selected, setSelected, onSelectParaId }: Props
         );
 
       const { regionBegin, regionEnd } = saleInfo ?? {};
-      const regionDuration = (regionEnd ?? 0) - (regionBegin ?? 0);
 
-      const renewForNext = regionBegin != null && hasRenewalAt(regionBegin);
-      const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin - regionDuration);
+      const renewForNext = regionEnd != null && hasRenewalAt(regionEnd);
+      const renewForCurrent = regionBegin != null && hasRenewalAt(regionBegin);
 
-      const requiresRenewal = !renewForNext && !!renewForCurrent;
+      const requiresRenewal = !renewForNext && renewForCurrent;
 
       const renewalStatus = requiresRenewal ? 'Needs renewal' : 'Renewed';
       const badgeColor = requiresRenewal ? '#dc2626' : '#0cc184';
