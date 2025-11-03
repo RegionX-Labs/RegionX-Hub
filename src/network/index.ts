@@ -15,6 +15,7 @@ import {
   wnd_people,
   pas_people,
   ksm_ah,
+  dot_ah,
 } from '@polkadot-api/descriptors';
 
 export type NetworkChainIds = {
@@ -26,7 +27,7 @@ export type NetworkChainIds = {
 };
 
 export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd;
-export type AhMetadata = typeof ksm_ah;
+export type AhMetadata = typeof ksm_ah | typeof dot_ah;
 export type CoretimeMetadata =
   | typeof dot_coretime
   | typeof ksm_coretime
@@ -57,6 +58,7 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
       return {
         relayChain: chains.polkadot.chainId,
         coretimeChain: chains.polkadotCoretime.chainId,
+        ahChain: chains.polkadotAH.chainId,
         regionxChain: null,
         peopleChain: chains.polkadotPeople.chainId,
       };
@@ -109,6 +111,7 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: dot,
         coretimeChain: dot_coretime,
+        ahChain: dot_ah,
         regionxChain: null,
         peopleChain: dot_people,
       };
