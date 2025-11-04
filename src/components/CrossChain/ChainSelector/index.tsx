@@ -27,12 +27,12 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
 
   const networks = [
     {
-      value: chains.polkadot.chainId,
-      label: 'Polkadot',
+      value: chains.polkadotAH.chainId,
+      label: 'Polkadot AssetHub',
       icon: (
         <Image
           src={PolkadotIcon.src}
-          alt='Polkadot'
+          alt='Polkadot AssetHub'
           className={styles.smallIcon}
           width={20}
           height={20}
