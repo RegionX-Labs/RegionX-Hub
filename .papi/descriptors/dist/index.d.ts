@@ -40,6 +40,9 @@ export type * from './pas_coretime';
 import { default as ksm_ah } from './ksm_ah';
 export { ksm_ah };
 export type * from './ksm_ah';
+import { default as dot_ah } from './dot_ah';
+export { dot_ah };
+export type * from './dot_ah';
 export {
   DigestItem,
   Phase,

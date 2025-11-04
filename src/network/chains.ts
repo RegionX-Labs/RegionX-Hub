@@ -52,6 +52,14 @@ export const chains = {
       { url: 'wss://westend-rpc.polkadot.io' },
     ],
   },
+  polkadotAH: {
+    chainId: '0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f' as ChainId,
+    name: 'Polkadot AssetHub',
+    nodes: [
+      { url: 'wss://sys.ibp.network/asset-hub-polkadot' },
+      { url: 'wss://statemint.api.onfinality.io/public-wst' },
+    ],
+  },
   polkadotCoretime: {
     chainId: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4' as ChainId,
     name: 'Polkadot Coretime',
