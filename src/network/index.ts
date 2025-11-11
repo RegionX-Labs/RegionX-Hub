@@ -67,7 +67,7 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
         relayChain: chains.kusama.chainId,
         coretimeChain: chains.kusamaCoretime.chainId,
         ahChain: chains.kusamaAH.chainId,
-        regionxChain: chains.regionxKusama.chainId,
+        regionxChain: null,
         peopleChain: chains.peopleKusama.chainId,
       };
     case Network.PASEO:
