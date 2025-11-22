@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import styles from './UrgentRenewals.module.scss';
@@ -36,74 +36,134 @@ const formatDate = (d: Date) =>
   });
 
 export default function UrgentRenewals({ view }: Props) {
-  const accountData = useUnit($accountData);
-  const network = useUnit($network);
-  const connections = useUnit($connections);
-  const selectedAccount = useUnit($selectedAccount);
-  const saleInfo = useUnit($latestSaleInfo);
-  const phaseEndpoints = useUnit($phaseEndpoints);
-  const potentialRenewals = useUnit($potentialRenewals);
+  const [
+    accountData,
+    network,
+    connections,
+    selectedAccount,
+    saleInfo,
+    phaseEndpoints,
+    potentialRenewals,
+  ] = useUnit([
+    $accountData,
+    $network,
+    $connections,
+    $selectedAccount,
+    $latestSaleInfo,
+    $phaseEndpoints,
+    $potentialRenewals,
+  ]);
 
   const [selected, setSelected] = useState<[RenewalKey, RenewalRecord] | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<string>('-');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
-  const [options, setOptions] = useState<SelectOption<[RenewalKey, RenewalRecord]>[]>([]);
   const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
-    potentialRenewalsRequested({ network, connections });
-    void refreshAutoRenewals();
-  }, [network, connections]);
+  // ---- helpers ----
 
-  const refreshAutoRenewals = async () => {
+  const refreshAutoRenewals = useCallback(async () => {
     try {
       const list = await fetchAutoRenewals(network, connections);
       const set = new Set<number>(list.map((e: any) => Number(e.task)));
       setAutoRenewSet(set);
-    } catch {}
+    } catch {
+      // swallow – we just don't show auto-renew info
+    }
+  }, [network, connections]);
+
+  const getParaIdFromRecord = (record: RenewalRecord | undefined | null): number | null => {
+    if (!record) return null;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return (record.completion as any)?.value?.[0]?.assignment?.value ?? null;
+    } catch {
+      return null;
+    }
   };
 
-  useEffect(() => {
-    if (!isAutoRenewOpen) void refreshAutoRenewals();
-  }, [isAutoRenewOpen]);
+  const soldOutMessage =
+    'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.';
 
-  useEffect(() => {
-    if (!saleInfo) return;
+  const ensureCanRenew = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return false;
+    }
+    if (!saleInfo) {
+      toast.error('Sale info unavailable');
+      return false;
+    }
+    if (allCoresSold) {
+      toast.error(soldOutMessage);
+      return false;
+    }
+    return true;
+  };
 
-    const _options: SelectOption<[RenewalKey, RenewalRecord]>[] = Array.from(
-      potentialRenewals.entries()
-    )
-      .filter((renewal) => renewal[0].when === saleInfo.regionBegin)
-      .flatMap((renewal) => {
-        const paraId = (renewal[1].completion as any).value[0].assignment.value as number;
+  // ---- data derived from stores ----
+
+  const interludeEndDate = useMemo(() => {
+    if (!phaseEndpoints?.interlude?.end) return null;
+    return new Date(phaseEndpoints.interlude.end);
+  }, [phaseEndpoints]);
+
+  const interludeEnded = useMemo(() => {
+    if (!phaseEndpoints?.interlude?.end) return false;
+    return Date.now() >= phaseEndpoints.interlude.end;
+  }, [phaseEndpoints]);
+
+  const allCoresSold = useMemo(
+    () =>
+      (saleInfo?.coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0),
+    [saleInfo]
+  );
+
+  const bannerMsg = useMemo(() => {
+    if (allCoresSold) return soldOutMessage;
+    if (interludeEnded)
+      return 'The sale is ongoing; you won’t be able to renew if all cores are sold.';
+    return null;
+  }, [allCoresSold, interludeEnded]);
+
+  const options: SelectOption<[RenewalKey, RenewalRecord]>[] = useMemo(() => {
+    if (!saleInfo) return [];
+
+    const { regionBegin, regionEnd } = saleInfo;
+    if (!regionBegin || !regionEnd) return [];
+
+    const entries = Array.from(potentialRenewals.entries());
+
+    const hasRenewalAt = (when: number, paraId: number) =>
+      entries.some(([key, record]) => {
+        if (key.when !== when) return false;
+        const recParaId = getParaIdFromRecord(record);
+        return recParaId === paraId;
+      });
+
+    return entries
+      .filter(([key]) => key.when === regionBegin)
+      .flatMap(([key, record]) => {
+        const paraId = getParaIdFromRecord(record);
+        if (typeof paraId !== 'number') return [];
+
         const meta = chainData[network]?.[paraId];
         const name = meta?.name ?? `Parachain ${paraId}`;
         const logo = meta?.logo as string | undefined;
 
-        const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
-
-        const hasRenewalAt = (when: number) =>
-          Array.from(potentialRenewals.entries()).some(
-            ([key, record]) => key?.when === when && getAssignmentId(record) === paraId
-          );
-
-        const { regionBegin, regionEnd } = saleInfo ?? {};
-
-        const renewForNext = hasRenewalAt(regionEnd);
-        const renewForCurrent = hasRenewalAt(regionBegin);
-
+        const renewForNext = hasRenewalAt(regionEnd, paraId);
+        const renewForCurrent = hasRenewalAt(regionBegin, paraId);
         const requiresRenewal = !renewForNext && renewForCurrent;
 
         if (!requiresRenewal) return [];
 
-        const renewalStatus = requiresRenewal ? 'Needs renewal' : 'Renewed';
-        const badgeColor = requiresRenewal ? '#dc2626' : '#0cc184';
+        const renewalStatus = 'Needs renewal';
+        const badgeColor = '#dc2626';
 
         return {
-          key: `${renewal[0].when}-${renewal[0].core}`,
-          label: ` ${name} | Core ${renewal[0].core} `,
-          value: renewal,
+          key: `${key.when}-${key.core}`,
+          label: ` ${name} | Core ${key.core} `,
+          value: [key, record] as [RenewalKey, RenewalRecord],
           icon: logo ? (
             <img
               style={{ width: 28, height: 28, borderRadius: '100%', marginRight: 8 }}
@@ -128,72 +188,76 @@ export default function UrgentRenewals({ view }: Props) {
         };
       })
       .sort((a, b) => a.key.localeCompare(b.key));
-
-    setOptions(_options);
-    if (_options[0]) setSelected(_options[0].value);
-    else setSelected(null);
   }, [saleInfo, potentialRenewals, network]);
 
+  const hasRenewables = options.length > 0;
+
+  const paraId = useMemo(() => {
+    return selected?.[1] ? getParaIdFromRecord(selected[1]) : null;
+  }, [selected]);
+
+  const autoRenewEnabled = useMemo(
+    () => (typeof paraId === 'number' ? autoRenewSet.has(paraId) : false),
+    [autoRenewSet, paraId]
+  );
+
+  const disableRenew = !selectedAccount || !selected || allCoresSold;
+  const disableAutoRenew = !selectedAccount || typeof paraId !== 'number';
+
+  // ---- effects ----
+
+  // initial fetch
+  useEffect(() => {
+    potentialRenewalsRequested({ network, connections });
+    void refreshAutoRenewals();
+  }, [network, connections, refreshAutoRenewals]);
+
+  // refresh auto-renew when the modal closes
+  useEffect(() => {
+    if (!isAutoRenewOpen) void refreshAutoRenewals();
+  }, [isAutoRenewOpen, refreshAutoRenewals]);
+
+  // default selected option when options list changes
+  useEffect(() => {
+    if (options[0]) setSelected(options[0].value);
+    else setSelected(null);
+  }, [options]);
+
+  // deadline for selected core
   useEffect(() => {
     (async () => {
       if (!selected) {
         setSelectedDeadline('-');
         return;
       }
+
       const deadline = await timesliceToTimestamp(selected[0].when, network, connections);
       if (!deadline) {
         setSelectedDeadline('-');
         return;
       }
-      const date = typeof deadline === 'bigint' ? new Date(Number(deadline)) : (deadline as Date);
+
+      const date =
+        typeof deadline === 'bigint' ? new Date(Number(deadline)) : (deadline as Date);
+
       setSelectedDeadline(formatDate(date));
     })();
   }, [selected, network, connections]);
 
-  const interludeEndDate = useMemo(() => {
-    if (!phaseEndpoints?.interlude?.end) return null;
-    return new Date(phaseEndpoints.interlude.end);
-  }, [phaseEndpoints]);
-
-  const interludeEnded = useMemo(() => {
-    if (!phaseEndpoints?.interlude?.end) return false;
-    return Date.now() >= phaseEndpoints.interlude.end;
-  }, [phaseEndpoints]);
-
-  const allCoresSold = (saleInfo?.coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0);
-
-  const bannerMsg = useMemo(() => {
-    if (allCoresSold)
-      return 'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.';
-    if (interludeEnded)
-      return 'The sale is ongoing; you won’t be able to renew if all cores are sold.';
-    return null;
-  }, [allCoresSold, interludeEnded]);
+  // ---- actions ----
 
   const openModal = () => {
-    if (!selectedAccount) return toast.error('Account not selected');
-    if (allCoresSold)
-      return toast.error(
-        'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.'
-      );
+    if (!ensureCanRenew()) return;
     setIsModalOpen(true);
   };
 
-  const onModalConfirm = async () => {
-    await renew();
-    setIsModalOpen(false);
-  };
-
-  const renew = async () => {
+  const renew = useCallback(async () => {
     if (!selected) return toast.error('Core not selected');
-    if (!selectedAccount) return toast.error('Account not selected');
-    if (allCoresSold)
-      return toast.error(
-        'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.'
-      );
+    if (!ensureCanRenew()) return;
 
     const networkChainIds = getNetworkChainIds(network);
     if (!networkChainIds) return toast.error('Unknown network');
+
     const connection = connections[networkChainIds.coretimeChain];
     if (!connection || !connection.client || connection.status !== 'connected') {
       return toast.error('Failed to connect to the API');
@@ -208,15 +272,16 @@ export default function UrgentRenewals({ view }: Props) {
     });
 
     const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
+
+    tx.signSubmitAndWatch(selectedAccount!.polkadotSigner).subscribe(
+      (ev: any) => {
         toast.loading(
           <span>
             Transaction submitted:&nbsp;
             <a
               href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
               style={{ textDecoration: 'underline', color: '#60a5fa' }}
             >
               view transaction
@@ -224,12 +289,13 @@ export default function UrgentRenewals({ view }: Props) {
           </span>,
           { id: toastId }
         );
+
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) {
             toast.error('Transaction failed', { id: toastId });
           } else {
             toast.success('Transaction succeeded!', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
+            getAccountData({ account: selectedAccount!.address, connections, network });
           }
         }
       },
@@ -237,17 +303,19 @@ export default function UrgentRenewals({ view }: Props) {
         toast.error('Transaction cancelled', { id: toastId });
       }
     );
+  }, [selected, ensureCanRenew, network, connections, selectedAccount]);
+
+  const onModalConfirm = async () => {
+    await renew();
+    setIsModalOpen(false);
   };
 
-  const disableRenew = !selectedAccount || !selected || allCoresSold;
-  const hasRenewables = options.length > 0;
+  const handleOpenAutoRenew = () => {
+    if (disableAutoRenew) return;
+    setIsAutoRenewOpen(true);
+  };
 
-  const paraId = selected?.[1] ? (selected[1].completion as any).value[0].assignment.value : null;
-  const autoRenewEnabled = useMemo(
-    () => (typeof paraId === 'number' ? autoRenewSet.has(Number(paraId)) : false),
-    [autoRenewSet, paraId]
-  );
-  const disableAutoRenew = !selectedAccount || typeof paraId !== 'number';
+  // ---- render ----
 
   return (
     <div
@@ -264,9 +332,9 @@ export default function UrgentRenewals({ view }: Props) {
               options={options}
               selectedValue={selected}
               onChange={setSelected}
-              variant='secondary'
+              variant="secondary"
               searchable
-              searchPlaceholder='Search parachain'
+              searchPlaceholder="Search parachain"
             />
           ) : (
             <p className={styles.noDataMessage}>
@@ -326,10 +394,7 @@ export default function UrgentRenewals({ view }: Props) {
                 ? `${styles.autoRenewButton} ${styles.autoRenewButtonEnabled}`
                 : styles.autoRenewButton
             }
-            onClick={() => {
-              if (disableAutoRenew) return;
-              setIsAutoRenewOpen(true);
-            }}
+            onClick={handleOpenAutoRenew}
             disabled={disableAutoRenew}
             title={
               disableAutoRenew
@@ -357,7 +422,7 @@ export default function UrgentRenewals({ view }: Props) {
         <AutoRenewalModal
           isOpen={isAutoRenewOpen}
           onClose={() => setIsAutoRenewOpen(false)}
-          paraId={paraId}
+          paraId={paraId ?? 0}
           coreId={selected[0].core}
         />
       )}
