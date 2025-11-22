@@ -12,6 +12,7 @@ import AutoRenewalModal from '@/components/AutoRenewalModal';
 import TransactionModal from '@/components/TransactionModal';
 import { ParaState } from '@/components/ParaStateCard';
 import { getParaCoreId } from '@/parachains';
+import { renew } from '@/utils/transactions/renew';
 
 interface Props {
   paraId?: number;
@@ -53,47 +54,7 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
     if (!renewalEntry || !selectedAccount) return;
     const [key] = renewalEntry;
 
-    const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) return toast.error('Unknown network');
-
-    const connection = connections[networkChainIds.coretimeChain];
-    const client = connection?.client;
-    const metadata = getNetworkMetadata(network);
-    if (!client || !metadata) return toast.error('API error');
-
-    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({ core: key.core });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev: any) => {
-        toast.loading(
-          <span>
-            Transaction submitted:&nbsp;
-            <a
-              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ textDecoration: 'underline', color: '#60a5fa' }}
-            >
-              view transaction
-            </a>
-          </span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (ev.ok) {
-            toast.success('Renewal successful', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
-          } else {
-            toast.error('Transaction failed', { id: toastId });
-          }
-        }
-      },
-      () => {
-        toast.error('Transaction error', { id: toastId });
-      }
-    );
-
+    await renew(network, connections, selectedAccount, key.core);
     setIsModalOpen(false);
   };
 
