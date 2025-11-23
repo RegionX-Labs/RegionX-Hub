@@ -34,6 +34,7 @@ export default function UrgentRenewals({ view }: Props) {
     interludeEndDate,
     bannerMsg,
     autoRenewEnabled,
+    allCoresSold,
     disableRenew,
     disableAutoRenew,
     paraId,
@@ -98,7 +99,7 @@ export default function UrgentRenewals({ view }: Props) {
         {bannerMsg && (
           <div
             className={`${styles.notice} ${
-              disableRenew && !hasRenewables ? styles.noticeError : styles.noticeWarning
+              allCoresSold ? styles.noticeError : styles.noticeWarning
             }`}
           >
             {bannerMsg}
@@ -111,7 +112,7 @@ export default function UrgentRenewals({ view }: Props) {
           className={styles.renewButton}
           onClick={openModal}
           disabled={disableRenew}
-          title={disableRenew ? 'All cores are sold or not selectable' : undefined}
+          title={disableRenew && allCoresSold ? 'All cores are sold' : undefined}
         >
           Renew Now
         </button>

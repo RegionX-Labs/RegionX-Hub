@@ -244,6 +244,7 @@ export function useUrgentRenewals() {
     selected,
     setSelected,
     selectedDeadline,
+    allCoresSold,
     hasRenewables,
     interludeEnded,
     interludeEndDate,
