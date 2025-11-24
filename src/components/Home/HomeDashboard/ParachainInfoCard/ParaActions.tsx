@@ -12,6 +12,7 @@ import { ParaState } from '@/components/ParaStateCard';
 import { getParaCoreId } from '@/parachains';
 import { renew } from '@/utils/transactions/renew';
 import { $latestSaleInfo, fetchCoresSold } from '@/coretime/saleInfo';
+import { SOLD_OUT_MESSAGE } from '@/utils';
 
 interface Props {
   paraId?: number;
@@ -47,7 +48,7 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
     if (!renewalEntry) return toast.error('No renewal available');
     if (!saleInfo) return toast.error('Sale info not available');
     if (!coresSold) return toast.error('Failed to fetch availability of cores');
-    if (coresSold >= saleInfo.coresOffered) return toast.error('No more cores remaining');
+    if (coresSold >= saleInfo.coresOffered) return toast.error(SOLD_OUT_MESSAGE);
     setIsModalOpen(true);
   };
 

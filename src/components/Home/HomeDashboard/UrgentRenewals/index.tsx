@@ -111,7 +111,6 @@ export default function UrgentRenewals({ view }: Props) {
         <button
           className={styles.renewButton}
           onClick={openModal}
-          disabled={disableRenew}
           title={disableRenew && allCoresSold ? 'All cores are sold' : undefined}
         >
           Renew Now

@@ -10,7 +10,7 @@ import {
 } from '@/coretime/renewals';
 import { $latestSaleInfo, $phaseEndpoints, fetchCoresSold } from '@/coretime/saleInfo';
 import { SelectOption } from '@/types/type';
-import { timesliceToTimestamp } from '@/utils';
+import { SOLD_OUT_MESSAGE, timesliceToTimestamp } from '@/utils';
 import { renew } from '@/utils/transactions/renew';
 import { $selectedAccount } from '@/wallet';
 import { formatDate } from '@polkadot/util';
@@ -44,9 +44,6 @@ export function useUrgentRenewals() {
   const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
   const [coresSold, setCoresSold] = useState<number | null>(null);
 
-  const soldOutMessage =
-    'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.';
-
   const refreshAutoRenewals = useCallback(async () => {
     try {
       const list = await fetchAutoRenewals(network, connections);
@@ -67,7 +64,10 @@ export function useUrgentRenewals() {
     }
   };
 
-  const allCoresSold = useMemo(() => (coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0), [saleInfo]);
+  const allCoresSold = useMemo(
+    () => (coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0),
+    [coresSold, saleInfo]
+  );
 
   const ensureCanRenew = () => {
     if (!selectedAccount) {
@@ -79,7 +79,7 @@ export function useUrgentRenewals() {
       return false;
     }
     if (allCoresSold) {
-      toast.error(soldOutMessage);
+      toast.error(SOLD_OUT_MESSAGE);
       return false;
     }
     return true;
@@ -96,7 +96,7 @@ export function useUrgentRenewals() {
   }, [phaseEndpoints]);
 
   const bannerMsg = useMemo(() => {
-    if (allCoresSold) return soldOutMessage;
+    if (allCoresSold) return SOLD_OUT_MESSAGE;
     if (interludeEnded)
       return 'The sale is ongoing; you won’t be able to renew if all cores are sold.';
     return null;
@@ -182,10 +182,10 @@ export function useUrgentRenewals() {
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
     void refreshAutoRenewals();
-    async () => {
+    (async () => {
       const coresSold = await fetchCoresSold(network, connections);
       setCoresSold(coresSold);
-    };
+    })();
   }, [network, connections, refreshAutoRenewals]);
 
   // refresh auto-renew when the modal closes
@@ -220,6 +220,7 @@ export function useUrgentRenewals() {
   }, [selected, network, connections]);
 
   const openModal = () => {
+    console.log(allCoresSold);
     if (!ensureCanRenew()) return;
     setIsModalOpen(true);
   };

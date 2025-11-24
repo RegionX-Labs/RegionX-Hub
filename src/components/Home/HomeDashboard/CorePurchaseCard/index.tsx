@@ -5,7 +5,7 @@ import { useUnit } from 'effector-react';
 import { $latestSaleInfo, fetchCoresSold, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
 import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { $connections, $network } from '@/api/connection';
-import { getCorePriceAt, toUnitFormatted } from '@/utils';
+import { getCorePriceAt, SOLD_OUT_MESSAGE, toUnitFormatted } from '@/utils';
 import styles from './CorePurchaseCard.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import toast, { Toaster } from 'react-hot-toast';
@@ -86,7 +86,7 @@ export default function CorePurchaseCard({ view }: Props) {
       return false;
     }
     if (coresRemaining === 0) {
-      toast.error('No more cores remaining');
+      toast.error(SOLD_OUT_MESSAGE);
       return false;
     }
 
