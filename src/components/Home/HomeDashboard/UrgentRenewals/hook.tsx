@@ -8,7 +8,7 @@ import {
   RenewalKey,
   RenewalRecord,
 } from '@/coretime/renewals';
-import { $latestSaleInfo, $phaseEndpoints } from '@/coretime/saleInfo';
+import { $latestSaleInfo, $phaseEndpoints, fetchCoresSold } from '@/coretime/saleInfo';
 import { SelectOption } from '@/types/type';
 import { timesliceToTimestamp } from '@/utils';
 import { renew } from '@/utils/transactions/renew';
@@ -42,6 +42,7 @@ export function useUrgentRenewals() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
   const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
+  const [coresSold, setCoresSold] = useState<number | null>(null);
 
   const soldOutMessage =
     'Sold out—no further purchases or renewals this sale cycle. Check the secondary market for potential purchases.';
@@ -67,7 +68,7 @@ export function useUrgentRenewals() {
   };
 
   const allCoresSold = useMemo(
-    () => (saleInfo?.coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0),
+    () => (coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0),
     [saleInfo]
   );
 
@@ -184,6 +185,10 @@ export function useUrgentRenewals() {
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
     void refreshAutoRenewals();
+    (async () => {
+      const coresSold = await fetchCoresSold(network, connections);
+      setCoresSold(coresSold);
+    });
   }, [network, connections, refreshAutoRenewals]);
 
   // refresh auto-renew when the modal closes

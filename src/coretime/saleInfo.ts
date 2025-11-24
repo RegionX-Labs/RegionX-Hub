@@ -57,7 +57,6 @@ export type SaleInfo = {
   idealCoresSold: number;
   coresOffered: number;
   startPrice: string;
-  coresSold: number | undefined;
 };
 
 export const latestSaleRequested = createEvent<Network>();

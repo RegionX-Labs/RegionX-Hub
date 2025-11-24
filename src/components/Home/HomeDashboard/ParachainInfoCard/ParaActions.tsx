@@ -4,15 +4,14 @@ import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
 import { useEffect, useMemo, useState } from 'react';
 import { RenewalKey, RenewalRecord } from '@/coretime/renewals';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
-import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
-import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
+import { $accountData, MultiChainAccountData } from '@/account';
 import AutoRenewalModal from '@/components/AutoRenewalModal';
 import TransactionModal from '@/components/TransactionModal';
 import { ParaState } from '@/components/ParaStateCard';
 import { getParaCoreId } from '@/parachains';
 import { renew } from '@/utils/transactions/renew';
+import { $latestSaleInfo, fetchCoresSold } from '@/coretime/saleInfo';
 
 interface Props {
   paraId?: number;
@@ -26,22 +25,29 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
   const accountData = useUnit($accountData);
   const network = useUnit($network);
   const connections = useUnit($connections);
+  const saleInfo = useUnit($latestSaleInfo);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
   const [paraCore, setParaCore] = useState<number | null>(null);
+  const [coresSold, setCoresSold] = useState<number | null>(null);
 
   useEffect(() => {
     if (!paraId) return;
     (async () => {
       const core = await getParaCoreId(paraId, connections, network);
+      const coresSold = await fetchCoresSold(network, connections);
       setParaCore(core);
+      setCoresSold(coresSold);
     })();
   }, [paraId, network, connections]);
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
     if (!renewalEntry) return toast.error('No renewal available');
+    if (!saleInfo) return toast.error('Sale info not available');
+    if (!coresSold) return toast.error('Failed to fetch availability of cores');
+    if (coresSold >= saleInfo.coresOffered) return toast.error('No more cores remaining');
     setIsModalOpen(true);
   };
 

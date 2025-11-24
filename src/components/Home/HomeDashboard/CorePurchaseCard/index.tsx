@@ -30,7 +30,7 @@ export default function CorePurchaseCard({ view }: Props) {
   const isExtended = view === 'Managing Existing Project';
 
   const [corePrice, setCorePrice] = useState<number | null>(null);
-  const [coresSold, setCoresSold] = useState<number>(0);
+  const [coresSold, setCoresSold] = useState<number | null>(null);
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,17 +88,36 @@ export default function CorePurchaseCard({ view }: Props) {
     })();
   }, [network, saleInfo, connections]);
 
+  const ensureCanPurchase = () => {
+    if (!selectedAccount) {
+      toast.error('Account not selected');
+      return false;
+    }
+    if (currentPhase === SalePhase.Interlude) {
+      toast.error('Cannot purchase during interlude phase');
+      return false;
+    }
+    if (coresRemaining === undefined) {
+      toast.error('Failed to fetch availability of cores');
+      return false;
+    }
+    if (coresRemaining === 0) {
+      toast.error('No more cores remaining');
+      return false;
+    }
+
+    return true;
+  }
+
   const coresOffered = saleInfo?.coresOffered ?? 0;
-  const coresRemaining = coresOffered - coresSold;
+
+  const coresRemaining = coresSold ? coresOffered - coresSold : undefined;
 
   const openModal = () => {
-    if (!selectedAccount) return toast.error('Account not selected');
-    if (currentPhase === SalePhase.Interlude)
-      return toast.error('Cannot purchase during interlude');
-    if (coresRemaining === 0) return toast.error('No more cores remaining');
+    if(!ensureCanPurchase()) return;
 
     if (buyMultiple) {
-      if (numCores === null || numCores <= 0 || numCores > coresRemaining) {
+      if (numCores === null || numCores <= 0 || numCores > (coresRemaining ?? 0)) {
         return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
       }
     }
@@ -127,7 +146,7 @@ export default function CorePurchaseCard({ view }: Props) {
 
     const api = connection.client.getTypedApi(metadata.coretimeChain);
 
-    const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining) : 1;
+    const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining ?? 1) : 1;
 
     const calls = Array.from(
       { length: times },
