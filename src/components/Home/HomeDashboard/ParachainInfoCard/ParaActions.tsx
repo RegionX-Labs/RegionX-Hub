@@ -47,7 +47,7 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
     if (!selectedAccount) return toast.error('Account not selected');
     if (!renewalEntry) return toast.error('No renewal available');
     if (!saleInfo) return toast.error('Sale info not available');
-    if (!coresSold) return toast.error('Failed to fetch availability of cores');
+    if (coresSold === null) return toast.error('Failed to fetch availability of cores');
 
     const selectedAccountData = accountData[selectedAccount.address];
     if (!selectedAccountData?.coretimeChainData) {
