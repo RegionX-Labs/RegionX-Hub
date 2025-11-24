@@ -14,3 +14,6 @@ export type RegionId = {
 
 export const KUSAMA_SALE_CYCLE_WITH_UPDATE = 18;
 export const POLKADOT_SALE_CYCLE_WITH_UPDATE = 12;
+
+export const SOLD_OUT_MESSAGE =
+  'Sold out — no additional purchases or renewals are available this sale cycle.';
