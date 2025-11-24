@@ -191,9 +191,7 @@ export default function CorePurchaseCard({ view }: Props) {
       <h2 className={styles.value}>{saleInfo ? coresRemaining : '—'}</h2>
 
       <div className={styles.row}>
-        <span className={styles.label}>
-          {priceLabel}
-        </span>
+        <span className={styles.label}>{priceLabel}</span>
         <span className={styles.amount}>
           {corePrice !== null && network ? toUnitFormatted(network, BigInt(corePrice)) : '—'}
         </span>

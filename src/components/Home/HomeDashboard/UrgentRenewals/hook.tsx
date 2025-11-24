@@ -67,10 +67,7 @@ export function useUrgentRenewals() {
     }
   };
 
-  const allCoresSold = useMemo(
-    () => (coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0),
-    [saleInfo]
-  );
+  const allCoresSold = useMemo(() => (coresSold ?? 0) >= (saleInfo?.coresOffered ?? 0), [saleInfo]);
 
   const ensureCanRenew = () => {
     if (!selectedAccount) {
@@ -185,10 +182,10 @@ export function useUrgentRenewals() {
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
     void refreshAutoRenewals();
-    (async () => {
+    async () => {
       const coresSold = await fetchCoresSold(network, connections);
       setCoresSold(coresSold);
-    });
+    };
   }, [network, connections, refreshAutoRenewals]);
 
   // refresh auto-renew when the modal closes
