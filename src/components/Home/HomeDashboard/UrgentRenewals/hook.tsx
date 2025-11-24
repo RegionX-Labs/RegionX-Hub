@@ -78,6 +78,21 @@ export function useUrgentRenewals() {
       toast.error('Sale info unavailable');
       return false;
     }
+    if (!selected) {
+      toast.error('Core not selected');
+      return false;
+    }
+    const selectedAccountData = accountData[selectedAccount.address];
+    if (!selectedAccountData?.coretimeChainData) {
+      toast.error('Account data unavailable');
+      return false;
+    }
+    const freeBalance = selectedAccountData.coretimeChainData.free;
+    const required = BigInt(selected[1].price);
+    if (freeBalance < required) {
+      toast.error('Insufficient coretime balance for renewal');
+      return false;
+    }
     if (allCoresSold) {
       toast.error(SOLD_OUT_MESSAGE);
       return false;

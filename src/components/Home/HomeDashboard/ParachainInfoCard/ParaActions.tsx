@@ -48,6 +48,17 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
     if (!renewalEntry) return toast.error('No renewal available');
     if (!saleInfo) return toast.error('Sale info not available');
     if (!coresSold) return toast.error('Failed to fetch availability of cores');
+
+    const selectedAccountData = accountData[selectedAccount.address];
+    if (!selectedAccountData?.coretimeChainData) {
+      return toast.error('Account data unavailable');
+    }
+    const freeBalance = selectedAccountData.coretimeChainData.free;
+    const required = BigInt(renewalEntry[1].price);
+    if (freeBalance < required) {
+      return toast.error('Insufficient coretime balance for renewal');
+    }
+
     if (coresSold >= saleInfo.coresOffered) return toast.error(SOLD_OUT_MESSAGE);
     setIsModalOpen(true);
   };

@@ -105,6 +105,8 @@ export default function CorePurchaseCard({ view }: Props) {
   const openModal = () => {
     if (!ensureCanPurchase()) return;
 
+    if (corePrice === null) return toast.error('Failed to fetch the price of a core');
+
     if (buyMultiple) {
       if (numCores === null || numCores <= 0) {
         return toast.error('Enter a valid number of cores');
@@ -117,6 +119,17 @@ export default function CorePurchaseCard({ view }: Props) {
         );
       }
     }
+
+    const selectedAccountData = selectedAccount ? accountData[selectedAccount.address] : null;
+    if (!selectedAccountData?.coretimeChainData) {
+      return toast.error('Account data unavailable');
+    }
+    const times = buyMultiple ? Math.min(numCores ?? 0, coresRemaining ?? 0) : 1;
+    const required = BigInt(corePrice) * BigInt(times || 1);
+    if (selectedAccountData.coretimeChainData.free < required) {
+      return toast.error('Insufficient coretime balance for purchase');
+    }
+
     setIsModalOpen(true);
   };
 
