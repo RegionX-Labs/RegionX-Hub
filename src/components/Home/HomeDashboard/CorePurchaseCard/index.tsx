@@ -31,7 +31,7 @@ export default function CorePurchaseCard({ view }: Props) {
 
   const [corePrice, setCorePrice] = useState<number | null>(null);
   const [coresSold, setCoresSold] = useState<number | null>(null);
-  const [currentHeight, setCurrentHeight] = useState<number>(0);
+  const [currentHeight, setCurrentHeight] = useState<number | null>(null);
   const [currentPhase, setCurrentPhase] = useState<SalePhase | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -39,54 +39,38 @@ export default function CorePurchaseCard({ view }: Props) {
   const [numCores, setNumCores] = useState<number | null>(null);
 
   useEffect(() => {
-    if (network && saleInfo) {
-      (async () => {
-        const networkChainIds = getNetworkChainIds(network);
-        if (!networkChainIds) return;
+    const networkChainIds = network ? getNetworkChainIds(network) : null;
+    const metadata = network ? getNetworkMetadata(network) : null;
+    const relayConnection = networkChainIds ? connections[networkChainIds.relayChain] : null;
+    const relayClient = relayConnection?.client;
+    const isRelayConnected = Boolean(relayClient && relayConnection.status === 'connected');
 
-        const connection = connections[networkChainIds.relayChain];
-        if (!connection || !connection.client || connection.status !== 'connected') return;
+    if (!saleInfo || !network || !networkChainIds || !metadata || !isRelayConnected || !relayClient)
+      return;
 
-        const client = connection.client;
-        const metadata = getNetworkMetadata(network);
-        if (!metadata) return;
+    let isMounted = true;
 
-        purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
-
-        const currentBlockNumber = await client
-          .getTypedApi(metadata.relayChain)
-          .query.System.Number.getValue();
-        setCurrentHeight(currentBlockNumber);
-
-        const price = getCorePriceAt(currentBlockNumber, saleInfo, network);
-        setCorePrice(price);
-
-        const sold = await fetchCoresSold(network, connections);
-        setCoresSold(sold || 0);
-      })();
-    }
-  }, [saleInfo?.network, connections, network]);
-
-  useEffect(() => {
     (async () => {
-      if (!saleInfo || !network) return;
-      const networkChainIds = getNetworkChainIds(network);
-      if (!networkChainIds) return;
+      purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
 
-      const connection = connections[networkChainIds.relayChain];
-      if (!connection || !connection.client || connection.status !== 'connected') return;
-
-      const client = connection.client;
-      const metadata = getNetworkMetadata(network);
-      if (!metadata) return;
-
-      const currentBlockNumber = await client
+      const currentBlockNumber = await relayClient
         .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();
-      const phase = getCurrentPhase(saleInfo, currentBlockNumber);
-      setCurrentPhase(phase);
+
+      if (!isMounted) return;
+
+      setCurrentHeight(currentBlockNumber);
+      setCorePrice(getCorePriceAt(currentBlockNumber, saleInfo, network));
+      setCurrentPhase(getCurrentPhase(saleInfo, currentBlockNumber));
+
+      const sold = await fetchCoresSold(network, connections);
+      if (isMounted) setCoresSold(sold ?? 0);
     })();
-  }, [network, saleInfo, connections]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [connections, network, saleInfo]);
 
   const ensureCanPurchase = () => {
     if (!selectedAccount) {
@@ -107,18 +91,30 @@ export default function CorePurchaseCard({ view }: Props) {
     }
 
     return true;
-  }
+  };
 
   const coresOffered = saleInfo?.coresOffered ?? 0;
 
-  const coresRemaining = coresSold ? coresOffered - coresSold : undefined;
+  const coresRemaining =
+    saleInfo && coresSold !== null ? Math.max(coresOffered - coresSold, 0) : undefined;
+  const saleHasStarted = Boolean(
+    saleInfo && currentHeight !== null && currentHeight >= saleInfo.saleStart
+  );
+  const priceLabel = saleHasStarted ? 'Current price' : 'Start price';
 
   const openModal = () => {
-    if(!ensureCanPurchase()) return;
+    if (!ensureCanPurchase()) return;
 
     if (buyMultiple) {
-      if (numCores === null || numCores <= 0 || numCores > (coresRemaining ?? 0)) {
-        return toast.error(`Enter a valid number of cores (1–${coresRemaining})`);
+      if (numCores === null || numCores <= 0) {
+        return toast.error('Enter a valid number of cores');
+      }
+      if (coresRemaining === undefined || numCores > coresRemaining) {
+        return toast.error(
+          coresRemaining === undefined
+            ? 'Unable to verify available cores'
+            : `Enter a valid number of cores (1–${coresRemaining})`
+        );
       }
     }
     setIsModalOpen(true);
@@ -130,6 +126,7 @@ export default function CorePurchaseCard({ view }: Props) {
   };
 
   const buyCore = async () => {
+    if (!ensureCanPurchase()) return;
     if (!selectedAccount) return toast.error('Account not selected');
     if (!corePrice) return toast.error('Failed to fetch the price of a core');
 
@@ -195,7 +192,7 @@ export default function CorePurchaseCard({ view }: Props) {
 
       <div className={styles.row}>
         <span className={styles.label}>
-          {currentHeight < (saleInfo?.saleStart ?? 0) ? 'Start price' : 'Current price'}
+          {priceLabel}
         </span>
         <span className={styles.amount}>
           {corePrice !== null && network ? toUnitFormatted(network, BigInt(corePrice)) : '—'}
