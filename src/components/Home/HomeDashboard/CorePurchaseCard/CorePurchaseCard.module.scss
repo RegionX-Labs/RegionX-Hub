@@ -4,7 +4,7 @@
   background: var(--dark-background-2);
   border: 1px solid var(--card-border);
   border-radius: 15px;
-  padding: 30px;
+  padding: 20px;
   color: var(--text-color);
   width: 23.5%;
   display: flex;
@@ -146,7 +146,7 @@
 .badgeActive {
   background: var(--green-dark-3);
   border-color: var(--green-primary);
-  color: var(--text-color);
+  color: var(--white-text);
 }
 
 .badgeInterlude {
@@ -161,8 +161,12 @@
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .statCard {
@@ -173,6 +177,11 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
+}
+
+.statCardFullWidth {
+  grid-column: 1 / -1;
 }
 
 .statLabel {
@@ -211,20 +220,16 @@
   }
 }
 
-.statValueWarning {
-  color: var(--red-dark);
-}
-
 .statHighlight {
   border-color: var(--green-primary);
 }
 
 .selectorRow {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: nowrap;
   background: var(--dark-background-1);
   border: 1px solid var(--card-border);
   border-radius: 12px;
@@ -253,14 +258,12 @@
 
 .multiCoreRow {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   gap: 12px;
   width: 100%;
-  flex: 1;
   flex-wrap: wrap;
 }
-
 .coreModeToggle {
   display: flex;
   align-items: center;
@@ -312,7 +315,7 @@
   height: 36px;
   padding: 0 14px;
   font-size: 0.9rem;
-  width: 160px;
+  width: 100%;
   font-weight: 600;
   background-color: var(--dark-background-3);
   color: var(--text-color);
@@ -342,11 +345,6 @@
     font-weight: 400;
   }
 
-  &:focus {
-    border-color: var(--green-primary);
-    box-shadow: 0 0 0 3px rgba(12, 193, 132, 0.15);
-  }
-
   @media (max-width: 450px) {
     width: 120px;
   }
@@ -361,7 +359,7 @@
 .buyButton {
   flex: 1;
   background-color: var(--green-primary);
-  color: var(--black-text);
+  color: var(--black);
   padding: 12px 0;
   border: none;
   border-radius: 8px;

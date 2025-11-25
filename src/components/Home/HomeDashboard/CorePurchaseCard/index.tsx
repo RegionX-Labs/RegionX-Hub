@@ -249,9 +249,6 @@ export default function CorePurchaseCard({ view }: Props) {
         <div className={styles.selectorRow}>
           <div className={styles.selectorText}>
             <span className={styles.selectorLabel}>Purchase mode</span>
-            <span className={styles.selectorHint}>
-              {buyMultiple ? 'Buy multiple cores in one go' : 'Quick single-core purchase'}
-            </span>
           </div>
 
           <div className={styles.multiCoreRow}>

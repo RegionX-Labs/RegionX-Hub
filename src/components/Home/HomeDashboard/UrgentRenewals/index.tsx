@@ -59,9 +59,6 @@ export default function UrgentRenewals({ view }: Props) {
         <div className={styles.headerRow}>
           <div className={styles.titleBlock}>
             <p className={styles.title}>Urgent Renewals</p>
-            <span className={styles.counterBadge}>
-              {urgentCount} urgent {urgentCount === 1 ? 'core' : 'cores'}
-            </span>
           </div>
 
           <div className={styles.interludeBadge}>
