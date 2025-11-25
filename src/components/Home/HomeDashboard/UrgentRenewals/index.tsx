@@ -4,7 +4,7 @@ import styles from './UrgentRenewals.module.scss';
 import Select from '@/components/elements/Select';
 import { toUnitFormatted } from '@/utils';
 import { Toaster } from 'react-hot-toast';
-import { MultiChainAccountData, getAccountData } from '@/account';
+import { MultiChainAccountData } from '@/account';
 import TransactionModal from '@/components/TransactionModal';
 import AutoRenewalModal from '@/components/AutoRenewalModal';
 import { useUrgentRenewals } from './hook';
@@ -47,6 +47,8 @@ export default function UrgentRenewals({ view }: Props) {
     closeAutoRenew,
   } = useUrgentRenewals();
 
+  const urgentCount = options.length;
+
   return (
     <div
       className={`${styles.renewableCoresCard} ${
@@ -54,18 +56,37 @@ export default function UrgentRenewals({ view }: Props) {
       }`}
     >
       <div className={styles.content}>
-        <p className={styles.title}>Urgent Renewals</p>
+        <div className={styles.headerRow}>
+          <div className={styles.titleBlock}>
+            <p className={styles.title}>Urgent Renewals</p>
+            <span className={styles.counterBadge}>
+              {urgentCount} urgent {urgentCount === 1 ? 'core' : 'cores'}
+            </span>
+          </div>
 
-        <div className={styles.selectBox}>
+          <div className={styles.interludeBadge}>
+            <span className={styles.interludeLabel}>
+              {interludeEnded ? 'Interlude ended' : 'Interlude ends'}
+            </span>
+            <span className={styles.interludeDate}>
+              {interludeEndDate ? formatDate(interludeEndDate) : '-'}
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.selectorRow}>
           {hasRenewables ? (
-            <Select
-              options={options}
-              selectedValue={selected}
-              onChange={setSelected}
-              variant='secondary'
-              searchable
-              searchPlaceholder='Search parachain'
-            />
+            <>
+              <span className={styles.selectorLabel}>Select parachain</span>
+              <Select
+                options={options}
+                selectedValue={selected}
+                onChange={setSelected}
+                variant='secondary'
+                searchable
+                searchPlaceholder='Search parachain'
+              />
+            </>
           ) : (
             <p className={styles.noDataMessage}>
               All cores have been renewed. Nothing left to renew!
@@ -73,28 +94,35 @@ export default function UrgentRenewals({ view }: Props) {
           )}
         </div>
 
-        <div className={styles.details}>
-          <div className={styles.detailBlock}>
-            <p className={styles.label}>Renewal Price</p>
-            <p className={styles.value}>
-              {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
-            </p>
-          </div>
+        {hasRenewables && (
+          <div className={styles.tableWrapper}>
+            <div className={styles.statsTable}>
+              <div className={styles.statsHeader}>
+                <span>Metric</span>
+                <span>Value</span>
+              </div>
 
-          <div className={styles.detailBlock}>
-            <p className={styles.label}>Renewal deadline</p>
-            <p className={styles.value}>{selectedDeadline}</p>
-          </div>
-        </div>
+              <div className={styles.statsRow}>
+                <span className={styles.labelCell}>Renewal price</span>
+                <span className={styles.valueCell}>
+                  {selected ? toUnitFormatted(network, BigInt(selected[1].price)) : '-'}
+                </span>
+              </div>
 
-        <div className={styles.interludeSection}>
-          <p className={styles.interludeHeading}>
-            {interludeEnded ? 'Interlude ended' : 'Interlude ends'}
-          </p>
-          <p className={styles.interludeValue}>
-            {interludeEndDate ? formatDate(interludeEndDate) : '-'}
-          </p>
-        </div>
+              <div className={styles.statsRow}>
+                <span className={styles.labelCell}>Renewal deadline</span>
+                <span className={styles.valueCell}>{selectedDeadline}</span>
+              </div>
+
+              <div className={styles.statsRow}>
+                <span className={styles.labelCell}>Status</span>
+                <span className={styles.valueCell}>
+                  {allCoresSold ? 'Sold out' : interludeEnded ? 'Sale ongoing' : 'Interlude'}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {bannerMsg && (
           <div
@@ -111,7 +139,18 @@ export default function UrgentRenewals({ view }: Props) {
         <button
           className={styles.renewButton}
           onClick={openModal}
-          title={disableRenew && allCoresSold ? 'All cores are sold' : undefined}
+          disabled={disableRenew}
+          title={
+            disableRenew
+              ? allCoresSold
+                ? 'All cores are sold'
+                : !selectedAccount
+                  ? 'Account not selected'
+                  : !selected
+                    ? 'Select a core to renew'
+                    : undefined
+              : undefined
+          }
         >
           Renew Now
         </button>

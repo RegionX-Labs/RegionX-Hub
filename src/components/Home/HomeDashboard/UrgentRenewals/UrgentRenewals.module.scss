@@ -1,11 +1,10 @@
-@use '@/styles/variables' as *;
 @use '@/styles/_mixins' as *;
 
 .renewableCoresCard {
-  background: $darkBackground2;
+  background: var(--dark-background-2);
   border-radius: 15px;
   padding: 30px;
-  color: var(--text-primary);
+  color: var(--text-color);
   @include Inter;
   width: 30%;
   display: flex;
@@ -73,61 +72,183 @@
   }
 }
 
-.title {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  margin-bottom: -10px;
-}
-
-.selectBox {
-  background-color: var(--card-inner);
-  border-radius: 10px;
-  padding: 2px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.arrowIcon {
-  width: 16px;
-  height: 16px;
-  fill: var(--text-primary);
-}
-
-.details {
-  display: flex;
-  justify-content: space-between;
-}
-
-.detailBlock {
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-}
-
-.value {
-  font-size: 0.95rem;
-  font-weight: 500;
-}
+/* ----- CONTENT & HEADER ----- */
 
 .content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1rem;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.titleBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1rem;
+  color: var(--gray-6);
+  margin: 0;
+}
+
+.counterBadge {
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--dark-background-4);
+  border: 1px solid var(--dark-background-1);
+  color: var(--text-color);
+}
+
+.interludeBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 11px;
+}
+
+.interludeLabel {
+  opacity: 0.8;
+  color: var(--gray-6);
+}
+
+.interludeDate {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* ----- SELECTOR ROW ----- */
+
+.selectorRow {
+  display: grid;
+  grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.selectorLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  color: var(--gray-6);
+}
+
+/* Empty state text inside selector row */
+
+.noDataMessage {
+  background-color: var(--dark-background-1);
+  color: var(--gray-6);
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+  width: 100%;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ----- TABLE CARD ----- */
+
+.tableWrapper {
+  margin-top: 0.5rem;
+}
+
+.statsTable {
+  border-radius: 12px;
+  background: var(--dark-background-1);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.statsHeader {
+  display: grid;
+  grid-template-columns: 1.3fr 1.7fr;
+  padding: 0.5rem 0.75rem;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+  background: var(--dark-background-3);
+  color: var(--gray-6);
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: 1.3fr 1.7fr;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--border-gray);
+}
+
+.labelCell {
+  opacity: 0.85;
+  color: var(--gray-6);
+}
+
+.valueCell {
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* ----- BANNERS / NOTICE ----- */
+
+.notice {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: var(--dark-background-1);
+}
+
+.noticeWarning {
+  background: var(--yellow-dark);
+  border-color: var(--yellow-dark);
+  color: var(--black-text);
+}
+
+.noticeError {
+  background: var(--red-light-4);
+  border-color: var(--red-dark);
+  color: var(--red-dark);
+}
+
+/* ----- BUTTONS ----- */
+
+.buttonRow {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: 10px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .renewButton {
-  background-color: $greenPrimary;
-  color: var(--black);
+  flex: 1;
+  background-color: var(--green-primary);
+  color: var(--black-text);
   padding: 10px 0;
   border: none;
   border-radius: 8px;
@@ -139,91 +260,51 @@
   @include Inter;
 
   &:hover {
-    background-color: var(--accent-green-hover);
+    background-color: var(--green-primary-hover);
   }
-}
 
-.noDataMessage {
-  background-color: $darkBackground1;
-  color: $gray6;
-  font-size: 0.95rem;
-  text-align: center;
-  padding: 20px;
-  margin-top: 0px;
-  margin-bottom: -16px;
-  width: 100%;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.interludeSection {
-  margin-top: 8px;
-  padding-top: 12px;
-  border-top: 1px solid var(--card-border);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.interludeHeading {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
-.interludeValue {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: $darkBackground1;
-  padding: 6px 10px;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  letter-spacing: 0.2px;
-  display: inline-block;
-}
-.buttonRow {
-  display: flex;
-  gap: 10px;
-  margin-top: auto;
-  margin-bottom: 10px;
-}
-
-.autoRenewButton {
-  flex: 1;
-  background: transparent;
-  color: $greenPrimary;
-  border: 1px solid $greenPrimary;
-  padding: 10px 0;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: auto;
-  margin-bottom: 10px;
-  @include Inter;
-
-  &:hover {
-    background: $greenPrimary;
-    color: black;
-  }
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 }
 
-.autoRenewBtnEnabled {
-  background: $greenPrimary;
-  color: black;
-  border-color: $greenPrimary;
+.autoRenewButton {
+  flex: 1;
+  background: transparent;
+  color: var(--green-primary);
+  border: 1px solid var(--green-primary);
+  padding: 10px 0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  margin-top: auto;
+  margin-bottom: 10px;
+  @include Inter;
+
+  &:hover {
+    background: var(--green-primary);
+    color: var(--black-text);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.autoRenewButtonEnabled {
+  background: var(--green-primary);
+  color: var(--black-text);
+  border-color: var(--green-primary);
   cursor: default;
   pointer-events: none;
 }
 
-.renewButton {
-  flex: 1;
+/* for backwards-compat if old class name is used somewhere */
+.autoRenewBtnEnabled {
+  @extend .autoRenewButtonEnabled;
 }

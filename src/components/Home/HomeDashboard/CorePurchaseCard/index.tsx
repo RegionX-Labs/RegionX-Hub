@@ -192,55 +192,101 @@ export default function CorePurchaseCard({ view }: Props) {
     });
   };
 
+  const subtitleParts: string[] = [];
+  if (saleInfo?.saleCycle) subtitleParts.push(`Sale cycle ${saleInfo.saleCycle}`);
+  if (network) subtitleParts.push(network);
+  const subtitle = subtitleParts.join(' • ');
+
+  const phaseBadgeClass =
+    currentPhase === SalePhase.Interlude
+      ? styles.badgeInterlude
+      : saleHasStarted
+        ? styles.badgeActive
+        : styles.badgeIdle;
+
+  const phaseLabel =
+    currentPhase ??
+    (saleHasStarted ? 'Sale live' : saleInfo ? 'Waiting for sale start' : 'No sale data');
+
   return (
     <div
-      className={`${styles.coreRemainingCard} ${isCompact ? styles.compact : ''} ${
+      className={`${styles.purchaseCard} ${isCompact ? styles.compact : ''} ${
         isExtended ? styles.extended : ''
       }`}
     >
-      <p className={styles.title}>Cores Offered</p>
-      <h2 className={styles.value}>{saleInfo ? coresOffered : '—'}</h2>
-      <p className={styles.title}>Cores Remaining</p>
-      <h2 className={styles.value}>{saleInfo ? coresRemaining : '—'}</h2>
-
-      <div className={styles.row}>
-        <span className={styles.label}>{priceLabel}</span>
-        <span className={styles.amount}>
-          {corePrice !== null && network ? toUnitFormatted(network, BigInt(corePrice)) : '—'}
-        </span>
-      </div>
-
-      <div className={styles.multiCoreWrapper}>
-        <div className={styles.multiCoreRow}>
-          <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((p) => !p)}>
-            <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
-            <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
-              Single
-            </div>
-            <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
-              Multiple
-            </div>
+      <div className={styles.content}>
+        <div className={styles.headerRow}>
+          <div>
+            <p className={styles.title}>Purchase new core</p>
+            <p className={styles.subtitle}>{subtitle || '—'}</p>
           </div>
-
-          {buyMultiple && (
-            <input
-              type='text'
-              inputMode='numeric'
-              pattern='[0-9]*'
-              className={styles.coreInput}
-              value={numCores === null ? '' : String(numCores)}
-              onChange={(e) => {
-                const raw = e.target.value;
-                if (/^\d*$/.test(raw)) setNumCores(raw === '' ? null : parseInt(raw, 10));
-              }}
-              onKeyDown={(e) => {
-                if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) e.preventDefault();
-              }}
-              placeholder='Amount'
-            />
-          )}
+          <span className={`${styles.badge} ${phaseBadgeClass}`}>{phaseLabel}</span>
         </div>
 
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <span className={styles.statLabel}>Cores offered</span>
+            <span className={styles.statValue}>{saleInfo ? coresOffered : '—'}</span>
+          </div>
+          <div className={styles.statCard}>
+            <span className={styles.statLabel}>Cores remaining</span>
+            <span
+              className={`${styles.statValue} ${
+                coresRemaining === 0 ? styles.statValueWarning : ''
+              }`}
+            >
+              {saleInfo ? coresRemaining : '—'}
+            </span>
+          </div>
+          <div className={`${styles.statCard} ${styles.statHighlight} ${styles.statCardFullWidth}`}>
+            <span className={styles.statLabel}>{priceLabel}</span>
+            <span className={styles.statValue}>
+              {corePrice !== null && network ? toUnitFormatted(network, BigInt(corePrice)) : '—'}
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.selectorRow}>
+          <div className={styles.selectorText}>
+            <span className={styles.selectorLabel}>Purchase mode</span>
+            <span className={styles.selectorHint}>
+              {buyMultiple ? 'Buy multiple cores in one go' : 'Quick single-core purchase'}
+            </span>
+          </div>
+
+          <div className={styles.multiCoreRow}>
+            <div className={styles.coreModeToggle} onClick={() => setBuyMultiple((p) => !p)}>
+              <div className={`${styles.coreModeSlider} ${buyMultiple ? styles.multiple : ''}`} />
+              <div className={`${styles.coreModeOption} ${!buyMultiple ? styles.active : ''}`}>
+                Single
+              </div>
+              <div className={`${styles.coreModeOption} ${buyMultiple ? styles.active : ''}`}>
+                Multiple
+              </div>
+            </div>
+
+            {buyMultiple && (
+              <input
+                type='text'
+                inputMode='numeric'
+                pattern='[0-9]*'
+                className={styles.coreInput}
+                value={numCores === null ? '' : String(numCores)}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (/^\d*$/.test(raw)) setNumCores(raw === '' ? null : parseInt(raw, 10));
+                }}
+                onKeyDown={(e) => {
+                  if (['e', 'E', '.', ',', '+', '-'].includes(e.key)) e.preventDefault();
+                }}
+                placeholder='Amount'
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.buttonRow}>
         <button onClick={openModal} className={styles.buyButton}>
           Purchase New Core
           {buyMultiple && numCores !== null && numCores > 1 ? `s (${numCores})` : ''}
