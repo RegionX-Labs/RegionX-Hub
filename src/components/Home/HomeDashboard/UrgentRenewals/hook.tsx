@@ -43,6 +43,7 @@ export function useUrgentRenewals() {
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
   const [autoRenewSet, setAutoRenewSet] = useState<Set<number>>(new Set());
   const [coresSold, setCoresSold] = useState<number | null>(null);
+  const [deadlines, setDeadlines] = useState<Record<string, string>>({});
 
   const refreshAutoRenewals = useCallback(async () => {
     try {
@@ -69,7 +70,7 @@ export function useUrgentRenewals() {
     [coresSold, saleInfo]
   );
 
-  const ensureCanRenew = () => {
+  const ensureCanRenew = (selection: [RenewalKey, RenewalRecord] | null = selected) => {
     if (!selectedAccount) {
       toast.error('Account not selected');
       return false;
@@ -78,7 +79,7 @@ export function useUrgentRenewals() {
       toast.error('Sale info unavailable');
       return false;
     }
-    if (!selected) {
+    if (!selection) {
       toast.error('Core not selected');
       return false;
     }
@@ -88,7 +89,7 @@ export function useUrgentRenewals() {
       return false;
     }
     const freeBalance = selectedAccountData.coretimeChainData.free;
-    const required = BigInt(selected[1].price);
+    const required = BigInt(selection[1].price);
     if (freeBalance < required) {
       toast.error('Insufficient coretime balance for renewal');
       return false;
@@ -190,9 +191,6 @@ export function useUrgentRenewals() {
     [autoRenewSet, paraId]
   );
 
-  const disableRenew = !selectedAccount || !selected || allCoresSold;
-  const disableAutoRenew = !selectedAccount || typeof paraId !== 'number';
-
   // initial fetch
   useEffect(() => {
     potentialRenewalsRequested({ network, connections });
@@ -234,9 +232,36 @@ export function useUrgentRenewals() {
     })();
   }, [selected, network, connections]);
 
-  const openModal = () => {
-    console.log(allCoresSold);
-    if (!ensureCanRenew()) return;
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      const result: Record<string, string> = {};
+
+      for (const option of options) {
+        const [key] = option.value;
+        const deadline = await timesliceToTimestamp(key.when, network, connections);
+        if (cancelled) return;
+        if (!deadline) {
+          result[`${key.when}-${key.core}`] = '-';
+          continue;
+        }
+        const date = typeof deadline === 'bigint' ? new Date(Number(deadline)) : (deadline as Date);
+        result[`${key.when}-${key.core}`] = formatDate(date);
+      }
+
+      if (!cancelled) setDeadlines(result);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [options, network, connections]);
+
+  const openModal = (selection: [RenewalKey, RenewalRecord] | null = selected) => {
+    const nextSelection = selection ?? selected;
+    if (nextSelection) setSelected(nextSelection);
+    if (!ensureCanRenew(nextSelection)) return;
     setIsModalOpen(true);
   };
 
@@ -247,8 +272,12 @@ export function useUrgentRenewals() {
     setIsModalOpen(false);
   };
 
-  const handleOpenAutoRenew = () => {
-    if (disableAutoRenew) return;
+  const handleOpenAutoRenew = (selection: [RenewalKey, RenewalRecord] | null = selected) => {
+    const nextSelection = selection ?? selected;
+    if (nextSelection) setSelected(nextSelection);
+    const nextParaId = nextSelection ? getParaIdFromRecord(nextSelection[1]) : null;
+    const autoRenewDisabled = !selectedAccount || typeof nextParaId !== 'number';
+    if (autoRenewDisabled) return;
     setIsAutoRenewOpen(true);
   };
 
@@ -262,14 +291,13 @@ export function useUrgentRenewals() {
     selected,
     setSelected,
     selectedDeadline,
+    deadlines,
     allCoresSold,
     hasRenewables,
     interludeEnded,
     interludeEndDate,
     bannerMsg,
     autoRenewEnabled,
-    disableRenew,
-    disableAutoRenew,
     paraId,
 
     // modal state + actions
