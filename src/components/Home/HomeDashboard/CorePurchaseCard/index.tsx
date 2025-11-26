@@ -216,11 +216,12 @@ export default function CorePurchaseCard({ view }: Props) {
     >
       <div className={styles.content}>
         <div className={styles.headerRow}>
-          <div>
+          <div className={styles.titleRow}>
             <p className={styles.title}>Purchase new core</p>
-            <p className={styles.subtitle}>{subtitle || '—'}</p>
+            <span className={`${styles.badge} ${phaseBadgeClass}`}>{phaseLabel}</span>
           </div>
-          <span className={`${styles.badge} ${phaseBadgeClass}`}>{phaseLabel}</span>
+
+          <p className={styles.subtitle}>{subtitle || '—'}</p>
         </div>
 
         <div className={styles.statsGrid}>

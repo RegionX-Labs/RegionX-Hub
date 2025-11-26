@@ -304,3 +304,19 @@
     margin-left: 0;
   }
 }
+
+.filterDropdown {
+  width: 100%;
+  min-width: 220px;
+  max-width: 340px;
+}
+
+@media (max-width: 560px) {
+  .rightCol {
+    width: 100%;
+  }
+
+  .filterDropdown {
+    max-width: 100%;
+  }
+}

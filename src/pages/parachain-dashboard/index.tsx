@@ -34,6 +34,7 @@ type TableData = {
 
 type RenewalFilter = 'all' | 'renewed' | 'needs';
 type StateFilter = 'all' | ParaState;
+type FilterKey = RenewalFilter | 'mine';
 
 const stateLabel = (s: ParaState) => ParaState[s] ?? 'Unknown';
 
@@ -46,6 +47,7 @@ const ParachainDashboard = () => {
   const [stateFilter, setStateFilter] = useState<StateFilter>('all');
   const [renewalFilter, setRenewalFilter] = useState<RenewalFilter>('all');
   const [managedIds, setManagedIds] = useState<Set<number>>(new Set());
+  const [useDropdownFilters, setUseDropdownFilters] = useState(false);
 
   const network = useUnit($network);
   const connections = useUnit($connections);
@@ -82,6 +84,13 @@ const ParachainDashboard = () => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
   }, [network, connections]);
+
+  useEffect(() => {
+    const update = () => setUseDropdownFilters(window.innerWidth < 560);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -199,6 +208,28 @@ const ParachainDashboard = () => {
     [availableStates]
   );
 
+  const activeFilter: FilterKey = showMine ? 'mine' : renewalFilter;
+
+  const filterOptions: SelectOption<FilterKey>[] = useMemo(
+    () => [
+      { key: 'all', label: 'All', value: 'all' },
+      { key: 'mine', label: 'My Projects', value: 'mine' },
+      { key: 'renewed', label: 'Renewed', value: 'renewed' },
+      { key: 'needs', label: 'Needs Renewal', value: 'needs' },
+    ],
+    []
+  );
+
+  const setFilter = (key: FilterKey) => {
+    if (key === 'mine') {
+      setShowMine(true);
+      setRenewalFilter('all');
+    } else {
+      setShowMine(false);
+      setRenewalFilter(key);
+    }
+  };
+
   const tableData: Record<string, TableData>[] = filteredRows.map((item) => {
     const meta = chainData[network]?.[item.id];
     const name = meta?.name || `Parachain ${item.id}`;
@@ -291,73 +322,78 @@ const ParachainDashboard = () => {
           </div>
 
           <div className={styles.rightCol}>
-            <div
-              className={`${styles.segmentedOld} ${styles.cols4}`}
-              role='tablist'
-              aria-label='Filters'
-            >
-              <button
-                type='button'
-                role='tab'
-                aria-selected={!showMine && renewalFilter === 'all'}
-                className={`${styles.segmentedBtn} ${!showMine && renewalFilter === 'all' ? styles.active : ''}`}
-                onClick={() => {
-                  setShowMine(false);
-                  setRenewalFilter('all');
-                }}
+            {useDropdownFilters ? (
+              <div className={styles.filterDropdown}>
+                <Select
+                  options={filterOptions}
+                  selectedValue={activeFilter}
+                  onChange={(value) => setFilter((value ?? 'all') as FilterKey)}
+                  isOptionDisabled={(value) => value === 'mine' && !selectedAccount?.address}
+                  variant='secondary'
+                  font={{ family: 'Inter', size: 14, lineHeight: '19px' }}
+                />
+              </div>
+            ) : (
+              <div
+                className={`${styles.segmentedOld} ${styles.cols4}`}
+                role='tablist'
+                aria-label='Filters'
               >
-                All
-              </button>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={showMine}
-                disabled={!selectedAccount?.address}
-                title={selectedAccount?.address ? '' : 'Connect an account'}
-                className={`${styles.segmentedBtn} ${showMine ? styles.active : ''}`}
-                onClick={() => setShowMine(true)}
-              >
-                My Projects
-              </button>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={!showMine && renewalFilter === 'renewed'}
-                className={`${styles.segmentedBtn} ${!showMine && renewalFilter === 'renewed' ? styles.active : ''}`}
-                onClick={() => {
-                  setShowMine(false);
-                  setRenewalFilter('renewed');
-                }}
-              >
-                Renewed
-              </button>
-              <button
-                type='button'
-                role='tab'
-                aria-selected={!showMine && renewalFilter === 'needs'}
-                className={`${styles.segmentedBtn} ${!showMine && renewalFilter === 'needs' ? styles.active : ''}`}
-                onClick={() => {
-                  setShowMine(false);
-                  setRenewalFilter('needs');
-                }}
-              >
-                Needs Renewal
-              </button>
-              <span
-                className={styles.segmentedThumbOld}
-                style={{
-                  transform: showMine
-                    ? 'translateX(calc(100% + 6px))'
-                    : renewalFilter === 'all'
-                      ? 'translateX(0)'
-                      : renewalFilter === 'renewed'
-                        ? 'translateX(calc(200% + 12px))'
-                        : 'translateX(calc(300% + 18px))',
-                  width: 'calc(25% - 6px)',
-                }}
-                aria-hidden='true'
-              />
-            </div>
+                <button
+                  type='button'
+                  role='tab'
+                  aria-selected={activeFilter === 'all'}
+                  className={`${styles.segmentedBtn} ${activeFilter === 'all' ? styles.active : ''}`}
+                  onClick={() => setFilter('all')}
+                >
+                  All
+                </button>
+                <button
+                  type='button'
+                  role='tab'
+                  aria-selected={activeFilter === 'mine'}
+                  disabled={!selectedAccount?.address}
+                  title={selectedAccount?.address ? '' : 'Connect an account'}
+                  className={`${styles.segmentedBtn} ${activeFilter === 'mine' ? styles.active : ''}`}
+                  onClick={() => setFilter('mine')}
+                >
+                  My Projects
+                </button>
+                <button
+                  type='button'
+                  role='tab'
+                  aria-selected={activeFilter === 'renewed'}
+                  className={`${styles.segmentedBtn} ${activeFilter === 'renewed' ? styles.active : ''}`}
+                  onClick={() => setFilter('renewed')}
+                >
+                  Renewed
+                </button>
+                <button
+                  type='button'
+                  role='tab'
+                  aria-selected={activeFilter === 'needs'}
+                  className={`${styles.segmentedBtn} ${activeFilter === 'needs' ? styles.active : ''}`}
+                  onClick={() => setFilter('needs')}
+                >
+                  Needs Renewal
+                </button>
+                <span
+                  className={styles.segmentedThumbOld}
+                  style={{
+                    transform:
+                      activeFilter === 'all'
+                        ? 'translateX(0)'
+                        : activeFilter === 'mine'
+                          ? 'translateX(calc(100% + 6px))'
+                          : activeFilter === 'renewed'
+                            ? 'translateX(calc(200% + 12px))'
+                            : 'translateX(calc(300% + 18px))',
+                    width: 'calc(25% - 6px)',
+                  }}
+                  aria-hidden='true'
+                />
+              </div>
+            )}
           </div>
         </div>
 

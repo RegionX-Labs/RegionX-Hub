@@ -16,14 +16,14 @@
   @media (max-width: 1800px) {
     width: 48%;
   }
-  @media (max-width: 1573px) {
-    width: 47.2%;
+  @media (max-width: 1503px) {
+    width: 92%;
   }
   @media (max-width: 1301px) {
-    width: 44.5%;
+    width: 90%;
   }
   @media (max-width: 1161px) {
-    width: 40%;
+    width: 90%;
   }
   @media (max-width: 1121px) {
     width: 90%;
@@ -142,11 +142,11 @@
   font-size: 0.85rem;
   color: $gray6;
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     font-size: 0.65rem;
   }
 
-  @media (max-width: 410px) {
+  @media (max-width: 560px) {
     font-size: 0.55rem;
   }
 }
@@ -157,12 +157,12 @@
   font-weight: 600;
   color: $white;
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     font-size: 0.7rem;
   }
 
-  @media (max-width: 410px) {
-    font-size: 0.6rem;
+  @media (max-width: 560px) {
+    font-size: 0.7rem;
   }
 }
 
@@ -176,13 +176,13 @@
   }
 }
 
-@media (min-width: 1117px) and (max-width: 1388px) {
+@media (min-width: 1117px) and (max-width: 1335px) {
   .label {
-    font-size: 0.7rem;
+    font-size: 1rem;
   }
 
   .value {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 }
 
@@ -224,7 +224,7 @@
   font-weight: 600;
 }
 
-@media (max-width: 533px) {
+@media (max-width: 560px) {
   .info {
     display: flex;
     flex-direction: column;
@@ -233,7 +233,7 @@
   }
 
   .label {
-    font-size: 0.45rem;
+    font-size: 0.8rem;
     color: $gray6;
   }
 }
