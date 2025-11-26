@@ -124,7 +124,7 @@ const CrossChain = () => {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
             id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
-              parents: 1,
+              parents: 0,
             }),
           },
         ]),
