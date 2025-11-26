@@ -106,11 +106,11 @@ const CrossChain = () => {
     const tx = connection.client
       .getTypedApi(metadata.ahChain)
       .tx.PolkadotXcm.limited_reserve_transfer_assets({
-        dest: XcmVersionedLocation.V3({
+        dest: XcmVersionedLocation.V4({
           parents: 1,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
         }),
-        beneficiary: XcmVersionedLocation.V3({
+        beneficiary: XcmVersionedLocation.V4({
           parents: 0,
           interior: XcmV3Junctions.X1(
             XcmV3Junction.AccountId32({
@@ -119,13 +119,13 @@ const CrossChain = () => {
             })
           ),
         }),
-        assets: XcmVersionedAssets.V3([
+        assets: XcmVersionedAssets.V4([
           {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
-            id: XcmV3MultiassetAssetId.Concrete({
+            id:{
               interior: XcmV3Junctions.Here(),
               parents: 0,
-            }),
+            },
           },
         ]),
         fee_asset_item: 0,
