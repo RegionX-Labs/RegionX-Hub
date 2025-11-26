@@ -65,9 +65,27 @@ const CrossChain = () => {
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
+    if (!originChain || !destinationChain) return toast.error('Both chains must be selected');
     if (originChain === destinationChain)
       return toast.error('Origin and destination chains are the same');
-    if (!originChain || !destinationChain) return toast.error('Both chains must be selected');
+
+    const parsedAmount = Number(amount);
+    if (!amount || Number.isNaN(parsedAmount) || parsedAmount <= 0)
+      return toast.error('Enter a valid amount');
+
+    if (!accountData) return toast.error('Account data unavailable');
+
+    const required = BigInt(fromUnit(network, parsedAmount));
+    const originBalance = isAhChain(originChain)
+      ? accountData.ahChainData?.free
+      : isCoretimeChain(originChain)
+        ? accountData.coretimeChainData?.free
+        : null;
+
+    if (originBalance == null) return toast.error('Balance unavailable for selected origin chain');
+    if (originBalance < required)
+      return toast.error(`Insufficient balance on ${getChainLabel(originChain)}`);
+
     setIsModalOpen(true);
   };
 
@@ -100,7 +118,7 @@ const CrossChain = () => {
       accountData.ahChainData &&
       accountData.ahChainData.free < BigInt(fromUnit(network, Number(amount)))
     ) {
-      toast.error('Insufficient balance');
+      toast.error(`Insufficient balance on ${getChainLabel(originChain)}`);
       return;
     }
 
@@ -176,7 +194,7 @@ const CrossChain = () => {
       accountData.coretimeChainData &&
       accountData.coretimeChainData.free < BigInt(fromUnit(network, Number(amount)))
     ) {
-      toast.error('Insufficient balance');
+      toast.error(`Insufficient balance on ${getChainLabel(originChain)}`);
       return;
     }
 
@@ -258,6 +276,12 @@ const CrossChain = () => {
   };
   const isAhChain = (chainId: string): boolean => {
     return chainId === chains[`${network}AH` as keyof typeof chains]?.chainId;
+  };
+  const getChainLabel = (chainId: ChainId | null): string => {
+    if (!chainId) return 'selected chain';
+    if (isAhChain(chainId)) return 'Asset Hub';
+    if (isCoretimeChain(chainId)) return 'Coretime Chain';
+    return 'selected chain';
   };
 
   const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
