@@ -182,7 +182,7 @@ const CrossChain = () => {
 
     const tx = connection.client
       .getTypedApi(metadata.coretimeChain)
-      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+      .tx.PolkadotXcm.limited_teleport_assets({
         dest: XcmVersionedLocation.V4({
           parents: 1,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(ASSET_HUB_PARA_ID)),
