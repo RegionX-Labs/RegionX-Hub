@@ -105,7 +105,7 @@ const CrossChain = () => {
 
     const tx = connection.client
       .getTypedApi(metadata.ahChain)
-      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+      .tx.PolkadotXcm.limited_teleport_assets({
         dest: XcmVersionedLocation.V4({
           parents: 1,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
@@ -124,7 +124,7 @@ const CrossChain = () => {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
             id:{
               interior: XcmV3Junctions.Here(),
-              parents: 0,
+              parents: 1,
             },
           },
         ]),
