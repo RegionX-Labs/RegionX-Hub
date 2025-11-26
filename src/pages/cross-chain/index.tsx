@@ -22,11 +22,11 @@ import {
   XcmVersionedLocation,
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
-import { CORETIME_PARA_ID, fromUnit, REGIONX_KUSAMA_PARA_ID, toUnitFormatted } from '@/utils';
+import { CORETIME_PARA_ID, fromUnit, toUnitFormatted } from '@/utils';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
 import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
-import { SUBSCAN_CORETIME_URL, SUBSCAN_RELAY_URL } from '../coretime/sale-history';
+import { SUBSCAN_ASSET_HUB_URL } from '../coretime/sale-history';
 
 const CrossChain = () => {
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
@@ -76,43 +76,38 @@ const CrossChain = () => {
     if (!originChain || !destinationChain || !selectedAccount) return;
     if (originChain === destinationChain)
       return toast.error('Origin and destination chains are the same');
-    if (isCoretimeChain(originChain) && isRelayChain(destinationChain)) {
-      await coretimeChainToRelayChain();
-    } else if (isRelayChain(originChain) && isCoretimeChain(destinationChain)) {
-      await relayChainToCoretimeChain();
-    } else if (isRelayChain(originChain) && isRegionXChain(destinationChain)) {
-      await relayChainToRegionXChain();
-    } else if (isRegionXChain(originChain) && isRelayChain(destinationChain)) {
-      await regionXChainToRelayChain();
-    } else if (isAhChain(originChain) || isAhChain(destinationChain)) {
-      toast.error('Disabled right now');
+
+    if (isAhChain(originChain) && isCoretimeChain(destinationChain)) {
+      ahChainToCoretimeChain();
     } else {
       toast.error('Transfer not supported');
     }
     setIsModalOpen(false);
   };
 
-  const relayChainToCoretimeChain = async () => {
+  const ahChainToCoretimeChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) return toast.error('Unknown network');
-    const connection = connections[networkChainIds.relayChain];
+    if (!networkChainIds || !networkChainIds.ahChain) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.ahChain];
     const metadata = getNetworkMetadata(network);
-    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
+    if (!connection?.client || !metadata || !metadata.ahChain)
+      return toast.error('Connection or metadata missing');
 
     if (
       accountData &&
-      accountData.relayChainData.free < BigInt(fromUnit(network, Number(amount)))
+      accountData.ahChainData &&
+      accountData.ahChainData.free < BigInt(fromUnit(network, Number(amount)))
     ) {
       toast.error('Insufficient balance');
       return;
     }
 
     const tx = connection.client
-      .getTypedApi(metadata.relayChain)
-      .tx.XcmPallet.limited_teleport_assets({
+      .getTypedApi(metadata.ahChain)
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
         dest: XcmVersionedLocation.V3({
-          parents: 0,
+          parents: 1,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
         }),
         beneficiary: XcmVersionedLocation.V3({
@@ -129,7 +124,7 @@ const CrossChain = () => {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
             id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
-              parents: 0,
+              parents: 1,
             }),
           },
         ]),
@@ -144,7 +139,7 @@ const CrossChain = () => {
           <span>
             Transaction submitted:&nbsp;
             <a
-              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              href={`${SUBSCAN_ASSET_HUB_URL[network]}/extrinsic/${ev.txHash}`}
               target='_blank'
               rel='noopener noreferrer'
               style={{ textDecoration: 'underline', color: '#60a5fa' }}
@@ -163,204 +158,6 @@ const CrossChain = () => {
         toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
-    );
-  };
-
-  const coretimeChainToRelayChain = async () => {
-    if (!selectedAccount) return toast.error('Account not selected');
-    const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) return toast.error('Unknown network');
-    const connection = connections[networkChainIds.coretimeChain];
-    const metadata = getNetworkMetadata(network);
-    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
-
-    if (
-      accountData &&
-      accountData.coretimeChainData.free < BigInt(fromUnit(network, Number(amount)))
-    ) {
-      toast.error('Insufficient balance');
-      return;
-    }
-
-    const tx = connection.client
-      .getTypedApi(metadata.coretimeChain)
-      .tx.PolkadotXcm.limited_teleport_assets({
-        dest: XcmVersionedLocation.V3({
-          parents: 1,
-          interior: XcmV3Junctions.Here(),
-        }),
-        beneficiary: XcmVersionedLocation.V3({
-          parents: 0,
-          interior: XcmV3Junctions.X1(
-            XcmV3Junction.AccountId32({
-              network: undefined,
-              id: Binary.fromBytes(AccountId().enc(beneficiary)),
-            })
-          ),
-        }),
-        assets: XcmVersionedAssets.V3([
-          {
-            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
-            id: XcmV3MultiassetAssetId.Concrete({
-              interior: XcmV3Junctions.Here(),
-              parents: 1,
-            }),
-          },
-        ]),
-        fee_asset_item: 0,
-        weight_limit: XcmV3WeightLimit.Unlimited(),
-      });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
-        toast.loading(
-          <span>
-            Transaction submitted:&nbsp;
-            <a
-              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ textDecoration: 'underline', color: '#60a5fa' }}
-            >
-              view transaction
-            </a>
-          </span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
-          else {
-            toast.success('Transaction succeeded!', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
-          }
-        }
-      },
-      (e) => toast.error('Transaction cancelled', { id: toastId })
-    );
-  };
-
-  const relayChainToRegionXChain = async () => {
-    if (!selectedAccount) return toast.error('Account not selected');
-    const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) return toast.error('Unknown network');
-    const connection = connections[networkChainIds.relayChain];
-    const metadata = getNetworkMetadata(network);
-    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
-
-    const tx = connection.client
-      .getTypedApi(metadata.relayChain)
-      .tx.XcmPallet.limited_reserve_transfer_assets({
-        dest: XcmVersionedLocation.V3({
-          parents: 0,
-          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(REGIONX_KUSAMA_PARA_ID)),
-        }),
-        beneficiary: XcmVersionedLocation.V3({
-          parents: 0,
-          interior: XcmV3Junctions.X1(
-            XcmV3Junction.AccountId32({
-              network: undefined,
-              id: Binary.fromBytes(AccountId().enc(beneficiary)),
-            })
-          ),
-        }),
-        assets: XcmVersionedAssets.V3([
-          {
-            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
-            id: XcmV3MultiassetAssetId.Concrete({
-              interior: XcmV3Junctions.Here(),
-              parents: 0,
-            }),
-          },
-        ]),
-        fee_asset_item: 0,
-        weight_limit: XcmV3WeightLimit.Unlimited(),
-      });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
-        toast.loading(
-          <span>
-            Transaction submitted:&nbsp;
-            <a
-              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ textDecoration: 'underline', color: '#60a5fa' }}
-            >
-              view transaction
-            </a>
-          </span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
-          else toast.success('Transaction succeeded!', { id: toastId });
-        }
-      },
-      (e) => {
-        toast.error('Transaction cancelled', { id: toastId });
-        console.log(e);
-      }
-    );
-  };
-
-  const regionXChainToRelayChain = async () => {
-    if (!selectedAccount) return toast.error('Account not selected');
-    const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds || !networkChainIds.regionxChain) return toast.error('Unknown network');
-    const connection = connections[networkChainIds.regionxChain];
-    const metadata = getNetworkMetadata(network);
-    if (!connection?.client || !metadata || !metadata.regionxChain)
-      return toast.error('Connection or metadata missing');
-
-    const tx = connection.client
-      .getTypedApi(metadata.regionxChain)
-      .tx.PolkadotXcm.limited_reserve_transfer_assets({
-        dest: XcmVersionedLocation.V3({
-          parents: 1,
-          interior: XcmV3Junctions.Here(),
-        }),
-        beneficiary: XcmVersionedLocation.V3({
-          parents: 0,
-          interior: XcmV3Junctions.X1(
-            XcmV3Junction.AccountId32({
-              network: undefined,
-              id: Binary.fromBytes(AccountId().enc(beneficiary)),
-            })
-          ),
-        }),
-        assets: XcmVersionedAssets.V3([
-          {
-            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
-            id: XcmV3MultiassetAssetId.Concrete({
-              interior: XcmV3Junctions.Here(),
-              parents: 1,
-            }),
-          },
-        ]),
-        fee_asset_item: 0,
-        weight_limit: XcmV3WeightLimit.Unlimited(),
-      });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev) => {
-        toast.loading(
-          // TODO: we are not on subscan.
-          <span>Transaction submitted</span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
-          else {
-            toast.success('Transaction succeeded!', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
-          }
-        }
-      },
-      (e) => toast.error('Transaction cancelled', { id: toastId })
     );
   };
 
@@ -379,21 +176,11 @@ const CrossChain = () => {
     }
   };
 
-  const isRelayChain = (chainId: string): boolean => {
-    return chainId === chains[`${network}` as keyof typeof chains]?.chainId;
-  };
   const isCoretimeChain = (chainId: string): boolean => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
   const isAhChain = (chainId: string): boolean => {
     return chainId === chains[`${network}AH` as keyof typeof chains]?.chainId;
-  };
-  const isRegionXChain = (chainId: string): boolean => {
-    const capitalize = (str: string): string => {
-      if (!str) return '';
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    };
-    return chainId === chains[`regionx${capitalize(network)}` as keyof typeof chains]?.chainId;
   };
 
   const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {

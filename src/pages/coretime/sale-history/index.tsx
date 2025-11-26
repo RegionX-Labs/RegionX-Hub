@@ -56,6 +56,14 @@ export const SUBSCAN_CORETIME_URL: Record<string, string> = {
   none: '',
 };
 
+export const SUBSCAN_ASSET_HUB_URL: Record<string, string> = {
+  polkadot: 'https://assethub-polkadot.subscan.io',
+  kusama: 'https://assethub-kusama.subscan.io',
+  paseo: 'https://assethub-paseo.subscan.io',
+  westend: 'https://assethub-westend.subscan.io',
+  none: '',
+};
+
 const formatDate = (timestamp: Date | bigint | null): string => {
   if (!timestamp) return '-';
   const date = timestamp instanceof Date ? timestamp : new Date(Number(timestamp));
