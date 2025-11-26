@@ -15,18 +15,17 @@ import { $selectedAccount } from '@/wallet';
 import {
   XcmV3Junction,
   XcmV3Junctions,
-  XcmV3MultiassetAssetId,
   XcmV3MultiassetFungibility,
   XcmV3WeightLimit,
   XcmVersionedAssets,
   XcmVersionedLocation,
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
-import { CORETIME_PARA_ID, fromUnit, toUnitFormatted } from '@/utils';
+import { ASSET_HUB_PARA_ID, CORETIME_PARA_ID, fromUnit, toUnitFormatted } from '@/utils';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
 import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
-import { SUBSCAN_ASSET_HUB_URL } from '../coretime/sale-history';
+import { SUBSCAN_ASSET_HUB_URL, SUBSCAN_CORETIME_URL } from '../coretime/sale-history';
 
 const CrossChain = () => {
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
@@ -79,6 +78,8 @@ const CrossChain = () => {
 
     if (isAhChain(originChain) && isCoretimeChain(destinationChain)) {
       ahChainToCoretimeChain();
+    } else if (isCoretimeChain(originChain) && isAhChain(destinationChain)) {
+      coretimeChainToAhChain();
     } else {
       toast.error('Transfer not supported');
     }
@@ -140,6 +141,82 @@ const CrossChain = () => {
             Transaction submitted:&nbsp;
             <a
               href={`${SUBSCAN_ASSET_HUB_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else toast.success('Transaction succeeded!', { id: toastId });
+        }
+      },
+      (e) => {
+        toast.error('Transaction cancelled', { id: toastId });
+        console.log(e);
+      }
+    );
+  };
+
+  const coretimeChainToAhChain = async () => {
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds || !networkChainIds.ahChain) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.coretimeChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata || !metadata.coretimeChain)
+      return toast.error('Connection or metadata missing');
+
+    if (
+      accountData &&
+      accountData.coretimeChainData &&
+      accountData.coretimeChainData.free < BigInt(fromUnit(network, Number(amount)))
+    ) {
+      toast.error('Insufficient balance');
+      return;
+    }
+
+    const tx = connection.client
+      .getTypedApi(metadata.coretimeChain)
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+        dest: XcmVersionedLocation.V4({
+          parents: 1,
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(ASSET_HUB_PARA_ID)),
+        }),
+        beneficiary: XcmVersionedLocation.V4({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V4([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
+            id: {
+              interior: XcmV3Junctions.Here(),
+              parents: 1,
+            },
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
               target='_blank'
               rel='noopener noreferrer'
               style={{ textDecoration: 'underline', color: '#60a5fa' }}
