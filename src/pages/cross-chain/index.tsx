@@ -68,7 +68,6 @@ const CrossChain = () => {
     ? `${selectedAccount.address.slice(0, 6)}…${selectedAccount.address.slice(-4)}`
     : '';
 
-  // === OLD LOGIC: openModal (unchanged except for layout usage) ===
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
     if (!originChain || !destinationChain) return toast.error('Both chains must be selected');
@@ -95,7 +94,6 @@ const CrossChain = () => {
     setIsModalOpen(true);
   };
 
-  // === OLD LOGIC: onTransfer & direction selection ===
   const onTransfer = async () => {
     if (!originChain || !destinationChain || !selectedAccount) return;
     if (originChain === destinationChain)
@@ -111,7 +109,6 @@ const CrossChain = () => {
     setIsModalOpen(false);
   };
 
-  // === OLD LOGIC: AH -> Coretime ===
   const ahChainToCoretimeChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
@@ -188,7 +185,6 @@ const CrossChain = () => {
     );
   };
 
-  // === OLD LOGIC: Coretime -> AH ===
   const coretimeChainToAhChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
@@ -303,7 +299,6 @@ const CrossChain = () => {
 
   return (
     <div className={styles.container}>
-      {/* Header from NEW design */}
       <div className={styles.headerRow}>
         <div>
           <h1 className={styles.headerTitle}>Cross-chain transfer</h1>
@@ -319,10 +314,8 @@ const CrossChain = () => {
         )}
       </div>
 
-      {/* Main content layout from NEW design */}
       <div className={styles.content}>
         <div className={styles.transferCard}>
-          {/* Step 1 - Select networks */}
           <div className={styles.sectionHeader}>
             <span className={styles.sectionStep}>Step 1</span>
             <span className={styles.sectionTitle}>Select networks</span>
@@ -349,7 +342,6 @@ const CrossChain = () => {
             </div>
           </div>
 
-          {/* Step 2 - Recipient */}
           <div className={styles.sectionHeader}>
             <span className={styles.sectionStep}>Step 2</span>
             <span className={styles.sectionTitle}>Recipient</span>
@@ -376,7 +368,6 @@ const CrossChain = () => {
           </div>
           {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
 
-          {/* Step 3 - Amount */}
           <div className={styles.sectionHeader}>
             <span className={styles.sectionStep}>Step 3</span>
             <span className={styles.sectionTitle}>Amount</span>
@@ -393,12 +384,10 @@ const CrossChain = () => {
           </div>
 
           <div className={styles.buttonRow}>
-            {/* Text changed to match new design, logic of click is old openModal */}
             <Button onClick={openModal}>Review transfer</Button>
           </div>
         </div>
 
-        {/* Side balances card from NEW design, using OLD formatting logic */}
         {selectedAccount && accountData && (
           <aside className={styles.sideCard}>
             <div className={styles.sideCardHeader}>
@@ -436,7 +425,6 @@ const CrossChain = () => {
         )}
       </div>
 
-      {/* OLD TransactionModal logic kept exactly */}
       {selectedAccount && accountDataMap[selectedAccount.address] && (
         <TransactionModal
           isOpen={isModalOpen}
