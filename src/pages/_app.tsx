@@ -88,7 +88,7 @@ function App({ Component, pageProps }: AppProps) {
         return;
       }
 
-      if ((connection.status === 'error') && !errorShownForChain.current[chainId]) {
+      if (connection.status === 'error' && !errorShownForChain.current[chainId]) {
         const chainName =
           Object.values(chains).find((chain) => chain.chainId === chainId)?.name || 'chain';
         toast.error(`Failed to connect to ${chainName} RPC. Please check your endpoint.`, {
