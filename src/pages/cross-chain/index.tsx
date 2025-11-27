@@ -15,17 +15,18 @@ import { $selectedAccount } from '@/wallet';
 import {
   XcmV3Junction,
   XcmV3Junctions,
+  XcmV3MultiassetAssetId,
   XcmV3MultiassetFungibility,
   XcmV3WeightLimit,
   XcmVersionedAssets,
   XcmVersionedLocation,
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
-import { ASSET_HUB_PARA_ID, CORETIME_PARA_ID, fromUnit, toUnitFormatted } from '@/utils';
+import { CORETIME_PARA_ID, fromUnit, REGIONX_KUSAMA_PARA_ID, toUnitFormatted } from '@/utils';
 import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
 import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
-import { SUBSCAN_ASSET_HUB_URL, SUBSCAN_CORETIME_URL } from '../coretime/sale-history';
+import { SUBSCAN_CORETIME_URL, SUBSCAN_RELAY_URL } from '../coretime/sale-history';
 
 const CrossChain = () => {
   const [originChain, setOriginChain] = useState<ChainId | null>(null);
@@ -43,6 +44,7 @@ const CrossChain = () => {
   const connections = useUnit($connections);
 
   const accountData = selectedAccount?.address ? accountDataMap[selectedAccount.address] : null;
+
   const formattedRelay =
     accountData?.relayChainData?.free != null
       ? toUnitFormatted(network, accountData.relayChainData.free)
@@ -63,28 +65,17 @@ const CrossChain = () => {
       ? toUnitFormatted(network, accountData.regionxChainData.free)
       : '--';
 
+  const shortAddress = selectedAccount?.address
+    ? `${selectedAccount.address.slice(0, 6)}…${selectedAccount.address.slice(-4)}`
+    : '';
+
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
-    if (!originChain || !destinationChain) return toast.error('Both chains must be selected');
     if (originChain === destinationChain)
       return toast.error('Origin and destination chains are the same');
-
-    const parsedAmount = Number(amount);
-    if (!amount || Number.isNaN(parsedAmount) || parsedAmount <= 0)
-      return toast.error('Enter a valid amount');
-
-    if (!accountData) return toast.error('Account data unavailable');
-
-    const required = BigInt(fromUnit(network, parsedAmount));
-    const originBalance = isAhChain(originChain)
-      ? accountData.ahChainData?.free
-      : isCoretimeChain(originChain)
-        ? accountData.coretimeChainData?.free
-        : null;
-
-    if (originBalance == null) return toast.error('Balance unavailable for selected origin chain');
-    if (originBalance < required)
-      return toast.error(`Insufficient balance on ${getChainLabel(originChain)}`);
+    if (!originChain || !destinationChain) return toast.error('Both chains must be selected');
+    if (!amount) return toast.error('Enter amount to transfer');
+    if (!beneficiary || beneficiaryError) return toast.error('Enter a valid recipient address');
 
     setIsModalOpen(true);
   };
@@ -94,42 +85,46 @@ const CrossChain = () => {
     if (originChain === destinationChain)
       return toast.error('Origin and destination chains are the same');
 
-    if (isAhChain(originChain) && isCoretimeChain(destinationChain)) {
-      ahChainToCoretimeChain();
-    } else if (isCoretimeChain(originChain) && isAhChain(destinationChain)) {
-      coretimeChainToAhChain();
+    if (isCoretimeChain(originChain) && isRelayChain(destinationChain)) {
+      await coretimeChainToRelayChain();
+    } else if (isRelayChain(originChain) && isCoretimeChain(destinationChain)) {
+      await relayChainToCoretimeChain();
+    } else if (isRelayChain(originChain) && isRegionXChain(destinationChain)) {
+      await relayChainToRegionXChain();
+    } else if (isRegionXChain(originChain) && isRelayChain(destinationChain)) {
+      await regionXChainToRelayChain();
+    } else if (isAhChain(originChain) || isAhChain(destinationChain)) {
+      toast.error('Disabled right now');
     } else {
       toast.error('Transfer not supported');
     }
     setIsModalOpen(false);
   };
 
-  const ahChainToCoretimeChain = async () => {
+  const relayChainToCoretimeChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds || !networkChainIds.ahChain) return toast.error('Unknown network');
-    const connection = connections[networkChainIds.ahChain];
+    if (!networkChainIds) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.relayChain];
     const metadata = getNetworkMetadata(network);
-    if (!connection?.client || !metadata || !metadata.ahChain)
-      return toast.error('Connection or metadata missing');
+    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
 
     if (
       accountData &&
-      accountData.ahChainData &&
-      accountData.ahChainData.free < BigInt(fromUnit(network, Number(amount)))
+      accountData.relayChainData.free < BigInt(fromUnit(network, Number(amount)))
     ) {
-      toast.error(`Insufficient balance on ${getChainLabel(originChain)}`);
+      toast.error('Insufficient balance');
       return;
     }
 
     const tx = connection.client
-      .getTypedApi(metadata.ahChain)
-      .tx.PolkadotXcm.limited_teleport_assets({
-        dest: XcmVersionedLocation.V4({
-          parents: 1,
+      .getTypedApi(metadata.relayChain)
+      .tx.XcmPallet.limited_teleport_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 0,
           interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(CORETIME_PARA_ID)),
         }),
-        beneficiary: XcmVersionedLocation.V4({
+        beneficiary: XcmVersionedLocation.V3({
           parents: 0,
           interior: XcmV3Junctions.X1(
             XcmV3Junction.AccountId32({
@@ -138,13 +133,13 @@ const CrossChain = () => {
             })
           ),
         }),
-        assets: XcmVersionedAssets.V4([
+        assets: XcmVersionedAssets.V3([
           {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
-            id: {
+            id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
-              parents: 1,
-            },
+              parents: 0,
+            }),
           },
         ]),
         fee_asset_item: 0,
@@ -158,7 +153,7 @@ const CrossChain = () => {
           <span>
             Transaction submitted:&nbsp;
             <a
-              href={`${SUBSCAN_ASSET_HUB_URL[network]}/extrinsic/${ev.txHash}`}
+              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
               target='_blank'
               rel='noopener noreferrer'
               style={{ textDecoration: 'underline', color: '#60a5fa' }}
@@ -180,32 +175,30 @@ const CrossChain = () => {
     );
   };
 
-  const coretimeChainToAhChain = async () => {
+  const coretimeChainToRelayChain = async () => {
     if (!selectedAccount) return toast.error('Account not selected');
     const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds || !networkChainIds.ahChain) return toast.error('Unknown network');
+    if (!networkChainIds) return toast.error('Unknown network');
     const connection = connections[networkChainIds.coretimeChain];
     const metadata = getNetworkMetadata(network);
-    if (!connection?.client || !metadata || !metadata.coretimeChain)
-      return toast.error('Connection or metadata missing');
+    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
 
     if (
       accountData &&
-      accountData.coretimeChainData &&
       accountData.coretimeChainData.free < BigInt(fromUnit(network, Number(amount)))
     ) {
-      toast.error(`Insufficient balance on ${getChainLabel(originChain)}`);
+      toast.error('Insufficient balance');
       return;
     }
 
     const tx = connection.client
       .getTypedApi(metadata.coretimeChain)
       .tx.PolkadotXcm.limited_teleport_assets({
-        dest: XcmVersionedLocation.V4({
+        dest: XcmVersionedLocation.V3({
           parents: 1,
-          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(ASSET_HUB_PARA_ID)),
+          interior: XcmV3Junctions.Here(),
         }),
-        beneficiary: XcmVersionedLocation.V4({
+        beneficiary: XcmVersionedLocation.V3({
           parents: 0,
           interior: XcmV3Junctions.X1(
             XcmV3Junction.AccountId32({
@@ -214,13 +207,13 @@ const CrossChain = () => {
             })
           ),
         }),
-        assets: XcmVersionedAssets.V4([
+        assets: XcmVersionedAssets.V3([
           {
             fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
-            id: {
+            id: XcmV3MultiassetAssetId.Concrete({
               interior: XcmV3Junctions.Here(),
               parents: 1,
-            },
+            }),
           },
         ]),
         fee_asset_item: 0,
@@ -246,6 +239,72 @@ const CrossChain = () => {
         );
         if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
           if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else {
+            toast.success('Transaction succeeded!', { id: toastId });
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => toast.error('Transaction cancelled', { id: toastId })
+    );
+  };
+
+  const relayChainToRegionXChain = async () => {
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.relayChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata) return toast.error('Connection or metadata missing');
+
+    const tx = connection.client
+      .getTypedApi(metadata.relayChain)
+      .tx.XcmPallet.limited_reserve_transfer_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(XcmV3Junction.Parachain(REGIONX_KUSAMA_PARA_ID)),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.Here(),
+              parents: 0,
+            }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(
+          <span>
+            Transaction submitted:&nbsp;
+            <a
+              href={`${SUBSCAN_RELAY_URL[network]}/extrinsic/${ev.txHash}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'underline', color: '#60a5fa' }}
+            >
+              view transaction
+            </a>
+          </span>,
+          { id: toastId }
+        );
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
           else toast.success('Transaction succeeded!', { id: toastId });
         }
       },
@@ -253,6 +312,60 @@ const CrossChain = () => {
         toast.error('Transaction cancelled', { id: toastId });
         console.log(e);
       }
+    );
+  };
+
+  const regionXChainToRelayChain = async () => {
+    if (!selectedAccount) return toast.error('Account not selected');
+    const networkChainIds = getNetworkChainIds(network);
+    if (!networkChainIds || !networkChainIds.regionxChain) return toast.error('Unknown network');
+    const connection = connections[networkChainIds.regionxChain];
+    const metadata = getNetworkMetadata(network);
+    if (!connection?.client || !metadata || !metadata.regionxChain)
+      return toast.error('Connection or metadata missing');
+
+    const tx = connection.client
+      .getTypedApi(metadata.regionxChain)
+      .tx.PolkadotXcm.limited_reserve_transfer_assets({
+        dest: XcmVersionedLocation.V3({
+          parents: 1,
+          interior: XcmV3Junctions.Here(),
+        }),
+        beneficiary: XcmVersionedLocation.V3({
+          parents: 0,
+          interior: XcmV3Junctions.X1(
+            XcmV3Junction.AccountId32({
+              network: undefined,
+              id: Binary.fromBytes(AccountId().enc(beneficiary)),
+            })
+          ),
+        }),
+        assets: XcmVersionedAssets.V3([
+          {
+            fun: XcmV3MultiassetFungibility.Fungible(fromUnit(network, Number(amount))),
+            id: XcmV3MultiassetAssetId.Concrete({
+              interior: XcmV3Junctions.Here(),
+              parents: 1,
+            }),
+          },
+        ]),
+        fee_asset_item: 0,
+        weight_limit: XcmV3WeightLimit.Unlimited(),
+      });
+
+    const toastId = toast.loading('Transaction submitted');
+    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
+      (ev) => {
+        toast.loading(<span>Transaction submitted</span>, { id: toastId });
+        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
+          if (!ev.ok) toast.error('Transaction failed', { id: toastId });
+          else {
+            toast.success('Transaction succeeded!', { id: toastId });
+            getAccountData({ account: selectedAccount.address, connections, network });
+          }
+        }
+      },
+      (e) => toast.error('Transaction cancelled', { id: toastId })
     );
   };
 
@@ -271,17 +384,21 @@ const CrossChain = () => {
     }
   };
 
+  const isRelayChain = (chainId: string): boolean => {
+    return chainId === chains[`${network}` as keyof typeof chains]?.chainId;
+  };
   const isCoretimeChain = (chainId: string): boolean => {
     return chainId === chains[`${network}Coretime` as keyof typeof chains]?.chainId;
   };
   const isAhChain = (chainId: string): boolean => {
     return chainId === chains[`${network}AH` as keyof typeof chains]?.chainId;
   };
-  const getChainLabel = (chainId: ChainId | null): string => {
-    if (!chainId) return 'selected chain';
-    if (isAhChain(chainId)) return 'Asset Hub';
-    if (isCoretimeChain(chainId)) return 'Coretime Chain';
-    return 'selected chain';
+  const isRegionXChain = (chainId: string): boolean => {
+    const capitalize = (str: string): string => {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+    return chainId === chains[`regionx${capitalize(network)}` as keyof typeof chains]?.chainId;
   };
 
   const handleBeneficiaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -290,52 +407,142 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
+  const isReviewDisabled =
+    !selectedAccount ||
+    !originChain ||
+    !destinationChain ||
+    !amount ||
+    !!beneficiaryError ||
+    !beneficiary;
+
   return (
     <div className={styles.container}>
-      <div className={styles.chainSelectionContainer}>
-        <div className={styles.chainSelection}>
-          <label className={styles.sectionLabel}>Origin chain:</label>
-          <ChainSelector selectedValue={originChain} onChange={setOriginChain} />
+      <div className={styles.headerRow}>
+        <div>
+          <h1 className={styles.headerTitle}>Cross-chain transfer</h1>
+          <p className={styles.headerSubtitle}>
+            Move your balance between Relay, Coretime and RegionX chains with a single, clear flow.
+          </p>
         </div>
-
-        <div className={styles.swapIcon} onClick={handleSwapChains}>
-          ⇅
-        </div>
-
-        <div className={styles.chainSelection}>
-          <label className={styles.sectionLabel}>Destination chain:</label>
-          <ChainSelector selectedValue={destinationChain} onChange={setDestinationChain} />
-        </div>
+        {selectedAccount && (
+          <div className={styles.accountPill}>
+            <span className={styles.accountLabel}>Connected</span>
+            <span className={styles.accountAddress}>{shortAddress}</span>
+          </div>
+        )}
       </div>
 
-      <div className={styles.transferSection}>
-        <label>Transfer to</label>
-        <div className={styles.beneficiaryInputWrapper}>
-          <button
-            className={styles.meButton}
-            onClick={() => {
-              if (selectedAccount?.address) {
-                setBeneficiary(selectedAccount.address);
-                setBeneficiaryError(null);
-              }
-            }}
-          >
-            Me
-          </button>
-          <AddressInput
-            value={beneficiary}
-            onChange={handleBeneficiaryChange}
-            placeholder='Address of the recipient'
-          />
-        </div>
-        {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
+      <div className={styles.content}>
+        <div className={styles.transferCard}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionStep}>Step 1</span>
+            <span className={styles.sectionTitle}>Select networks</span>
+          </div>
 
-        <div className={styles.amountSection}>
-          <label>Transfer Amount:</label>
-          <div className={styles.amountInputWrapper}>
-            <CrossChainAmountInput originChain={originChain} setAmount={setAmount} />
+          <div className={styles.chainSelectionRow}>
+            <div className={styles.chainSelection}>
+              <label className={styles.sectionLabel}>From</label>
+              <ChainSelector selectedValue={originChain} onChange={setOriginChain} />
+            </div>
+
+            <button
+              type='button'
+              className={styles.swapButton}
+              onClick={handleSwapChains}
+              aria-label='Swap origin and destination'
+            >
+              ⇅
+            </button>
+
+            <div className={styles.chainSelection}>
+              <label className={styles.sectionLabel}>To</label>
+              <ChainSelector selectedValue={destinationChain} onChange={setDestinationChain} />
+            </div>
+          </div>
+
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionStep}>Step 2</span>
+            <span className={styles.sectionTitle}>Recipient</span>
+          </div>
+
+          <div className={styles.beneficiaryInputWrapper}>
+            <button
+              type='button'
+              className={styles.meButton}
+              onClick={() => {
+                if (selectedAccount?.address) {
+                  setBeneficiary(selectedAccount.address);
+                  setBeneficiaryError(null);
+                }
+              }}
+            >
+              My Address
+            </button>
+            <AddressInput
+              value={beneficiary}
+              onChange={handleBeneficiaryChange}
+              placeholder='Address of the recipient'
+            />
+          </div>
+          {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
+
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionStep}>Step 3</span>
+            <span className={styles.sectionTitle}>Amount</span>
+          </div>
+
+          <div className={styles.amountSection}>
+            <div className={styles.amountInputWrapper}>
+              <CrossChainAmountInput originChain={originChain} setAmount={setAmount} />
+            </div>
+            <p className={styles.feeHint}>
+              Transfer fees are paid on the origin chain. Leave a small remainder to keep the
+              account alive.
+            </p>
+          </div>
+
+          <div className={styles.buttonRow}>
+            <Button onClick={openModal} disabled={isReviewDisabled}>
+              Review transfer
+            </Button>
           </div>
         </div>
+
+        {selectedAccount && accountData && (
+          <aside className={styles.sideCard}>
+            <div className={styles.sideCardHeader}>
+              <h2>Balances</h2>
+              <span className={styles.networkBadge}>{network.toUpperCase()}</span>
+            </div>
+
+            <div className={styles.balanceList}>
+              <div className={styles.balanceRow}>
+                <span className={styles.balanceLabel}>
+                  {accountData.ahChainData ? 'Asset Hub balance' : 'Relay chain balance'}
+                </span>
+                <span className={styles.balanceValue}>
+                  {accountData.ahChainData ? formattedAh : formattedRelay}
+                </span>
+              </div>
+
+              <div className={styles.balanceRow}>
+                <span className={styles.balanceLabel}>Coretime chain balance</span>
+                <span className={styles.balanceValue}>{formattedCoretime}</span>
+              </div>
+
+              {network === 'kusama' && (
+                <div className={styles.balanceRow}>
+                  <span className={styles.balanceLabel}>RegionX chain balance</span>
+                  <span className={styles.balanceValue}>{formattedRegionx}</span>
+                </div>
+              )}
+            </div>
+
+            <p className={styles.balanceHint}>
+              Balances update after the transaction is finalized on-chain.
+            </p>
+          </aside>
+        )}
       </div>
 
       {selectedAccount && accountDataMap[selectedAccount.address] && (
@@ -346,32 +553,7 @@ const CrossChain = () => {
           onConfirm={onTransfer}
         />
       )}
-      {selectedAccount && accountData && (
-        <div className={styles.balanceBox}>
-          <div className={styles.balanceItem}>
-            <span className={styles.label}>
-              {accountData.ahChainData ? 'Asset Hub Balance' : 'Relay Chain Balance'}
-            </span>
-            <span className={styles.value}>
-              {accountData.ahChainData ? formattedAh : formattedRelay}
-            </span>
-          </div>
-          <div className={styles.balanceItem}>
-            <span className={styles.label}>Coretime Chain Balance</span>
-            <span className={styles.value}>{formattedCoretime}</span>
-          </div>
-          {network === 'kusama' && (
-            <div className={`${styles.balanceItem} ${styles.alignRight}`}>
-              <span className={styles.label}>RegionX Chain Balance</span>
-              <span className={styles.value}>{formattedRegionx}</span>
-            </div>
-          )}
-        </div>
-      )}
 
-      <div className={styles.buttonContainer}>
-        <Button onClick={openModal}>Transfer</Button>
-      </div>
       <Toaster />
     </div>
   );
