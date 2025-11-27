@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '@/styles/global.scss';
 import '@region-x/components/dist/style.css';
 import { Analytics } from '@vercel/analytics/next';
@@ -27,8 +27,9 @@ import { identityRequested } from '@/account/accountIdentity';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { regionsRequested } from '@/coretime/regions';
 import Head from 'next/head';
-import { getNetworkChainIds } from '@/network';
+import { chains, getNetworkChainIds } from '@/network';
 import { RPC_SETTINGS_KEY, RpcSettings } from '@/constants/rpc';
+import toast, { Toaster } from 'react-hot-toast';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -58,6 +59,7 @@ function App({ Component, pageProps }: AppProps) {
   const loadedAccounts = useUnit($loadedAccounts);
   const saleInfo = useUnit($latestSaleInfo);
   const connectedWallets = useUnit($connectedWallets);
+  const errorShownForChain = useRef<Record<string, boolean>>({});
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -78,6 +80,24 @@ function App({ Component, pageProps }: AppProps) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    Object.entries(connections).forEach(([chainId, connection]) => {
+      if (connection.status === 'connected') {
+        errorShownForChain.current[chainId] = false;
+        return;
+      }
+
+      if ((connection.status === 'error') && !errorShownForChain.current[chainId]) {
+        const chainName =
+          Object.values(chains).find((chain) => chain.chainId === chainId)?.name || 'chain';
+        toast.error(`Failed to connect to ${chainName} RPC. Please check your endpoint.`, {
+          position: 'bottom-left',
+        });
+        errorShownForChain.current[chainId] = true;
+      }
+    });
+  }, [connections]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -306,6 +326,7 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
 
+      <Toaster />
       <Analytics />
     </div>
   );
