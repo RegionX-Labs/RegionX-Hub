@@ -8,7 +8,7 @@ import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
-import { $connections, $network, networkStarted } from '@/api/connection';
+import { $connections, $network, networkStarted, rpcEndpointUpdated } from '@/api/connection';
 import {
   getExtensions,
   SELECTED_WALLET_KEY,
@@ -27,8 +27,26 @@ import { identityRequested } from '@/account/accountIdentity';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { regionsRequested } from '@/coretime/regions';
 import Head from 'next/head';
+import { getNetworkChainIds } from '@/network';
+import { RPC_SETTINGS_KEY, RpcSettings } from '@/constants/rpc';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
+
+const saveRpcSettings = (network: Network, relayUrl: string, coretimeUrl: string) => {
+  const storedRaw = localStorage.getItem(RPC_SETTINGS_KEY);
+  let parsed: RpcSettings = {};
+
+  if (storedRaw) {
+    try {
+      parsed = JSON.parse(storedRaw) as RpcSettings;
+    } catch {
+      parsed = {};
+    }
+  }
+
+  parsed[network] = { relayUrl, coretimeUrl };
+  localStorage.setItem(RPC_SETTINGS_KEY, JSON.stringify(parsed));
+};
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -175,7 +193,14 @@ function App({ Component, pageProps }: AppProps) {
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
-        onRpcChange={(url) => console.log('RPC changed to:', url)}
+        onRpcChange={(relayUrl, coretimeUrl) => {
+          const chainIds = getNetworkChainIds(network);
+          if (!chainIds) return;
+
+          saveRpcSettings(network, relayUrl, coretimeUrl);
+          rpcEndpointUpdated({ chainId: chainIds.relayChain, url: relayUrl });
+          rpcEndpointUpdated({ chainId: chainIds.coretimeChain, url: coretimeUrl });
+        }}
       />
 
       <div
