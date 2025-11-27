@@ -23,7 +23,7 @@ const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
 export const $network = createStore<Network>(Network.POLKADOT);
 
-const loadRpcSettings = (network: Network) => {
+const loadRpcSettings = (network: Network): { relayUrl: string; coretimeUrl: string } | null => {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(RPC_SETTINGS_KEY);
