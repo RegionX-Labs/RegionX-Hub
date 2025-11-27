@@ -5,6 +5,7 @@ import { chains } from '@/network/chains';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import styles from './rpc-settings-modal.module.scss';
+import { RPC_SETTINGS_KEY, RpcSettings } from '@/constants/rpc';
 
 export type RpcSettingsModalProps = {
   isOpen: boolean;
@@ -20,14 +21,42 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
   const [customCoretimeRpc, setCustomCoretimeRpc] = useState<string>('');
 
   useEffect(() => {
-    if (!network) return;
+    if (!network || !isOpen) return;
     const relayKey = network.toLowerCase();
     const coretimeKey = `${relayKey}Coretime` as keyof typeof chains;
     const relayChain = chains[relayKey as keyof typeof chains];
     const coretimeChain = chains[coretimeKey];
-    setSelectedRelayRpc(relayChain?.nodes?.[0]?.url || '');
-    setSelectedCoretimeRpc(coretimeChain?.nodes?.[0]?.url || '');
-  }, [network]);
+    const relayRpcs = relayChain?.nodes || [];
+    const coretimeRpcs = coretimeChain?.nodes || [];
+
+    let storedRelay = '';
+    let storedCoretime = '';
+    const storedRaw = localStorage.getItem(RPC_SETTINGS_KEY);
+    if (storedRaw) {
+      try {
+        const parsed = JSON.parse(storedRaw) as RpcSettings;
+        storedRelay = parsed?.[network]?.relayUrl || '';
+        storedCoretime = parsed?.[network]?.coretimeUrl || '';
+      } catch {
+        storedRelay = '';
+        storedCoretime = '';
+      }
+    }
+
+    const relayUrl = storedRelay || relayRpcs[0]?.url || '';
+    const coretimeUrl = storedCoretime || coretimeRpcs[0]?.url || '';
+
+    setSelectedRelayRpc(relayUrl);
+    setSelectedCoretimeRpc(coretimeUrl);
+    setCustomRelayRpc(
+      storedRelay && !relayRpcs.some((node) => node.url === storedRelay) ? storedRelay : ''
+    );
+    setCustomCoretimeRpc(
+      storedCoretime && !coretimeRpcs.some((node) => node.url === storedCoretime)
+        ? storedCoretime
+        : ''
+    );
+  }, [network, isOpen]);
 
   if (!isOpen || !network) return null;
 

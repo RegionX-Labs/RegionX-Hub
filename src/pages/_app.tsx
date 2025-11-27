@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '@/styles/global.scss';
 import '@region-x/components/dist/style.css';
 import { Analytics } from '@vercel/analytics/next';
@@ -8,7 +8,7 @@ import type { AppProps } from 'next/app';
 import Header from '@/components/Header';
 import { useRouter } from 'next/router';
 import { Network } from '@/types';
-import { $connections, $network, networkStarted } from '@/api/connection';
+import { $connections, $network, networkStarted, rpcEndpointUpdated } from '@/api/connection';
 import {
   getExtensions,
   SELECTED_WALLET_KEY,
@@ -27,8 +27,27 @@ import { identityRequested } from '@/account/accountIdentity';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
 import { regionsRequested } from '@/coretime/regions';
 import Head from 'next/head';
+import { chains, getNetworkChainIds } from '@/network';
+import { RPC_SETTINGS_KEY, RpcSettings } from '@/constants/rpc';
+import toast, { Toaster } from 'react-hot-toast';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
+
+const saveRpcSettings = (network: Network, relayUrl: string, coretimeUrl: string) => {
+  const storedRaw = localStorage.getItem(RPC_SETTINGS_KEY);
+  let parsed: RpcSettings = {};
+
+  if (storedRaw) {
+    try {
+      parsed = JSON.parse(storedRaw) as RpcSettings;
+    } catch {
+      parsed = {};
+    }
+  }
+
+  parsed[network] = { relayUrl, coretimeUrl };
+  localStorage.setItem(RPC_SETTINGS_KEY, JSON.stringify(parsed));
+};
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -40,6 +59,7 @@ function App({ Component, pageProps }: AppProps) {
   const loadedAccounts = useUnit($loadedAccounts);
   const saleInfo = useUnit($latestSaleInfo);
   const connectedWallets = useUnit($connectedWallets);
+  const errorShownForChain = useRef<Record<string, boolean>>({});
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -60,6 +80,24 @@ function App({ Component, pageProps }: AppProps) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    Object.entries(connections).forEach(([chainId, connection]) => {
+      if (connection.status === 'connected') {
+        errorShownForChain.current[chainId] = false;
+        return;
+      }
+
+      if (connection.status === 'error' && !errorShownForChain.current[chainId]) {
+        const chainName =
+          Object.values(chains).find((chain) => chain.chainId === chainId)?.name || 'chain';
+        toast.error(`Failed to connect to ${chainName} RPC. Please check your endpoint.`, {
+          position: 'bottom-left',
+        });
+        errorShownForChain.current[chainId] = true;
+      }
+    });
+  }, [connections]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -175,7 +213,14 @@ function App({ Component, pageProps }: AppProps) {
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
-        onRpcChange={(url) => console.log('RPC changed to:', url)}
+        onRpcChange={(relayUrl, coretimeUrl) => {
+          const chainIds = getNetworkChainIds(network);
+          if (!chainIds) return;
+
+          saveRpcSettings(network, relayUrl, coretimeUrl);
+          rpcEndpointUpdated({ chainId: chainIds.relayChain, url: relayUrl });
+          rpcEndpointUpdated({ chainId: chainIds.coretimeChain, url: coretimeUrl });
+        }}
       />
 
       <div
@@ -281,6 +326,7 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
 
+      <Toaster />
       <Analytics />
     </div>
   );
