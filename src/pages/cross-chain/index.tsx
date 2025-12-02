@@ -322,7 +322,7 @@ const CrossChain = () => {
           <div className={styles.metricCard}>
             <span className={styles.metricLabel}>Typical completion</span>
             <div className={styles.metricValue}>~45s</div>
-            <p className={styles.metricHint}>Based on recent transfers</p>
+            <p className={styles.metricHint}>This is a rough estimate</p>
           </div>
         </div>
       </div>
@@ -346,7 +346,6 @@ const CrossChain = () => {
                 <button className={styles.swapButton} onClick={handleSwapChains}>
                   ⇅
                 </button>
-                <span className={styles.connectorLabel}>Swap</span>
               </div>
               <div className={styles.chainBlock}>
                 <span className={styles.inputLabel}>Destination chain</span>
@@ -481,27 +480,24 @@ const CrossChain = () => {
                 <span className={styles.statusDot} />
                 <div>
                   <p className={styles.label}>Asset Hub</p>
-                  <p className={styles.statusHint}>Healthy • Low congestion</p>
                 </div>
               </div>
               <div className={styles.statusRow}>
                 <span className={styles.statusDot} />
                 <div>
                   <p className={styles.label}>Coretime</p>
-                  <p className={styles.statusHint}>Healthy • Finality 1 min</p>
                 </div>
               </div>
             </div>
           </div>
+          <div className={styles.actionBar}>
+            <div>
+              <p className={styles.muted}>Ready to send?</p>
+              <h4>Review and launch your transfer</h4>
+            </div>
+            <Button onClick={openModal}>Transfer</Button>
+          </div>
         </aside>
-      </div>
-
-      <div className={styles.actionBar}>
-        <div>
-          <p className={styles.muted}>Ready to send?</p>
-          <h4>Review and launch your transfer</h4>
-        </div>
-        <Button onClick={openModal}>Transfer</Button>
       </div>
 
       {selectedAccount && accountDataMap[selectedAccount.address] && (
