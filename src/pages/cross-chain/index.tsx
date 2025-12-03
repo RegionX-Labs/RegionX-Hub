@@ -22,7 +22,7 @@ import {
 } from '@polkadot-api/descriptors';
 import { AccountId, Binary } from 'polkadot-api';
 import { ASSET_HUB_PARA_ID, CORETIME_PARA_ID, fromUnit, toUnitFormatted } from '@/utils';
-import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
+import { $accountData, MultiChainAccountData } from '@/account';
 import ChainSelector from '@/components/CrossChain/ChainSelector';
 import CrossChainAmountInput from '@/components/CrossChain/AmountInput';
 import { SUBSCAN_ASSET_HUB_URL, SUBSCAN_CORETIME_URL } from '../coretime/sale-history';
