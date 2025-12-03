@@ -43,6 +43,9 @@ export type * from './ksm_ah';
 import { default as dot_ah } from './dot_ah';
 export { dot_ah };
 export type * from './dot_ah';
+import { default as pas_ah } from './pas_ah';
+export { pas_ah };
+export type * from './pas_ah';
 export {
   DigestItem,
   Phase,

@@ -84,6 +84,14 @@ export const chains = {
       { url: 'wss://sys.ibp.network/coretime-kusama' },
     ],
   },
+  paseoAH: {
+    chainId: '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2' as ChainId,
+    name: 'Paseo AssetHub',
+    nodes: [
+      { url: 'wss://sys.ibp.network/asset-hub-paseo' },
+      { url: 'wss://pas-rpc.stakeworld.io/assethub' },
+    ],
+  },
   paseoCoretime: {
     chainId: '0xc806038cc1d06766f23074ade7c5511326be41646deabc259970ff280c82a464' as ChainId,
     name: 'Paseo Coretime',

@@ -53,8 +53,8 @@ const ChainSelector = ({ selectedValue, onChange }: ChainSelectorProps) => {
       ),
     },
     {
-      value: chains.paseo.chainId,
-      label: 'Paseo',
+      value: chains.paseoAH.chainId,
+      label: 'Paseo Asset Hub',
       icon: (
         <Image
           src={PaseoIcon.src}
