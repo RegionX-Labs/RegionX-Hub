@@ -13,3 +13,4 @@ export declare const Dot_people: Record<string, object>;
 export declare const Pas_coretime: Record<string, object>;
 export declare const Ksm_ah: Record<string, object>;
 export declare const Dot_ah: Record<string, object>;
+export declare const Pas_ah: Record<string, object>;

@@ -87,6 +87,12 @@
       "metadata": ".papi/metadata/dot_ah.scale",
       "genesis": "0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f",
       "codeHash": "0x274e1781dc36a23a922f9ec1e04afe0496a503612c4d57aa4fa0c8bf55b1237a"
+    },
+    "pas_ah": {
+      "wsUrl": "wss://sys.ibp.network/asset-hub-paseo",
+      "metadata": ".papi/metadata/pas_ah.scale",
+      "genesis": "0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2",
+      "codeHash": "0x6629e908ca95b0ac1fa2ee6838d83ecec217ee5a4587dc9616c2c06e4611681d"
     }
   }
 }
