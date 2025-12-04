@@ -223,6 +223,11 @@
   transform: translateY(-2px);
 }
 
+.swapIcon {
+  display: inline-block;
+  transform: rotate(90deg);
+}
+
 .connectorLabel {
   color: var(--cc-muted);
   font-size: 0.9rem;

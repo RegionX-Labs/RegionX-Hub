@@ -301,10 +301,9 @@ const CrossChain = () => {
       <div className={styles.hero}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>Cross-chain transfer</p>
-          <h1>Move assets between networks with confidence</h1>
+          <h1>Move tokens to Coretime chain in a few steps</h1>
           <p className={styles.subtitle}>
-            Build your route, review fees, and send with a single click. Powered by XCM with live
-            health checks.
+            Build your route, review fees, and send with a single click.
           </p>
           <div className={styles.heroBadges}>
             <span className={styles.badge}>Secure teleport</span>
@@ -321,7 +320,7 @@ const CrossChain = () => {
           </div>
           <div className={styles.metricCard}>
             <span className={styles.metricLabel}>Typical completion</span>
-            <div className={styles.metricValue}>~45s</div>
+            <div className={styles.metricValue}>~30s</div>
             <p className={styles.metricHint}>This is a rough estimate</p>
           </div>
         </div>
@@ -344,7 +343,7 @@ const CrossChain = () => {
               </div>
               <div className={styles.connector}>
                 <button className={styles.swapButton} onClick={handleSwapChains}>
-                  ⇅
+                  <span className={styles.swapIcon}>⇅</span>
                 </button>
               </div>
               <div className={styles.chainBlock}>
@@ -379,7 +378,7 @@ const CrossChain = () => {
                   }
                 }}
               >
-                Me
+                My Address
               </button>
               <AddressInput
                 value={beneficiary}
@@ -463,8 +462,8 @@ const CrossChain = () => {
             <div className={styles.tipBox}>
               <p className={styles.tipTitle}>Heads up</p>
               <p className={styles.tipCopy}>
-                Keep a small reserve on the origin chain to cover fees. Review the modal before
-                sending.
+                Keep some balance on the origin chain to cover fees. Review the transaction modal
+                before sending.
               </p>
             </div>
           </div>
