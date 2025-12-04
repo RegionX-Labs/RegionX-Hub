@@ -290,52 +290,213 @@ const CrossChain = () => {
     setBeneficiaryError(isValidAddress(value) ? null : 'Invalid address');
   };
 
+  const getChainName = (chainId: ChainId | null) => {
+    if (!chainId) return 'Select chain';
+    const match = Object.values(chains).find((chain) => chain.chainId === chainId);
+    return match?.name ?? 'Select chain';
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.chainSelectionContainer}>
-        <div className={styles.chainSelection}>
-          <label className={styles.sectionLabel}>Origin chain:</label>
-          <ChainSelector selectedValue={originChain} onChange={setOriginChain} />
+    <div className={styles.page}>
+      <div className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>Cross-chain transfer</p>
+          <h1>Move tokens to Coretime chain in a few steps</h1>
+          <p className={styles.subtitle}>
+            Build your route, review fees, and send with a single click.
+          </p>
+          <div className={styles.heroBadges}>
+            <span className={styles.badge}>Secure teleport</span>
+            <span className={styles.badge}>Live status</span>
+          </div>
         </div>
-
-        <div className={styles.swapIcon} onClick={handleSwapChains}>
-          ⇅
-        </div>
-
-        <div className={styles.chainSelection}>
-          <label className={styles.sectionLabel}>Destination chain:</label>
-          <ChainSelector selectedValue={destinationChain} onChange={setDestinationChain} />
+        <div className={styles.heroMetrics}>
+          <div className={styles.metricCard}>
+            <span className={styles.metricLabel}>Route status</span>
+            <div className={styles.metricValue}>
+              <span className={styles.statusDot} /> Operational
+            </div>
+            <p className={styles.metricHint}>No incidents reported</p>
+          </div>
+          <div className={styles.metricCard}>
+            <span className={styles.metricLabel}>Typical completion</span>
+            <div className={styles.metricValue}>~30s</div>
+            <p className={styles.metricHint}>This is a rough estimate</p>
+          </div>
         </div>
       </div>
 
-      <div className={styles.transferSection}>
-        <label>Transfer to</label>
-        <div className={styles.beneficiaryInputWrapper}>
-          <button
-            className={styles.meButton}
-            onClick={() => {
-              if (selectedAccount?.address) {
-                setBeneficiary(selectedAccount.address);
-                setBeneficiaryError(null);
-              }
-            }}
-          >
-            Me
-          </button>
-          <AddressInput
-            value={beneficiary}
-            onChange={handleBeneficiaryChange}
-            placeholder='Address of the recipient'
-          />
-        </div>
-        {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
-
-        <div className={styles.amountSection}>
-          <label>Transfer Amount:</label>
-          <div className={styles.amountInputWrapper}>
-            <CrossChainAmountInput originChain={originChain} setAmount={setAmount} />
+      <div className={styles.contentGrid}>
+        <div className={styles.mainColumn}>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div>
+                <p className={styles.muted}>Route builder</p>
+                <h3>Select origin & destination</h3>
+              </div>
+              <span className={styles.pill}>XCM Teleport</span>
+            </div>
+            <div className={styles.chainGrid}>
+              <div className={styles.chainBlock}>
+                <span className={styles.inputLabel}>Origin chain</span>
+                <ChainSelector selectedValue={originChain} onChange={setOriginChain} />
+              </div>
+              <div className={styles.connector}>
+                <button className={styles.swapButton} onClick={handleSwapChains}>
+                  <span className={styles.swapIcon}>⇅</span>
+                </button>
+              </div>
+              <div className={styles.chainBlock}>
+                <span className={styles.inputLabel}>Destination chain</span>
+                <ChainSelector selectedValue={destinationChain} onChange={setDestinationChain} />
+              </div>
+            </div>
+            <div className={styles.helperRow}>
+              <span className={styles.helper}>
+                Teleport between Asset Hub and Coretime in one hop
+              </span>
+              <span className={styles.helper}>Fees and limits are shown before send</span>
+            </div>
           </div>
+
+          <div className={`${styles.card} ${styles.transferCard}`}>
+            <div className={styles.cardHeader}>
+              <div>
+                <p className={styles.muted}>Recipient & amount</p>
+                <h3>Who are you sending to?</h3>
+              </div>
+              <span className={styles.pillMuted}>Wallet connected</span>
+            </div>
+            <label className={styles.inputLabel}>Transfer to</label>
+            <div className={styles.beneficiaryInputWrapper}>
+              <button
+                className={styles.meButton}
+                onClick={() => {
+                  if (selectedAccount?.address) {
+                    setBeneficiary(selectedAccount.address);
+                    setBeneficiaryError(null);
+                  }
+                }}
+              >
+                My Address
+              </button>
+              <AddressInput
+                value={beneficiary}
+                onChange={handleBeneficiaryChange}
+                placeholder='Address of the recipient'
+              />
+            </div>
+            {beneficiaryError && <p className={styles.errorText}>{beneficiaryError}</p>}
+
+            <div className={styles.amountSection}>
+              <label className={styles.inputLabel}>Transfer amount</label>
+              <div className={styles.amountInputWrapper}>
+                <CrossChainAmountInput originChain={originChain} setAmount={setAmount} />
+              </div>
+              <div className={styles.amountHelper}>
+                <span>{getChainName(originChain)} balance shown in summary</span>
+                <span className={styles.feeNote}>Fees are deducted from the origin chain</span>
+              </div>
+            </div>
+          </div>
+
+          {selectedAccount && accountData && (
+            <div className={`${styles.card} ${styles.balanceCard}`}>
+              <div className={styles.cardHeader}>
+                <div>
+                  <p className={styles.muted}>Balances</p>
+                  <h3>Available to transfer</h3>
+                </div>
+              </div>
+              <div className={styles.balanceGrid}>
+                <div className={styles.balanceItem}>
+                  <span className={styles.label}>
+                    {accountData.ahChainData ? 'Asset Hub' : 'Relay Chain'}
+                  </span>
+                  <span className={styles.value}>
+                    {accountData.ahChainData ? formattedAh : formattedRelay}
+                  </span>
+                  <span className={styles.balanceHint}>Origin side</span>
+                </div>
+                <div className={styles.balanceItem}>
+                  <span className={styles.label}>Coretime Chain</span>
+                  <span className={styles.value}>{formattedCoretime}</span>
+                  <span className={styles.balanceHint}>Destination side</span>
+                </div>
+                {network === 'kusama' && (
+                  <div className={`${styles.balanceItem} ${styles.alignRight}`}>
+                    <span className={styles.label}>RegionX Chain</span>
+                    <span className={styles.value}>{formattedRegionx}</span>
+                    <span className={styles.balanceHint}>Optional</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+
+        <aside className={styles.sidebar}>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div>
+                <p className={styles.muted}>Overview</p>
+                <h3>Transfer summary</h3>
+              </div>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.label}>From</span>
+              <span className={styles.value}>{getChainName(originChain)}</span>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.label}>To</span>
+              <span className={styles.value}>{getChainName(destinationChain)}</span>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.label}>Amount</span>
+              <span className={styles.value}>{amount || '—'}</span>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.label}>Estimated fee</span>
+              <span className={styles.valueMuted}>Shown on confirm</span>
+            </div>
+            <div className={styles.tipBox}>
+              <p className={styles.tipTitle}>Heads up</p>
+              <p className={styles.tipCopy}>
+                Keep some balance on the origin chain to cover fees. Review the transaction modal
+                before sending.
+              </p>
+            </div>
+          </div>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div>
+                <p className={styles.muted}>Status</p>
+                <h3>Network health</h3>
+              </div>
+            </div>
+            <div className={styles.statusList}>
+              <div className={styles.statusRow}>
+                <span className={styles.statusDot} />
+                <div>
+                  <p className={styles.label}>Asset Hub</p>
+                </div>
+              </div>
+              <div className={styles.statusRow}>
+                <span className={styles.statusDot} />
+                <div>
+                  <p className={styles.label}>Coretime</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.actionBar}>
+            <div>
+              <p className={styles.muted}>Ready to send?</p>
+              <h4>Review and launch your transfer</h4>
+            </div>
+            <Button onClick={openModal}>Transfer</Button>
+          </div>
+        </aside>
       </div>
 
       {selectedAccount && accountDataMap[selectedAccount.address] && (
@@ -346,32 +507,6 @@ const CrossChain = () => {
           onConfirm={onTransfer}
         />
       )}
-      {selectedAccount && accountData && (
-        <div className={styles.balanceBox}>
-          <div className={styles.balanceItem}>
-            <span className={styles.label}>
-              {accountData.ahChainData ? 'Asset Hub Balance' : 'Relay Chain Balance'}
-            </span>
-            <span className={styles.value}>
-              {accountData.ahChainData ? formattedAh : formattedRelay}
-            </span>
-          </div>
-          <div className={styles.balanceItem}>
-            <span className={styles.label}>Coretime Chain Balance</span>
-            <span className={styles.value}>{formattedCoretime}</span>
-          </div>
-          {network === 'kusama' && (
-            <div className={`${styles.balanceItem} ${styles.alignRight}`}>
-              <span className={styles.label}>RegionX Chain Balance</span>
-              <span className={styles.value}>{formattedRegionx}</span>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className={styles.buttonContainer}>
-        <Button onClick={openModal}>Transfer</Button>
-      </div>
       <Toaster />
     </div>
   );
