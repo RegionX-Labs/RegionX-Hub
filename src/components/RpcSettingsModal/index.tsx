@@ -10,46 +10,49 @@ import { RPC_SETTINGS_KEY, RpcSettings } from '@/constants/rpc';
 export type RpcSettingsModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onRpcChange: (relayUrl: string, coretimeUrl: string) => void;
+  onRpcChange: (assetHubUrl: string, coretimeUrl: string) => void;
 };
 
 const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, onRpcChange }) => {
   const network = useUnit($network);
-  const [selectedRelayRpc, setSelectedRelayRpc] = useState<string>('');
+  const [selectedAssetHubRpc, setSelectedAssetHubRpc] = useState<string>('');
   const [selectedCoretimeRpc, setSelectedCoretimeRpc] = useState<string>('');
-  const [customRelayRpc, setCustomRelayRpc] = useState<string>('');
+  const [customAssetHubRpc, setCustomAssetHubRpc] = useState<string>('');
   const [customCoretimeRpc, setCustomCoretimeRpc] = useState<string>('');
 
   useEffect(() => {
     if (!network || !isOpen) return;
-    const relayKey = network.toLowerCase();
-    const coretimeKey = `${relayKey}Coretime` as keyof typeof chains;
-    const relayChain = chains[relayKey as keyof typeof chains];
+    const networkKey = network.toLowerCase();
+    const coretimeKey = `${networkKey}Coretime` as keyof typeof chains;
+    const assetHubKey = `${networkKey}AH` as keyof typeof chains;
+    const assetHubChain = chains[assetHubKey];
     const coretimeChain = chains[coretimeKey];
-    const relayRpcs = relayChain?.nodes || [];
+    const assetHubRpcs = assetHubChain?.nodes || [];
     const coretimeRpcs = coretimeChain?.nodes || [];
 
-    let storedRelay = '';
+    let storedAssetHub = '';
     let storedCoretime = '';
     const storedRaw = localStorage.getItem(RPC_SETTINGS_KEY);
     if (storedRaw) {
       try {
         const parsed = JSON.parse(storedRaw) as RpcSettings;
-        storedRelay = parsed?.[network]?.relayUrl || '';
+        storedAssetHub = parsed?.[network]?.assetHubUrl || parsed?.[network]?.relayUrl || '';
         storedCoretime = parsed?.[network]?.coretimeUrl || '';
       } catch {
-        storedRelay = '';
+        storedAssetHub = '';
         storedCoretime = '';
       }
     }
 
-    const relayUrl = storedRelay || relayRpcs[0]?.url || '';
+    const assetHubUrl = storedAssetHub || assetHubRpcs[0]?.url || '';
     const coretimeUrl = storedCoretime || coretimeRpcs[0]?.url || '';
 
-    setSelectedRelayRpc(relayUrl);
+    setSelectedAssetHubRpc(assetHubUrl);
     setSelectedCoretimeRpc(coretimeUrl);
-    setCustomRelayRpc(
-      storedRelay && !relayRpcs.some((node) => node.url === storedRelay) ? storedRelay : ''
+    setCustomAssetHubRpc(
+      storedAssetHub && !assetHubRpcs.some((node) => node.url === storedAssetHub)
+        ? storedAssetHub
+        : ''
     );
     setCustomCoretimeRpc(
       storedCoretime && !coretimeRpcs.some((node) => node.url === storedCoretime)
@@ -60,12 +63,13 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
 
   if (!isOpen || !network) return null;
 
-  const relayKey = network.toLowerCase();
-  const coretimeKey = `${relayKey}Coretime` as keyof typeof chains;
-  const relayChain = chains[relayKey as keyof typeof chains];
+  const networkKey = network.toLowerCase();
+  const coretimeKey = `${networkKey}Coretime` as keyof typeof chains;
+  const assetHubKey = `${networkKey}AH` as keyof typeof chains;
+  const assetHubChain = chains[assetHubKey];
   const coretimeChain = chains[coretimeKey];
 
-  const relayRpcs = relayChain?.nodes || [];
+  const assetHubRpcs = assetHubChain?.nodes || [];
   const coretimeRpcs = coretimeChain?.nodes || [];
 
   const isValidWsUrl = (url: string) => {
@@ -111,27 +115,27 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
   };
 
   const handleSave = async () => {
-    const relayUrl = customRelayRpc || selectedRelayRpc || relayRpcs[0]?.url;
+    const assetHubUrl = customAssetHubRpc || selectedAssetHubRpc || assetHubRpcs[0]?.url;
     const coretimeUrl = customCoretimeRpc || selectedCoretimeRpc || coretimeRpcs[0]?.url;
 
-    if (!isValidWsUrl(relayUrl) || !isValidWsUrl(coretimeUrl)) {
+    if (!isValidWsUrl(assetHubUrl) || !isValidWsUrl(coretimeUrl)) {
       alert('Please enter valid WebSocket URLs (must start with ws:// or wss://)');
       return;
     }
 
-    const [relayAlive, coretimeAlive] = await Promise.all([
-      testWebSocket(relayUrl),
+    const [assetHubAlive, coretimeAlive] = await Promise.all([
+      testWebSocket(assetHubUrl),
       testWebSocket(coretimeUrl),
     ]);
 
-    if (!relayAlive || !coretimeAlive) {
+    if (!assetHubAlive || !coretimeAlive) {
       alert('One or both RPC endpoints are unreachable. Please check the URLs and try again.');
       return;
     }
 
-    console.log('Selected Relay RPC:', relayUrl);
+    console.log('Selected Asset Hub RPC:', assetHubUrl);
     console.log('Selected Coretime RPC:', coretimeUrl);
-    onRpcChange(relayUrl, coretimeUrl);
+    onRpcChange(assetHubUrl, coretimeUrl);
     onClose();
   };
 
@@ -144,11 +148,11 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
 
         <div className={styles.details}>
           <div className={styles.detailItem}>
-            <label className={styles.label}>Select Relay RPC</label>
+            <label className={styles.label}>Select Asset Hub RPC</label>
             <Select
-              selectedValue={selectedRelayRpc}
-              onChange={(val) => setSelectedRelayRpc(val as string)}
-              options={relayRpcs.map((node) => ({
+              selectedValue={selectedAssetHubRpc}
+              onChange={(val) => setSelectedAssetHubRpc(val as string)}
+              options={assetHubRpcs.map((node) => ({
                 key: node.url,
                 value: node.url,
                 label: node.url,
@@ -157,11 +161,11 @@ const RpcSettingsModal: React.FC<RpcSettingsModalProps> = ({ isOpen, onClose, on
           </div>
 
           <div className={styles.detailItem}>
-            <label className={styles.label}>Custom Relay RPC (optional)</label>
+            <label className={styles.label}>Custom Asset Hub RPC (optional)</label>
             <input
               className={styles.input}
-              value={customRelayRpc}
-              onChange={(e) => setCustomRelayRpc(e.target.value)}
+              value={customAssetHubRpc}
+              onChange={(e) => setCustomAssetHubRpc(e.target.value)}
               placeholder='wss://...'
             />
           </div>
