@@ -25,7 +25,7 @@ export const $network = createStore<Network>(Network.POLKADOT);
 
 const loadRpcSettings = (
   network: Network
-): { assetHubUrl?: string; relayUrl?: string; coretimeUrl: string } | null => {
+): { assetHubUrl?: string; coretimeUrl: string } | null => {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(RPC_SETTINGS_KEY);
@@ -51,15 +51,15 @@ const getChainsFx = createEffect((network: Network): Record<ChainId, Chain> => {
   if (customRpc) {
     switch (network) {
       case Network.POLKADOT:
-        setNode(chains.polkadotAH.chainId, customRpc.assetHubUrl || customRpc.relayUrl);
+        setNode(chains.polkadotAH.chainId, customRpc.assetHubUrl);
         setNode(chains.polkadotCoretime.chainId, customRpc.coretimeUrl);
         break;
       case Network.KUSAMA:
-        setNode(chains.kusamaAH.chainId, customRpc.assetHubUrl || customRpc.relayUrl);
+        setNode(chains.kusamaAH.chainId, customRpc.assetHubUrl);
         setNode(chains.kusamaCoretime.chainId, customRpc.coretimeUrl);
         break;
       case Network.PASEO:
-        setNode(chains.paseoAH.chainId, customRpc.assetHubUrl || customRpc.relayUrl);
+        setNode(chains.paseoAH.chainId, customRpc.assetHubUrl);
         setNode(chains.paseoCoretime.chainId, customRpc.coretimeUrl);
         break;
       case Network.WESTEND:
