@@ -33,7 +33,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
-const saveRpcSettings = (network: Network, assetHubUrl: string, coretimeUrl: string) => {
+const saveRpcSettings = (network: Network, relayUrl: string, coretimeUrl: string) => {
   const storedRaw = localStorage.getItem(RPC_SETTINGS_KEY);
   let parsed: RpcSettings = {};
 
@@ -45,7 +45,7 @@ const saveRpcSettings = (network: Network, assetHubUrl: string, coretimeUrl: str
     }
   }
 
-  parsed[network] = { assetHubUrl, coretimeUrl };
+  parsed[network] = { relayUrl, coretimeUrl };
   localStorage.setItem(RPC_SETTINGS_KEY, JSON.stringify(parsed));
 };
 
@@ -213,14 +213,12 @@ function App({ Component, pageProps }: AppProps) {
       <RpcSettingsModal
         isOpen={isRpcModalOpen}
         onClose={() => setIsRpcModalOpen(false)}
-        onRpcChange={(assetHubUrl, coretimeUrl) => {
+        onRpcChange={(relayUrl, coretimeUrl) => {
           const chainIds = getNetworkChainIds(network);
           if (!chainIds) return;
 
-          saveRpcSettings(network, assetHubUrl, coretimeUrl);
-          if (chainIds.ahChain) {
-            rpcEndpointUpdated({ chainId: chainIds.ahChain, url: assetHubUrl });
-          }
+          saveRpcSettings(network, relayUrl, coretimeUrl);
+          rpcEndpointUpdated({ chainId: chainIds.relayChain, url: relayUrl });
           rpcEndpointUpdated({ chainId: chainIds.coretimeChain, url: coretimeUrl });
         }}
       />
