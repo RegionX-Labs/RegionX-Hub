@@ -63,6 +63,7 @@ const getChainsFx = createEffect((network: Network): Record<ChainId, Chain> => {
         setNode(chains.paseoCoretime.chainId, customRpc.coretimeUrl);
         break;
       case Network.WESTEND:
+        setNode(chains.westend.chainId, customRpc.relayUrl);
         setNode(chains.westendCoretime.chainId, customRpc.coretimeUrl);
         break;
       default:
