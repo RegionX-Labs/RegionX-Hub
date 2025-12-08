@@ -6,8 +6,10 @@ export type RpcSettings = Partial<
   Record<
     Network,
     {
-      relayUrl: string;
       coretimeUrl: string;
+      assetHubUrl?: string;
+      // Deprecated: kept for backward compatibility with previously saved relay RPC values.
+      relayUrl?: string;
     }
   >
 >;
