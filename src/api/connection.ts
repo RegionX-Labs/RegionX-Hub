@@ -23,7 +23,9 @@ const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
 export const $network = createStore<Network>(Network.POLKADOT);
 
-const loadRpcSettings = (network: Network): { relayUrl: string; coretimeUrl: string } | null => {
+const loadRpcSettings = (
+  network: Network
+): { relayUrl?: string; assetHubUrl?: string; coretimeUrl?: string } | null => {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(RPC_SETTINGS_KEY);
@@ -47,25 +49,11 @@ const getChainsFx = createEffect((network: Network): Record<ChainId, Chain> => {
   };
 
   if (customRpc) {
-    switch (network) {
-      case Network.POLKADOT:
-        setNode(chains.polkadot.chainId, customRpc.relayUrl);
-        setNode(chains.polkadotCoretime.chainId, customRpc.coretimeUrl);
-        break;
-      case Network.KUSAMA:
-        setNode(chains.kusama.chainId, customRpc.relayUrl);
-        setNode(chains.kusamaCoretime.chainId, customRpc.coretimeUrl);
-        break;
-      case Network.PASEO:
-        setNode(chains.paseo.chainId, customRpc.relayUrl);
-        setNode(chains.paseoCoretime.chainId, customRpc.coretimeUrl);
-        break;
-      case Network.WESTEND:
-        setNode(chains.westend.chainId, customRpc.relayUrl);
-        setNode(chains.westendCoretime.chainId, customRpc.coretimeUrl);
-        break;
-      default:
-        break;
+    const chainIds = getNetworkChainIds(network);
+    if (chainIds) {
+      const assetHubUrl = customRpc.assetHubUrl || customRpc.relayUrl;
+      setNode(chainIds.coretimeChain, customRpc.coretimeUrl);
+      setNode(chainIds.ahChain, assetHubUrl);
     }
   }
 
