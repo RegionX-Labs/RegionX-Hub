@@ -7,48 +7,7 @@
   margin-top: 130px;
   margin-bottom: 45px;
   width: 100%;
-}
-
-.buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 12px;
-
-  @media (max-width: 768px) {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-}
-
-.customButton {
-  background-color: var(--dark-background-2);
-  color: var(--green-primary);
-  border: 1px solid var(--green-primary);
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 14px;
-  cursor: pointer;
   @include Inter;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: var(--dark-background-3);
-  }
-
-  &.secondary {
-    background-color: var(--green-primary);
-    color: var(--black);
-
-    &:hover {
-      background-color: var(--green-dark-2);
-    }
-  }
-
-  @media (max-width: 768px) {
-    font-size: 13px;
-    padding: 8px 12px;
-  }
 }
 
 .tableWrapper {
@@ -61,8 +20,21 @@
   @media (max-width: 1000px) {
     width: 90%;
   }
-  @media (max-width: 768px) {
-    width: 70%;
+  @media (max-width: 500px) {
+    width: 80%;
+  }
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  @media (max-width: 700px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 
@@ -70,8 +42,211 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 16px;
-  text-align: left;
+  margin: 0;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  @include Inter;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.06s ease;
+  will-change: transform;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btnGhost {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  border-color: var(--card-border);
+}
+
+.btnGhost:hover {
+  background: var(--dark-background-4);
+}
+
+.btnOn {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btnPrimary {
+  background: var(--dark-background-4);
+  color: var(--white);
+}
+
+.btnPrimary:hover {
+  filter: brightness(0.78);
+}
+
+.btnAccent {
+  background: var(--dark-background-4);
+  color: var(--white);
+  border-color: transparent;
+}
+
+.btnAccent:hover {
+  filter: brightness(0.78);
+}
+
+.customButton {
+  display: none;
+}
+
+.toolbarGrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 12px;
+  padding: 6px 0 12px;
+  margin: 2px 0 8px;
+  @media (max-width: 1210px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftCol {
+  display: grid;
+  grid-auto-rows: max-content;
+  align-items: start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.selectWrap {
+  width: 220px;
+  min-width: 160px;
+  max-width: 260px;
+  display: flex;
+  align-items: center;
+  @media (max-width: 1210px) {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.metricsBlock {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.chipSm {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rightCol {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+  @media (max-width: 1210px) {
+    justify-content: flex-start;
+  }
+}
+
+.segmentedOld {
+  position: relative;
+  display: inline-grid;
+  align-items: center;
+  height: 35px;
+  padding: 3px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.segmentedBtn {
+  position: relative;
+  z-index: 1;
+  @include Inter;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  height: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s ease,
+    opacity 0.15s ease;
+  @media (max-width: 1210px) {
+    justify-content: flex-start;
+  }
+}
+
+.segmentedBtn.active {
+  color: var(--text);
+}
+
+.segmentedThumbOld {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: calc(33.333% - 6px);
+  height: calc(100% - 6px);
+  border-radius: 10px;
+  background: var(--dark-background-5);
+  transition: transform 160ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.segmentedOld.cols2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.segmentedOld.cols2 .segmentedThumbOld {
+  width: calc(50% - 6px);
+}
+.segmentedOld.cols4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.segmentedOld.cols4 .segmentedThumbOld {
+  width: calc(25% - 6px);
 }
 
 .parachainNameContainer {
@@ -93,21 +268,20 @@
   transition: color 0.3s ease;
   width: 20px;
   height: 20px;
+}
 
-  &:hover {
-    color: var(--gray-4);
-  }
+.starIcon:hover {
+  color: var(--gray-4);
+}
 
-  &.starActive {
-    color: var(--green-primary);
-  }
+.starActive {
+  color: var(--green-primary);
 }
 
 .renewalStatus {
   @include Inter;
   color: white;
   padding: 5px 15px;
-  @include Inter;
   font-size: 14px;
   line-height: 20px;
   background-color: var(--label-color);
@@ -116,4 +290,33 @@
   display: inline-block;
   min-width: 108px;
   text-align: center;
+}
+
+.rightCol .segmentedOld + .segmentedOld {
+  margin-left: 12px;
+}
+
+@media (max-width: 1210px) {
+  .rightCol {
+    gap: 8px;
+  }
+  .rightCol .segmentedOld + .segmentedOld {
+    margin-left: 0;
+  }
+}
+
+.filterDropdown {
+  width: 100%;
+  min-width: 220px;
+  max-width: 340px;
+}
+
+@media (max-width: 560px) {
+  .rightCol {
+    width: 100%;
+  }
+
+  .filterDropdown {
+    max-width: 100%;
+  }
 }

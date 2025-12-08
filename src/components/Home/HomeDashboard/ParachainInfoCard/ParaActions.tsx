@@ -4,14 +4,15 @@ import { useUnit } from 'effector-react';
 import { $selectedAccount } from '@/wallet';
 import { useEffect, useMemo, useState } from 'react';
 import { RenewalKey, RenewalRecord } from '@/coretime/renewals';
-import { getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { $connections, $network } from '@/api/connection';
-import { $accountData, MultiChainAccountData, getAccountData } from '@/account';
-import { SUBSCAN_CORETIME_URL } from '@/pages/coretime/sale-history';
+import { $accountData, MultiChainAccountData } from '@/account';
 import AutoRenewalModal from '@/components/AutoRenewalModal';
 import TransactionModal from '@/components/TransactionModal';
 import { ParaState } from '@/components/ParaStateCard';
 import { getParaCoreId } from '@/parachains';
+import { renew } from '@/utils/transactions/renew';
+import { $latestSaleInfo, fetchCoresSold } from '@/coretime/saleInfo';
+import { SOLD_OUT_MESSAGE } from '@/utils';
 
 interface Props {
   paraId?: number;
@@ -25,22 +26,40 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
   const accountData = useUnit($accountData);
   const network = useUnit($network);
   const connections = useUnit($connections);
+  const saleInfo = useUnit($latestSaleInfo);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAutoRenewOpen, setIsAutoRenewOpen] = useState(false);
   const [paraCore, setParaCore] = useState<number | null>(null);
+  const [coresSold, setCoresSold] = useState<number | null>(null);
 
   useEffect(() => {
     if (!paraId) return;
     (async () => {
       const core = await getParaCoreId(paraId, connections, network);
+      const coresSold = await fetchCoresSold(network, connections);
       setParaCore(core);
+      setCoresSold(coresSold);
     })();
   }, [paraId, network, connections]);
 
   const openModal = () => {
     if (!selectedAccount) return toast.error('Account not selected');
     if (!renewalEntry) return toast.error('No renewal available');
+    if (!saleInfo) return toast.error('Sale info not available');
+    if (coresSold === null) return toast.error('Failed to fetch availability of cores');
+
+    const selectedAccountData = accountData[selectedAccount.address];
+    if (!selectedAccountData?.coretimeChainData) {
+      return toast.error('Account data unavailable');
+    }
+    const freeBalance = selectedAccountData.coretimeChainData.free;
+    const required = BigInt(renewalEntry[1].price);
+    if (freeBalance < required) {
+      return toast.error('Insufficient coretime balance for renewal');
+    }
+
+    if (coresSold >= saleInfo.coresOffered) return toast.error(SOLD_OUT_MESSAGE);
     setIsModalOpen(true);
   };
 
@@ -53,47 +72,7 @@ export const ParaActions = ({ paraId, paraState, renewalEntry, parasWithAutoRene
     if (!renewalEntry || !selectedAccount) return;
     const [key] = renewalEntry;
 
-    const networkChainIds = getNetworkChainIds(network);
-    if (!networkChainIds) return toast.error('Unknown network');
-
-    const connection = connections[networkChainIds.coretimeChain];
-    const client = connection?.client;
-    const metadata = getNetworkMetadata(network);
-    if (!client || !metadata) return toast.error('API error');
-
-    const tx = client.getTypedApi(metadata.coretimeChain).tx.Broker.renew({ core: key.core });
-
-    const toastId = toast.loading('Transaction submitted');
-    tx.signSubmitAndWatch(selectedAccount.polkadotSigner).subscribe(
-      (ev: any) => {
-        toast.loading(
-          <span>
-            Transaction submitted:&nbsp;
-            <a
-              href={`${SUBSCAN_CORETIME_URL[network]}/extrinsic/${ev.txHash}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ textDecoration: 'underline', color: '#60a5fa' }}
-            >
-              view transaction
-            </a>
-          </span>,
-          { id: toastId }
-        );
-        if (ev.type === 'finalized' || (ev.type === 'txBestBlocksState' && ev.found)) {
-          if (ev.ok) {
-            toast.success('Renewal successful', { id: toastId });
-            getAccountData({ account: selectedAccount.address, connections, network });
-          } else {
-            toast.error('Transaction failed', { id: toastId });
-          }
-        }
-      },
-      () => {
-        toast.error('Transaction error', { id: toastId });
-      }
-    );
-
+    await renew(network, connections, selectedAccount, key.core);
     setIsModalOpen(false);
   };
 

@@ -5,11 +5,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0px 30px 20px 0px;
+  margin: 0px 15px 20px 0px;
   @include Inter;
   color: var(--text-primary);
 
-  @media (max-width: 1284px) and (min-width: 801px) {
+  @media (max-width: 1380px) and (min-width: 801px) {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -19,7 +19,7 @@
     flex-direction: column;
     align-items: flex-start;
     margin-left: 10px;
-    gap: 10px;
+    gap: 12px;
   }
 }
 
@@ -39,15 +39,127 @@
   color: var(--text-secondary, #888);
   margin-left: 8px;
 }
-
 .controlsWrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
 
-  @media (max-width: 700px) {
+  @media (max-width: 1284px) and (min-width: 801px) {
     align-items: flex-start;
+  }
+
+  @media (max-width: 800px) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    .timerBadge {
+      order: 1;
+    }
+
+    .helpIconButton {
+      order: 2;
+      margin-left: auto;
+    }
+  }
+}
+
+.helpIconButton {
+  --size: 37px;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--dark-background-2);
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
+
+  @media (max-width: 800px) {
+    --size: 40px;
+  }
+
+  svg {
+    display: block;
+  }
+
+  &:hover {
+    background: var(--dark-background-3);
+    border-color: var(--border-subtle);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--green-primary);
+    outline-offset: 2px;
+  }
+}
+
+.helpButton {
+  background: var(--green-primary);
+  color: var(--black);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--green-primary-hover);
+  }
+  @media (max-width: 800px) {
+    height: 40px;
+  }
+}
+.buttonText {
+  display: inline;
+
+  @media (max-width: 415px) {
+    display: none;
+  }
+}
+
+.orangeAssignBtn {
+  background-color: var(--yellow-dark);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  max-height: 36px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgb(194, 152, 13);
+  }
+
+  @media (max-width: 800px) {
+    height: 40px;
   }
 }
 
@@ -58,6 +170,12 @@
   border: 1px solid var(--card-border);
   border-radius: 10px;
   font-size: 1rem;
+
+  @media (max-width: 800px) {
+    order: 3;
+    width: 100%;
+    flex: 0 0 100%;
+  }
 }
 
 .dropdownHeader {
@@ -73,20 +191,10 @@
   width: 100%;
   box-sizing: border-box;
   justify-content: space-between;
-}
 
-.timerBadge {
-  background: $darkBackground2;
-  color: var(--text-primary);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  white-space: nowrap;
-  border: 1px solid var(--card-border);
-  box-sizing: border-box;
+  @media (max-width: 800px) {
+    min-height: 44px;
+  }
 }
 
 .dropdownMenu {
@@ -97,7 +205,7 @@
   background: $darkBackground2;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
-  z-index: 10;
+  z-index: 100;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   border: 1px solid var(--card-border);
 }
@@ -124,43 +232,7 @@
   }
 }
 
-.helpButton {
-  background: var(--green-primary);
-  color: var(--black);
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: var(--green-primary-hover);
-  }
-}
-
-.buttonText {
-  display: inline;
-
-  @media (max-width: 500px) {
-    display: none;
-  }
-}
-
-.orangeAssignBtn {
-  background-color: var(--yellow-dark);
-  color: black;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgb(194, 152, 13);
-  }
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }

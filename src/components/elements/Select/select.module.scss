@@ -5,8 +5,10 @@
   position: relative;
   width: 100%;
   @include Inter;
-  font-size: 16px;
-  line-height: 28px;
+  font-family: var(--select-font-family, var(--font-family, Inter, sans-serif));
+  font-size: var(--select-font-size, 16px);
+  line-height: var(--select-line-height, 28px);
+  font-weight: var(--select-font-weight, 400);
 
   .selectedOptionDisplay {
     display: flex;
@@ -56,7 +58,7 @@
 
   .selectBox--secondary {
     background-color: var(--dark-background-1);
-    border-color: var(--dark-background-4);
+    border-color: var(--dark-background-5);
     color: var(--white);
   }
 
@@ -92,6 +94,7 @@
         color: var(--white);
       }
     }
+
     &::-webkit-scrollbar {
       width: 6px;
     }
@@ -125,7 +128,7 @@
 
   .selectDropdown--secondary {
     background-color: var(--dark-background-1);
-    border: 1px solid var(--dark-background-4);
+    border: 1px solid var(--dark-background-5);
 
     .selectDropdown-optionList-optionItem:hover {
       background-color: var(--dark-background-4);

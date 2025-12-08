@@ -53,7 +53,10 @@ const TransactionModal: React.FC<Props> = ({
     if ((e.target as HTMLDivElement).classList.contains(styles.modalOverlay)) onClose();
   };
 
-  const relayFree = toUnitFormatted(network, accountData.relayChainData.free);
+  const ahFree = toUnitFormatted(
+    network,
+    accountData.ahChainData ? accountData.ahChainData.free : BigInt(0)
+  );
   const coretimeFree = toUnitFormatted(network, accountData.coretimeChainData.free);
   const regionxFree = toUnitFormatted(network, accountData.regionxChainData?.free || BigInt(0));
   const feeFormatted = estimatedFeeRelay ? toUnitFormatted(network, estimatedFeeRelay) : null;
@@ -84,8 +87,8 @@ const TransactionModal: React.FC<Props> = ({
           <div className={styles.rowTitle}>Balances</div>
           <div className={styles.balanceGrid}>
             <div className={styles.balanceCard}>
-              <div className={styles.balanceLabel}>Relay Chain</div>
-              <div className={styles.balanceValue}>{relayFree}</div>
+              <div className={styles.balanceLabel}>Asset Hub</div>
+              <div className={styles.balanceValue}>{ahFree}</div>
             </div>
             <div className={styles.balanceCard}>
               <div className={styles.balanceLabel}>Coretime Chain</div>

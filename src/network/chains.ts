@@ -52,6 +52,14 @@ export const chains = {
       { url: 'wss://westend-rpc.polkadot.io' },
     ],
   },
+  polkadotAH: {
+    chainId: '0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f' as ChainId,
+    name: 'Polkadot AssetHub',
+    nodes: [
+      { url: 'wss://sys.ibp.network/asset-hub-polkadot' },
+      { url: 'wss://statemint.api.onfinality.io/public-wst' },
+    ],
+  },
   polkadotCoretime: {
     chainId: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4' as ChainId,
     name: 'Polkadot Coretime',
@@ -60,12 +68,28 @@ export const chains = {
       { url: 'wss://sys.ibp.network/coretime-polkadot' },
     ],
   },
+  kusamaAH: {
+    chainId: '0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a' as ChainId,
+    name: 'Kusama AssetHub',
+    nodes: [
+      { url: 'wss://sys.ibp.network/asset-hub-kusama' },
+      { url: 'wss://kusama-asset-hub-rpc.polkadot.io' },
+    ],
+  },
   kusamaCoretime: {
     chainId: '0x638cd2b9af4b3bb54b8c1f0d22711fc89924ca93300f0caf25a580432b29d050' as ChainId,
     name: 'Kusama Coretime',
     nodes: [
       { url: 'wss://ksm-rpc.stakeworld.io/coretime' },
       { url: 'wss://sys.ibp.network/coretime-kusama' },
+    ],
+  },
+  paseoAH: {
+    chainId: '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2' as ChainId,
+    name: 'Paseo AssetHub',
+    nodes: [
+      { url: 'wss://sys.ibp.network/asset-hub-paseo' },
+      { url: 'wss://pas-rpc.stakeworld.io/assethub' },
     ],
   },
   paseoCoretime: {

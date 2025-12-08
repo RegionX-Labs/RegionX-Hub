@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import styles from './ParachainInfoCard.module.scss';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
@@ -20,6 +20,7 @@ import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { timesliceToTimestamp, toUnitFormatted } from '@/utils';
 import { ParachainSelect } from './ParachainSelect';
 import { ParaActions } from './ParaActions';
+import { getParaCoreId } from '@/parachains';
 
 type Props = {
   onSelectParaId?: (id: string) => void;
@@ -32,6 +33,7 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
   const [deadline, setDeadline] = useState<string>('-');
   const [parasWithAutoRenewal, setParasWithAutoRenewal] = useState<Set<number>>(new Set());
   const [hasSetInitial, setHasSetInitial] = useState(false);
+  const [coreId, setCoreId] = useState<number | null>(null);
 
   const [network, connections, potentialRenewals, saleInfo, parachains] = useUnit([
     $network,
@@ -75,12 +77,22 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
 
   useEffect(() => {
     if (!saleInfo || !selected) return;
-    const match = Array.from(potentialRenewals.entries()).find(
-      ([key, record]) =>
-        (record.completion as any)?.value?.[0]?.assignment?.value === selected.id &&
-        saleInfo.regionBegin === key.when
-    );
-    setRenewalEntry(match ?? null);
+
+    const getAssignmentId = (record: any) => record?.completion?.value?.[0]?.assignment?.value;
+
+    const hasRenewalAt = (when: number) =>
+      Array.from(potentialRenewals.entries()).find(
+        ([key, record]) => key?.when === when && getAssignmentId(record) === paraId
+      );
+
+    const { regionBegin, regionEnd } = saleInfo ?? {};
+
+    const renewForNext = hasRenewalAt(regionEnd);
+    const renewForCurrent = hasRenewalAt(regionBegin);
+
+    const requiresRenewal = !renewForNext && renewForCurrent;
+
+    setRenewalEntry(requiresRenewal ? renewForCurrent : null);
   }, [potentialRenewals, selected, saleInfo]);
 
   useEffect(() => {
@@ -107,6 +119,25 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
       );
     })();
   }, [renewalEntry, network, connections]);
+
+  useEffect(() => {
+    (async () => {
+      if (!selected) {
+        setCoreId(null);
+        return;
+      }
+      if (renewalEntry?.[0]?.core !== undefined) {
+        setCoreId(Number(renewalEntry[0].core));
+        return;
+      }
+      try {
+        const fallback = await getParaCoreId(selected.id, connections, network);
+        setCoreId(typeof fallback === 'number' ? fallback : null);
+      } catch {
+        setCoreId(null);
+      }
+    })();
+  }, [selected, renewalEntry, connections, network]);
 
   const paraId = selected?.id as number | undefined;
   const state = selected?.state ?? undefined;
@@ -148,7 +179,10 @@ export default function ParachainInfoCard({ onSelectParaId, initialParaId }: Pro
             {logo}
             <div className={styles.infoText}>
               <div className={styles.name}>{name}</div>
-              <div className={styles.paraId}>Para ID: {paraId}</div>
+              <div className={styles.paraId}>
+                Para ID: {paraId}
+                {coreId !== null ? ` · Core ID: ${coreId}` : ''}
+              </div>
               {chain?.homepage && (
                 <a
                   href={chain.homepage}

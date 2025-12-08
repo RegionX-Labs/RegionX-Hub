@@ -25,7 +25,7 @@ This view provides a high-level summary of all Coretime related activity. It's d
 
 - Which cores are renewable this cycle
 - The cost efficiency of renewal vs. new purchases
-- Insight into the current bulk sale auction
+- Insight into the current sale cycle auction
 - A history of purchases and renewals
 
 💡 Tip: Use this dashboard to get an overview of the entire system. If you want to register a new project or manage an existing one, use the appropriate dashboard.`,
@@ -75,7 +75,7 @@ The visual ring shows:
       images: ['/help/AuctionPhaseStatus.png', '/help/AuctionPhaseStatus2.png'],
     },
     {
-      text: `**Dutch Auction Chart**
+      text: `**Sale Cycle Chart**
 
 This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 
@@ -101,7 +101,7 @@ Use this chart to:
       ],
     },
     {
-      text: `**Latest Purchase History**
+      text: `**Current Sale Cycle Purchases**
 
 This table lists all recent coretime purchases in the current or recent cycles. Each row includes:
 
@@ -123,7 +123,7 @@ Go through pages using the pagination at the bottom.
 
 This view offers a simplified overview intended for new projects that want to purchase a core and deploy.
 
-Here users are able to see the price of a new core from bulk sale as well as track the current bulk sale cycle. 
+Here users are able to see the price of a new core from bulk sale as well as track the current sale cycle. 
 
 📌 Note: New projects don't have the option to renew, as they don't own a core yet. Therefore, no renewal-related information is shown on this dashboard.
 `,
@@ -157,7 +157,7 @@ The visual ring shows:
       images: ['/help/AuctionPhaseStatus.png', '/help/AuctionPhaseStatus2.png'],
     },
     {
-      text: `**Dutch Auction Chart**
+      text: `**Sale Cycle Chart**
 
 This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 
@@ -183,9 +183,9 @@ Use this chart to:
       ],
     },
     {
-      text: `**Latest Purchase History**
+      text: `**Current Sale Cycle Purchases**
 
-This table lists all recent coretime purchases in the current or recent cycles. Each row includes:
+This table lists all coretime purchases in the current or recent cycles. Each row includes:
 
 - Para ID
 - Buyer address
@@ -245,7 +245,7 @@ The visual ring shows:
       images: ['/help/AuctionPhaseStatus.png', '/help/AuctionPhaseStatus2.png'],
     },
     {
-      text: `**Dutch Auction Chart**
+      text: `**Sale Cycle Chart**
 
 This graph shows how core prices change over time during the Dutch auction cycle. The auction is divided into the **interlude**, **leadin**, and **fixed price** phases.
 

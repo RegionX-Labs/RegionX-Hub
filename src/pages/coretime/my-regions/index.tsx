@@ -15,6 +15,7 @@ import { Search as SearchIcon } from 'lucide-react';
 
 type RegionDateInfo = { beginDate: string; endDate: string; duration: string };
 type ViewMode = 'owned' | 'all';
+type ChainFilter = 'all' | 'coretime' | 'regionx';
 type NetworkMaybe = string | { name?: string; id?: string };
 
 function getNetworkKey(network: NetworkMaybe) {
@@ -64,6 +65,7 @@ export default function MyRegionsPage() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [view, setView] = useState<ViewMode>('all');
+  const [chainFilter, setChainFilter] = useState<ChainFilter>('all');
 
   const networkKey = getNetworkKey(network);
   const allKey = orderKeyAll(networkKey);
@@ -99,8 +101,19 @@ export default function MyRegionsPage() {
     );
   }, [regionsAll, selectedAccount]);
 
-  const filteredOwned = useFilterByCore(ownedRegions, query);
-  const filteredAll = useFilterByCore(regionsAll, query);
+  const filterByCoreAndChain = (regions: Region[], q: string, filter: ChainFilter) => {
+    let filtered = regions;
+    if (filter === 'coretime')
+      filtered = filtered.filter((r) => r.location === RegionLocation.CoretimeChain);
+    if (filter === 'regionx')
+      filtered = filtered.filter((r) => r.location === RegionLocation.RegionxChain);
+    const needle = q.trim();
+    if (needle) filtered = filtered.filter((r) => `${r.core}`.includes(needle));
+    return filtered;
+  };
+
+  const filteredOwned = filterByCoreAndChain(ownedRegions, query, chainFilter);
+  const filteredAll = filterByCoreAndChain(regionsAll, query, chainFilter);
 
   const [ownedOrder, setOwnedOrder] = useState<string[]>([]);
   const [allOrder, setAllOrder] = useState<string[]>([]);
@@ -183,19 +196,69 @@ export default function MyRegionsPage() {
             />
           </div>
 
+          <div className={styles.segmentedTriplet} role='tablist' aria-label='Chain filter'>
+            <button
+              type='button'
+              role='tab'
+              aria-selected={chainFilter === 'all'}
+              className={`${styles.segmentedBtn} ${chainFilter === 'all' ? styles.active : ''}`}
+              onClick={() => setChainFilter('all')}
+            >
+              All
+            </button>
+            <button
+              type='button'
+              role='tab'
+              aria-selected={chainFilter === 'coretime'}
+              className={`${styles.segmentedBtn} ${chainFilter === 'coretime' ? styles.active : ''}`}
+              onClick={() => setChainFilter('coretime')}
+            >
+              Coretime Chain
+            </button>
+            <button
+              type='button'
+              role='tab'
+              aria-selected={chainFilter === 'regionx'}
+              className={`${styles.segmentedBtn} ${chainFilter === 'regionx' ? styles.active : ''}`}
+              onClick={() => setChainFilter('regionx')}
+            >
+              RegionX Chain
+            </button>
+            <span
+              className={styles.segmentedThumbTriplet}
+              style={{
+                transform:
+                  chainFilter === 'all'
+                    ? 'translateX(0)'
+                    : chainFilter === 'coretime'
+                      ? 'translateX(calc(100% + 6px))'
+                      : 'translateX(calc(200% + 12px))',
+              }}
+              aria-hidden='true'
+            />
+          </div>
+
           <div className={styles.spacer} />
-          <div className={styles.chip}>Total: {regionsAll.length}</div>
-          {selectedAccount && <div className={styles.chip}>Owned: {ownedRegions.length}</div>}
+          <div className={styles.metrics}>
+            <div className={styles.chip}>Total: {regionsAll.length}</div>
+            {selectedAccount && <div className={styles.chip}>Owned: {ownedRegions.length}</div>}
+          </div>
         </div>
 
-        {!loading && selectedAccount && ownedRegions.length === 0 && showOwned && (
+        {/* ✅ Empty states now respect filters */}
+        {!loading && showOwned && filteredOwned.length === 0 && (
           <div className={styles.messageNote}>No regions owned by the selected account.</div>
         )}
-        {!loading && regionsAll.length === 0 && showAll && (
-          <div className={styles.messageNote}>There are no regions available.</div>
+
+        {!loading && showAll && filteredAll.length === 0 && (
+          <div className={styles.messageNote}>
+            {selectedAccount && chainFilter !== 'all'
+              ? 'No regions owned by the selected account.'
+              : 'There are no regions available.'}
+          </div>
         )}
 
-        {showOwned && ownedRegions.length > 0 && (
+        {showOwned && filteredOwned.length > 0 && (
           <>
             <div className={styles.sectionTitle}>Owned</div>
             <DraggableGrid
@@ -210,7 +273,7 @@ export default function MyRegionsPage() {
           </>
         )}
 
-        {showAll && regionsAll.length > 0 && (
+        {showAll && filteredAll.length > 0 && (
           <>
             <div className={styles.sectionTitle}>All regions</div>
             <DraggableGrid
@@ -257,7 +320,6 @@ function DraggableGrid(props: {
   const onDragStart = (idx: number, e: React.DragEvent) => {
     dragFromIdx.current = idx;
     dragOverIdx.current = idx;
-
     const el = (e.target as HTMLElement)?.closest(`.${styles.cardShell}`) as HTMLElement | null;
     if (el) {
       const clone = el.cloneNode(true) as HTMLElement;
@@ -276,12 +338,10 @@ function DraggableGrid(props: {
 
   const onDragEnter = (overIdx: number, e: React.DragEvent) => {
     dragOverIdx.current = overIdx;
-
     const li = (e.target as HTMLElement)?.closest(
       `.${styles.regionCardWrap}`
     ) as HTMLElement | null;
     if (!li) return;
-
     document
       .querySelectorAll(`.${styles.dragOver}`)
       .forEach((n) => n.classList.remove(styles.dragOver));
@@ -296,26 +356,19 @@ function DraggableGrid(props: {
     const from = dragFromIdx.current;
     const over = dragOverIdx.current;
     if (from == null || over == null || from === over) return;
-
     const next = [...ids];
-    const posFrom = from;
-    const posOver = over;
-
-    const tmp = next[posFrom];
-    next[posFrom] = next[posOver];
-    next[posOver] = tmp;
-
+    const tmp = next[from];
+    next[from] = next[over];
+    next[over] = tmp;
     setOrder(next);
   };
 
   const cleanupDrag = (e: React.DragEvent) => {
     const card = (e.target as HTMLElement)?.closest(`.${styles.cardShell}`) as HTMLElement | null;
     if (card) card.classList.remove(styles.dragGhost);
-
     document.querySelectorAll(`.${styles.dragOver}`).forEach((n) => {
       n.classList.remove(styles.dragOver);
     });
-
     if (dragImageRef.current) {
       dragImageRef.current.remove();
       dragImageRef.current = null;
@@ -346,7 +399,6 @@ function DraggableGrid(props: {
         const regionEnd = info?.endDate ? `End: ${info.endDate}` : `End: Timeslice #${region.end}`;
         const storageKey = `regionName-${regionStart}-${regionEnd}-${region.core}`;
         const storedName = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
-
         return (
           <li key={region.id} className={styles.regionCardWrap}>
             <div
@@ -402,12 +454,6 @@ function DraggableGrid(props: {
       })}
     </ul>
   );
-}
-
-function useFilterByCore(regions: Region[], q: string) {
-  const needle = q.trim();
-  if (!needle) return regions;
-  return regions.filter((r) => `${r.core}`.includes(needle));
 }
 
 function orderByIds(regs: Region[], order: string[]) {

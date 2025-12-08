@@ -14,16 +14,21 @@ import {
   ksm_people,
   wnd_people,
   pas_people,
+  pas_ah,
+  ksm_ah,
+  dot_ah,
 } from '@polkadot-api/descriptors';
 
 export type NetworkChainIds = {
   relayChain: ChainId;
   coretimeChain: ChainId;
+  ahChain?: ChainId;
   regionxChain: ChainId | null;
   peopleChain: ChainId;
 };
 
 export type RelayMetadata = typeof dot | typeof ksm | typeof pas | typeof wnd;
+export type AhMetadata = typeof ksm_ah | typeof dot_ah | typeof pas_ah;
 export type CoretimeMetadata =
   | typeof dot_coretime
   | typeof ksm_coretime
@@ -40,6 +45,7 @@ export type PeopleMetadata =
 export type NetworkMetadata = {
   relayChain: RelayMetadata;
   coretimeChain: CoretimeMetadata;
+  ahChain?: AhMetadata;
   regionxChain: RegionXMetadata | null;
   peopleChain: PeopleMetadata;
 };
@@ -53,6 +59,7 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
       return {
         relayChain: chains.polkadot.chainId,
         coretimeChain: chains.polkadotCoretime.chainId,
+        ahChain: chains.polkadotAH.chainId,
         regionxChain: null,
         peopleChain: chains.polkadotPeople.chainId,
       };
@@ -60,13 +67,15 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
       return {
         relayChain: chains.kusama.chainId,
         coretimeChain: chains.kusamaCoretime.chainId,
-        regionxChain: chains.regionxKusama.chainId,
+        ahChain: chains.kusamaAH.chainId,
+        regionxChain: null,
         peopleChain: chains.peopleKusama.chainId,
       };
     case Network.PASEO:
       return {
         relayChain: chains.paseo.chainId,
         coretimeChain: chains.paseoCoretime.chainId,
+        ahChain: chains.paseoAH.chainId,
         regionxChain: null,
         peopleChain: chains.peoplePaseo.chainId,
       };
@@ -104,6 +113,7 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: dot,
         coretimeChain: dot_coretime,
+        ahChain: dot_ah,
         regionxChain: null,
         peopleChain: dot_people,
       };
@@ -111,6 +121,7 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: ksm,
         coretimeChain: ksm_coretime,
+        ahChain: ksm_ah,
         regionxChain: rx_ksm,
         peopleChain: ksm_people,
       };
@@ -118,6 +129,7 @@ export const getNetworkMetadata = (network: Network): NetworkMetadata | null => 
       return {
         relayChain: pas,
         coretimeChain: pas_coretime,
+        ahChain: pas_ah,
         regionxChain: null,
         peopleChain: pas_people,
       };

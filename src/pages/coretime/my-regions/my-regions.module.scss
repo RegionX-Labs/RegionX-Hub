@@ -3,6 +3,7 @@
 
 .mainContainer {
   padding: 24px 16px 80px;
+  @include Inter;
 }
 
 .board {
@@ -25,6 +26,7 @@
     color: $white;
     margin: 0 0 8px;
   }
+
   .subtitle {
     font-size: 1rem;
     color: var(--muted);
@@ -34,15 +36,15 @@
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   padding: 0 8px;
   margin: 10px 0 18px;
   flex-wrap: nowrap;
 
   .search {
     position: relative;
-    width: 200px;
-
+    flex: 0 1 220px;
+    min-width: 180px;
     .icon {
       position: absolute;
       left: 14px;
@@ -55,11 +57,12 @@
     }
 
     input {
+      @include Inter;
       width: 100% !important;
       height: 42px;
       border-radius: 14px;
       border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--dark-background-2);
       color: var(--text);
       padding: 0 14px 0 40px;
       font-size: 0.95rem;
@@ -72,35 +75,53 @@
         border-color: rgba(255, 255, 255, 0.18);
         box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
       }
+
       &::placeholder {
         color: var(--muted);
       }
     }
   }
 
-  .segmented {
+  .segmented,
+  .segmentedTriplet {
     position: relative;
     display: inline-grid;
-    grid-template-columns: 1fr 1fr;
     align-items: center;
-    flex: 0 0 220px;
-    width: 220px;
     height: 38px;
     padding: 3px;
-    margin-left: 60px;
     border-radius: 14px;
     border: 1px solid var(--card-border);
     background: rgba(255, 255, 255, 0.04);
     overflow: hidden;
   }
 
+  .segmented {
+    grid-template-columns: 1fr 1fr;
+    flex: 0 0 220px;
+    width: 220px;
+    margin-left: 60px;
+  }
+
+  .segmentedTriplet {
+    grid-template-columns: 1fr 1fr 1fr;
+    flex: 0 1 360px;
+    width: auto;
+    margin-left: 10px;
+
+    @media (max-width: 656px) {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
   .segmentedBtn {
     position: relative;
+    z-index: 1;
+    @include Inter;
     border: 0;
     background: transparent;
     color: var(--muted);
     font-size: 0.9rem;
-    font-weight: 500;
     height: 100%;
     border-radius: 10px;
     cursor: pointer;
@@ -117,10 +138,36 @@
     }
   }
 
+  .segmentedThumb,
+  .segmentedThumbTriplet {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    height: calc(100% - 6px);
+    border-radius: 10px;
+    background: var(--dark-background-6);
+    transition: transform 160ms ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .segmentedThumb {
+    width: calc(50% - 6px);
+  }
+
+  .segmentedThumb.right {
+    transform: translateX(calc(100% + 6px));
+  }
+
+  .segmentedThumbTriplet {
+    width: calc(33.333% - 6px);
+  }
+
   .metrics {
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
   }
 
   .chip {
@@ -141,44 +188,55 @@
       border-color 0.15s ease;
   }
 
-  .segmentedThumb {
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: calc(50% - 6px);
-    height: calc(100% - 6px);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 4px 18px rgba(0, 0, 0, 0.25),
-      inset 0 0 0 1px var(--card-border);
-    transition: transform 160ms ease;
-    pointer-events: none;
-  }
-  .segmentedThumb.right {
-    transform: translateX(calc(100% + 6px));
-  }
-
   .spacer {
     flex: 1;
   }
 
-  @media (max-width: 656px) {
+  @media (max-width: 1214px) {
     flex-wrap: wrap;
     gap: 10px;
-    @media (max-width: 356px) {
-      .search {
-        width: 73%;
-      }
+
+    .search {
+      display: flex;
+      align-items: center;
+      order: 1;
+      flex: 1 1 100%;
+      max-width: 100%;
     }
 
     .segmented {
+      order: 2;
+      flex: 1 1 100%;
       width: 100%;
-      margin-left: 0px;
-      margin-right: 300px;
+      margin-left: 0;
     }
+
+    .segmentedTriplet {
+      order: 3;
+      flex: 1 1 100%;
+      width: 100%;
+      margin-left: 0;
+    }
+
     .spacer {
       display: none;
+    }
+
+    .metrics {
+      order: 4;
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 456px) {
+    .search {
+      flex: 1 1 100%;
+    }
+
+    .segmented,
+    .segmentedTriplet {
+      width: 100%;
     }
   }
 }
@@ -219,6 +277,11 @@
       width: 100%;
       margin-left: 0;
       order: 2;
+    }
+    .segmentedTriplet {
+      width: 100%;
+      margin-left: 0;
+      order: 3;
     }
     .spacer {
       display: none;
@@ -286,7 +349,7 @@
   justify-content: center;
 
   &:hover {
-    transform: translateY(-4px) rotateZ(-0.3deg);
+    transform: translateY(-4px);
     border-color: rgba(255, 255, 255, 0.14);
   }
 

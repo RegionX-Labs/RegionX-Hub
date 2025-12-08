@@ -4,6 +4,7 @@ import { withPolkadotSdkCompat } from 'polkadot-api/polkadot-sdk-compat';
 import { getWsProvider } from 'polkadot-api/ws-provider/web';
 import { Network } from '@/types';
 import { Chain, ChainId, chains, getNetworkChainIds } from '@/network';
+import { RPC_SETTINGS_KEY, RpcSettings } from '@/constants/rpc';
 
 export type Connection = {
   client?: PolkadotClient;
@@ -14,6 +15,7 @@ export const networkStarted = createEvent<Network>();
 export const initChains = createEvent();
 export const chainConnected = createEvent<ChainId>();
 export const chainDisconnected = createEvent<ChainId>();
+export const rpcEndpointUpdated = createEvent<{ chainId: ChainId; url: string }>();
 
 const providerStatusChanged = createEvent<{ chainId: ChainId; status: Connection['status'] }>();
 
@@ -21,10 +23,52 @@ const $chains = createStore<Record<ChainId, Chain>>({});
 export const $connections = createStore<Record<ChainId, Connection>>({});
 export const $network = createStore<Network>(Network.POLKADOT);
 
-const getChainsFx = createEffect((): Record<ChainId, Chain> => {
+const loadRpcSettings = (network: Network): { relayUrl: string; coretimeUrl: string } | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(RPC_SETTINGS_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as RpcSettings;
+    return parsed?.[network] ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const getChainsFx = createEffect((network: Network): Record<ChainId, Chain> => {
   const _chains: Record<ChainId, Chain> = Object.fromEntries(
     Object.entries(chains).map(([_key, chain]) => [chain.chainId, chain])
   );
+
+  const customRpc = loadRpcSettings(network);
+  const setNode = (chainId: ChainId | undefined, url?: string) => {
+    if (!chainId || !url || !_chains[chainId]) return;
+    _chains[chainId] = { ..._chains[chainId], nodes: [{ url }] };
+  };
+
+  if (customRpc) {
+    switch (network) {
+      case Network.POLKADOT:
+        setNode(chains.polkadot.chainId, customRpc.relayUrl);
+        setNode(chains.polkadotCoretime.chainId, customRpc.coretimeUrl);
+        break;
+      case Network.KUSAMA:
+        setNode(chains.kusama.chainId, customRpc.relayUrl);
+        setNode(chains.kusamaCoretime.chainId, customRpc.coretimeUrl);
+        break;
+      case Network.PASEO:
+        setNode(chains.paseo.chainId, customRpc.relayUrl);
+        setNode(chains.paseoCoretime.chainId, customRpc.coretimeUrl);
+        break;
+      case Network.WESTEND:
+        setNode(chains.westend.chainId, customRpc.relayUrl);
+        setNode(chains.westendCoretime.chainId, customRpc.coretimeUrl);
+        break;
+      default:
+        break;
+    }
+  }
+
   return _chains;
 });
 
@@ -85,15 +129,20 @@ export const initChainsFx = createEffect((network: Network) => {
   if (newNetworkChains.regionxChain) {
     chainConnected(newNetworkChains.regionxChain);
   }
+  if (newNetworkChains.ahChain) {
+    chainConnected(newNetworkChains.ahChain);
+  }
 
   return network;
 });
 
-const disconnectFx = createEffect(async (client: PolkadotClient): Promise<ChainId> => {
-  const chainSpecData = await client.getChainSpecData();
-  client.destroy();
-  return chainSpecData.genesisHash as ChainId;
-});
+const disconnectFx = createEffect(
+  async (client: PolkadotClient): Promise<{ chainId: ChainId; client: PolkadotClient }> => {
+    const chainSpecData = await client.getChainSpecData();
+    client.destroy();
+    return { chainId: chainSpecData.genesisHash as ChainId, client };
+  }
+);
 
 // Chain setup flow
 sample({
@@ -139,12 +188,66 @@ sample({
 });
 
 sample({
+  clock: disconnectFx.doneData,
+  source: $connections,
+  fn: (connections, { chainId, client }) => {
+    if (connections[chainId]?.client && connections[chainId].client !== client) {
+      return connections;
+    }
+
+    return {
+      ...connections,
+      [chainId]: { status: 'disconnected' },
+    };
+  },
+  target: $connections,
+});
+
+sample({
   clock: chainConnected,
   source: $chains,
   fn: (chains, chainId) => ({
     chainId,
     name: chains[chainId].name,
     nodes: chains[chainId].nodes.map((node) => node.url),
+  }),
+  target: createPolkadotClientFx,
+});
+
+sample({
+  clock: rpcEndpointUpdated,
+  source: $chains,
+  fn: (chains, { chainId, url }) => {
+    const chain = chains[chainId];
+    if (!chain) return chains;
+
+    return {
+      ...chains,
+      [chainId]: {
+        ...chain,
+        nodes: [{ url }],
+      },
+    };
+  },
+  target: $chains,
+});
+
+sample({
+  clock: rpcEndpointUpdated,
+  source: $connections,
+  filter: (connections, { chainId }) => Boolean(connections[chainId]?.client),
+  fn: (connections, { chainId }) => connections[chainId].client!,
+  target: disconnectFx,
+});
+
+sample({
+  clock: rpcEndpointUpdated,
+  source: $chains,
+  filter: (chains, { chainId }) => Boolean(chains[chainId]),
+  fn: (chains, { chainId, url }) => ({
+    chainId,
+    name: chains[chainId].name,
+    nodes: [url],
   }),
   target: createPolkadotClientFx,
 });

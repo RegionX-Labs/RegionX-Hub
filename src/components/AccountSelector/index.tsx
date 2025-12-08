@@ -95,7 +95,7 @@ const AccountSelector = () => {
     );
 
     return {
-      key: account.address,
+      key: `${account.address}:${account.walletSource}`,
       value: account.address,
       label: '',
       icon,
