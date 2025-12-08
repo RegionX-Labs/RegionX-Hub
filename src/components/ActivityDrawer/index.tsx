@@ -112,10 +112,10 @@ const mapExtrinsicToTx = (ex: SubscanExtrinsic, network: Network): TxItem | null
   const hash = ex.extrinsic_hash || ex.hash;
   if (!hash) return null;
 
-  const module = ex.call_module || '';
+  const moduleName = ex.call_module || '';
   const call = ex.call_module_function || '';
-  const key = `${module}.${call}`.toLowerCase();
-  const type = TYPE_LABELS[key] || (module && call ? `${module}.${call}` : 'Extrinsic');
+  const key = `${moduleName}.${call}`.toLowerCase();
+  const type = TYPE_LABELS[key] || (moduleName && call ? `${moduleName}.${call}` : 'Extrinsic');
   const status: TxStatus = ex.finalized === false ? 'pending' : ex.success ? 'success' : 'failed';
   const networkLabel = network ? network.charAt(0).toUpperCase() + network.slice(1) : 'Network';
   const when = formatTimeAgo(ex.block_timestamp);
