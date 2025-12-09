@@ -185,6 +185,8 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .row2 {
@@ -202,6 +204,10 @@
   color: var(--text-primary);
   font-weight: 600;
   letter-spacing: 0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
 }
 
 .amount {

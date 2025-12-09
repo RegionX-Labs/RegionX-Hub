@@ -66,6 +66,19 @@ const TYPE_LABELS: Record<string, string> = {
 const shortenHash = (hash: string) =>
   hash.length > 12 ? `${hash.slice(0, 6)}...${hash.slice(-6)}` : hash;
 
+const formatTitle = (value: string) => {
+  if (!value) return 'Extrinsic';
+  return value
+    .split('.')
+    .map((part) =>
+      part
+        .split('_')
+        .map((p) => (p ? p[0].toUpperCase() + p.slice(1) : ''))
+        .join(' ')
+    )
+    .join(' • ');
+};
+
 const formatTimeAgo = (timestampSeconds: number | undefined) => {
   if (!timestampSeconds) return '-';
   const diffSeconds = Math.max(0, Math.floor((Date.now() - timestampSeconds * 1000) / 1000));
@@ -115,11 +128,12 @@ const mapExtrinsicToTx = (ex: SubscanExtrinsic, network: Network): TxItem | null
   const moduleName = ex.call_module || '';
   const call = ex.call_module_function || '';
   const key = `${moduleName}.${call}`.toLowerCase();
-  const type = TYPE_LABELS[key] || (moduleName && call ? `${moduleName}.${call}` : 'Extrinsic');
+  const type = TYPE_LABELS[key] || formatTitle(`${moduleName}.${call}`);
   const status: TxStatus = ex.finalized === false ? 'pending' : ex.success ? 'success' : 'failed';
   const networkLabel = network ? network.charAt(0).toUpperCase() + network.slice(1) : 'Network';
   const when = formatTimeAgo(ex.block_timestamp);
-  const amount = parseAmount(ex.params, network) || (ex.fee ? `${ex.fee} fee` : '-');
+  const fee = ex.fee ? toUnitFormatted(network, BigInt(ex.fee)) : null;
+  const amount = parseAmount(ex.params, network) || (fee ? `Fee: ${fee}` : '-');
   const explorerBase = SUBSCAN_EXPLORER_BASE[network];
 
   return {
@@ -135,9 +149,11 @@ const mapExtrinsicToTx = (ex: SubscanExtrinsic, network: Network): TxItem | null
 };
 
 function StatusIcon({ status }: { status: TxStatus }) {
-  if (status === 'pending') return <Loader2 className={styles.spin} size={16} />;
-  if (status === 'success') return <CheckCircle2 size={16} />;
-  return <AlertTriangle size={16} />;
+  const strokeWidth = 2.25;
+  if (status === 'pending')
+    return <Loader2 className={styles.spin} size={16} strokeWidth={strokeWidth} />;
+  if (status === 'success') return <CheckCircle2 size={16} strokeWidth={strokeWidth} />;
+  return <AlertTriangle size={16} strokeWidth={strokeWidth} />;
 }
 
 function StatusPill({ status }: { status: TxStatus }) {
