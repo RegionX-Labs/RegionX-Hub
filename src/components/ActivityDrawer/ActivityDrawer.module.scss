@@ -65,6 +65,10 @@
   background: var(--dark-background-1);
   border: 1px solid var(--border-modal);
   color: var(--text-primary);
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .titles {
@@ -102,6 +106,10 @@
     background: var(--dark-background-1);
     color: var(--text-primary);
   }
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .section {
@@ -117,6 +125,10 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 10px;
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .empty {
@@ -158,10 +170,13 @@
 .icon {
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   border-radius: 999px;
   display: grid;
   place-items: center;
   border: 1px solid var(--border-modal);
+  flex-shrink: 0;
   &.pending {
     color: var(--text-primary);
   }
@@ -266,6 +281,10 @@
     background: var(--dark-background-2);
     color: var(--text-primary);
     border-color: var(--text-secondary);
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 
   span {
