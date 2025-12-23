@@ -87,7 +87,7 @@ sample({
       localStorage.setItem(SELECTED_ACCOUNT_KEY, acc.address);
       localStorage.setItem(SELECTED_WALLET_KEY, acc.walletSource);
     }
-    return acc ? { ...acc, address: '126X27SbhrV19mBFawys3ovkyBS87SGfYwtwa8J2FjHrtbmA' } : null;
+    return acc;
   },
   target: $selectedAccount,
 });
