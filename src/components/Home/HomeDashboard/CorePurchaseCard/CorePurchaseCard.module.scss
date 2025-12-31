@@ -271,6 +271,28 @@
   width: 100%;
   flex-wrap: wrap;
 }
+
+.totalCostRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 8px;
+  border-top: 1px solid var(--card-border);
+}
+
+.totalCostLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gray-6);
+}
+
+.totalCostValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
 .coreModeToggle {
   display: flex;
   align-items: center;

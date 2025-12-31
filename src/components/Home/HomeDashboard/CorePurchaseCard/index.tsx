@@ -208,6 +208,11 @@ export default function CorePurchaseCard({ view }: Props) {
     currentPhase ??
     (saleHasStarted ? 'Sale live' : saleInfo ? 'Waiting for sale start' : 'No sale data');
 
+  const totalCost =
+    buyMultiple && corePrice !== null && network && numCores && numCores > 0
+      ? toUnitFormatted(network, BigInt(corePrice) * BigInt(numCores))
+      : null;
+
   return (
     <div
       className={`${styles.purchaseCard} ${isCompact ? styles.compact : ''} ${
@@ -281,6 +286,15 @@ export default function CorePurchaseCard({ view }: Props) {
               />
             )}
           </div>
+
+          {buyMultiple && (
+            <div className={styles.totalCostRow}>
+              <span className={styles.totalCostLabel}>
+                Total cost{numCores && numCores > 1 ? ` (${numCores} cores)` : ''}
+              </span>
+              <span className={styles.totalCostValue}>{totalCost ?? '—'}</span>
+            </div>
+          )}
         </div>
       </div>
 
