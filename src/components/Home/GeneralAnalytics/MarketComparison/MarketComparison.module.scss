@@ -1,0 +1,59 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.metricBox {
+  margin-bottom: 24px;
+  background: $darkBackground3;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.metricLabel {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.coretimeValue {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 8px 0 2px;
+  color: var(--text-color);
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.highlightBox {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.negative {
+  background-color: rgba(225, 14, 14, 0.08);
+  border-color: rgba(225, 14, 14, 0.2);
+  color: var(--danger);
+}
+
+.positive {
+  background-color: rgba(26, 130, 69, 0.1);
+  border-color: rgba(26, 130, 69, 0.25);
+  color: var(--success);
+}
+
+.neutral {
+  background-color: rgba(128, 128, 128, 0.08);
+  border-color: rgba(128, 128, 128, 0.25);
+  color: var(--text-secondary);
+}
