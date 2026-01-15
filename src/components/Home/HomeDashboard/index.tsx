@@ -108,6 +108,16 @@ export default function HomeDashboard({ theme }: HomeDashboardProps) {
       <DashboardHeader selected={selected} setSelected={setSelected} />
 
       <div className={styles.dashboard}>
+        <div className={styles.statusNotice} role='status' aria-live='polite'>
+          <span className={styles.statusLabel}>Service update</span>
+          <div className={styles.statusContent}>
+            <p className={styles.statusTitle}>Indexers are offline right now.</p>
+            <p className={styles.statusMessage}>
+              Sorry for the interruption. We'll be back within about an hour. Thanks for your
+              patience.
+            </p>
+          </div>
+        </div>
         {selected === 'Overview' && (
           <>
             <UrgentRenewals view={selected} />

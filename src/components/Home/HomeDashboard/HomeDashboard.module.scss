@@ -51,3 +51,60 @@
     max-height: unset;
   }
 }
+
+.statusNotice {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 15px;
+  border: 1px solid var(--card-border);
+  border-left: 4px solid var(--yellow-dark);
+  background: var(--dark-background-2);
+  color: var(--text-color);
+}
+
+.statusLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--dark-background-3);
+  color: var(--yellow-dark);
+  align-self: flex-start;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.statusContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.statusTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.statusMessage {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--gray-6);
+}
+
+@media (max-width: 600px) {
+  .statusNotice {
+    flex-direction: column;
+  }
+}
