@@ -56,8 +56,8 @@ export const chains = {
     chainId: '0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f' as ChainId,
     name: 'Polkadot AssetHub',
     nodes: [
-      { url: 'wss://sys.ibp.network/asset-hub-polkadot' },
       { url: 'wss://statemint.api.onfinality.io/public-wst' },
+      { url: 'wss://sys.ibp.network/asset-hub-polkadot' },
     ],
   },
   polkadotCoretime: {
@@ -72,8 +72,8 @@ export const chains = {
     chainId: '0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a' as ChainId,
     name: 'Kusama AssetHub',
     nodes: [
-      { url: 'wss://sys.ibp.network/asset-hub-kusama' },
       { url: 'wss://kusama-asset-hub-rpc.polkadot.io' },
+      { url: 'wss://sys.ibp.network/asset-hub-kusama' },
     ],
   },
   kusamaCoretime: {
@@ -117,16 +117,16 @@ export const chains = {
     chainId: '0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008' as ChainId,
     name: 'People Polkadot',
     nodes: [
-      { url: 'wss://sys.ibp.network/people-polkadot' },
       { url: 'wss://people-polkadot.dotters.network' },
+      { url: 'wss://sys.ibp.network/people-polkadot' },
     ],
   },
   peopleKusama: {
     chainId: '0xc1af4cb4eb3918e5db15086c0cc5ec17fb334f728b7c65dd44bfe1e174ff8b3f' as ChainId,
     name: 'People Kusama',
     nodes: [
-      { url: 'wss://sys.ibp.network/people-kusama' },
       { url: 'wss://people-kusama.dotters.network' },
+      { url: 'wss://sys.ibp.network/people-kusama' },
     ],
   },
   peopleWestend: {
