@@ -2,11 +2,7 @@ import { Connection } from '@/api/connection';
 import { ChainId, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import {
-  blockToTimestamp,
-  RELAY_CHAIN_BLOCK_TIME,
-  TIMESLICE_PERIOD,
-} from '@/utils';
+import { blockToTimestamp, RELAY_CHAIN_BLOCK_TIME, TIMESLICE_PERIOD } from '@/utils';
 import { $connections, $network } from '@/api/connection';
 
 export enum SalePhase {
@@ -93,8 +89,7 @@ const getLatestSaleInfoFx = createEffect(
     const regionLength = chainSaleInfo.region_end - chainSaleInfo.region_begin;
     // Derive sale cycle from region boundaries. Not an exact match to the
     // indexer's sequential counter, but sufficient for the UI.
-    const saleCycle =
-      regionLength > 0 ? Math.floor(chainSaleInfo.region_begin / regionLength) : 0;
+    const saleCycle = regionLength > 0 ? Math.floor(chainSaleInfo.region_begin / regionLength) : 0;
 
     return {
       network,

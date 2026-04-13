@@ -1,9 +1,5 @@
 import { Connection } from '@/api/connection';
-import {
-  ChainId,
-  getNetworkChainIds,
-  getNetworkMetadata,
-} from '@/network';
+import { ChainId, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
