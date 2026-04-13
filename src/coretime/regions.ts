@@ -1,9 +1,7 @@
 import { Connection } from '@/api/connection';
-import { ApiResponse, fetchGraphql } from '@/graphql';
 import {
   ChainId,
   getNetworkChainIds,
-  getNetworkCoretimeIndexer,
   getNetworkMetadata,
 } from '@/network';
 import { Network } from '@/types';
@@ -36,37 +34,41 @@ export type Region = {
   locked?: boolean; // relevant only for regions on RegionX chain.
 };
 
-const fetchRegions = async (network: Network, afterTimeslice: number): Promise<ApiResponse> => {
-  const query = `{
-    regions(filter: { begin: { greaterThanOrEqualTo: ${afterTimeslice} } }) {
-      nodes {
-        id
-        begin
-        core
-        mask
-        end
-        owner
-        paid
-        task
-      }
-    }
-  }`;
-  return fetchGraphql(getNetworkCoretimeIndexer(network), query);
-};
-
 const getRegionsFx = createEffect(async (payload: RegionsRequestPayload): Promise<Region[]> => {
-  const res: ApiResponse = await fetchRegions(payload.network, payload.afterTimeslice);
-  const { status, data } = res;
-  if (status !== 200) return [];
+  const { connections, afterTimeslice, network } = payload;
 
-  const regions = data.regions.nodes;
+  const chainIds = getNetworkChainIds(network);
+  if (!chainIds) return [];
+
+  const connection = connections[chainIds.coretimeChain];
+  if (!connection || !connection.client || connection.status !== 'connected') return [];
+
+  const metadata = getNetworkMetadata(network);
+  if (!metadata) return [];
+
+  const api = connection.client.getTypedApi(metadata.coretimeChain);
+
+  const entries = await api.query.Broker.Regions.getEntries();
+
+  const coretimeRegions: Region[] = entries
+    .map((entry: any) => ({
+      id: `${entry.keyArgs[0].begin}-${entry.keyArgs[0].core}-${entry.keyArgs[0].mask.asHex()}`,
+      begin: entry.keyArgs[0].begin,
+      core: entry.keyArgs[0].core,
+      mask: entry.keyArgs[0].mask.asHex(),
+      end: entry.value.end,
+      owner: entry.value.owner ?? '',
+      paid: entry.value.paid?.toString(),
+      task: 0,
+    }))
+    .filter((r: Region) => r.begin >= afterTimeslice);
 
   let regionxRegions: Region[] = [];
-  if (payload.network === Network.KUSAMA) {
-    regionxRegions = await getRegionxRegions(payload.connections, payload.network);
+  if (network === Network.KUSAMA) {
+    regionxRegions = await getRegionxRegions(connections, network);
   }
 
-  return regions.map((r: Region) => {
+  return coretimeRegions.map((r: Region) => {
     const match = regionxRegions.find(
       (_r) => _r.begin === r.begin && _r.core === r.core && _r.mask === r.mask
     );
@@ -105,7 +107,7 @@ const getRegionxRegions = async (
     owner: r.value.owner,
     locked: r.value.locked,
     end: 0, // unknown, we need ismp
-    task: 0, // unknwon, need ismp, but also not relevant
+    task: 0, // unknown, need ismp, but also not relevant
   }));
 };
 

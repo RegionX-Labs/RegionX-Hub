@@ -91,22 +91,6 @@ export const getNetworkChainIds = (network: Network): NetworkChainIds | null => 
   }
 };
 
-// Returns the coretime indexer url.
-export const getNetworkCoretimeIndexer = (network: Network): string => {
-  switch (network) {
-    case Network.POLKADOT:
-      return 'https://polkadot-coretime-indexer.regionx.tech/';
-    case Network.KUSAMA:
-      return 'https://kusama-coretime-indexer.regionx.tech/';
-    case Network.PASEO:
-      return 'https://paseo-coretime-indexer.regionx.tech/';
-    case Network.WESTEND:
-      return 'https://westend-coretime-indexer.regionx.tech/';
-    default:
-      return '';
-  }
-};
-
 export const getNetworkMetadata = (network: Network): NetworkMetadata | null => {
   switch (network) {
     case Network.POLKADOT:

@@ -297,46 +297,54 @@ const SaleHistoryPage = () => {
       <h2 className={styles.heading}>Historical sales</h2>
       <p className={styles.subheading}>Shows the full sale history</p>
 
-      <div className={styles.tableWrapper} onClick={handleSaleClick}>
-        <TableComponent data={tableData} pageSize={8} />
-      </div>
-
-      {modalOpen &&
-        selectedSaleId !== null &&
-        (() => {
-          const sale = saleInfo.find((s) => s.saleCycle === selectedSaleId);
-          if (!sale) return null;
-          return (
-            <SaleHistoryModal
-              open={modalOpen}
-              saleId={selectedSaleId}
-              sale={sale}
-              purchases={modalPurchases}
-              onClose={() => setModalOpen(false)}
-            />
-          );
-        })()}
-
-      {chartModalOpen && chartSale && chartEndpoints && (
-        <div className={styles.modalOverlay} onClick={() => setChartModalOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <div className={styles.modalTitle}>Dutch auction</div>
-              <button className={styles.closeBtn} onClick={() => setChartModalOpen(false)}>
-                ×
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <DutchAuctionChart
-                theme='dark'
-                mode='full'
-                context='modal'
-                sale={chartSale}
-                endpoints={chartEndpoints}
-              />
-            </div>
+      {tableData.length === 0 ? (
+        <p style={{ color: 'var(--text-secondary, #888)', textAlign: 'center', padding: '3rem 0' }}>
+          Sale history is currently unavailable. Historical data requires an indexer service.
+        </p>
+      ) : (
+        <>
+          <div className={styles.tableWrapper} onClick={handleSaleClick}>
+            <TableComponent data={tableData} pageSize={8} />
           </div>
-        </div>
+
+          {modalOpen &&
+            selectedSaleId !== null &&
+            (() => {
+              const sale = saleInfo.find((s) => s.saleCycle === selectedSaleId);
+              if (!sale) return null;
+              return (
+                <SaleHistoryModal
+                  open={modalOpen}
+                  saleId={selectedSaleId}
+                  sale={sale}
+                  purchases={modalPurchases}
+                  onClose={() => setModalOpen(false)}
+                />
+              );
+            })()}
+
+          {chartModalOpen && chartSale && chartEndpoints && (
+            <div className={styles.modalOverlay} onClick={() => setChartModalOpen(false)}>
+              <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.modalHeader}>
+                  <div className={styles.modalTitle}>Dutch auction</div>
+                  <button className={styles.closeBtn} onClick={() => setChartModalOpen(false)}>
+                    ×
+                  </button>
+                </div>
+                <div className={styles.modalBody}>
+                  <DutchAuctionChart
+                    theme='dark'
+                    mode='full'
+                    context='modal'
+                    sale={chartSale}
+                    endpoints={chartEndpoints}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

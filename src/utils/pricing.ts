@@ -1,7 +1,6 @@
 import { Network } from '@/types';
 import { SaleInfo } from '@/coretime/saleInfo';
 import { fromUnit } from './format';
-import { KUSAMA_SALE_CYCLE_WITH_UPDATE, POLKADOT_SALE_CYCLE_WITH_UPDATE } from './constants';
 
 export const leadinFactorAt = (when: number) => {
   return when <= 0.5 ? 100 - when * 180 : 19 - when * 18;
@@ -28,12 +27,7 @@ export const getCorePriceAt = (_now: number, saleInfo: SaleInfo, network: Networ
   return Number((leadinFactorAt(through) * Number(endPrice)).toFixed());
 };
 
-export const usesRelayChainBlocks = (network: Network, saleInfo: SaleInfo): boolean => {
-  if (network === Network.WESTEND) return true;
-  if (network === Network.KUSAMA && saleInfo.saleCycle >= KUSAMA_SALE_CYCLE_WITH_UPDATE)
-    return true;
-  if (network === Network.POLKADOT && saleInfo.saleCycle >= POLKADOT_SALE_CYCLE_WITH_UPDATE)
-    return true;
-  if (network === Network.PASEO) return true;
-  return false;
+// All networks are now past the relay chain block migration.
+export const usesRelayChainBlocks = (_network: Network, _saleInfo: SaleInfo): boolean => {
+  return true;
 };

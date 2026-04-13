@@ -103,7 +103,13 @@ export default function PurchaseHistoryTable() {
   return (
     <div className={styles.tableWrapper}>
       <h2 className={styles.heading}>Current Sale Cycle Purchases</h2>
-      <TableComponent data={tableData} pageSize={5} />
+      {tableData.length === 0 ? (
+        <p style={{ color: 'var(--text-secondary, #888)', textAlign: 'center', padding: '2rem 0' }}>
+          Purchase history is currently unavailable.
+        </p>
+      ) : (
+        <TableComponent data={tableData} pageSize={5} />
+      )}
     </div>
   );
 }

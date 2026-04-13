@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './BulkSaleSummary.module.scss';
 
 import { $network } from '@/api/connection';
-import { $latestSaleInfo, fetchSaleInfoAt } from '@/coretime/saleInfo';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import {
   $purchaseHistory,
   purchaseHistoryRequested,
@@ -23,36 +23,10 @@ export default function BulkSaleSummary() {
     $purchaseHistory,
   ]);
 
-  const [previousBulkRevenue, setPreviousBulkRevenue] = useState<number | null>(null);
-  const [previousRenewalRevenue, setPreviousRenewalRevenue] = useState<number | null>(null);
-
   useEffect(() => {
     if (network && saleInfo) {
       purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
     }
-  }, [network, saleInfo]);
-
-  useEffect(() => {
-    const fetchPreviousCycleRevenue = async () => {
-      if (!network || !saleInfo) return;
-
-      const nodes = await fetchSaleInfoAt(network, saleInfo.saleCycle - 1);
-      if (!nodes) return;
-
-      const bulkOnly = nodes.filter((item: any) => item.purchaseType === PurchaseType.BULK);
-      const renewalOnly = nodes.filter((item: any) => item.purchaseType === PurchaseType.RENEWAL);
-
-      const bulkSum = bulkOnly.reduce((acc: number, item: any) => acc + parseInt(item.price), 0);
-      const renewalSum = renewalOnly.reduce(
-        (acc: number, item: any) => acc + parseInt(item.price),
-        0
-      );
-
-      setPreviousBulkRevenue(bulkSum);
-      setPreviousRenewalRevenue(renewalSum);
-    };
-
-    fetchPreviousCycleRevenue();
   }, [network, saleInfo]);
 
   const bulkRevenue = purchaseHistory
@@ -63,22 +37,6 @@ export default function BulkSaleSummary() {
     .filter((item) => item.type === PurchaseType.RENEWAL)
     .reduce((sum, item) => sum + item.price, 0);
 
-  const gainRaw = previousBulkRevenue !== null ? bulkRevenue - previousBulkRevenue : 0;
-  const gainSign = gainRaw >= 0 ? '+' : '-';
-  const gainAmount = toUnitFormatted(network, BigInt(Math.abs(gainRaw)));
-
-  const bulkChangePercent =
-    previousBulkRevenue && previousBulkRevenue !== 0
-      ? ((bulkRevenue - previousBulkRevenue) / previousBulkRevenue) * 100
-      : 0;
-
-  const renewalChangePercent =
-    previousRenewalRevenue && previousRenewalRevenue !== 0
-      ? ((renewals - previousRenewalRevenue) / previousRenewalRevenue) * 100
-      : 0;
-
-  const formatPercent = (percent: number) => `${percent >= 0 ? '+' : ''}${percent.toFixed(1)}%`;
-
   return (
     <div className={styles.analyticsCard}>
       <UserBalance />
@@ -88,11 +46,11 @@ export default function BulkSaleSummary() {
       <RevenueBox
         network={network}
         purchaseHistory={purchaseHistory}
-        previousBulkRevenue={previousBulkRevenue}
+        previousBulkRevenue={null}
         bulkRevenue={bulkRevenue}
         renewals={renewals}
-        bulkChangePercent={bulkChangePercent}
-        renewalChangePercent={renewalChangePercent}
+        bulkChangePercent={0}
+        renewalChangePercent={0}
       />
 
       <CurrentAuctionPrice />

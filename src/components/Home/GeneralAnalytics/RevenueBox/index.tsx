@@ -33,7 +33,7 @@ const RevenueBox = ({
       <p className={styles.gain}>
         Compared to last sale cycle{' '}
         <span className={styles.gainAmount}>
-          {previousBulkRevenue === null ? 'Loading...' : `${gainSign}${gainAmount}`}
+          {previousBulkRevenue === null ? 'N/A' : `${gainSign}${gainAmount}`}
         </span>
       </p>
       <div className={styles.splitCards}>

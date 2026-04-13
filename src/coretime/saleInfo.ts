@@ -1,14 +1,11 @@
-import { ApiResponse, fetchGraphql } from '@/graphql';
-import { getNetworkCoretimeIndexer } from '@/network';
+import { Connection } from '@/api/connection';
+import { ChainId, getNetworkChainIds, getNetworkMetadata } from '@/network';
 import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { getNetworkMetadata, getNetworkChainIds } from '@/network';
 import {
   blockToTimestamp,
-  coretimeChainBlockTime,
   RELAY_CHAIN_BLOCK_TIME,
   TIMESLICE_PERIOD,
-  usesRelayChainBlocks,
 } from '@/utils';
 import { $connections, $network } from '@/api/connection';
 
@@ -64,52 +61,55 @@ export const latestSaleRequested = createEvent<Network>();
 export const $latestSaleInfo = createStore<SaleInfo | null>(null);
 export const $phaseEndpoints = createStore<PhaseEndpoints | null>(null);
 
-export const fetchSaleInfoAt = async (network: Network, saleCycle: number) => {
-  const query = `{
-    purchases(
-      filter: { saleCycle: { equalTo: ${saleCycle} } }
-      orderBy: HEIGHT_DESC
-    ) {
-      nodes {
-        price
-        purchaseType
-      }
-    }
-  }`;
-
-  const res = await fetchGraphql(getNetworkCoretimeIndexer(network), query);
-  if (res.status !== 200) return null;
-
-  return res.data.purchases.nodes;
+type GetLatestSalePayload = {
+  network: Network;
+  connections: Record<ChainId, Connection>;
 };
 
-const fetchLatestSaleInfo = async (network: Network): Promise<ApiResponse> => {
-  const query = `{
-    sales(orderBy: SALE_CYCLE_DESC, first: 1) {
-      nodes {
-        saleCycle
-        startPrice
-        endPrice
-        regionEnd
-        regionBegin
-        saleStart
-        leadinLength
-        idealCoresSold
-        coresOffered
-      }
-    }
-  }`;
-  return fetchGraphql(getNetworkCoretimeIndexer(network), query);
-};
+const getLatestSaleInfoFx = createEffect(
+  async ({ network, connections }: GetLatestSalePayload): Promise<SaleInfo | null> => {
+    const chainIds = getNetworkChainIds(network);
+    if (!chainIds) return null;
 
-const getLatestSaleInfoFx = createEffect(async (network: Network): Promise<SaleInfo | null> => {
-  const res = await fetchLatestSaleInfo(network);
-  const { status, data } = res;
-  if (status !== 200) return null;
+    const connection = connections[chainIds.coretimeChain];
+    if (!connection || !connection.client || connection.status !== 'connected') return null;
 
-  const saleInfo: SaleInfo = { ...data.sales.nodes[0], network };
-  return saleInfo;
-});
+    const metadata = getNetworkMetadata(network);
+    if (!metadata) return null;
+
+    const api = connection.client.getTypedApi(metadata.coretimeChain);
+
+    const [chainSaleInfo, config] = await Promise.all([
+      api.query.Broker.SaleInfo.getValue(),
+      api.query.Broker.Configuration.getValue() as Promise<Configuration>,
+    ]);
+
+    if (!chainSaleInfo) return null;
+
+    const endPrice = chainSaleInfo.end_price.toString();
+    // The leadin starts at 100x endPrice (leadinFactorAt(0) = 100).
+    const startPrice = (chainSaleInfo.end_price * BigInt(100)).toString();
+
+    const regionLength = chainSaleInfo.region_end - chainSaleInfo.region_begin;
+    // Derive sale cycle from region boundaries. Not an exact match to the
+    // indexer's sequential counter, but sufficient for the UI.
+    const saleCycle =
+      regionLength > 0 ? Math.floor(chainSaleInfo.region_begin / regionLength) : 0;
+
+    return {
+      network,
+      saleCycle,
+      saleStart: chainSaleInfo.sale_start,
+      leadinLength: chainSaleInfo.leadin_length,
+      endPrice,
+      regionBegin: chainSaleInfo.region_begin,
+      regionEnd: chainSaleInfo.region_end,
+      idealCoresSold: chainSaleInfo.ideal_cores_sold,
+      coresOffered: chainSaleInfo.cores_offered,
+      startPrice,
+    };
+  }
+);
 
 type GetPhaseEndpointsPayload = {
   network: Network;
@@ -135,10 +135,7 @@ const getSalePhaseEndpointsFx = createEffect(
     const config = await fetchBrokerConfig(network, connections);
     if (!config) return null;
 
-    // In the new release everything is defined in relay chain blocks.
-    const blockTime = usesRelayChainBlocks(network, saleInfo)
-      ? RELAY_CHAIN_BLOCK_TIME
-      : coretimeChainBlockTime(network);
+    const blockTime = RELAY_CHAIN_BLOCK_TIME;
 
     const saleEndTimestamp =
       saleStartTimestamp -
@@ -166,6 +163,8 @@ const getSalePhaseEndpointsFx = createEffect(
 
 sample({
   clock: latestSaleRequested,
+  source: $connections,
+  fn: (connections, network) => ({ network, connections }),
   target: getLatestSaleInfoFx,
 });
 
@@ -197,29 +196,10 @@ export const saleHistoryRequested = createEvent<Network>();
 
 export const $saleHistory = createStore<SaleInfo[]>([]);
 
-const fetchAllSalesFx = createEffect(async (network: Network): Promise<SaleInfo[]> => {
-  const res = await fetchGraphql(
-    getNetworkCoretimeIndexer(network),
-    `{
-       sales(orderBy: SALE_CYCLE_DESC) {
-      nodes {
-        saleCycle
-        startPrice
-        endPrice
-        regionEnd
-        regionBegin
-        saleStart
-        leadinLength
-        idealCoresSold
-        coresOffered
-      }
-    }
-  }`
-  );
-
-  const { status, data } = res;
-  if (status !== 200) return [];
-  return data.sales.nodes;
+// Sale history requires an indexer to fetch historical data.
+// Without the indexer, we return an empty array.
+const fetchAllSalesFx = createEffect(async (_network: Network): Promise<SaleInfo[]> => {
+  return [];
 });
 
 sample({
