@@ -6,7 +6,6 @@ import SecondaryMarketOverview from '@/components/SecondaryMarketOverview';
 import AuctionPriceOverview from '@/components/Home/GeneralAnalytics/AuctionPriceOverview';
 import HistoricalPricingChart from '@/components/HistoricalPricingChart';
 import SecondaryMarketplaceTable from '@/components/SecondaryMarketplaceTable';
-import { latestSaleRequested } from '@/coretime/saleInfo';
 import { useUnit } from 'effector-react';
 import { $network } from '@/api/connection';
 import WarningModal from '../secondary-market/WarningModal';
@@ -23,9 +22,7 @@ export default function SecondaryMarket() {
 
   const [showWarning, setShowWarning] = useState(false);
 
-  useEffect(() => {
-    latestSaleRequested(network);
-  }, [network]);
+  // latestSaleInfo is fetched globally in _app.tsx.
 
   useEffect(() => {
     if (!networkKnown) return;

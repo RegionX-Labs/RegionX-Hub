@@ -1,15 +1,8 @@
-import { useEffect } from 'react';
 import { useUnit } from 'effector-react';
 import styles from './BulkSaleSummary.module.scss';
 
 import { $network } from '@/api/connection';
-import { $latestSaleInfo } from '@/coretime/saleInfo';
-import {
-  $purchaseHistory,
-  purchaseHistoryRequested,
-  PurchaseType,
-} from '@/coretime/purchaseHistory';
-import { toUnitFormatted } from '@/utils';
+import { $purchaseHistory, PurchaseType } from '@/coretime/purchaseHistory';
 import RevenueBox from '../RevenueBox/index';
 import CurrentAuctionPrice from '../CurrentAuctionPrice';
 import UserBalance from '../UserBalance';
@@ -17,17 +10,9 @@ import AuctionPriceOverview from '../AuctionPriceOverview';
 import TopBuyerCard from '../TopBuyerCard';
 
 export default function BulkSaleSummary() {
-  const [network, saleInfo, purchaseHistory] = useUnit([
-    $network,
-    $latestSaleInfo,
-    $purchaseHistory,
-  ]);
+  const [network, purchaseHistory] = useUnit([$network, $purchaseHistory]);
 
-  useEffect(() => {
-    if (network && saleInfo) {
-      purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
-    }
-  }, [network, saleInfo]);
+  // purchaseHistory is fetched globally in _app.tsx.
 
   const bulkRevenue = purchaseHistory
     .filter((item) => item.type === PurchaseType.BULK)

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $regions } from '@/coretime/regions';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { $connections, $network } from '@/api/connection';
 import { $selectedAccount } from '@/wallet';
 import { bitStringToUint8Array, maskToBin, timesliceToTimestamp } from '@/utils';
@@ -41,9 +41,7 @@ export default function OwnedRegionsModal({ isOpen, onClose }: Props) {
     $selectedAccount,
   ]);
 
-  useEffect(() => {
-    latestSaleRequested(network);
-  }, [network]);
+  // latestSaleInfo is fetched globally in _app.tsx.
 
   useEffect(() => {
     const loadDates = async () => {

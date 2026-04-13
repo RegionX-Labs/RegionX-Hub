@@ -6,7 +6,7 @@ import { useUnit } from 'effector-react';
 import { $network, $connections } from '@/api/connection';
 import { $parachains, parachainsRequested } from '@/parachains';
 import { $potentialRenewals, potentialRenewalsRequested } from '@/coretime/renewals';
-import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { $latestSaleInfo } from '@/coretime/saleInfo';
 import { chainData } from '@/chaindata';
 import { TableComponent } from '@/components/elements/TableComponent';
 import { TableData } from '@/types/type';
@@ -24,7 +24,6 @@ const UpcomingRenewalsTable = () => {
   useEffect(() => {
     parachainsRequested(network);
     potentialRenewalsRequested({ network, connections });
-    latestSaleRequested(network);
   }, [network, connections]);
 
   useEffect(() => {

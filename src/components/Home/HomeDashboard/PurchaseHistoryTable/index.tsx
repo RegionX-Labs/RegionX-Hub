@@ -5,11 +5,7 @@ import { useUnit } from 'effector-react';
 import { TableComponent } from '../../../elements/TableComponent';
 import styles from './PurchaseHistory.module.scss';
 import { $latestSaleInfo } from '@/coretime/saleInfo';
-import {
-  $purchaseHistory,
-  purchaseHistoryRequested,
-  PurchaseHistoryItem,
-} from '@/coretime/purchaseHistory';
+import { $purchaseHistory, PurchaseHistoryItem } from '@/coretime/purchaseHistory';
 import { $network } from '@/api/connection';
 import { toUnitFormatted } from '@/utils';
 
@@ -49,14 +45,7 @@ export default function PurchaseHistoryTable() {
   const purchaseHistory = useUnit($purchaseHistory);
   const [tableData, setTableData] = useState<Array<Record<string, TableData>>>([]);
 
-  useEffect(() => {
-    if (network && latestSaleInfo) {
-      purchaseHistoryRequested({
-        network,
-        saleCycle: latestSaleInfo.saleCycle,
-      });
-    }
-  }, [network, latestSaleInfo]);
+  // purchaseHistory is fetched globally in _app.tsx.
 
   useEffect(() => {
     if (!network) return;

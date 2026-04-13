@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, fetchSelloutPrice } from '@/coretime/saleInfo';
 import { $network, $connections } from '@/api/connection';
-import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { getCorePriceAt, toUnitFormatted } from '@/utils';
 import styles from './CoreComparison.module.scss';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
@@ -21,8 +20,6 @@ export default function CoreComparison({ view }: Props) {
 
   useEffect(() => {
     if (network && saleInfo) {
-      purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
-
       (async () => {
         const networkChainIds = getNetworkChainIds(network);
         if (!networkChainIds) return null;

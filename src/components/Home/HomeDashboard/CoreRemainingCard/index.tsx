@@ -13,7 +13,7 @@ import 'chartjs-adapter-date-fns';
 import { useUnit } from 'effector-react';
 import { $connections, $network } from '@/api/connection';
 import { $latestSaleInfo, fetchCoresSold } from '@/coretime/saleInfo';
-import { $purchaseHistory, purchaseHistoryRequested } from '@/coretime/purchaseHistory';
+import { $purchaseHistory } from '@/coretime/purchaseHistory';
 import { getNetworkChainIds } from '@/network';
 import { coretimeChainBlockTime } from '@/utils/index';
 
@@ -52,7 +52,6 @@ export default function CoreRemainingCard({ view }: Props) {
     };
 
     fetchData();
-    purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
   }, [connections, network, saleInfo]);
 
   const chartData = useMemo(() => {

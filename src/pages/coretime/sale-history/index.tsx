@@ -23,11 +23,9 @@ import {
   toUnitFormatted,
   RELAY_CHAIN_BLOCK_TIME,
   TIMESLICE_PERIOD,
-  coretimeChainBlockTime,
   usesRelayChainBlocks,
 } from '@/utils';
 import { getNetworkChainIds, getNetworkMetadata } from '@/network';
-import { Network } from '@/types';
 import DutchAuctionChart from '../../../components/Home/HomeDashboard/DutchAuctionChart';
 
 type TableData = {
@@ -299,7 +297,7 @@ const SaleHistoryPage = () => {
 
       {tableData.length === 0 ? (
         <p style={{ color: 'var(--text-secondary, #888)', textAlign: 'center', padding: '3rem 0' }}>
-          Sale history is currently unavailable. Historical data requires an indexer service.
+          No sale history data available. Ensure a Subscan API key is configured.
         </p>
       ) : (
         <>

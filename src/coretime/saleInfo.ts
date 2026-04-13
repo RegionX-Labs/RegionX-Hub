@@ -4,6 +4,7 @@ import { Network } from '@/types';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { blockToTimestamp, RELAY_CHAIN_BLOCK_TIME, TIMESLICE_PERIOD } from '@/utils';
 import { $connections, $network } from '@/api/connection';
+import { subscanFetch } from '@/subscan';
 
 export enum SalePhase {
   Interlude = 'Interlude Phase',
@@ -52,6 +53,34 @@ export type SaleInfo = {
   startPrice: string;
 };
 
+// Subscan broker/sale response shape.
+type SubscanSaleData = {
+  sales_cycle: number;
+  start_price: string;
+  price: string;
+  region_begin: number;
+  region_end: number;
+  sale_start: number;
+  leadin_length: number;
+  ideal_cores_sold: number;
+  cores_offered: number;
+  cores_sold: number;
+  sellout_price: string;
+};
+
+const subscanSaleToSaleInfo = (data: SubscanSaleData, network: Network): SaleInfo => ({
+  network,
+  saleCycle: data.sales_cycle,
+  saleStart: data.sale_start,
+  leadinLength: data.leadin_length,
+  endPrice: data.price || '0',
+  regionBegin: data.region_begin,
+  regionEnd: data.region_end,
+  idealCoresSold: data.ideal_cores_sold,
+  coresOffered: data.cores_offered,
+  startPrice: data.start_price || '0',
+});
+
 export const latestSaleRequested = createEvent<Network>();
 
 export const $latestSaleInfo = createStore<SaleInfo | null>(null);
@@ -87,9 +116,16 @@ const getLatestSaleInfoFx = createEffect(
     const startPrice = (chainSaleInfo.end_price * BigInt(100)).toString();
 
     const regionLength = chainSaleInfo.region_end - chainSaleInfo.region_begin;
-    // Derive sale cycle from region boundaries. Not an exact match to the
-    // indexer's sequential counter, but sufficient for the UI.
-    const saleCycle = regionLength > 0 ? Math.floor(chainSaleInfo.region_begin / regionLength) : 0;
+    // Default derived cycle; will be overridden by Subscan when available.
+    let saleCycle = regionLength > 0 ? Math.floor(chainSaleInfo.region_begin / regionLength) : 0;
+
+    // Try to get the accurate sale cycle from Subscan.
+    const subscanData = await subscanFetch<SubscanSaleData>(network, '/api/scan/broker/sale', {
+      begin: chainSaleInfo.region_begin,
+    });
+    if (subscanData?.sales_cycle) {
+      saleCycle = subscanData.sales_cycle;
+    }
 
     return {
       network,
@@ -191,10 +227,25 @@ export const saleHistoryRequested = createEvent<Network>();
 
 export const $saleHistory = createStore<SaleInfo[]>([]);
 
-// Sale history requires an indexer to fetch historical data.
-// Without the indexer, we return an empty array.
-const fetchAllSalesFx = createEffect(async (_network: Network): Promise<SaleInfo[]> => {
-  return [];
+// Fetch the last 3 sale cycles from Subscan.
+const fetchAllSalesFx = createEffect(async (network: Network): Promise<SaleInfo[]> => {
+  const latest = await subscanFetch<SubscanSaleData>(network, '/api/scan/broker/sale');
+  if (!latest?.sales_cycle) return [];
+
+  const currentCycle = latest.sales_cycle;
+  const oldestCycle = Math.max(1, currentCycle - 2);
+  const sales: SaleInfo[] = [subscanSaleToSaleInfo(latest, network)];
+
+  for (let cycle = currentCycle - 1; cycle >= oldestCycle; cycle--) {
+    const data = await subscanFetch<SubscanSaleData>(network, '/api/scan/broker/sale', {
+      sales_cycle: cycle,
+    });
+    if (data && data.sales_cycle > 0) {
+      sales.push(subscanSaleToSaleInfo(data, network));
+    }
+  }
+
+  return sales;
 });
 
 sample({

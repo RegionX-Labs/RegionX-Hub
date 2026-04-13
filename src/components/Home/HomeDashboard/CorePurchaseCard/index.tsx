@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useUnit } from 'effector-react';
 import { $latestSaleInfo, fetchCoresSold, getCurrentPhase, SalePhase } from '@/coretime/saleInfo';
-import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { $connections, $network } from '@/api/connection';
 import { getCorePriceAt, SOLD_OUT_MESSAGE, toUnitFormatted } from '@/utils';
 import styles from './CorePurchaseCard.module.scss';
@@ -51,8 +50,6 @@ export default function CorePurchaseCard({ view }: Props) {
     let isMounted = true;
 
     (async () => {
-      purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
-
       const currentBlockNumber = await relayClient
         .getTypedApi(metadata.relayChain)
         .query.System.Number.getValue();

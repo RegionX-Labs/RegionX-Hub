@@ -25,6 +25,7 @@ import { useUnit } from 'effector-react';
 import { getAccountData } from '@/account';
 import { identityRequested } from '@/account/accountIdentity';
 import { $latestSaleInfo, latestSaleRequested } from '@/coretime/saleInfo';
+import { purchaseHistoryRequested } from '@/coretime/purchaseHistory';
 import { regionsRequested } from '@/coretime/regions';
 import Head from 'next/head';
 import { chains, getNetworkChainIds } from '@/network';
@@ -169,6 +170,7 @@ function App({ Component, pageProps }: AppProps) {
     const regionDuration = saleInfo.regionEnd - saleInfo.regionBegin;
     const afterTimeslice = saleInfo.regionBegin - regionDuration;
     regionsRequested({ connections, network, afterTimeslice });
+    purchaseHistoryRequested({ network, saleCycle: saleInfo.saleCycle });
   }, [network, saleInfo]);
 
   useEffect(() => {
