@@ -16,6 +16,7 @@ export const chains = {
     chainId: '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3' as ChainId,
     name: 'Polkadot',
     nodes: [
+      { url: 'wss://polkadot-rpc.n.dwellir.com' },
       { url: 'wss://rpc.ibp.network/polkadot' },
       { url: 'wss://polkadot-rpc.dwellir.com' },
       { url: 'wss://polkadot.api.onfinality.io/public-ws' },
@@ -26,6 +27,7 @@ export const chains = {
     chainId: '0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe' as ChainId,
     name: 'Kusama',
     nodes: [
+      { url: 'wss://kusama-rpc.n.dwellir.com' },
       { url: 'wss://rpc.ibp.network/kusama' },
       { url: 'wss://kusama-rpc.dwellir.com' },
       { url: 'wss://kusama.api.onfinality.io/public-ws' },
@@ -64,6 +66,7 @@ export const chains = {
     chainId: '0xefb56e30d9b4a24099f88820987d0f45fb645992416535d87650d98e00f46fc4' as ChainId,
     name: 'Polkadot Coretime',
     nodes: [
+      { url: 'wss://coretime-polkadot-rpc.n.dwellir.com' },
       { url: 'wss://coretime-polkadot.dotters.network' },
       { url: 'wss://sys.ibp.network/coretime-polkadot' },
     ],
@@ -80,6 +83,7 @@ export const chains = {
     chainId: '0x638cd2b9af4b3bb54b8c1f0d22711fc89924ca93300f0caf25a580432b29d050' as ChainId,
     name: 'Kusama Coretime',
     nodes: [
+      { url: 'wss://coretime-kusama-rpc.n.dwellir.com' },
       { url: 'wss://ksm-rpc.stakeworld.io/coretime' },
       { url: 'wss://sys.ibp.network/coretime-kusama' },
     ],
