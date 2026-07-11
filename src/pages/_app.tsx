@@ -61,6 +61,7 @@ function App({ Component, pageProps }: AppProps) {
   const saleInfo = useUnit($latestSaleInfo);
   const connectedWallets = useUnit($connectedWallets);
   const errorShownForChain = useRef<Record<string, boolean>>({});
+  const lastSaleRequest = useRef<string | null>(null);
 
   const [isRpcModalOpen, setIsRpcModalOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -162,6 +163,10 @@ function App({ Component, pageProps }: AppProps) {
   }, [connections, network, loadedAccounts]);
 
   useEffect(() => {
+    const chainIds = getNetworkChainIds(network);
+    if (!chainIds || connections[chainIds.coretimeChain]?.status !== 'connected') return;
+    if (lastSaleRequest.current === network) return;
+    lastSaleRequest.current = network;
     latestSaleRequested(network);
   }, [network, connections]);
 

@@ -17,6 +17,9 @@ export type SubscanResponse<T = any> = {
 // Simple rate limiter: max 4 requests per second (under Subscan's 5/s limit).
 const RATE_LIMIT_INTERVAL = 250; // ms between requests
 let lastRequestTime = 0;
+const CACHE_TTL_MS = 60_000;
+const cache = new Map<string, { expiresAt: number; data: unknown }>();
+const inFlight = new Map<string, Promise<unknown | null>>();
 
 const waitForRateLimit = (): Promise<void> => {
   const now = Date.now();
@@ -39,20 +42,33 @@ export async function subscanFetch<T = any>(
   const networkKey = NETWORK_KEY[network];
   if (!networkKey) return null;
 
-  await waitForRateLimit();
+  const cacheKey = `${networkKey}:${endpoint}:${JSON.stringify(body)}`;
+  const cached = cache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) return cached.data as T;
+  const pending = inFlight.get(cacheKey);
+  if (pending) return pending as Promise<T | null>;
 
-  try {
-    const res = await fetch('/api/subscan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ network: networkKey, endpoint, body }),
-    });
+  const request = (async (): Promise<T | null> => {
+    await waitForRateLimit();
+    try {
+      const res = await fetch('/api/subscan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ network: networkKey, endpoint, body }),
+      });
 
-    const json: SubscanResponse<T> = await res.json();
-    if (!res.ok || json.code !== 0) return null;
+      const json: SubscanResponse<T> = await res.json();
+      if (!res.ok || json.code !== 0) return null;
 
-    return json.data;
-  } catch {
-    return null;
-  }
+      cache.set(cacheKey, { expiresAt: Date.now() + CACHE_TTL_MS, data: json.data });
+      return json.data;
+    } catch {
+      return null;
+    } finally {
+      inFlight.delete(cacheKey);
+    }
+  })();
+
+  inFlight.set(cacheKey, request);
+  return request;
 }

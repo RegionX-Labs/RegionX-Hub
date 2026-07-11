@@ -50,6 +50,12 @@ const parseExtrinsicParams = (
   }
 };
 
+const parseAmount = (value: unknown): number => {
+  if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'bigint') return 0;
+  const amount = Number(value);
+  return Number.isFinite(amount) && amount > 0 ? amount : 0;
+};
+
 // Fetch purchase history from Subscan using the extrinsics endpoint.
 // We query for broker.purchase and broker.renew extrinsics.
 const getPurchaseHistoryFx = createEffect(
@@ -72,16 +78,17 @@ const getPurchaseHistoryFx = createEffect(
       if (!ex.success) return null;
 
       const params = parseExtrinsicParams(ex.params);
-      const priceParam = params.find((p) =>
-        ['price_limit', 'max_amount', 'value'].includes(p.name)
-      );
+      const priceParam = params.find((p) => ['price_limit', 'max_amount'].includes(p.name));
+      const price = parseAmount(priceParam?.value);
 
       return {
         address: ex.account_id || '',
         core: 0,
         extrinsicId: ex.extrinsic_index || '',
         timestamp: new Date(ex.block_timestamp * 1000),
-        price: parseInt(ex.fee || String(priceParam?.value) || '0'),
+        // The transaction fee is not sale revenue. For purchases, Subscan exposes
+        // the submitted amount as price_limit/max_amount in the call parameters.
+        price,
         type,
       };
     };
